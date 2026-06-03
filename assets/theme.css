@@ -1,0 +1,17 @@
+/* Minimal high-conversion theme CSS */
+:root { --primary: #000; --accent: #0066ff; }
+body { font-family: system-ui, sans-serif; margin: 0; line-height: 1.5; }
+h1, h2 { font-weight: 700; }
+.button { display: inline-block; padding: 12px 24px; background: var(--primary); color: #fff; text-decoration: none; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
+.button--primary { background: var(--accent); }
+.button--secondary { background: #fff; color: #000; border: 1px solid #000; }
+.hero { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; padding: 60px 20px; max-width: 1200px; margin: 0 auto; }
+.hero__title { font-size: 48px; margin: 0 0 16px; }
+.hero__cta { margin-top: 24px; }
+.product { max-width: 1200px; margin: 0 auto; padding: 40px 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+.product__gallery img { width: 100%; border-radius: 8px; }
+.product__info h1 { font-size: 32px; }
+.cart { max-width: 800px; margin: 0 auto; padding: 40px 20px; }
+.footer { background: #f8f8f8; padding: 40px 20px; text-align: center; margin-top: 60px; }
+.footer a { margin: 0 12px; color: #333; text-decoration: none; }
+@media (max-width: 768px) { .hero, .product { grid-template-columns: 1fr; } }
