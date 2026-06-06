@@ -1,0 +1,8 @@
+{% layout none %}
+{% for group in robots.default_groups %}
+  {{- group.user_agent -}}
+  {% for rule in group.rules %}
+    {{- rule -}}
+  {% endfor %}
+  {% if group.sitemap %} {{- group.sitemap -}} {% endif %}
+{% endfor %}
