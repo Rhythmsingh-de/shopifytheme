@@ -1,58 +1,86 @@
-<section class="lifestyle-split{% if section.settings.reverse_layout %} lifestyle-split--reversed{% endif %}"
-  {{ section.shopify_attributes }}>
+{%- comment -%} BodyLuxCare — Lifestyle Split / Story Section {%- endcomment -%}
+<section class="lifestyle-split reveal" style="padding:clamp(40px,6vw,80px) 0;background:{% if section.settings.dark_content %}var(--color-footer-bg){% else %}var(--color-surface-2){% endif %}">
+  <div class="page-w">
+    <div class="lifestyle-split__inner" style="display:grid;grid-template-columns:1fr 1fr;gap:clamp(32px,5vw,80px);align-items:center;{% if section.settings.reverse_layout %}direction:rtl{% endif %}">
+      
+      <div class="lifestyle-split__media" style="{% if section.settings.reverse_layout %}direction:ltr{% endif %}">
+        {%- if section.settings.image != blank -%}
+          <img src="{{ section.settings.image | image_url: width: 900 }}"
+               alt="{{ section.settings.image.alt | default: section.settings.heading | escape }}"
+               width="900" height="900"
+               loading="lazy"
+               style="width:100%;border-radius:var(--radius-lg);object-fit:cover;aspect-ratio:4/5;box-shadow:var(--shadow-xl)">
+        {%- else -%}
+          <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=900&q=80&auto=format&fit=crop"
+               alt="Lifestyle" width="900" height="1125" loading="lazy"
+               style="width:100%;border-radius:var(--radius-lg);object-fit:cover;aspect-ratio:4/5;box-shadow:var(--shadow-xl)">
+        {%- endif -%}
+      </div>
 
-  <div class="lifestyle-split__content{% if section.settings.dark_content %} lifestyle-split__content--dark{% endif %}">
-    {%- if section.settings.eyebrow != blank -%}
-      <span class="section-eyebrow">{{ section.settings.eyebrow }}</span>
-    {%- endif -%}
-    <h2 class="section-title" style="margin-bottom:var(--space-4)">{{ section.settings.heading | default: 'Crafted for Real Life' }}</h2>
-    {%- if section.settings.text != blank -%}
-      <p class="section-subtitle">{{ section.settings.text }}</p>
-    {%- endif -%}
-    {%- if section.settings.cta_label != blank -%}
-      <a href="{{ section.settings.cta_url | default: '/collections/all' }}" class="btn btn--primary btn--lg" style="margin-top:var(--space-8);align-self:flex-start">
-        {{ section.settings.cta_label }}
-      </a>
-    {%- endif -%}
+      <div class="lifestyle-split__content" style="{% if section.settings.reverse_layout %}direction:ltr{% endif %}">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="label-eyebrow" style="margin-bottom:12px;{% if section.settings.dark_content %}color:var(--color-deco){% endif %}">{{ section.settings.eyebrow }}</p>
+        {%- endif -%}
+        <h2 style="font-family:var(--font-display);font-size:clamp(1.8rem,3vw,2.8rem);margin-bottom:20px;{% if section.settings.dark_content %}color:#fff{% endif %}">{{ section.settings.heading | default: 'Crafted for Real Life' }}</h2>
+        {%- if section.settings.text != blank -%}
+          <div style="font-size:var(--text-base);line-height:1.7;color:{% if section.settings.dark_content %}rgba(255,255,255,0.75){% else %}var(--color-text-muted){% endif %};margin-bottom:32px;max-width:480px">
+            {{ section.settings.text | newline_to_br }}
+          </div>
+        {%- endif -%}
+        {%- if section.settings.cta_label != blank -%}
+          <a href="{{ section.settings.cta_url | default: '/collections/all' }}" class="btn btn--primary">{{ section.settings.cta_label }}</a>
+        {%- endif -%}
+        {%- if section.settings.show_stats -%}
+          <div style="display:flex;gap:var(--sp-8);margin-top:40px;padding-top:32px;border-top:1px solid {% if section.settings.dark_content %}rgba(255,255,255,0.1){% else %}var(--color-border){% endif %}">
+            {%- for block in section.blocks -%}
+              <div {{ block.shopify_attributes }}>
+                <div style="font-family:var(--font-display);font-size:clamp(1.5rem,2.5vw,2rem);font-weight:800;color:{% if section.settings.dark_content %}#fff{% else %}var(--color-text){% endif %}">{{ block.settings.number }}</div>
+                <div style="font-size:var(--text-xs);text-transform:uppercase;letter-spacing:0.08em;color:{% if section.settings.dark_content %}rgba(255,255,255,0.55){% else %}var(--color-text-muted){% endif %}">{{ block.settings.label }}</div>
+              </div>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
   </div>
-
-  <div class="lifestyle-split__media">
-    {%- if section.settings.image != blank -%}
-      {{ section.settings.image | image_url: width: 900 | image_tag:
-        loading: 'lazy',
-        width: 900, height: 700,
-        alt: section.settings.heading | default: 'Lifestyle'
-      }}
-    {%- else -%}
-      {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}
-    {%- endif -%}
-  </div>
-
 </section>
+
+<style>
+@media(max-width:767px){
+  .lifestyle-split__inner{grid-template-columns:1fr!important;direction:ltr!important;}
+  .lifestyle-split__content{direction:ltr!important;}
+  .lifestyle-split__media{direction:ltr!important;}
+}
+</style>
 
 {% schema %}
 {
-  "name": "Lifestyle split",
+  "name": "Lifestyle Split",
   "tag": "section",
-  "class": "shopify-section--lifestyle",
-  "settings": [
-    { "type": "image_picker", "id": "image", "label": "Image" },
-    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Our Story" },
-    { "type": "text", "id": "heading", "label": "Heading", "default": "Crafted for Real Life" },
-    { "type": "textarea", "id": "text", "label": "Body text", "default": "We believe luxury should be accessible. Every product in our collection is chosen for quality, comfort, and style — from women's fashion to home décor and pet essentials." },
-    { "type": "text", "id": "cta_label", "label": "Button label", "default": "Shop the Collection" },
-    { "type": "url", "id": "cta_url", "label": "Button link" },
-    { "type": "checkbox", "id": "reverse_layout", "label": "Reverse layout (image left)", "default": false },
-    { "type": "checkbox", "id": "dark_content", "label": "Dark background on text side", "default": false }
+  "class": "section-lifestyle-split",
+  "blocks":[
+    {"type":"stat","name":"Stat","settings":[
+      {"type":"text","id":"number","label":"Number","default":"10k+"},
+      {"type":"text","id":"label","label":"Label","default":"Happy Customers"}
+    ]}
   ],
-  "presets": [{
-    "name": "Lifestyle split",
-    "settings": {
-      "eyebrow": "Our Story",
-      "heading": "Crafted for Real Life",
-      "text": "We believe luxury should be accessible. Every product in our collection is chosen for quality, comfort, and style.",
-      "cta_label": "Shop the Collection"
-    }
-  }]
+  "settings": [
+    {"type":"text","id":"eyebrow","label":"Eyebrow label","default":"Our Story"},
+    {"type":"text","id":"heading","label":"Heading","default":"Crafted for Real Life"},
+    {"type":"textarea","id":"text","label":"Body text","default":"We believe luxury should be accessible. Every product in our collection is chosen for quality, comfort, and style."},
+    {"type":"image_picker","id":"image","label":"Image"},
+    {"type":"text","id":"cta_label","label":"Button label","default":"Shop the Collection"},
+    {"type":"url","id":"cta_url","label":"Button link"},
+    {"type":"checkbox","id":"reverse_layout","label":"Reverse layout (image right)","default":false},
+    {"type":"checkbox","id":"dark_content","label":"Dark background","default":false},
+    {"type":"checkbox","id":"show_stats","label":"Show stats row","default":false}
+  ],
+  "presets":[
+    {"name":"Lifestyle Split","blocks":[
+      {"type":"stat","settings":{"number":"10k+","label":"Happy Customers"}},
+      {"type":"stat","settings":{"number":"4.9★","label":"Avg Rating"}},
+      {"type":"stat","settings":{"number":"30-day","label":"Easy Returns"}}
+    ]}
+  ]
 }
 {% endschema %}
