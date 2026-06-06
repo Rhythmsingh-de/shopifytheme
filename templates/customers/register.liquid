@@ -1,0 +1,31 @@
+{% layout 'theme' %}
+<main id="main-content" class="section" style="min-height:70vh;display:flex;align-items:center;justify-content:center">
+  <div style="width:min(440px,100%);padding:var(--sp-8);background:var(--color-surface);border-radius:var(--radius-xl);box-shadow:var(--shadow-md)">
+    <h1 style="font-family:var(--font-display);font-size:var(--text-xl);text-align:center;margin-bottom:var(--sp-6)">Create Account</h1>
+    {% form 'create_customer' %}
+      {{ form.errors | default_errors }}
+      <div style="display:flex;flex-direction:column;gap:var(--sp-4)">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3)">
+          <div class="form-group">
+            <label class="form-label" for="FirstName">First Name</label>
+            <input type="text" name="customer[first_name]" id="FirstName" class="form-input" placeholder="Jane" autocomplete="given-name">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="LastName">Last Name</label>
+            <input type="text" name="customer[last_name]" id="LastName" class="form-input" placeholder="Doe" autocomplete="family-name">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="RegisterEmail">Email</label>
+          <input type="email" name="customer[email]" id="RegisterEmail" class="form-input" placeholder="your@email.com" required autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="RegisterPassword">Password</label>
+          <input type="password" name="customer[password]" id="RegisterPassword" class="form-input" placeholder="Min 6 characters" required autocomplete="new-password">
+        </div>
+        <button type="submit" class="btn btn--primary btn--full btn--lg">Create Account</button>
+      </div>
+    {% endform %}
+    <p style="text-align:center;margin-top:var(--sp-5);font-size:var(--text-sm);color:var(--color-text-muted)">Already have an account? <a href="/account/login" style="color:var(--color-primary)">Sign in</a></p>
+  </div>
+</main>
