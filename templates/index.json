@@ -1,26 +1,161 @@
 {
   "sections": {
-    "announcement": { "type": "announcement-bar", "disabled": false },
-    "hero": { "type": "hero" },
-    "brand-values": { "type": "brand-values" },
-    "collection-grid": { "type": "collection-grid" },
-    "new-arrivals": { "type": "new-arrivals" },
-    "lifestyle-banner": { "type": "lifestyle-banner" },
-    "trending": { "type": "trending" },
+    "announcement": {
+      "type": "announcement-bar",
+      "disabled": false,
+      "settings": {}
+    },
+    "hero": {
+      "type": "hero",
+      "settings": {}
+    },
+    "brand-values": {
+      "type": "brand-values",
+      "blocks": {
+        "v1": {
+          "type": "value",
+          "settings": {
+            "icon": "star",
+            "title": "Premium Quality",
+            "text": "Carefully sourced materials built to last a lifetime."
+          }
+        },
+        "v2": {
+          "type": "value",
+          "settings": {
+            "icon": "truck",
+            "title": "Fast Shipping",
+            "text": "Free U.S. shipping on all orders over $75."
+          }
+        },
+        "v3": {
+          "type": "value",
+          "settings": {
+            "icon": "shield",
+            "title": "Secure Checkout",
+            "text": "256-bit SSL encryption on every transaction."
+          }
+        },
+        "v4": {
+          "type": "value",
+          "settings": {
+            "icon": "refresh",
+            "title": "Easy Returns",
+            "text": "30-day hassle-free returns \u2014 no questions asked."
+          }
+        }
+      },
+      "blocks_order": [
+        "v1",
+        "v2",
+        "v3",
+        "v4"
+      ],
+      "settings": {}
+    },
+    "collection-grid": {
+      "type": "collection-grid",
+      "settings": {}
+    },
+    "new-arrivals": {
+      "type": "new-arrivals",
+      "settings": {}
+    },
+    "lifestyle-banner": {
+      "type": "lifestyle-banner",
+      "settings": {}
+    },
+    "trending": {
+      "type": "trending",
+      "settings": {}
+    },
     "testimonials": {
       "type": "testimonials",
       "blocks": {
-        "review1": { "type": "review", "settings": { "rating": 5, "review": "Absolutely love the quality! The jewelry is stunning and arrived so fast. Will definitely be ordering again.", "name": "Sarah M.", "location": "New York, NY" } },
-        "review2": { "type": "review", "settings": { "rating": 5, "review": "Bought the home decor set and it completely transformed my living room. Premium quality at a great price.", "name": "James K.", "location": "Los Angeles, CA" } },
-        "review3": { "type": "review", "settings": { "rating": 5, "review": "My dog absolutely loves the toys! Great build quality and totally safe. Customer service was incredible too.", "name": "Emma R.", "location": "Chicago, IL" } },
-        "review4": { "type": "review", "settings": { "rating": 5, "review": "The women's collection is chef's kiss. Sizing is perfect and the fabric feels luxurious. 10/10 recommend.", "name": "Priya D.", "location": "Austin, TX" } },
-        "review5": { "type": "review", "settings": { "rating": 5, "review": "Fast shipping, beautiful packaging, and the product exceeded my expectations. This brand is the real deal.", "name": "Carlos T.", "location": "Miami, FL" } },
-        "review6": { "type": "review", "settings": { "rating": 4, "review": "Great overall experience. The men's section has really nice pieces. Will come back for more.", "name": "David W.", "location": "Seattle, WA" } }
+        "review1": {
+          "type": "review",
+          "settings": {
+            "rating": 5,
+            "review": "Absolutely love the quality! The jewelry is stunning and arrived so fast. Will definitely be ordering again.",
+            "name": "Sarah M.",
+            "location": "New York, NY"
+          }
+        },
+        "review2": {
+          "type": "review",
+          "settings": {
+            "rating": 5,
+            "review": "Bought the home decor set and it completely transformed my living room. Premium quality at a great price.",
+            "name": "James K.",
+            "location": "Los Angeles, CA"
+          }
+        },
+        "review3": {
+          "type": "review",
+          "settings": {
+            "rating": 5,
+            "review": "My dog absolutely loves the toys! Great build quality and totally safe. Customer service was incredible.",
+            "name": "Emma R.",
+            "location": "Chicago, IL"
+          }
+        },
+        "review4": {
+          "type": "review",
+          "settings": {
+            "rating": 5,
+            "review": "The women's collection is chef's kiss. Sizing is perfect and the fabric feels luxurious. 10/10 recommend.",
+            "name": "Priya D.",
+            "location": "Austin, TX"
+          }
+        },
+        "review5": {
+          "type": "review",
+          "settings": {
+            "rating": 5,
+            "review": "Fast shipping, beautiful packaging, and the product exceeded my expectations. This brand is the real deal.",
+            "name": "Carlos T.",
+            "location": "Miami, FL"
+          }
+        },
+        "review6": {
+          "type": "review",
+          "settings": {
+            "rating": 4,
+            "review": "Great overall experience. The men's section has really nice pieces. Will come back for more.",
+            "name": "David W.",
+            "location": "Seattle, WA"
+          }
+        }
       },
-      "blocks_order": ["review1","review2","review3","review4","review5","review6"]
+      "blocks_order": [
+        "review1",
+        "review2",
+        "review3",
+        "review4",
+        "review5",
+        "review6"
+      ],
+      "settings": {}
     },
-    "email-capture": { "type": "email-capture" },
-    "trust-bar": { "type": "trust-bar" }
+    "email-capture": {
+      "type": "email-capture",
+      "settings": {}
+    },
+    "trust-bar": {
+      "type": "trust-bar",
+      "settings": {}
+    }
   },
-  "order": ["announcement","hero","brand-values","collection-grid","new-arrivals","lifestyle-banner","trending","testimonials","email-capture","trust-bar"]
+  "order": [
+    "announcement",
+    "hero",
+    "brand-values",
+    "collection-grid",
+    "new-arrivals",
+    "lifestyle-banner",
+    "trending",
+    "testimonials",
+    "email-capture",
+    "trust-bar"
+  ]
 }
