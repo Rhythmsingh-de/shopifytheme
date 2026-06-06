@@ -1,0 +1,25 @@
+{% layout 'theme' %}
+<main id="main-content" class="section" style="min-height:70vh;display:flex;align-items:center;justify-content:center">
+  <div style="width:min(440px,100%);padding:var(--sp-8);background:var(--color-surface);border-radius:var(--radius-xl);box-shadow:var(--shadow-md)">
+    <h1 style="font-family:var(--font-display);font-size:var(--text-xl);text-align:center;margin-bottom:var(--sp-6)">Sign In</h1>
+    {% form 'customer_login' %}
+      {{ form.errors | default_errors }}
+      <div style="display:flex;flex-direction:column;gap:var(--sp-4)">
+        <div class="form-group">
+          <label class="form-label" for="CustomerEmail">Email</label>
+          <input type="email" name="customer[email]" id="CustomerEmail" class="form-input" autocomplete="email" placeholder="your@email.com" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="CustomerPassword">Password</label>
+          <input type="password" name="customer[password]" id="CustomerPassword" class="form-input" autocomplete="current-password" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn btn--primary btn--full btn--lg">Sign In</button>
+      </div>
+    {% endform %}
+    <div style="text-align:center;margin-top:var(--sp-5);font-size:var(--text-sm);color:var(--color-text-muted)">
+      <a href="/account/reset" style="color:var(--color-primary)">Forgot password?</a>
+      &nbsp;·&nbsp;
+      <a href="/account/register" style="color:var(--color-primary)">Create account</a>
+    </div>
+  </div>
+</main>
