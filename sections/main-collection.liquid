@@ -1,33 +1,121 @@
-<section class="section">
-  <div class="page-width">
-    <div class="section-head">
-      <div>
+
+<section class="coll-page">
+  <div class="page-w">
+    <div class="coll-page__head">
+      {% if collection.image %}
+        <div style="width:100%;height:240px;overflow:hidden;border-radius:8px;margin-bottom:28px;position:relative">
+          {{ collection.image | image_url: width: 1600 | image_tag:
+             loading: 'eager', widths: '800,1200,1600', sizes: '100vw',
+             alt: collection.title,
+             style: 'width:100%;height:100%;object-fit:cover;position:absolute;inset:0' }}
+          <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.5) 0%,transparent 60%);display:flex;align-items:flex-end;padding:28px">
+            <h1 style="color:#fff;margin:0">{{ collection.title }}</h1>
+          </div>
+        </div>
+      {% else %}
         <h1>{{ collection.title }}</h1>
+      {% endif %}
+      {% if collection.description != blank %}
         <p>{{ collection.description }}</p>
-      </div>
+      {% endif %}
     </div>
-    <div class="collection-grid">
-      {% for product in collection.products %}
-        <article class="card">
-          <a href="{{ product.url }}">
-            <div class="product-media">
-              {% if product.featured_image %}
-                {{ product.featured_image | image_url: width: 800 | image_tag: loading: "lazy", alt: product.title }}
-              {% endif %}
-            </div>
-            <div class="product-card-content">
-              <h3 class="product-card-title">{{ product.title }}</h3>
-              <div class="price-row">
-                <div class="price">{{ product.price | money }}</div>
-                <div>→</div>
+
+    <!-- Sort + count bar -->
+    <div class="coll-meta">
+      <span class="coll-count">{{ collection.products_count }} item{% if collection.products_count != 1 %}s{% endif %}</span>
+      <select class="coll-sort" aria-label="Sort products" onchange="window.location=this.value">
+        {% for sort_option in collection.sort_options %}
+          <option value="{{ collection.url }}?sort_by={{ sort_option.value }}"
+            {% if collection.sort_by == sort_option.value %} selected{% endif %}>
+            {{ sort_option.name }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- Filter pills (by tag) -->
+    {% if collection.all_tags.size > 0 %}
+      <div class="coll-filters" role="group" aria-label="Filter by tag">
+        <a class="filter-pill{% unless current_tags %} active{% endunless %}"
+           href="{{ collection.url }}">All</a>
+        {% for tag in collection.all_tags limit: 12 %}
+          <a class="filter-pill{% if current_tags contains tag %} active{% endif %}"
+             href="{{ collection.url }}/{{ tag | handle }}">{{ tag }}</a>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <!-- Grid -->
+    <div class="coll-grid">
+      {% paginate collection.products by section.settings.products_per_page %}
+        {% for product in collection.products %}
+          <article class="p-card">
+            <a href="{{ product.url }}">
+              <div class="p-card__media">
+                {% if product.featured_image %}
+                  {{ product.featured_image | image_url: width: 600 | image_tag:
+                     loading: 'lazy', widths: '300,450,600',
+                     sizes: '(max-width:640px) 50vw,(max-width:1024px) 33vw,280px',
+                     alt: product.title }}
+                {% else %}
+                  <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=600&q=75&auto=format&fit=crop"
+                       alt="{{ product.title }}" width="300" height="375" loading="lazy">
+                {% endif %}
+                {% if product.available == false %}
+                  <span class="p-card__badge badge-sale">Sold Out</span>
+                {% elsif product.compare_at_price > product.price %}
+                  <span class="p-card__badge badge-sale">Sale</span>
+                {% endif %}
               </div>
-            </div>
-          </a>
-        </article>
-      {% endfor %}
+              <div class="p-card__meta">{{ product.type }}</div>
+              <div class="p-card__name">{{ product.title }}</div>
+              <div class="p-card__price-row">
+                <span class="p-card__price">{{ product.price | money }}</span>
+                {% if product.compare_at_price > product.price %}
+                  <span class="p-card__was">{{ product.compare_at_price | money }}</span>
+                {% endif %}
+              </div>
+            </a>
+            <button class="atc-btn" data-variant="{{ product.first_available_variant.id }}" aria-label="Add {{ product.title | escape }} to cart">
+              {% if product.available %}Add to Cart{% else %}Sold Out{% endif %}
+            </button>
+          </article>
+        {% else %}
+          <div style="grid-column:1/-1;text-align:center;padding:80px 20px;color:#888">
+            <p style="font-size:18px;font-weight:700;margin-bottom:8px">No products found</p>
+            <a href="{{ routes.all_products_collection_url }}" class="btn btn-black" style="margin-top:16px">Browse all products</a>
+          </div>
+        {% endfor %}
+
+        <!-- Pagination -->
+        {% if paginate.pages > 1 %}
+          <div style="grid-column:1/-1;display:flex;justify-content:center;gap:8px;padding-top:40px;flex-wrap:wrap">
+            {% if paginate.previous %}
+              <a href="{{ paginate.previous.url }}" class="btn btn-outline btn-sm">← Prev</a>
+            {% endif %}
+            {% for part in paginate.parts %}
+              {% if part.is_link %}
+                <a href="{{ part.url }}" class="btn btn-outline btn-sm">{{ part.title }}</a>
+              {% else %}
+                <span class="btn btn-black btn-sm" aria-current="page">{{ part.title }}</span>
+              {% endif %}
+            {% endfor %}
+            {% if paginate.next %}
+              <a href="{{ paginate.next.url }}" class="btn btn-outline btn-sm">Next →</a>
+            {% endif %}
+          </div>
+        {% endif %}
+      {% endpaginate %}
     </div>
   </div>
 </section>
+
 {% schema %}
-{ "name": "Collection", "settings": [] }
+{
+  "name": "Collection Page",
+  "settings": [
+    {"type":"range","id":"products_per_page","min":8,"max":48,"step":4,"label":"Products per page","default":16}
+  ],
+  "presets":[{"name":"Collection Page"}]
+}
 {% endschema %}
