@@ -1,46 +1,26 @@
 {
   "sections": {
-    "hero": {
-      "type": "hero-bombas",
-      "settings": {}
+    "announcement": { "type": "announcement-bar", "disabled": false },
+    "hero": { "type": "hero" },
+    "brand-values": { "type": "brand-values" },
+    "collection-grid": { "type": "collection-grid" },
+    "new-arrivals": { "type": "new-arrivals" },
+    "lifestyle-banner": { "type": "lifestyle-banner" },
+    "trending": { "type": "trending" },
+    "testimonials": {
+      "type": "testimonials",
+      "blocks": {
+        "review1": { "type": "review", "settings": { "rating": 5, "review": "Absolutely love the quality! The jewelry is stunning and arrived so fast. Will definitely be ordering again.", "name": "Sarah M.", "location": "New York, NY" } },
+        "review2": { "type": "review", "settings": { "rating": 5, "review": "Bought the home decor set and it completely transformed my living room. Premium quality at a great price.", "name": "James K.", "location": "Los Angeles, CA" } },
+        "review3": { "type": "review", "settings": { "rating": 5, "review": "My dog absolutely loves the toys! Great build quality and totally safe. Customer service was incredible too.", "name": "Emma R.", "location": "Chicago, IL" } },
+        "review4": { "type": "review", "settings": { "rating": 5, "review": "The women's collection is chef's kiss. Sizing is perfect and the fabric feels luxurious. 10/10 recommend.", "name": "Priya D.", "location": "Austin, TX" } },
+        "review5": { "type": "review", "settings": { "rating": 5, "review": "Fast shipping, beautiful packaging, and the product exceeded my expectations. This brand is the real deal.", "name": "Carlos T.", "location": "Miami, FL" } },
+        "review6": { "type": "review", "settings": { "rating": 4, "review": "Great overall experience. The men's section has really nice pieces. Will come back for more.", "name": "David W.", "location": "Seattle, WA" } }
+      },
+      "blocks_order": ["review1","review2","review3","review4","review5","review6"]
     },
-    "categories": {
-      "type": "category-strip",
-      "settings": {}
-    },
-    "impact": {
-      "type": "impact-band",
-      "settings": {}
-    },
-    "new-arrivals": {
-      "type": "new-arrivals-tabs",
-      "settings": {}
-    },
-    "trending": {
-      "type": "trending-section",
-      "settings": {}
-    },
-    "mission": {
-      "type": "mission-banner",
-      "settings": {}
-    },
-    "reviews": {
-      "type": "reviews-strip",
-      "settings": {}
-    },
-    "newsletter": {
-      "type": "newsletter-bar",
-      "settings": {}
-    }
+    "email-capture": { "type": "email-capture" },
+    "trust-bar": { "type": "trust-bar" }
   },
-  "order": [
-    "hero",
-    "categories",
-    "impact",
-    "new-arrivals",
-    "trending",
-    "mission",
-    "reviews",
-    "newsletter"
-  ]
+  "order": ["announcement","hero","brand-values","collection-grid","new-arrivals","lifestyle-banner","trending","testimonials","email-capture","trust-bar"]
 }
