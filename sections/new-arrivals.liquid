@@ -1,0 +1,52 @@
+<section class="section new-arrivals-section">
+  <div class="container">
+    <div class="section-head reveal">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="section-eyebrow">{{ section.settings.eyebrow }}</p>
+      {%- endif -%}
+      <h2 class="section-title">{{ section.settings.title | default: "New Arrivals" }}</h2>
+      {%- if section.settings.subtitle != blank -%}
+        <p class="section-subtitle">{{ section.settings.subtitle }}</p>
+      {%- endif -%}
+    </div>
+
+    {%- assign arrivals_col = collections[section.settings.collection] -%}
+    <div class="prod-grid" style="--cols:{{ section.settings.columns | default: 4 }}">
+      {%- if arrivals_col != blank and arrivals_col.products.size > 0 -%}
+        {%- for product in arrivals_col.products limit: section.settings.products_count -%}
+          {%- render 'product-card', product: product, index: forloop.index0 -%}
+        {%- endfor -%}
+      {%- else -%}
+        {%- for product in collections.all.products limit: section.settings.products_count -%}
+          {%- render 'product-card', product: product, index: forloop.index0 -%}
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+
+    {%- if section.settings.cta_text != blank -%}
+      <div style="text-align:center;margin-top:clamp(var(--sp-8),4vw,var(--sp-12))">
+        <a href="{{ section.settings.cta_url | default: '/collections/all' }}" class="btn btn--outline btn--lg reveal">
+          {{ section.settings.cta_text }}
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+{% schema %}
+{
+  "name": "New Arrivals",
+  "tag": "section",
+  "settings": [
+    { "type": "text",       "id": "eyebrow",        "label": "Eyebrow label",     "default": "Just Dropped" },
+    { "type": "text",       "id": "title",          "label": "Section title",     "default": "New Arrivals" },
+    { "type": "textarea",   "id": "subtitle",       "label": "Subtitle",          "default": "Fresh styles added weekly. Be the first to shop the latest." },
+    { "type": "collection", "id": "collection",     "label": "Collection" },
+    { "type": "range",      "id": "products_count", "label": "Number of products","min": 2, "max": 12, "step": 1, "default": 8 },
+    { "type": "range",      "id": "columns",        "label": "Columns (desktop)", "min": 2, "max": 5,  "step": 1, "default": 4 },
+    { "type": "text",       "id": "cta_text",       "label": "CTA button text",   "default": "Shop New Arrivals" },
+    { "type": "url",        "id": "cta_url",        "label": "CTA link" }
+  ],
+  "presets": [{ "name": "New Arrivals" }]
+}
+{% endschema %}
