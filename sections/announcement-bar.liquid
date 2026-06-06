@@ -1,89 +1,129 @@
-
-<style>
-.ann-bar{background:{{ section.settings.bg_color }};color:{{ section.settings.text_color }};overflow:hidden;position:relative}
-.ann-track{display:flex;width:max-content;animation:ann-scroll {{ section.settings.speed }}s linear infinite}
-.ann-track:hover{animation-play-state:paused}
-.ann-item{display:flex;align-items:center;gap:10px;padding:0 48px;height:{{ section.settings.bar_height }}px;font-size:13px;font-weight:600;letter-spacing:.03em;white-space:nowrap}
-.ann-item .ann-icon{font-size:15px;flex-shrink:0}
-.ann-dot{width:4px;height:4px;border-radius:50%;background:currentColor;opacity:.4;flex-shrink:0}
-.ann-link{color:inherit;text-decoration:underline;text-underline-offset:2px;font-weight:700;margin-left:4px}
-.ann-close{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:inherit;opacity:.6;line-height:1;font-size:18px;padding:4px;transition:opacity .15s}
-.ann-close:hover{opacity:1}
-@keyframes ann-scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-@media(prefers-reduced-motion:reduce){.ann-track{animation:none;justify-content:center}}
-</style>
-
-<div class="ann-bar" id="annBar" role="region" aria-label="Store announcements">
-  <div class="ann-track" id="annTrack" aria-live="polite">
-    {% for i in (1..2) %}
-      {% for block in section.blocks %}
-        {% if block.settings.text != blank %}
-          <div class="ann-item" {{ block.shopify_attributes }}>
-            {% if block.settings.icon != blank %}<span class="ann-icon">{{ block.settings.icon }}</span>{% endif %}
-            <span>{{ block.settings.text }}{% if block.settings.link_label != blank %}<a class="ann-link" href="{{ block.settings.link_url | default: '#' }}">{{ block.settings.link_label }}</a>{% endif %}</span>
-          </div>
-          <span class="ann-dot" aria-hidden="true"></span>
-        {% endif %}
-      {% endfor %}
-    {% endfor %}
+{%- if settings.announcement_enabled -%}
+<div id="announcement-bar" style="background:{{ settings.color_announcement_bg }};color:{{ settings.color_announcement_text }};" role="region" aria-label="Store announcements">
+  <div class="ann-inner">
+    <button class="ann-nav-btn" id="ann-prev" aria-label="Previous announcement">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <div class="ann-track" id="ann-track" role="status" aria-live="polite">
+      {%- if settings.announcement_text_1 != blank -%}
+        <span class="ann-msg ann-msg--active">
+          {%- if settings.announcement_link != blank -%}<a href="{{ settings.announcement_link }}" style="color:inherit;text-decoration:underline;text-underline-offset:2px">{%- endif -%}
+          {{ settings.announcement_text_1 }}
+          {%- if settings.announcement_link != blank -%}</a>{%- endif -%}
+        </span>
+      {%- endif -%}
+      {%- if settings.announcement_text_2 != blank -%}
+        <span class="ann-msg">{{ settings.announcement_text_2 }}</span>
+      {%- endif -%}
+      {%- if settings.announcement_text_3 != blank -%}
+        <span class="ann-msg">{{ settings.announcement_text_3 }}</span>
+      {%- endif -%}
+    </div>
+    <button class="ann-nav-btn" id="ann-next" aria-label="Next announcement">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+    <button class="ann-close" id="ann-close" aria-label="Dismiss announcement bar">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
   </div>
-  {% if section.settings.show_close %}
-    <button class="ann-close" id="annClose" aria-label="Dismiss announcements">✕</button>
-  {% endif %}
 </div>
 
+<style>
+#announcement-bar {
+  position: relative; z-index: 600;
+  font-size: clamp(11px, 1.3vw, 13px);
+  font-weight: 600; letter-spacing: 0.04em;
+}
+.ann-inner {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 44px; padding: 0 clamp(48px, 7vw, 100px);
+  gap: var(--sp-2); position: relative;
+}
+.ann-track {
+  position: relative; flex: 1;
+  max-width: clamp(280px, 60vw, 680px);
+  height: 22px; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+.ann-msg {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  text-align: center; white-space: nowrap;
+  opacity: 0; transform: translateY(8px);
+  transition: opacity 0.4s var(--ease-out), transform 0.4s var(--ease-out);
+  pointer-events: none;
+}
+.ann-msg--active { opacity: 1; transform: translateY(0); pointer-events: auto; }
+.ann-msg--exit   { opacity: 0; transform: translateY(-8px); }
+.ann-nav-btn {
+  flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,0.18); color: inherit;
+  border: none; cursor: pointer;
+  transition: background var(--trans-fast);
+}
+.ann-nav-btn:hover { background: rgba(255,255,255,0.32); }
+.ann-close {
+  position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,0.18); color: inherit;
+  border: none; cursor: pointer;
+  transition: background var(--trans-fast);
+}
+.ann-close:hover { background: rgba(255,255,255,0.32); }
+@media (max-width: 480px) {
+  .ann-msg { white-space: normal; font-size: 11px; }
+  .ann-nav-btn { display: none; }
+  .ann-inner { padding: 0 44px 0 var(--sp-4); }
+}
+</style>
+
 <script>
-(function(){
-  var bar = document.getElementById('annBar');
-  var btn = document.getElementById('annClose');
-  if(btn) btn.addEventListener('click', function(){
-    bar.style.maxHeight = bar.offsetHeight + 'px';
-    requestAnimationFrame(function(){
-      bar.style.transition = 'max-height .4s ease, opacity .4s ease';
-      bar.style.maxHeight = '0';
-      bar.style.opacity   = '0';
-    });
+(function() {
+  const bar   = document.getElementById('announcement-bar');
+  const track = document.getElementById('ann-track');
+  if (!bar || !track) return;
+
+  // Dismiss
+  document.getElementById('ann-close')?.addEventListener('click', () => {
+    bar.style.transition = 'max-height 0.3s, padding 0.3s, opacity 0.3s';
+    bar.style.maxHeight  = bar.offsetHeight + 'px';
+    bar.style.overflow   = 'hidden';
+    requestAnimationFrame(() => { bar.style.maxHeight = '0'; bar.style.opacity = '0'; bar.style.padding = '0'; });
+    setTimeout(() => bar.remove(), 350);
   });
-  // Auto-detect active discount code from metafield or global variable
-  {% if section.settings.discount_code != blank %}
-  (function(){
-    var code = '{{ section.settings.discount_code }}';
-    document.querySelectorAll('.ann-code-slot').forEach(function(el){ el.textContent = code; });
-  })();
-  {% endif %}
+
+  const msgs = track.querySelectorAll('.ann-msg');
+  if (msgs.length < 2) return;
+
+  let current = 0;
+  const speed = {{ settings.announcement_speed | default: 4 }} * 1000;
+
+  function goTo(n) {
+    msgs[current].classList.add('ann-msg--exit');
+    const leaving = msgs[current];
+    setTimeout(() => leaving.classList.remove('ann-msg--active', 'ann-msg--exit'), 420);
+    current = ((n % msgs.length) + msgs.length) % msgs.length;
+    msgs[current].classList.add('ann-msg--active');
+  }
+
+  let timer;
+  function start() {
+    clearInterval(timer);
+    {%- if settings.announcement_auto_rotate -%}
+    timer = setInterval(() => goTo(current + 1), speed);
+    {%- endif -%}
+  }
+
+  document.getElementById('ann-next')?.addEventListener('click', () => { goTo(current + 1); start(); });
+  document.getElementById('ann-prev')?.addEventListener('click', () => { goTo(current - 1); start(); });
+
+  start();
 })();
 </script>
+{%- endif -%}
 
 {% schema %}
-{
-  "name": "Announcement Bar",
-  "settings": [
-    {"type":"color","id":"bg_color","label":"Background colour","default":"#1a1a1a"},
-    {"type":"color","id":"text_color","label":"Text colour","default":"#ffffff"},
-    {"type":"range","id":"bar_height","min":30,"max":56,"step":2,"unit":"px","label":"Bar height","default":40},
-    {"type":"range","id":"speed","min":10,"max":60,"step":5,"unit":"s","label":"Scroll speed","default":30},
-    {"type":"checkbox","id":"show_close","label":"Show close button","default":true},
-    {"type":"text","id":"discount_code","label":"Active discount code (auto-inject)","info":"Shown as .ann-code-slot in any block text that contains that placeholder.","default":""}
-  ],
-  "blocks":[
-    {
-      "type":"message",
-      "name":"Message",
-      "settings":[
-        {"type":"text","id":"icon","label":"Emoji / icon","default":"🚚"},
-        {"type":"richtext","id":"text","label":"Message text","default":"<p>Free U.S. shipping on orders $75+</p>"},
-        {"type":"text","id":"link_label","label":"Link label (optional)","default":""},
-        {"type":"url","id":"link_url","label":"Link URL","default":""}
-      ]
-    }
-  ],
-  "default":{
-    "blocks":[
-      {"type":"message","settings":{"icon":"🚚","text":"<p>Free U.S. shipping on orders $75+</p>","link_label":"","link_url":""}},
-      {"type":"message","settings":{"icon":"🎁","text":"<p>Use code <strong>WELCOME10</strong> for 10% off your first order</p>","link_label":"Shop now","link_url":"/collections/all"}},
-      {"type":"message","settings":{"icon":"✨","text":"<p>30-day easy returns · No questions asked</p>","link_label":"","link_url":""}}
-    ]
-  },
-  "presets":[{"name":"Announcement Bar"}]
-}
+{ "name": "Announcement Bar", "settings": [] }
 {% endschema %}
