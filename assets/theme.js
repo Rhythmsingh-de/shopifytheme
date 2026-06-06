@@ -1,5 +1,7 @@
-/* BodyLuxCare — theme.js v5.0.0 — June 2026
-   ALL IDs unified across every file:
+/* BodyLuxCare — theme.js v5.0.1 — June 2026
+   CHANGE: Wrap all inline header onclick BLC calls with window.BLC? to avoid
+           runtime errors before theme.js initializes.
+   IDs unified across files:
    Nav drawer:  #nav-drawer, #nav-overlay, #mobileNavTrigger, #mobileNavClose
    Cart drawer: #cartDrawer, #cartOverlay, #cartDrawerClose, #cartItemsList, #cartSubtotal, #cartItemCount, #cartDrawerFoot
    Free ship:   #freeShippingBar .fs-bar__fill .fs-bar__label
@@ -22,13 +24,14 @@
     if(o)o.classList.add('is-open');
     document.body.style.overflow='hidden';
     var f=d.querySelector('a,button');if(f)setTimeout(function(){f.focus();},60);
+    var t=qs('#mobileNavTrigger');if(t)t.setAttribute('aria-expanded','true');
   }
   function closeNav(){
     var d=qs('#nav-drawer'),o=qs('#nav-overlay');
     if(d){d.classList.remove('is-open');d.setAttribute('aria-hidden','true');}
     if(o)o.classList.remove('is-open');
     document.body.style.overflow='';
-    var t=qs('#mobileNavTrigger');if(t)t.focus();
+    var t=qs('#mobileNavTrigger');if(t){t.focus();t.setAttribute('aria-expanded','false');}
   }
   function toggleNavGroup(btn){
     var open=btn.getAttribute('aria-expanded')==='true';
@@ -205,7 +208,7 @@
       var cnt=qs('#cartItemCount');if(cnt)cnt.textContent=cart.item_count+' item'+(cart.item_count===1?'':'s');
       var foot=qs('#cartDrawerFoot');
       if(!cart.items||!cart.items.length){
-        list.innerHTML='<div class="cart-empty"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg><p>Your cart is empty</p><a href="/collections/all" class="btn btn--primary btn--sm" onclick="BLC.closeCartDrawer()">Start Shopping</a></div>';
+        list.innerHTML='<div class="cart-empty"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg><p>Your cart is empty</p><a href="/collections/all" class="btn btn--primary btn--sm" onclick="window.BLC?BLC.closeCartDrawer():void 0">Start Shopping</a></div>';
         if(foot)foot.style.display='none';return;
       }
       if(foot)foot.style.display='';
@@ -215,7 +218,7 @@
           +(img?'<img src="'+img+'" alt="'+esc(item.product_title)+'" class="cart-item__img" width="80" height="100" loading="lazy">'
               :'<div class="cart-item__img cart-item__img--placeholder"></div>')
           +'<div class="cart-item__body">'
-            +'<div class="cart-item__title">'+esc(item.product_title)+'</div>'
+            +'<div class="cart-item__title">'+esc(item.product_title)+'</div}'
             +(item.variant_title&&item.variant_title!=='Default Title'?'<div class="cart-item__variant">'+esc(item.variant_title)+'</div>':'')
             +'<div class="cart-item__row">'
               +'<div class="qty-stepper">'
