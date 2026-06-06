@@ -1,11 +1,14 @@
 {
   "sections": {
-    "hero": { "type": "hero-conversion", "settings": {} },
-    "collection": { "type": "featured-collection-conversion", "settings": {} },
-    "benefits": { "type": "benefits-conversion", "settings": {} },
-    "proof": { "type": "social-proof", "settings": {} },
-    "promo": { "type": "promo-split", "settings": {} },
-    "faq": { "type": "faq-conversion", "settings": {} }
+    "announcement": { "type": "announcement-bar", "settings": {} },
+    "hero":         { "type": "hero-bombas",      "settings": {} },
+    "categories":   { "type": "category-strip",   "settings": {} },
+    "impact":       { "type": "impact-band",      "settings": {} },
+    "new-arrivals": { "type": "new-arrivals-tabs", "settings": {} },
+    "trending":     { "type": "trending-section",  "settings": {} },
+    "mission":      { "type": "mission-banner",   "settings": {} },
+    "reviews":      { "type": "reviews-strip",    "settings": {} },
+    "newsletter":   { "type": "newsletter-bar",   "settings": {} }
   },
-  "order": ["hero","collection","benefits","proof","promo","faq"]
+  "order": ["announcement","hero","categories","impact","new-arrivals","trending","mission","reviews","newsletter"]
 }
