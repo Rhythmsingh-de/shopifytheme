@@ -1,182 +1,224 @@
-
 <style>
-.site-header{position:sticky;top:0;z-index:200;background:var(--c-header-bg,#fff);border-bottom:1px solid var(--c-header-border,#e4e2de);transition:box-shadow .2s ease}
-.site-header.scrolled{box-shadow:0 2px 20px rgba(0,0,0,.08)}
-.header-inner{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;height:{{ section.settings.header_height }}px;padding:0 clamp(16px,3vw,40px);gap:8px}
-.header-left{display:flex;align-items:center;gap:4px}
-.header-logo{display:flex;align-items:center;justify-content:center;text-decoration:none}
-.header-logo img{height:{{ section.settings.logo_height }}px;width:auto;display:block;object-fit:contain}
-.header-logo-text{font-size:20px;font-weight:900;letter-spacing:-.05em;color:var(--c-header-text,#1a1a1a);text-decoration:none}
-.header-logo-text .accent{color:var(--c-deco,#2d7a4f)}
-.header-nav{display:flex;align-items:center;gap:2px}
-.header-nav>a,.nav-item>a{font-size:13px;font-weight:600;letter-spacing:.02em;color:var(--c-header-text,#1a1a1a);text-decoration:none;padding:8px 12px;border-radius:6px;transition:background .15s,color .15s;white-space:nowrap;display:block}
-.header-nav>a:hover,.nav-item>a:hover{background:rgba(0,0,0,.05);color:var(--c-deco,#2d7a4f)}
-.header-actions{display:flex;align-items:center;justify-content:flex-end;gap:2px}
-.icon-btn{width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:8px;color:var(--c-header-text,#1a1a1a);background:none;border:none;cursor:pointer;text-decoration:none;position:relative;transition:background .15s}
-.icon-btn:hover{background:rgba(0,0,0,.06)}
-.icon-btn svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;display:block}
-.cart-badge{position:absolute;top:5px;right:5px;background:#e8260d;color:#fff;font-size:9px;font-weight:900;min-width:16px;height:16px;border-radius:999px;display:flex;align-items:center;justify-content:center;padding:0 3px;line-height:1;border:1.5px solid var(--c-header-bg,#fff)}
-.hamburger{width:40px;height:40px;display:none;flex-direction:column;justify-content:center;align-items:center;gap:5px;border-radius:8px;background:none;border:none;cursor:pointer;transition:background .15s}
-.hamburger:hover{background:rgba(0,0,0,.06)}
-.ham-line{display:block;width:20px;height:2px;background:var(--c-header-text,#1a1a1a);border-radius:2px;transition:transform .25s,opacity .25s}
-/* Mega nav */
-.nav-item{position:relative}
-.nav-dropdown{position:absolute;top:calc(100% + 4px);left:50%;transform:translateX(-50%) translateY(-6px);min-width:520px;background:#fff;border:1px solid #e4e2de;border-radius:14px;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.14);display:grid;grid-template-columns:repeat(4,1fr);gap:4px;opacity:0;visibility:hidden;transition:opacity .18s ease,transform .18s ease,visibility .18s;z-index:300;pointer-events:none}
-.nav-item:hover .nav-dropdown,.nav-item:focus-within .nav-dropdown{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);pointer-events:auto}
-.nd-col{display:flex;flex-direction:column;gap:2px}
-.nd-head{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#aaa;padding:4px 10px 8px;border-bottom:1px solid #f0f0f0;margin-bottom:4px}
-.nd-col a{font-size:13px;font-weight:500;color:#1a1a1a;text-decoration:none;padding:7px 10px;border-radius:7px;transition:background .12s,color .12s;white-space:nowrap}
-.nd-col a:hover{background:var(--c-deco-light,#e8f5ee);color:var(--c-deco,#2d7a4f)}
-/* Search bar */
-.header-search-bar{overflow:hidden;max-height:0;transition:max-height .3s ease,padding .3s ease;background:var(--c-header-bg,#fff);border-top:0px solid #e4e2de}
-.header-search-bar.open{max-height:80px;border-top-width:1px;padding:10px clamp(16px,3vw,40px)}
-.header-search-form{max-width:560px;margin:0 auto;display:flex;gap:8px}
-.header-search-form input{flex:1;padding:10px 16px;border:1.5px solid #e4e2de;border-radius:9999px;font-size:14px;outline:none;transition:border-color .15s}
-.header-search-form input:focus{border-color:var(--c-deco,#2d7a4f)}
-.header-search-form button{padding:10px 20px;background:var(--c-deco,#2d7a4f);color:#fff;border:none;border-radius:9999px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;transition:filter .15s}
-.header-search-form button:hover{filter:brightness(.9)}
-@media(max-width:900px){.header-nav,.header-actions .icon-btn:not(.cart-icon-btn):not(#searchToggle){display:none}.hamburger{display:flex}.header-inner{grid-template-columns:44px 1fr 44px}}
+#site-header {
+  position: {{ settings.header_sticky | default: true | json | replace: 'true', 'sticky' | replace: 'false', 'relative' }};
+  top: 0; z-index: 500;
+  background: var(--color-header-bg);
+  border-bottom: 1px solid var(--color-border);
+  transition: box-shadow var(--trans-base), background var(--trans-base), transform var(--trans-base);
+}
+#site-header.header--scrolled { box-shadow: var(--shadow-md); }
+#site-header.header--hidden   { transform: translateY(-100%); }
+
+{%- if settings.header_transparent -%}
+.template-index #site-header:not(.header--scrolled) {
+  background: transparent;
+  border-bottom-color: transparent;
+  position: absolute; width: 100%;
+}
+.template-index #site-header:not(.header--scrolled) .header-logo,
+.template-index #site-header:not(.header--scrolled) .header-nav__link,
+.template-index #site-header:not(.header--scrolled) .header-icon { color: #fff; }
+.template-index #site-header:not(.header--scrolled) { --color-border: rgba(255,255,255,0.2); }
+{%- endif -%}
+
+.header-inner {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--sp-6);
+  height: 68px;
+  padding-inline: clamp(var(--sp-4), 4vw, var(--sp-12));
+  max-width: var(--content-wide);
+  margin-inline: auto;
+}
+
+/* Logo */
+.header-logo {
+  display: flex; align-items: center; gap: var(--sp-2);
+  font-family: var(--font-display);
+  font-weight: 700; font-size: clamp(1.1rem, 2vw, 1.4rem);
+  color: var(--color-text); text-decoration: none;
+  white-space: nowrap; flex-shrink: 0;
+}
+.header-logo img { height: {{ settings.logo_width | default: 140 | divided_by: 3.5 | round }}px; width: auto; max-width: {{ settings.logo_width | default: 140 }}px; object-fit: contain; }
+
+/* Desktop Nav */
+.header-nav { display: flex; align-items: center; gap: 0; justify-content: center; }
+.header-nav__item { position: relative; }
+.header-nav__link {
+  display: flex; align-items: center; gap: 4px;
+  padding: var(--sp-2) var(--sp-3);
+  font-size: var(--text-sm); font-weight: 600;
+  color: var(--color-text);
+  transition: color var(--trans-fast);
+  white-space: nowrap; border-radius: var(--radius-md);
+  text-decoration: none;
+}
+.header-nav__link:hover { color: var(--color-primary); background: var(--color-surface); }
+.header-nav__link--sale { color: var(--color-sale) !important; }
+.header-nav__chevron { width: 12px; height: 12px; transition: transform var(--trans-fast); }
+.header-nav__item:hover .header-nav__chevron { transform: rotate(180deg); }
+
+/* Mega / Dropdown */
+.header-nav__dropdown {
+  position: absolute; top: calc(100% + 4px); left: 50%; transform: translateX(-50%);
+  min-width: 200px; background: var(--color-bg);
+  border: 1px solid var(--color-border); border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg); padding: var(--sp-2);
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transition: opacity var(--trans-fast), visibility var(--trans-fast), transform var(--trans-fast);
+  transform: translateX(-50%) translateY(4px);
+}
+.header-nav__item:hover .header-nav__dropdown {
+  opacity: 1; visibility: visible; pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+.header-nav__dropdown a {
+  display: block; padding: var(--sp-2) var(--sp-3);
+  font-size: var(--text-sm); color: var(--color-text);
+  border-radius: var(--radius-md);
+  transition: background var(--trans-fast), color var(--trans-fast);
+}
+.header-nav__dropdown a:hover { background: var(--color-surface); color: var(--color-primary); }
+.dropdown-footer { border-top: 1px solid var(--color-border); margin-top: var(--sp-1); padding-top: var(--sp-1); }
+.dropdown-footer a { font-weight: 700; font-size: var(--text-xs); letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-primary) !important; }
+
+/* Icons */
+.header-icons { display: flex; align-items: center; gap: var(--sp-1); }
+.header-icon {
+  width: 44px; height: 44px; border-radius: var(--radius-md);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--color-text); transition: background var(--trans-fast), color var(--trans-fast);
+  position: relative; text-decoration: none;
+}
+.header-icon:hover { background: var(--color-surface); color: var(--color-primary); }
+.header-icon svg { width: 20px; height: 20px; }
+.cart-badge {
+  position: absolute; top: 6px; right: 6px;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: var(--color-primary); color: #fff;
+  font-size: 10px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  line-height: 1; border: 2px solid var(--color-header-bg);
+}
+
+/* Hamburger */
+.header-hamburger {
+  display: none; width: 44px; height: 44px;
+  border-radius: var(--radius-md);
+  align-items: center; justify-content: center;
+  color: var(--color-text);
+  transition: background var(--trans-fast);
+}
+.header-hamburger:hover { background: var(--color-surface); }
+.header-hamburger svg { width: 22px; height: 22px; }
+
+@media (max-width: 1023px) {
+  .header-nav { display: none; }
+  .header-hamburger { display: flex; }
+  .header-inner { grid-template-columns: auto 1fr auto; }
+}
+@media (max-width: 480px) {
+  .header-inner { height: 60px; gap: var(--sp-3); }
+  .header-icon { width: 40px; height: 40px; }
+}
 </style>
 
-<header class="site-header" id="siteHeader" role="banner">
+<header id="site-header" role="banner">
   <div class="header-inner">
-    <!-- Left -->
-    <div class="header-left">
-      <button class="hamburger" id="hamburger" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobileNav">
-        <span class="ham-line"></span><span class="ham-line"></span><span class="ham-line"></span>
-      </button>
-      <nav class="header-nav" aria-label="Main navigation">
-        <!-- Shop mega nav -->
-        <div class="nav-item">
-          <a href="/collections/all" aria-haspopup="true">Shop ▾</a>
-          <div class="nav-dropdown" role="menu">
-            <div class="nd-col">
-              <div class="nd-head">Women</div>
-              <a href="/collections/womens-beauty">Beauty</a>
-              <a href="/collections/womens-wellness">Wellness</a>
-              <a href="/collections/womens-massage">Massage</a>
-              <a href="/collections/womens-accessories">Accessories</a>
-            </div>
-            <div class="nd-col">
-              <div class="nd-head">Men</div>
-              <a href="/collections/mens-grooming">Grooming</a>
-              <a href="/collections/mens-wellness">Wellness</a>
-              <a href="/collections/mens-massage">Massage</a>
-              <a href="/collections/mens-accessories">Accessories</a>
-            </div>
-            <div class="nd-col">
-              <div class="nd-head">Pets</div>
-              <a href="/collections/pets-dogs">Dogs</a>
-              <a href="/collections/pets-cats">Cats</a>
-              <a href="/collections/pets-grooming">Grooming</a>
-              <a href="/collections/pets-wellness">Wellness</a>
-            </div>
-            <div class="nd-col">
-              <div class="nd-head">Home</div>
-              <a href="/collections/home-decor">Decor</a>
-              <a href="/collections/home-aromatherapy">Aromatherapy</a>
-              <a href="/collections/home-bedding">Bedding</a>
-              <a href="/collections/massage-recovery">Recovery</a>
-            </div>
-          </div>
-        </div>
-        {% for link in linklists.main-menu.links %}
-          <a href="{{ link.url }}"{% if link.url == request.path %} class="active" aria-current="page"{% endif %}>{{ link.title }}</a>
-        {% endfor %}
-      </nav>
-    </div>
-
-    <!-- Center: Logo -->
-    <a class="header-logo" href="{{ routes.root_url }}" aria-label="{{ shop.name }} — Home">
-      {% if section.settings.logo != blank %}
-        {{ section.settings.logo | image_url: width: 300 | image_tag:
-           alt: shop.name,
-           width: section.settings.logo_width,
-           height: section.settings.logo_height,
-           loading: 'eager',
-           fetchpriority: 'high' }}
-      {% else %}
-        <span class="header-logo-text">Body<span class="accent">Lux</span>Care</span>
-      {% endif %}
+    <!-- Logo -->
+    <a href="/" class="header-logo" aria-label="{{ shop.name }} — Home">
+      {%- if settings.logo != blank -%}
+        <img src="{{ settings.logo | image_url: width: 280 }}"
+             alt="{{ shop.name }}"
+             width="{{ settings.logo_width | default: 140 }}"
+             height="{{ settings.logo_width | default: 140 | divided_by: 3.5 | round }}"
+             loading="eager">
+      {%- else -%}
+        <svg width="28" height="28" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <path d="M16 2C8.268 2 2 8.268 2 16s6.268 14 14 14 14-6.268 14-14S23.732 2 16 2z" fill="currentColor" opacity="0.15"/>
+          <path d="M10 20c0-5 3-8 6-10 3 2 6 5 6 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="16" cy="12" r="3" fill="currentColor"/>
+        </svg>
+        <span>{{ settings.brand_name | default: shop.name }}</span>
+      {%- endif -%}
     </a>
 
-    <!-- Right: icons -->
-    <div class="header-actions">
-      <button class="icon-btn" id="searchToggle" aria-label="Search" aria-expanded="false" aria-controls="headerSearchBar">
-        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <!-- Desktop Navigation -->
+    <nav class="header-nav" role="navigation" aria-label="Main navigation">
+      {%- assign menu = linklists[settings.main_menu] -%}
+      {%- if menu != blank -%}
+        {%- for link in menu.links -%}
+          <div class="header-nav__item">
+            <a href="{{ link.url }}" class="header-nav__link{% if link.title == 'Sale' %} header-nav__link--sale{% endif %}" {% if link.links.size > 0 %}aria-haspopup="true"{% endif %}>
+              {{ link.title }}
+              {%- if link.links.size > 0 -%}
+                <svg class="header-nav__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+              {%- endif -%}
+            </a>
+            {%- if link.links.size > 0 -%}
+              <div class="header-nav__dropdown" role="menu">
+                {%- for child in link.links -%}
+                  <a href="{{ child.url }}" role="menuitem">{{ child.title }}</a>
+                {%- endfor -%}
+                <div class="dropdown-footer">
+                  <a href="{{ link.url }}">Shop All {{ link.title }} →</a>
+                </div>
+              </div>
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      {%- else -%}
+        <div class="header-nav__item"><a href="/collections/women" class="header-nav__link">Women</a></div>
+        <div class="header-nav__item"><a href="/collections/men" class="header-nav__link">Men</a></div>
+        <div class="header-nav__item">
+          <a href="/collections/jewelry" class="header-nav__link">Jewelry
+            <svg class="header-nav__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+          </a>
+          <div class="header-nav__dropdown" role="menu">
+            <a href="/collections/necklaces" role="menuitem">Necklaces</a>
+            <a href="/collections/rings" role="menuitem">Rings</a>
+            <a href="/collections/bracelets" role="menuitem">Bracelets</a>
+            <a href="/collections/earrings" role="menuitem">Earrings</a>
+            <div class="dropdown-footer"><a href="/collections/jewelry">Shop All Jewelry →</a></div>
+          </div>
+        </div>
+        <div class="header-nav__item"><a href="/collections/pets" class="header-nav__link">Pets</a></div>
+        <div class="header-nav__item"><a href="/collections/home-decor" class="header-nav__link">Home</a></div>
+        <div class="header-nav__item"><a href="/collections/sale" class="header-nav__link header-nav__link--sale">Sale</a></div>
+      {%- endif -%}
+    </nav>
+
+    <!-- Icons -->
+    <div class="header-icons">
+      {%- if settings.header_show_search -%}
+        <button class="header-icon" onclick="BLC.openSearch()" aria-label="Search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </button>
+      {%- endif -%}
+
+      {%- if settings.header_show_account -%}
+        <a href="{%- if customer -%}/account{%- else -%}/account/login{%- endif -%}" class="header-icon" aria-label="{%- if customer -%}My Account{%- else -%}Sign in{%- endif -%}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </a>
+      {%- endif -%}
+
+      <button class="header-icon" onclick="BLC.openCart()" aria-label="Shopping cart">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        <span class="cart-badge" data-cart-count style="display:none">0</span>
       </button>
-      {% if section.settings.show_account %}
-      <a class="icon-btn" href="{{ routes.account_url }}" aria-label="My account">
-        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      </a>
-      {% endif %}
-      <button class="icon-btn cart-icon-btn" id="cartToggle" aria-label="Open cart, {{ cart.item_count }} items">
-        <svg viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-        <span class="cart-badge" id="cartBadge"{% if cart.item_count == 0 %} style="display:none"{% endif %}>{{ cart.item_count }}</span>
+
+      <!-- Hamburger — mobile only -->
+      <button class="header-hamburger" onclick="BLC.openNav()" aria-label="Open menu" aria-expanded="false" aria-controls="nav-drawer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
       </button>
     </div>
   </div>
-
-  <!-- Search bar -->
-  <div class="header-search-bar" id="headerSearchBar">
-    <form class="header-search-form" action="{{ routes.search_url }}" method="get" role="search">
-      <input type="hidden" name="type" value="product">
-      <input type="search" name="q" placeholder="{{ section.settings.search_placeholder | default: 'Search products…' }}"
-             aria-label="Search products" value="{{ search.terms | escape }}" autocomplete="off">
-      <button type="submit">Search</button>
-    </form>
-  </div>
 </header>
-
-<script>
-(function(){
-  var hdr = document.getElementById('siteHeader');
-  var cartDrawer = document.getElementById('cartDrawer');
-  var mobileNav  = document.getElementById('mobileNav');
-
-  // Sticky shadow
-  window.addEventListener('scroll', function(){ hdr.classList.toggle('scrolled', window.scrollY > 8); }, {passive:true});
-
-  // Search toggle
-  var searchBtn = document.getElementById('searchToggle');
-  var searchBar = document.getElementById('headerSearchBar');
-  searchBtn.addEventListener('click', function(){
-    var open = searchBar.classList.toggle('open');
-    searchBtn.setAttribute('aria-expanded', open);
-    if(open) setTimeout(function(){ searchBar.querySelector('input').focus(); }, 320);
-  });
-
-  // Cart open/close
-  function openCart(){ cartDrawer.classList.add('open'); cartDrawer.removeAttribute('aria-hidden'); document.body.style.overflow='hidden'; }
-  function closeCart(){ cartDrawer.classList.remove('open'); cartDrawer.setAttribute('aria-hidden','true'); document.body.style.overflow=''; }
-  document.getElementById('cartToggle')?.addEventListener('click', openCart);
-  document.getElementById('cartClose')?.addEventListener('click', closeCart);
-  document.getElementById('cartOverlay')?.addEventListener('click', closeCart);
-  document.getElementById('cartContinue')?.addEventListener('click', closeCart);
-
-  // Mobile nav open/close
-  function openNav(){ mobileNav.classList.add('open'); mobileNav.removeAttribute('aria-hidden'); document.body.style.overflow='hidden'; document.getElementById('hamburger').setAttribute('aria-expanded','true'); }
-  function closeNav(){ mobileNav.classList.remove('open'); mobileNav.setAttribute('aria-hidden','true'); document.body.style.overflow=''; document.getElementById('hamburger').setAttribute('aria-expanded','false'); }
-  document.getElementById('hamburger')?.addEventListener('click', openNav);
-  document.getElementById('mobileClose')?.addEventListener('click', closeNav);
-  document.getElementById('mobileOverlay')?.addEventListener('click', closeNav);
-
-  // Escape key closes everything
-  document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ closeCart(); closeNav(); searchBar.classList.remove('open'); }});
-})();
-</script>
 
 {% schema %}
 {
   "name": "Header",
-  "settings": [
-    {"type":"image_picker","id":"logo","label":"Logo image","info":"Upload your logo. SVG or PNG with transparent background works best."},
-    {"type":"range","id":"logo_width","min":60,"max":260,"step":10,"unit":"px","label":"Logo width","default":140},
-    {"type":"range","id":"logo_height","min":24,"max":60,"step":2,"unit":"px","label":"Logo max height","default":40},
-    {"type":"range","id":"header_height","min":50,"max":90,"step":2,"unit":"px","label":"Header height","default":64},
-    {"type":"checkbox","id":"show_account","label":"Show account icon","default":true},
-    {"type":"text","id":"search_placeholder","label":"Search placeholder text","default":"Search wellness, beauty, home…"}
-  ],
-  "presets":[{"name":"Header"}]
+  "settings": []
 }
 {% endschema %}
