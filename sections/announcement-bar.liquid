@@ -1,25 +1,234 @@
 
-<div class="ann-bar" id="annBar" {% unless section.settings.show %}style="display:none"{% endunless %}>
-  {{ section.settings.text }}
-  {% if section.settings.link_url != blank %}
-    <a href="{{ section.settings.link_url }}"> {{ section.settings.link_text }}</a>
+{% if section.settings.show %}
+<div class="ann-bar" id="annBar">
+
+  {%- comment -%} Marquee ticker on mobile, centered on desktop {%- endcomment -%}
+  <div class="ann-bar__track">
+    <div class="ann-bar__inner" id="annInner">
+
+      {% for block in section.blocks %}
+        <span class="ann-bar__item" {{ block.shopify_attributes }}>
+          <span class="ann-bar__icon">{{ block.settings.icon }}</span>
+          <span class="ann-bar__text">
+            {{ block.settings.text }}
+            {% if block.settings.link_url != blank and block.settings.link_label != blank %}
+              &nbsp;<a href="{{ block.settings.link_url }}" class="ann-bar__link">{{ block.settings.link_label }} →</a>
+            {% endif %}
+          </span>
+        </span>
+        {% unless forloop.last %}<span class="ann-bar__sep" aria-hidden="true">·</span>{% endunless %}
+      {% endfor %}
+
+    </div>
+  </div>
+
+  {% if section.settings.dismissible %}
+    <button class="ann-close" id="annClose" aria-label="Close announcement">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <line x1="1" y1="1" x2="11" y2="11"/><line x1="11" y1="1" x2="1" y2="11"/>
+      </svg>
+    </button>
   {% endif %}
-  <span class="ann-close" id="annClose" aria-label="Close announcement" role="button" tabindex="0">✕</span>
 </div>
+{% endif %}
+
+<style>
+/* ── Announcement Bar ── */
+.ann-bar {
+  position: relative;
+  background: {{ section.settings.bg_color }};
+  color: {{ section.settings.text_color }};
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  z-index: 210;
+}
+
+/* Subtle animated gradient shimmer on background */
+.ann-bar::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255,255,255,0.07) 40%,
+    rgba(255,255,255,0.12) 50%,
+    rgba(255,255,255,0.07) 60%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: annShimmer 3.5s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes annShimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.ann-bar__track {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 44px;
+  overflow: hidden;
+}
+
+.ann-bar__inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  flex-wrap: wrap;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.ann-bar__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.035em;
+  padding: 10px 14px;
+}
+
+.ann-bar__icon {
+  font-size: 15px;
+  line-height: 1;
+  display: inline-block;
+  animation: annBounce 2.4s ease-in-out infinite;
+}
+.ann-bar__item:nth-child(2) .ann-bar__icon { animation-delay: .6s; }
+.ann-bar__item:nth-child(3) .ann-bar__icon { animation-delay: 1.2s; }
+.ann-bar__item:nth-child(4) .ann-bar__icon { animation-delay: 1.8s; }
+
+@keyframes annBounce {
+  0%, 80%, 100% { transform: translateY(0); }
+  40%           { transform: translateY(-3px); }
+}
+
+.ann-bar__sep {
+  color: rgba(255,255,255,0.35);
+  font-size: 18px;
+  font-weight: 300;
+  padding: 0 2px;
+  line-height: 1;
+  display: inline;
+}
+
+.ann-bar__link {
+  color: inherit;
+  font-weight: 800;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1.5px;
+  transition: opacity 180ms ease;
+  white-space: nowrap;
+}
+.ann-bar__link:hover { opacity: 0.75; }
+
+.ann-close {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255,255,255,0.15);
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: inherit;
+  transition: background 180ms ease;
+  flex-shrink: 0;
+}
+.ann-close:hover { background: rgba(255,255,255,0.3); }
+
+/* Mobile: marquee scroll when items overflow */
+@media (max-width: 640px) {
+  .ann-bar__inner {
+    flex-wrap: nowrap;
+    animation: annScroll 18s linear infinite;
+    padding-right: 40px;
+  }
+  .ann-bar__inner:hover { animation-play-state: paused; }
+  .ann-bar__sep { display: inline; }
+}
+@keyframes annScroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .ann-bar::before,
+  .ann-bar__icon { animation: none; }
+  .ann-bar__inner { animation: none !important; }
+}
+</style>
+
 <script>
-  document.getElementById('annClose')?.addEventListener('click', function(){
-    document.getElementById('annBar').style.display='none';
-  });
+  (function(){
+    var btn = document.getElementById('annClose');
+    var bar = document.getElementById('annBar');
+    if(btn && bar){
+      btn.addEventListener('click', function(){
+        bar.style.height = bar.offsetHeight + 'px';
+        bar.style.overflow = 'hidden';
+        bar.style.transition = 'height 280ms ease, opacity 200ms ease, padding 280ms ease';
+        requestAnimationFrame(function(){
+          bar.style.height = '0';
+          bar.style.opacity = '0';
+          bar.style.padding = '0';
+        });
+        setTimeout(function(){ bar.style.display = 'none'; }, 300);
+      });
+    }
+
+    /* Duplicate inner content for seamless marquee on mobile */
+    var inner = document.getElementById('annInner');
+    if(inner && window.innerWidth <= 640){
+      inner.innerHTML += inner.innerHTML;
+    }
+  })();
 </script>
+
 {% schema %}
 {
   "name": "Announcement Bar",
   "settings": [
     {"type":"checkbox","id":"show","label":"Show bar","default":true},
-    {"type":"richtext","id":"text","label":"Message","default":"<p>Free shipping on orders $75+ · Use code <strong>WELCOME10</strong> for 10% off</p>"},
-    {"type":"url","id":"link_url","label":"Link URL"},
-    {"type":"text","id":"link_text","label":"Link text","default":"Shop Now"}
+    {"type":"color","id":"bg_color","label":"Background color","default":"#1a1a1a"},
+    {"type":"color","id":"text_color","label":"Text color","default":"#ffffff"},
+    {"type":"checkbox","id":"dismissible","label":"Show close button","default":true}
   ],
-  "presets":[{"name":"Announcement Bar"}]
+  "blocks": [
+    {
+      "type": "message",
+      "name": "Message item",
+      "settings": [
+        {"type":"text","id":"icon","label":"Icon (emoji)","default":"🚚"},
+        {"type":"text","id":"text","label":"Message text","default":"Free U.S. shipping on orders $75+"},
+        {"type":"url","id":"link_url","label":"Link URL (optional)"},
+        {"type":"text","id":"link_label","label":"Link label (optional)","default":""}
+      ]
+    }
+  ],
+  "presets": [{
+    "name": "Announcement Bar",
+    "blocks": [
+      {"type":"message","settings":{"icon":"🚚","text":"Free U.S. shipping on orders $75+","link_url":"/pages/shipping","link_label":""}},
+      {"type":"message","settings":{"icon":"↩","text":"30-day easy returns","link_url":"/pages/returns","link_label":""}},
+      {"type":"message","settings":{"icon":"🎁","text":"Use code WELCOME10 for 10% off","link_url":"/collections/all","link_label":"Shop Now"}}
+    ]
+  }]
 }
 {% endschema %}
