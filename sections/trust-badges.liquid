@@ -1,0 +1,219 @@
+
+{%- liquid
+  assign col      = section.settings.text_color
+  assign icon_col = section.settings.icon_color
+  assign bg       = section.settings.bg_color
+  assign layout   = section.settings.layout
+  assign show_div = section.settings.show_dividers
+-%}
+
+<section class="trust-badges-section" style="background:{{ bg }}; --trust-icon-col:{{ icon_col }}; --trust-text-col:{{ col }};">
+  <div class="trust-badges-inner {% if layout == 'wide' %}trust-badges--wide{% endif %}">
+
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'badge' -%}
+        <div class="trust-badge" {{ block.shopify_attributes }}>
+          <div class="trust-badge__icon">
+            {%- case block.settings.icon -%}
+
+              {%- when 'return' -%}
+              <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <circle cx="20" cy="20" r="19" stroke="var(--trust-icon-col)" stroke-width="1.5" fill="none" opacity="0.18"/>
+                <path d="M12 20a8 8 0 1 0 8-8" stroke="var(--trust-icon-col)" stroke-width="2" stroke-linecap="round"/>
+                <polyline points="14,14 12,20 18,20" stroke="var(--trust-icon-col)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M20 16v4l2.5 2.5" stroke="var(--trust-icon-col)" stroke-width="1.8" stroke-linecap="round"/>
+              </svg>
+
+              {%- when 'shipping' -%}
+              <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <circle cx="20" cy="20" r="19" stroke="var(--trust-icon-col)" stroke-width="1.5" fill="none" opacity="0.18"/>
+                <rect x="9" y="15" width="16" height="11" rx="1.5" stroke="var(--trust-icon-col)" stroke-width="1.8"/>
+                <path d="M25 17h3.5l3 5v4h-6.5V17z" stroke="var(--trust-icon-col)" stroke-width="1.8" stroke-linejoin="round"/>
+                <circle cx="13.5" cy="27.5" r="2" fill="var(--trust-icon-col)"/>
+                <circle cx="27.5" cy="27.5" r="2" fill="var(--trust-icon-col)"/>
+              </svg>
+
+              {%- when 'secure' -%}
+              <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <circle cx="20" cy="20" r="19" stroke="var(--trust-icon-col)" stroke-width="1.5" fill="none" opacity="0.18"/>
+                <path d="M20 10L11 14v7c0 5 4 9.3 9 10.5C25 30.3 29 26 29 21v-7L20 10z" stroke="var(--trust-icon-col)" stroke-width="1.8" stroke-linejoin="round"/>
+                <polyline points="16,20 19,23 25,17" stroke="var(--trust-icon-col)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+
+              {%- when 'quality' -%}
+              <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <circle cx="20" cy="20" r="19" stroke="var(--trust-icon-col)" stroke-width="1.5" fill="none" opacity="0.18"/>
+                <polygon points="20,10 22.9,17.3 31,17.3 24.5,22.1 26.8,29.5 20,24.9 13.2,29.5 15.5,22.1 9,17.3 17.1,17.3" stroke="var(--trust-icon-col)" stroke-width="1.8" stroke-linejoin="round" fill="none"/>
+              </svg>
+
+              {%- when 'support' -%}
+              <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <circle cx="20" cy="20" r="19" stroke="var(--trust-icon-col)" stroke-width="1.5" fill="none" opacity="0.18"/>
+                <path d="M13 21v-2a7 7 0 1 1 14 0v2" stroke="var(--trust-icon-col)" stroke-width="1.8"/>
+                <rect x="11" y="20" width="4" height="6" rx="2" stroke="var(--trust-icon-col)" stroke-width="1.8"/>
+                <rect x="25" y="20" width="4" height="6" rx="2" stroke="var(--trust-icon-col)" stroke-width="1.8"/>
+                <path d="M29 26v1a3 3 0 0 1-3 3h-3" stroke="var(--trust-icon-col)" stroke-width="1.8" stroke-linecap="round"/>
+              </svg>
+
+              {%- when 'eco' -%}
+              <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <circle cx="20" cy="20" r="19" stroke="var(--trust-icon-col)" stroke-width="1.5" fill="none" opacity="0.18"/>
+                <path d="M20 30V20m0 0c0-6 8-10 8-10s-1 10-8 10zm0 0c0-6-8-10-8-10s1 10 8 10z" stroke="var(--trust-icon-col)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+
+              {%- when 'gift' -%}
+              <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <circle cx="20" cy="20" r="19" stroke="var(--trust-icon-col)" stroke-width="1.5" fill="none" opacity="0.18"/>
+                <rect x="10" y="18" width="20" height="13" rx="1" stroke="var(--trust-icon-col)" stroke-width="1.8"/>
+                <rect x="9" y="14" width="22" height="5" rx="1" stroke="var(--trust-icon-col)" stroke-width="1.8"/>
+                <path d="M20 14v17" stroke="var(--trust-icon-col)" stroke-width="1.8"/>
+                <path d="M20 14s-3-5 0-5 0 5 0 5" stroke="var(--trust-icon-col)" stroke-width="1.6" stroke-linecap="round"/>
+                <path d="M20 14s3-5 0-5 0 5 0 5" stroke="var(--trust-icon-col)" stroke-width="1.6" stroke-linecap="round"/>
+              </svg>
+
+              {%- else -%}
+              <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <circle cx="20" cy="20" r="19" stroke="var(--trust-icon-col)" stroke-width="1.5" fill="none" opacity="0.18"/>
+                <polyline points="13,20 18,25 27,15" stroke="var(--trust-icon-col)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+
+            {%- endcase -%}
+          </div>
+
+          <div class="trust-badge__body">
+            <p class="trust-badge__title">{{ block.settings.title }}</p>
+            {%- if block.settings.subtitle != blank -%}
+              <p class="trust-badge__sub">{{ block.settings.subtitle }}</p>
+            {%- endif -%}
+          </div>
+        </div>
+        {%- if show_div and forloop.last == false -%}
+          <div class="trust-badges__divider" aria-hidden="true"></div>
+        {%- endif -%}
+      {%- endif -%}
+    {%- endfor -%}
+
+  </div>
+</section>
+
+<style>
+.trust-badges-section {
+  width: 100%;
+  padding: {{ section.settings.padding_top }}px {{ section.settings.padding_sides }}px {{ section.settings.padding_bottom }}px;
+  box-sizing: border-box;
+}
+.trust-badges-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 16px 0;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.trust-badges--wide { max-width: 100%; }
+
+.trust-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1 1 140px;
+  max-width: 220px;
+  min-width: 120px;
+  padding: 0 20px;
+}
+.trust-badge__icon {
+  flex-shrink: 0;
+  width: {{ section.settings.icon_size }}px;
+  height: {{ section.settings.icon_size }}px;
+}
+.trust-badge__icon svg { width: 100%; height: 100%; }
+.trust-badge__body { display: flex; flex-direction: column; }
+.trust-badge__title {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--trust-text-col);
+  letter-spacing: .02em;
+  line-height: 1.3;
+  margin: 0;
+  text-wrap: balance;
+}
+.trust-badge__sub {
+  font-size: 11.5px;
+  font-weight: 400;
+  color: var(--trust-text-col);
+  opacity: 0.65;
+  margin: 2px 0 0;
+  line-height: 1.3;
+}
+.trust-badges__divider {
+  width: 1px;
+  height: 32px;
+  background: {{ section.settings.divider_color }};
+  flex-shrink: 0;
+  align-self: center;
+  opacity: 0.35;
+}
+
+@media (max-width: 640px) {
+  .trust-badge {
+    flex: 1 1 100px;
+    padding: 0 12px;
+    max-width: 160px;
+  }
+  .trust-badge__title { font-size: 11px; }
+  .trust-badge__sub   { font-size: 10.5px; }
+  .trust-badges__divider { display: none; }
+}
+</style>
+
+{% schema %}
+{
+  "name": "Trust Badges",
+  "tag": "div",
+  "settings": [
+    {"type":"select","id":"layout","label":"Layout width","options":[
+      {"value":"contained","label":"Contained (max 1200px)"},
+      {"value":"wide","label":"Full width"}
+    ],"default":"contained"},
+    {"type":"color","id":"bg_color","label":"Background color","default":"#f7f7f7"},
+    {"type":"color","id":"icon_color","label":"Icon color","default":"#1a1a1a"},
+    {"type":"color","id":"text_color","label":"Text color","default":"#1a1a1a"},
+    {"type":"color","id":"divider_color","label":"Divider color","default":"#cccccc"},
+    {"type":"checkbox","id":"show_dividers","label":"Show dividers between badges","default":true},
+    {"type":"range","id":"icon_size","min":28,"max":52,"step":2,"unit":"px","label":"Icon size","default":38},
+    {"type":"range","id":"padding_top","min":0,"max":64,"step":4,"unit":"px","label":"Padding top","default":20},
+    {"type":"range","id":"padding_bottom","min":0,"max":64,"step":4,"unit":"px","label":"Padding bottom","default":20},
+    {"type":"range","id":"padding_sides","min":0,"max":80,"step":4,"unit":"px","label":"Side padding","default":20}
+  ],
+  "blocks": [
+    {
+      "type": "badge",
+      "name": "Trust badge",
+      "settings": [
+        {"type":"select","id":"icon","label":"Icon","options":[
+          {"value":"return","label":"↩ Returns"},
+          {"value":"shipping","label":"🚚 Shipping"},
+          {"value":"secure","label":"🔒 Secure"},
+          {"value":"quality","label":"⭐ Quality"},
+          {"value":"support","label":"💬 Support"},
+          {"value":"eco","label":"🌿 Eco / Sustainable"},
+          {"value":"gift","label":"🎁 Gift"},
+          {"value":"check","label":"✓ General checkmark"}
+        ],"default":"return"},
+        {"type":"text","id":"title","label":"Title","default":"14-Day Returns"},
+        {"type":"text","id":"subtitle","label":"Subtitle (optional)","default":"Hassle-free, no questions asked"}
+      ]
+    }
+  ],
+  "presets": [{
+    "name": "Trust Badges",
+    "blocks": [
+      {"type":"badge","settings":{"icon":"return","title":"14-Day Free Returns","subtitle":"No questions asked"}},
+      {"type":"badge","settings":{"icon":"shipping","title":"7–10 Day Shipping","subtitle":"Fast & tracked delivery"}},
+      {"type":"badge","settings":{"icon":"secure","title":"Secure Payments","subtitle":"SSL encrypted checkout"}},
+      {"type":"badge","settings":{"icon":"quality","title":"Premium Quality","subtitle":"Crafted to last"}}
+    ]
+  }]
+}
+{% endschema %}
