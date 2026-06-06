@@ -1,0 +1,49 @@
+<section class="section">
+  <div class="container">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--sp-6);flex-wrap:wrap;gap:var(--sp-3)">
+      <p style="font-size:var(--text-sm);color:var(--color-text-muted)">{{ collection.products_count }} product{% if collection.products_count != 1 %}s{% endif %}</p>
+      <div style="display:flex;align-items:center;gap:var(--sp-3)">
+        {%- if section.settings.show_sort -%}
+          <label for="SortBy" class="sr-only">Sort by</label>
+          <select id="SortBy" name="sort_by" class="form-input" style="width:auto;height:40px;font-size:var(--text-sm)" onchange="window.location.href=window.location.pathname+'?sort_by='+this.value">
+            <option value="manual"{% if collection.sort_by == 'manual' %} selected{% endif %}>Featured</option>
+            <option value="best-selling"{% if collection.sort_by == 'best-selling' %} selected{% endif %}>Best Selling</option>
+            <option value="title-ascending"{% if collection.sort_by == 'title-ascending' %} selected{% endif %}>A–Z</option>
+            <option value="title-descending"{% if collection.sort_by == 'title-descending' %} selected{% endif %}>Z–A</option>
+            <option value="price-ascending"{% if collection.sort_by == 'price-ascending' %} selected{% endif %}>Price: Low to High</option>
+            <option value="price-descending"{% if collection.sort_by == 'price-descending' %} selected{% endif %}>Price: High to Low</option>
+            <option value="created-descending"{% if collection.sort_by == 'created-descending' %} selected{% endif %}>Newest</option>
+          </select>
+        {%- endif -%}
+      </div>
+    </div>
+    {%- if collection.products.size > 0 -%}
+      <div class="prod-grid" style="--cols:{{ section.settings.columns | default: 4 }}">
+        {%- for product in collection.products -%}
+          {%- render 'product-card', product: product, index: forloop.index0 -%}
+        {%- endfor -%}
+      </div>
+      {%- if paginate.pages > 1 -%}
+        <div style="text-align:center;margin-top:var(--sp-12)">
+          {{ paginate | default_pagination | replace: '<span', '<span style="display:inline-flex;align-items:center;justify-content:center;min-width:40px;height:40px;border-radius:var(--radius-md);margin:0 4px;font-size:var(--text-sm);font-weight:600"' }}
+        </div>
+      {%- endif -%}
+    {%- else -%}
+      <div style="text-align:center;padding:var(--sp-16) 0">
+        <p style="color:var(--color-text-muted);margin-bottom:var(--sp-6)">No products found in this collection.</p>
+        <a href="/collections/all" class="btn btn--primary">Shop All</a>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+{% schema %}
+{
+  "name": "Collection Products",
+  "tag": "section",
+  "settings": [
+    { "type": "range", "id": "columns", "label": "Columns (desktop)", "min": 2, "max": 5, "step": 1, "default": 4 },
+    { "type": "checkbox", "id": "show_sort", "label": "Show sort dropdown", "default": true }
+  ],
+  "presets": [{ "name": "Collection Products" }]
+}
+{% endschema %}
