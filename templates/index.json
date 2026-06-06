@@ -1,14 +1,46 @@
 {
   "sections": {
-    "announcement": { "type": "announcement-bar", "settings": {} },
-    "hero":         { "type": "hero-bombas",      "settings": {} },
-    "categories":   { "type": "category-strip",   "settings": {} },
-    "impact":       { "type": "impact-band",      "settings": {} },
-    "new-arrivals": { "type": "new-arrivals-tabs", "settings": {} },
-    "trending":     { "type": "trending-section",  "settings": {} },
-    "mission":      { "type": "mission-banner",   "settings": {} },
-    "reviews":      { "type": "reviews-strip",    "settings": {} },
-    "newsletter":   { "type": "newsletter-bar",   "settings": {} }
+    "hero": {
+      "type": "hero-bombas",
+      "settings": {}
+    },
+    "categories": {
+      "type": "category-strip",
+      "settings": {}
+    },
+    "impact": {
+      "type": "impact-band",
+      "settings": {}
+    },
+    "new-arrivals": {
+      "type": "new-arrivals-tabs",
+      "settings": {}
+    },
+    "trending": {
+      "type": "trending-section",
+      "settings": {}
+    },
+    "mission": {
+      "type": "mission-banner",
+      "settings": {}
+    },
+    "reviews": {
+      "type": "reviews-strip",
+      "settings": {}
+    },
+    "newsletter": {
+      "type": "newsletter-bar",
+      "settings": {}
+    }
   },
-  "order": ["announcement","hero","categories","impact","new-arrivals","trending","mission","reviews","newsletter"]
+  "order": [
+    "hero",
+    "categories",
+    "impact",
+    "new-arrivals",
+    "trending",
+    "mission",
+    "reviews",
+    "newsletter"
+  ]
 }
