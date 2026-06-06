@@ -1,0 +1,28 @@
+
+{% if section.settings.show %}
+<div style="background:#f7f7f7;border-bottom:1px solid #e8e8e8;padding:9px 0">
+  <div class="page-w" style="display:flex;justify-content:center;gap:32px;flex-wrap:wrap">
+    {% for i in (1..4) %}
+      {% assign key = 'item_' | append: i %}
+      {% if section.settings[key] != blank %}
+        <span style="font-size:12px;font-weight:600;color:#444;letter-spacing:.04em;display:flex;align-items:center;gap:5px">
+          ✓ {{ section.settings[key] }}
+        </span>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+{% schema %}
+{
+  "name": "Trust Bar",
+  "settings": [
+    {"type":"checkbox","id":"show","label":"Show trust bar","default":true},
+    {"type":"text","id":"item_1","label":"Item 1","default":"Free Shipping $75+"},
+    {"type":"text","id":"item_2","label":"Item 2","default":"30-Day Easy Returns"},
+    {"type":"text","id":"item_3","label":"Item 3","default":"Secure Checkout"},
+    {"type":"text","id":"item_4","label":"Item 4","default":"1 Purchased = 1 Donated"}
+  ],
+  "presets":[{"name":"Trust Bar"}]
+}
+{% endschema %}
