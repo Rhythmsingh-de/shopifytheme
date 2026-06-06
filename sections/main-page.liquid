@@ -1,53 +1,7 @@
-
-{% if section.settings.show_content %}
-<div class="page-section">
-  <div class="page-w page-w--narrow">
-    <h1 class="page-heading">{{ page.title }}</h1>
-    <div class="page-body rte">
-      {{ page.content }}
-    </div>
+<main id="main-content" class="section">
+  <div class="container container--narrow">
+    <h1 style="font-family:var(--font-display);font-size:var(--text-xl);font-weight:800;margin-bottom:var(--sp-6)">{{ page.title }}</h1>
+    <div style="font-size:var(--text-base);line-height:1.8;color:var(--color-text)">{{ page.content }}</div>
   </div>
-</div>
-{% else %}
-<div class="page-section">
-  <div class="page-w page-w--narrow">
-    <h1 class="page-heading">{{ page.title }}</h1>
-    <div class="page-body rte">
-      {{ page.content }}
-    </div>
-  </div>
-</div>
-{% endif %}
-
-<style>
-.page-section { padding: 60px 20px; }
-.page-w--narrow { max-width: 760px; margin: 0 auto; }
-.page-heading {
-  font-size: clamp(1.6rem, 3vw, 2.2rem);
-  font-weight: 800;
-  letter-spacing: -.03em;
-  margin-bottom: 32px;
-  color: #1a1a1a;
-}
-.page-body { font-size: 16px; line-height: 1.75; color: #333; }
-.page-body h2 { font-size: 1.3rem; font-weight: 700; margin: 32px 0 10px; }
-.page-body h3 { font-size: 1.1rem; font-weight: 700; margin: 24px 0 8px; }
-.page-body p  { margin-bottom: 16px; }
-.page-body ul, .page-body ol { padding-left: 24px; margin-bottom: 16px; }
-.page-body li { margin-bottom: 6px; }
-.page-body a  { color: #1a1a1a; text-decoration: underline; }
-.page-body a:hover { opacity: 0.65; }
-.page-body table { border-collapse: collapse; width: 100%; margin-bottom: 24px; }
-.page-body td, .page-body th { border: 1px solid #e8e8e8; padding: 10px 14px; text-align: left; font-size: 14px; }
-.page-body th { background: #f7f7f7; font-weight: 700; }
-</style>
-
-{% schema %}
-{
-  "name": "Page Content",
-  "settings": [
-    {"type":"checkbox","id":"show_content","label":"Show page content","default":true}
-  ],
-  "presets":[{"name":"Page Content"}]
-}
-{% endschema %}
+</main>
+{% schema %}{ "name": "Page", "tag": "section", "settings": [], "presets": [{ "name": "Page" }] }{% endschema %}
