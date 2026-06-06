@@ -1,21 +1,38 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="theme-color" content="#111111">
-    <title>{{ page_title }}{% if current_tags %} – {{ current_tags | join: ', ' }}{% endif %}{% if current_page != 1 %} – Page {{ current_page }}{% endif %}{% unless page_title contains shop.name %} – {{ shop.name }}{% endunless %}</title>
-    {{ content_for_header }}
-    {{ 'base.css' | asset_url | stylesheet_tag }}
-    <script src="{{ 'theme.js' | asset_url }}" defer></script>
-  </head>
-  <body>
-    <a class="skip-link" href="#MainContent">Skip to content</a>
-    {% section 'announcement-bar' %}
-    {% section 'header' %}
-    <main id="MainContent" role="main">
-      {{ content_for_layout }}
-    </main>
-    {% section 'footer' %}
-  </body>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#111111">
+  <title>{{ page_title }}{% unless page_title contains shop.name %} – {{ shop.name }}{% endunless %}</title>
+  <meta name="description" content="{% if page_description %}{{ page_description | escape }}{% else %}{{ shop.description | escape }}{% endif %}">
+  <link rel="canonical" href="{{ canonical_url }}">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  {{ content_for_header }}
+  {{ 'base.css' | asset_url | stylesheet_tag }}
+  <script src="{{ 'theme.js' | asset_url }}" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#MainContent">Skip to main content</a>
+  {% sections 'header-group' %}
+  <main id="MainContent" role="main" tabindex="-1">
+    {{ content_for_layout }}
+  </main>
+  {% sections 'footer-group' %}
+  <!-- Cookie consent (Google compliance) -->
+  <div id="cookie-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#111;color:#fff;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:14px;">
+    <span>We use cookies to improve your experience. By continuing, you agree to our <a href="/pages/privacy-policy" style="color:#c9a96e;text-decoration:underline;">Privacy Policy</a>.</span>
+    <div style="display:flex;gap:10px;flex-shrink:0;">
+      <button onclick="acceptCookies()" style="background:#c9a96e;color:#fff;border:none;border-radius:999px;padding:9px 20px;font-weight:700;cursor:pointer;font-size:14px;">Accept</button>
+      <button onclick="document.getElementById('cookie-banner').style.display='none'" style="background:rgba(255,255,255,.1);color:#fff;border:none;border-radius:999px;padding:9px 20px;font-weight:600;cursor:pointer;font-size:14px;">Dismiss</button>
+    </div>
+  </div>
+  <script>
+    function acceptCookies(){document.getElementById('cookie-banner').style.display='none';try{localStorage.setItem('cookies_accepted','1')}catch(e){}}
+    try{if(!localStorage.getItem('cookies_accepted'))document.getElementById('cookie-banner').style.display='flex'}catch(e){document.getElementById('cookie-banner').style.display='flex'}
+  </script>
+</body>
 </html>
