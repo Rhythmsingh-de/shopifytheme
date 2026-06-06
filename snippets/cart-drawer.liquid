@@ -1,0 +1,113 @@
+<div id="cart-overlay" class="cart-overlay" onclick="BLC.closeCart()" aria-hidden="true"></div>
+
+<div id="cart-drawer" class="cart-drawer" role="dialog" aria-modal="true" aria-label="Shopping cart" aria-hidden="true">
+  <div class="cart-drawer__header">
+    <h2 style="font-family:var(--font-display);font-size:var(--text-lg);font-weight:700">Your Cart</h2>
+    <button onclick="BLC.closeCart()" aria-label="Close cart" class="cart-drawer__close">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  </div>
+
+  <div id="cart-items" class="cart-drawer__items"></div>
+
+  <div id="cart-total" class="cart-drawer__footer" style="display:none">
+    <div id="cart-subtotal"></div>
+    {%- if settings.cart_show_order_note -%}
+      <div class="cart-note-toggle" onclick="this.nextElementSibling.classList.toggle('open')">
+        <span>+ Add order note</span>
+      </div>
+      <div class="cart-note-field">
+        <textarea id="cart-note" rows="2" placeholder="Special instructions for your order..." style="resize:vertical"></textarea>
+      </div>
+    {%- endif -%}
+    <a href="/checkout" id="cart-checkout-btn" class="btn btn--primary btn--full btn--lg" style="margin-top:var(--sp-3)">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Proceed to Checkout
+    </a>
+    <a href="/cart" class="btn btn--ghost btn--full" style="margin-top:var(--sp-2)">View Full Cart</a>
+    {%- if settings.trust_show_payment_icons -%}
+      <div style="display:flex;align-items:center;justify-content:center;gap:var(--sp-2);margin-top:var(--sp-3)">
+        {%- render 'payment-icons' -%}
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+<style>
+.cart-drawer {
+  position: fixed; top: 0; right: 0; bottom: 0;
+  width: min(420px, 100vw);
+  background: var(--color-bg);
+  z-index: 800;
+  transform: translateX(100%);
+  transition: transform 0.35s var(--ease-out);
+  display: flex; flex-direction: column;
+  box-shadow: -8px 0 48px rgba(0,0,0,0.15);
+}
+.cart-drawer.open { transform: translateX(0); }
+
+.cart-drawer__header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: var(--sp-5) var(--sp-5);
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0; min-height: 68px;
+}
+.cart-drawer__close {
+  width: 44px; height: 44px; border-radius: var(--radius-md);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--color-text);
+  transition: background var(--trans-fast), color var(--trans-fast);
+}
+.cart-drawer__close:hover { background: var(--color-surface); color: var(--color-primary); }
+
+.cart-drawer__items {
+  flex: 1; overflow-y: auto; padding: var(--sp-4) var(--sp-5);
+  -webkit-overflow-scrolling: touch;
+}
+
+.cart-item {
+  display: flex; align-items: flex-start; gap: var(--sp-3);
+  padding-block: var(--sp-4);
+  border-bottom: 1px solid var(--color-border);
+}
+.cart-item:last-child { border-bottom: none; }
+.cart-item__info {
+  flex: 1; display: flex; flex-direction: column; gap: var(--sp-1); min-width: 0;
+}
+
+.cart-drawer__footer {
+  padding: var(--sp-4) var(--sp-5);
+  border-top: 1px solid var(--color-border);
+  flex-shrink: 0;
+  background: var(--color-surface);
+}
+
+.cart-note-toggle {
+  font-size: var(--text-xs); color: var(--color-text-muted);
+  cursor: pointer; padding: var(--sp-2) 0;
+  transition: color var(--trans-fast);
+}
+.cart-note-toggle:hover { color: var(--color-primary); }
+
+.cart-note-field {
+  max-height: 0; overflow: hidden;
+  transition: max-height 0.3s var(--ease-out);
+}
+.cart-note-field.open { max-height: 120px; }
+.cart-note-field textarea {
+  width: 100%; margin-top: var(--sp-2);
+  padding: var(--sp-3);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  background: var(--color-bg);
+}
+.cart-note-field textarea:focus {
+  outline: none; border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(29,92,58,0.1);
+}
+
+.qty--sm .qty__btn { width: 32px; height: 32px; font-size: 14px; }
+</style>
