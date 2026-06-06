@@ -1,10 +1,21 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "current": {
+    "color_primary": "#1d5c3a",
     "color_bg": "#ffffff",
+    "cart_type": "drawer",
+    "gtm_id": "",
     "color_surface": "#f9f8f5",
     "color_text": "#1a1a1a",
     "color_text_muted": "#6b7280",
-    "color_primary": "#1d5c3a",
     "color_primary_hover": "#164530",
     "color_sale": "#dc2626",
     "color_border": "#e5e7eb",
@@ -33,7 +44,6 @@
     "card_show_rating": true,
     "card_hover_second_image": true,
     "card_quick_add": true,
-    "cart_type": "drawer",
     "cart_show_order_note": true,
     "cart_upsell_text": "You're {{ amount }} away from FREE shipping! 🚚",
     "cart_free_shipping_threshold": 75,
@@ -53,10 +63,24 @@
     "cookie_policy_url": "/policies/privacy-policy",
     "seo_title_suffix": "| BodyLuxCare",
     "seo_meta_description": "Premium wellness and lifestyle products for women, men, pets, and home.",
-    "gtm_id": "",
     "ga4_id": "",
     "pixel_id": "",
-    "tiktok_pixel_id": ""
+    "tiktok_pixel_id": "",
+    "sections": {
+      "announcement-bar": {
+        "type": "announcement-bar",
+        "settings": {}
+      },
+      "header": {
+        "type": "header",
+        "settings": {}
+      },
+      "footer": {
+        "type": "footer",
+        "settings": {}
+      }
+    },
+    "content_for_index": []
   },
   "presets": {}
 }
