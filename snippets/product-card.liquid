@@ -1,6 +1,6 @@
 {%- assign card_product = product -%}
 {%- assign card_index = index | default: 0 -%}
-<div class="prod-card reveal" style="transition-delay:{{ card_index | times: 60 }}ms">
+<div class="prod-card reveal" style="transition-delay:{{ card_index | times: 60 }}ms" data-product-id="{{ card_product.id }}" data-product-title="{{ card_product.title | escape }}" data-product-type="{{ card_product.type | escape }}" data-price="{{ card_product.price | divided_by: 100.0 }}">
   <div class="prod-card__media">
     <a href="{{ card_product.url }}" tabindex="-1" aria-hidden="true">
       {%- if card_product.featured_image -%}
