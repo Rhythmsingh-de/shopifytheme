@@ -36,9 +36,9 @@
         {% assign coll = collections[block.settings.collection] %}
         {% if coll != blank %}
           {% for product in coll.products limit: section.settings.products_per_tab %}
-            <article class="p-card">
+            <article class="prod-card">
               <a href="{{ product.url }}">
-                <div class="p-card__media">
+                <div class="prod-card__media">
                   {% if product.featured_image %}
                     {{ product.featured_image | image_url: width: 600 | image_tag:
                        loading: 'lazy', widths: '300,450,600',
@@ -49,27 +49,27 @@
                          alt="{{ product.title }}" width="300" height="375" loading="lazy">
                   {% endif %}
                   {% if product.available == false %}
-                    <span class="p-card__badge badge-sale">Sold Out</span>
+                    <span class="prod-card__badge badge-sale">Sold Out</span>
                   {% elsif product.compare_at_price > product.price %}
-                    <span class="p-card__badge badge-sale">Sale</span>
+                    <span class="prod-card__badge badge-sale">Sale</span>
                   {% elsif product.created_at > 'now' | date: '%s' | minus: 2592000 | date: '%Y-%m-%dT%H:%M:%SZ' %}
-                    <span class="p-card__badge badge-new">New</span>
+                    <span class="prod-card__badge badge-new">New</span>
                   {% endif %}
                 </div>
-                <div class="p-card__swatches">
+                <div class="prod-card__swatches">
                   {% for variant in product.variants limit: 5 %}
                     {% if variant.option1 contains '#' or variant.option1 contains 'color' or variant.option1 contains 'Color' %}
                       <span class="swatch{% if forloop.first %} active{% endif %}" title="{{ variant.option1 }}"></span>
                     {% endif %}
                   {% endfor %}
                 </div>
-                <div class="p-card__meta">{{ product.type }}</div>
-                <div class="p-card__name">{{ product.title }}</div>
-                <div class="p-card__price-row">
-                  <span class="p-card__price">{{ product.price | money }}</span>
+                <div class="prod-card__meta">{{ product.type }}</div>
+                <div class="prod-card__name">{{ product.title }}</div>
+                <div class="prod-card__price-row">
+                  <span class="prod-card__price">{{ product.price | money }}</span>
                   {% if product.compare_at_price > product.price %}
-                    <span class="p-card__was">{{ product.compare_at_price | money }}</span>
-                    <span class="p-card__save">Save {{ product.compare_at_price | minus: product.price | money }}</span>
+                    <span class="prod-card__was">{{ product.compare_at_price | money }}</span>
+                    <span class="prod-card__save">Save {{ product.compare_at_price | minus: product.price | money }}</span>
                   {% endif %}
                 </div>
               </a>
