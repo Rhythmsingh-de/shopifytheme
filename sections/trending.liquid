@@ -1,0 +1,52 @@
+<section class="section trending-section" style="background:var(--color-surface)">
+  <div class="container">
+    <div class="section-head reveal">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="section-eyebrow">{{ section.settings.eyebrow }}</p>
+      {%- endif -%}
+      <h2 class="section-title">{{ section.settings.title | default: "Trending Now" }}</h2>
+      {%- if section.settings.subtitle != blank -%}
+        <p class="section-subtitle">{{ section.settings.subtitle }}</p>
+      {%- endif -%}
+    </div>
+
+    {%- assign trending_col = collections[section.settings.collection] -%}
+    <div class="prod-grid" style="--cols:{{ section.settings.columns | default: 4 }}">
+      {%- if trending_col != blank and trending_col.products.size > 0 -%}
+        {%- for product in trending_col.products limit: section.settings.products_count -%}
+          {%- render 'product-card', product: product, index: forloop.index0 -%}
+        {%- endfor -%}
+      {%- else -%}
+        {%- for product in collections.all.products limit: section.settings.products_count -%}
+          {%- render 'product-card', product: product, index: forloop.index0 -%}
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+
+    {%- if section.settings.cta_text != blank -%}
+      <div style="text-align:center;margin-top:clamp(var(--sp-8),4vw,var(--sp-12))">
+        <a href="{{ section.settings.cta_url | default: '/collections/all' }}" class="btn btn--primary btn--lg reveal">
+          {{ section.settings.cta_text }}
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+{% schema %}
+{
+  "name": "Trending",
+  "tag": "section",
+  "settings": [
+    { "type": "text",       "id": "eyebrow",        "label": "Eyebrow label",     "default": "Hot Right Now" },
+    { "type": "text",       "id": "title",          "label": "Section title",     "default": "Trending Now" },
+    { "type": "textarea",   "id": "subtitle",       "label": "Subtitle",          "default": "Our most-loved picks flying off the shelves." },
+    { "type": "collection", "id": "collection",     "label": "Collection" },
+    { "type": "range",      "id": "products_count", "label": "Number of products","min": 2, "max": 12, "step": 1, "default": 8 },
+    { "type": "range",      "id": "columns",        "label": "Columns (desktop)", "min": 2, "max": 5,  "step": 1, "default": 4 },
+    { "type": "text",       "id": "cta_text",       "label": "CTA button text",   "default": "Shop Trending" },
+    { "type": "url",        "id": "cta_url",        "label": "CTA link" }
+  ],
+  "presets": [{ "name": "Trending" }]
+}
+{% endschema %}
