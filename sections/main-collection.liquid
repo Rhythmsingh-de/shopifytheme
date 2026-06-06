@@ -1,0 +1,33 @@
+<section class="section">
+  <div class="page-width">
+    <div class="section-head">
+      <div>
+        <h1>{{ collection.title }}</h1>
+        <p>{{ collection.description }}</p>
+      </div>
+    </div>
+    <div class="collection-grid">
+      {% for product in collection.products %}
+        <article class="card">
+          <a href="{{ product.url }}">
+            <div class="product-media">
+              {% if product.featured_image %}
+                {{ product.featured_image | image_url: width: 800 | image_tag: loading: "lazy", alt: product.title }}
+              {% endif %}
+            </div>
+            <div class="product-card-content">
+              <h3 class="product-card-title">{{ product.title }}</h3>
+              <div class="price-row">
+                <div class="price">{{ product.price | money }}</div>
+                <div>→</div>
+              </div>
+            </div>
+          </a>
+        </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% schema %}
+{ "name": "Collection", "settings": [] }
+{% endschema %}
