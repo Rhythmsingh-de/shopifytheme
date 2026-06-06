@@ -2,66 +2,158 @@
   {
     "name": "theme_info",
     "theme_name": "Bombas Style",
-    "theme_version": "2.0.0",
+    "theme_version": "2.1.0",
     "theme_author": "Custom",
     "theme_documentation_url": "https://help.shopify.com/en/manual/online-store/themes",
     "theme_support_url": "https://help.shopify.com"
   },
   {
-    "name": "Logo & Branding",
+    "name": "Logo & Favicon",
     "settings": [
-      {"type":"image_picker","id":"logo","label":"Logo"},
-      {"type":"image_picker","id":"favicon","label":"Favicon"},
-      {"type":"image_picker","id":"share_image","label":"Default social share image"},
-      {"type":"color","id":"color_primary","label":"Primary accent","default":"#1a1a1a"},
-      {"type":"color","id":"color_bg","label":"Page background","default":"#ffffff"}
+      {"type":"image_picker","id":"logo","label":"Store logo","info":"Shown in header & footer. SVG or PNG with transparent background works best."},
+      {"type":"range","id":"logo_width","min":60,"max":300,"step":10,"unit":"px","label":"Logo width (desktop)","default":140},
+      {"type":"range","id":"logo_width_mobile","min":60,"max":200,"step":10,"unit":"px","label":"Logo width (mobile)","default":100},
+      {"type":"image_picker","id":"favicon","label":"Favicon","info":"32×32px recommended."},
+      {"type":"image_picker","id":"share_image","label":"Default social share image","info":"Used when sharing pages without a product image. 1200×630px."}
+    ]
+  },
+  {
+    "name": "Colors",
+    "settings": [
+      {"type":"header","content":"Brand"},
+      {"type":"color","id":"color_primary","label":"Primary accent","default":"#1a1a1a","info":"Used for buttons, links, badges."},
+      {"type":"color","id":"color_primary_text","label":"Text on primary","default":"#ffffff"},
+      {"type":"color","id":"color_secondary","label":"Secondary accent","default":"#e85d26","info":"Used for sale badges and highlights."},
+      {"type":"header","content":"Page"},
+      {"type":"color","id":"color_bg","label":"Page background","default":"#ffffff"},
+      {"type":"color","id":"color_text","label":"Body text","default":"#1a1a1a"},
+      {"type":"color","id":"color_text_muted","label":"Muted text","default":"#888888"},
+      {"type":"color","id":"color_border","label":"Borders & dividers","default":"#e8e8e8"},
+      {"type":"header","content":"Header"},
+      {"type":"color","id":"color_header_bg","label":"Header background","default":"#ffffff"},
+      {"type":"color","id":"color_header_text","label":"Header text & icons","default":"#1a1a1a"},
+      {"type":"color","id":"color_header_border","label":"Header bottom border","default":"#e8e8e8"},
+      {"type":"header","content":"Footer"},
+      {"type":"color","id":"color_footer_bg","label":"Footer background","default":"#1a1a1a"},
+      {"type":"color","id":"color_footer_text","label":"Footer text","default":"#ffffff"},
+      {"type":"header","content":"Buttons"},
+      {"type":"color","id":"color_btn_primary_bg","label":"Primary button background","default":"#1a1a1a"},
+      {"type":"color","id":"color_btn_primary_text","label":"Primary button text","default":"#ffffff"},
+      {"type":"color","id":"color_btn_secondary_bg","label":"Secondary button background","default":"#ffffff"},
+      {"type":"color","id":"color_btn_secondary_text","label":"Secondary button text","default":"#1a1a1a"}
     ]
   },
   {
     "name": "Typography",
     "settings": [
-      {"type":"font_picker","id":"heading_font","label":"Heading font","default":"inter_n7"},
+      {"type":"font_picker","id":"heading_font","label":"Heading font","default":"inter_n8"},
       {"type":"font_picker","id":"body_font","label":"Body font","default":"inter_n4"},
-      {"type":"range","id":"body_font_size","min":14,"max":20,"step":1,"unit":"px","label":"Body font size","default":16}
+      {"type":"range","id":"body_font_size","min":14,"max":20,"step":1,"unit":"px","label":"Base font size","default":16},
+      {"type":"range","id":"heading_weight","min":600,"max":900,"step":100,"label":"Heading weight","default":800},
+      {"type":"select","id":"letter_spacing","label":"Heading letter-spacing","options":[
+        {"value":"-0.04em","label":"Tight (−0.04em)"},
+        {"value":"-0.02em","label":"Normal (−0.02em)"},
+        {"value":"0em","label":"Wide (0em)"}
+      ],"default":"-0.03em"}
+    ]
+  },
+  {
+    "name": "Header",
+    "settings": [
+      {"type":"select","id":"header_layout","label":"Logo position","options":[
+        {"value":"center","label":"Center (Bombas style)"},
+        {"value":"left","label":"Left"}
+      ],"default":"center"},
+      {"type":"checkbox","id":"header_sticky","label":"Sticky header (stays on scroll)","default":true},
+      {"type":"checkbox","id":"header_border","label":"Show bottom border","default":true},
+      {"type":"checkbox","id":"header_shadow_on_scroll","label":"Show shadow when scrolled","default":true},
+      {"type":"range","id":"header_height","min":48,"max":90,"step":2,"unit":"px","label":"Header height","default":60},
+      {"type":"checkbox","id":"show_search","label":"Show search icon","default":true},
+      {"type":"checkbox","id":"show_account","label":"Show account icon","default":true},
+      {"type":"text","id":"search_placeholder","label":"Search placeholder text","default":"Search products…"}
     ]
   },
   {
     "name": "Cart",
     "settings": [
-      {"type":"select","id":"cart_type","label":"Cart type","options":[{"value":"drawer","label":"Drawer"},{"value":"page","label":"Page"}],"default":"drawer"},
-      {"type":"checkbox","id":"show_cart_note","label":"Show order note field","default":false}
+      {"type":"select","id":"cart_type","label":"Cart type","options":[
+        {"value":"drawer","label":"Slide-out drawer"},
+        {"value":"page","label":"Full cart page"}
+      ],"default":"drawer"},
+      {"type":"checkbox","id":"show_cart_note","label":"Show order note field","default":false},
+      {"type":"text","id":"free_shipping_threshold","label":"Free shipping threshold amount","default":"75","info":"Number only, no $ sign. Used in cart messaging."},
+      {"type":"text","id":"free_shipping_message","label":"Free shipping message","default":"Free U.S. shipping on orders $75+"}
+    ]
+  },
+  {
+    "name": "Product Cards",
+    "settings": [
+      {"type":"checkbox","id":"card_show_vendor","label":"Show vendor / brand name","default":false},
+      {"type":"checkbox","id":"card_show_type","label":"Show product type","default":true},
+      {"type":"checkbox","id":"card_show_swatches","label":"Show color swatches","default":true},
+      {"type":"checkbox","id":"card_show_atc","label":"Show Add to Cart button on cards","default":true},
+      {"type":"select","id":"card_image_ratio","label":"Product image ratio","options":[
+        {"value":"0.8","label":"Portrait (4:5)"},
+        {"value":"1","label":"Square (1:1)"},
+        {"value":"0.75","label":"Tall (3:4)"},
+        {"value":"1.33","label":"Landscape (4:3)"}
+      ],"default":"0.8"},
+      {"type":"select","id":"card_border_radius","label":"Card corner style","options":[
+        {"value":"0px","label":"Sharp"},
+        {"value":"4px","label":"Slight"},
+        {"value":"8px","label":"Rounded"},
+        {"value":"12px","label":"Very rounded"}
+      ],"default":"4px"},
+      {"type":"checkbox","id":"card_hover_zoom","label":"Zoom image on hover","default":true}
+    ]
+  },
+  {
+    "name": "Collection Page",
+    "settings": [
+      {"type":"range","id":"collection_cols_desktop","min":2,"max":5,"step":1,"label":"Columns (desktop)","default":4},
+      {"type":"range","id":"collection_cols_mobile","min":1,"max":2,"step":1,"label":"Columns (mobile)","default":2},
+      {"type":"range","id":"products_per_page","min":8,"max":48,"step":4,"label":"Products per page","default":16},
+      {"type":"checkbox","id":"collection_show_filter_tags","label":"Show filter tags","default":true},
+      {"type":"checkbox","id":"collection_show_sort","label":"Show sort dropdown","default":true}
     ]
   },
   {
     "name": "Tracking & Compliance",
     "settings": [
       {"type":"text","id":"gtm_id","label":"Google Tag Manager ID","placeholder":"GTM-XXXXXXX","info":"Paste your GTM container ID. Leave blank to disable."},
-      {"type":"textarea","id":"google_site_verification","label":"Google Search Console verification meta tag","info":"Paste the full <meta name=google-site-verification ...> tag."},
-      {"type":"checkbox","id":"show_cookie_banner","label":"Show cookie consent banner","default":true},
-      {"type":"textarea","id":"cookie_banner_text","label":"Cookie banner text","default":"We use cookies to improve your experience and for analytics. By continuing, you agree to our Privacy Policy."},
+      {"type":"textarea","id":"google_site_verification","label":"Google Search Console meta tag","info":"Paste the full <meta name=google-site-verification ...> tag here."},
+      {"type":"textarea","id":"custom_head_scripts","label":"Custom <head> scripts / pixels","info":"Injected just before </head>. For Meta Pixel, Klaviyo, etc."},
+      {"type":"textarea","id":"custom_body_scripts","label":"Custom <body> scripts","info":"Injected just after <body> open."},
+      {"type":"header","content":"Cookie Banner"},
+      {"type":"checkbox","id":"show_cookie_banner","label":"Show GDPR/CCPA cookie consent banner","default":true},
+      {"type":"textarea","id":"cookie_banner_text","label":"Banner message","default":"We use cookies to improve your experience and for analytics. See our Privacy Policy."},
       {"type":"text","id":"cookie_accept_label","label":"Accept button label","default":"Accept All"},
-      {"type":"text","id":"cookie_decline_label","label":"Decline label","default":"Decline"},
-      {"type":"url","id":"privacy_policy_url","label":"Privacy policy URL"}
-    ]
-  },
-  {
-    "name": "Shipping & Returns Bar",
-    "settings": [
-      {"type":"checkbox","id":"show_trust_bar","label":"Show trust bar below header","default":false},
-      {"type":"text","id":"trust_item_1","label":"Trust item 1","default":"Free Shipping $75+"},
-      {"type":"text","id":"trust_item_2","label":"Trust item 2","default":"30-Day Easy Returns"},
-      {"type":"text","id":"trust_item_3","label":"Trust item 3","default":"Secure Checkout"},
-      {"type":"text","id":"trust_item_4","label":"Trust item 4","default":"1 Purchased = 1 Donated"}
+      {"type":"text","id":"cookie_decline_label","label":"Decline label","default":"No thanks"},
+      {"type":"url","id":"privacy_policy_url","label":"Privacy policy page URL"}
     ]
   },
   {
     "name": "Social Media",
     "settings": [
-      {"type":"url","id":"social_instagram","label":"Instagram"},
-      {"type":"url","id":"social_tiktok","label":"TikTok"},
-      {"type":"url","id":"social_facebook","label":"Facebook"},
-      {"type":"url","id":"social_pinterest","label":"Pinterest"},
-      {"type":"url","id":"social_youtube","label":"YouTube"}
+      {"type":"url","id":"social_instagram","label":"Instagram URL"},
+      {"type":"url","id":"social_tiktok","label":"TikTok URL"},
+      {"type":"url","id":"social_facebook","label":"Facebook URL"},
+      {"type":"url","id":"social_pinterest","label":"Pinterest URL"},
+      {"type":"url","id":"social_youtube","label":"YouTube URL"},
+      {"type":"url","id":"social_twitter","label":"X / Twitter URL"}
+    ]
+  },
+  {
+    "name": "Spacing & Layout",
+    "settings": [
+      {"type":"range","id":"section_spacing","min":32,"max":96,"step":8,"unit":"px","label":"Section vertical spacing","default":56},
+      {"type":"range","id":"container_max_width","min":960,"max":1440,"step":40,"unit":"px","label":"Max content width","default":1280},
+      {"type":"select","id":"button_style","label":"Button corner style","options":[
+        {"value":"9999px","label":"Pill (fully rounded)"},
+        {"value":"8px","label":"Rounded"},
+        {"value":"4px","label":"Slight"},
+        {"value":"0px","label":"Sharp / Square"}
+      ],"default":"9999px"}
     ]
   }
 ]
