@@ -1,391 +1,56 @@
 
-{%- liquid
-  assign show_bar = section.settings.show
-  assign bg       = section.settings.bg_color
-  assign fg       = section.settings.text_color
-  assign bar_height = section.settings.bar_height
-  assign font_size  = section.settings.font_size
--%}
-
-{% if show_bar %}
-<div class="ann-bar" id="annBar"
-  style="
-    --ann-bg: {{ bg }};
-    --ann-fg: {{ fg }};
-    --ann-h:  {{ bar_height }}px;
-    --ann-fs: {{ font_size }}px;
-  ">
-
-  {%- comment -%}
-    Shopify Liquid cannot query discount codes server-side via standard Liquid.
-    We auto-detect using the Storefront Ajax API in JS and render inline.
-    All blocks are editable in Theme Editor with smart fallback.
-  {%- endcomment -%}
-
-  <div class="ann-bar__track">
-    <ul class="ann-bar__list" id="annList" role="list">
-
-      {%- for block in section.blocks -%}
-        {%- if block.type == 'shipping' -%}
-          <li class="ann-bar__item" {{ block.shopify_attributes }}>
-            <span class="ann-bar__icon" aria-hidden="true">{{ block.settings.icon }}</span>
-            <span class="ann-bar__text">{{ block.settings.text }}</span>
-            {%- if block.settings.link_url != blank -%}
-              <a href="{{ block.settings.link_url }}" class="ann-bar__link">{{ block.settings.link_label }}</a>
-            {%- endif -%}
-          </li>
-
-        {%- elsif block.type == 'promo_code' -%}
-          {%- comment -%}
-            If merchant set a manual code override, use it.
-            Otherwise the JS block below will auto-fill from the store's
-            auto-applied / Shopify Automatic Discount API response.
-          {%- endcomment -%}
-          <li class="ann-bar__item ann-bar__item--promo"
-              id="annPromoItem"
-              data-manual-code="{{ block.settings.code }}"
-              data-manual-text="{{ block.settings.text }}"
-              data-fallback-text="{{ block.settings.fallback_text }}"
-              {{ block.shopify_attributes }}>
-            <span class="ann-bar__icon" aria-hidden="true">{{ block.settings.icon }}</span>
-            <span class="ann-bar__text" id="annPromoText">{{ block.settings.text }}</span>
-            <button class="ann-copy-btn" id="annCopyBtn" data-code="{{ block.settings.code }}" aria-label="Copy code">
-              <span id="annCopyLabel">Copy</span>
-            </button>
-          </li>
-
-        {%- elsif block.type == 'custom' -%}
-          <li class="ann-bar__item" {{ block.shopify_attributes }}>
-            <span class="ann-bar__icon" aria-hidden="true">{{ block.settings.icon }}</span>
-            <span class="ann-bar__text">{{ block.settings.text }}</span>
-            {%- if block.settings.link_url != blank -%}
-              <a href="{{ block.settings.link_url }}" class="ann-bar__link">{{ block.settings.link_label }}</a>
-            {%- endif -%}
-          </li>
-        {%- endif -%}
-
-        {%- unless forloop.last -%}<li class="ann-bar__sep" aria-hidden="true">·</li>{%- endunless -%}
-      {%- endfor -%}
-
-    </ul>
-  </div>
-
-  {%- if section.settings.dismissible -%}
-    <button class="ann-close" id="annClose" aria-label="Close bar">
-      <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-        <line x1="1" y1="1" x2="9" y2="9"/><line x1="9" y1="1" x2="1" y2="9"/>
-      </svg>
-    </button>
-  {%- endif -%}
-</div>
-{% endif %}
-
-{%- comment -%}════════════ STYLES ════════════{%- endcomment -%}
 <style>
-.ann-bar {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--ann-bg, #1a1a1a);
-  color: var(--ann-fg, #fff);
-  min-height: var(--ann-h, 40px);
-  overflow: hidden;
-  z-index: 250;
-}
-/* Shimmer sweep */
-.ann-bar::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    105deg,
-    transparent 40%,
-    rgba(255,255,255,0.08) 50%,
-    transparent 60%
-  );
-  background-size: 200% 100%;
-  animation: annShimmer 4s ease-in-out infinite;
-  pointer-events: none;
-}
-@keyframes annShimmer {
-  0%   { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
-
-.ann-bar__track {
-  flex: 1;
-  padding: 0 44px;
-  overflow: hidden;
-  display: flex;
-  justify-content: center;
-}
-
-.ann-bar__list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 4px 0;
-  text-align: center;
-}
-
-.ann-bar__item {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: var(--ann-fs, 13px);
-  font-weight: 700;
-  letter-spacing: 0.03em;
-  padding: 9px 12px;
-  white-space: nowrap;
-}
-
-.ann-bar__item--promo {
-  gap: 8px;
-}
-
-.ann-bar__sep {
-  color: rgba(255,255,255,0.30);
-  font-size: 16px;
-  padding: 0 4px;
-  line-height: 1;
-  display: inline-flex;
-  align-items: center;
-}
-
-.ann-bar__icon {
-  font-size: 15px;
-  line-height: 1;
-  animation: annBounce 2.4s ease-in-out infinite;
-  display: inline-block;
-}
-.ann-bar__item:nth-child(3) .ann-bar__icon { animation-delay: .8s; }
-.ann-bar__item:nth-child(5) .ann-bar__icon { animation-delay: 1.6s; }
-
-@keyframes annBounce {
-  0%,70%,100% { transform: translateY(0); }
-  40%         { transform: translateY(-3px); }
-}
-
-.ann-bar__link {
-  color: inherit;
-  font-weight: 800;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-  text-decoration-thickness: 1px;
-  white-space: nowrap;
-  transition: opacity 160ms ease;
-}
-.ann-bar__link:hover { opacity: 0.7; }
-
-/* Copy code button */
-.ann-copy-btn {
-  display: inline-flex;
-  align-items: center;
-  background: rgba(255,255,255,0.18);
-  border: 1px solid rgba(255,255,255,0.35);
-  color: inherit;
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: .07em;
-  padding: 3px 10px;
-  border-radius: 3px;
-  cursor: pointer;
-  transition: background 160ms ease, transform 120ms ease;
-  white-space: nowrap;
-  text-transform: uppercase;
-}
-.ann-copy-btn:hover {
-  background: rgba(255,255,255,0.28);
-  transform: scale(1.04);
-}
-.ann-copy-btn.copied {
-  background: rgba(52,199,89,0.35);
-  border-color: rgba(52,199,89,0.6);
-}
-
-/* Highlighted code text */
-.ann-code-highlight {
-  font-family: 'Courier New', monospace;
-  letter-spacing: .12em;
-  font-weight: 900;
-  font-size: 13px;
-  background: rgba(255,255,255,0.15);
-  padding: 1px 6px;
-  border-radius: 3px;
-}
-
-/* Close button */
-.ann-close {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: rgba(255,255,255,0.12);
-  border: none;
-  border-radius: 50%;
-  width: 22px;
-  height: 22px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  color: inherit;
-  transition: background 160ms ease;
-  flex-shrink: 0;
-  z-index: 5;
-}
-.ann-close:hover { background: rgba(255,255,255,0.25); }
-
-/* Mobile marquee */
-@media (max-width: 640px) {
-  .ann-bar__list {
-    flex-wrap: nowrap;
-    animation: annScroll 20s linear infinite;
-    padding-right: 60px;
-  }
-  .ann-bar__list:hover { animation-play-state: paused; }
-}
-@keyframes annScroll {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .ann-bar::after,
-  .ann-bar__icon { animation: none !important; }
-  .ann-bar__list { animation: none !important; }
-}
+.ann-bar{background:{{ section.settings.bg_color }};color:{{ section.settings.text_color }};overflow:hidden;position:relative}
+.ann-track{display:flex;width:max-content;animation:ann-scroll {{ section.settings.speed }}s linear infinite}
+.ann-track:hover{animation-play-state:paused}
+.ann-item{display:flex;align-items:center;gap:10px;padding:0 48px;height:{{ section.settings.bar_height }}px;font-size:13px;font-weight:600;letter-spacing:.03em;white-space:nowrap}
+.ann-item .ann-icon{font-size:15px;flex-shrink:0}
+.ann-dot{width:4px;height:4px;border-radius:50%;background:currentColor;opacity:.4;flex-shrink:0}
+.ann-link{color:inherit;text-decoration:underline;text-underline-offset:2px;font-weight:700;margin-left:4px}
+.ann-close{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:inherit;opacity:.6;line-height:1;font-size:18px;padding:4px;transition:opacity .15s}
+.ann-close:hover{opacity:1}
+@keyframes ann-scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.ann-track{animation:none;justify-content:center}}
 </style>
 
-{%- comment -%}════════════ JAVASCRIPT ════════════{%- endcomment -%}
+<div class="ann-bar" id="annBar" role="region" aria-label="Store announcements">
+  <div class="ann-track" id="annTrack" aria-live="polite">
+    {% for i in (1..2) %}
+      {% for block in section.blocks %}
+        {% if block.settings.text != blank %}
+          <div class="ann-item" {{ block.shopify_attributes }}>
+            {% if block.settings.icon != blank %}<span class="ann-icon">{{ block.settings.icon }}</span>{% endif %}
+            <span>{{ block.settings.text }}{% if block.settings.link_label != blank %}<a class="ann-link" href="{{ block.settings.link_url | default: '#' }}">{{ block.settings.link_label }}</a>{% endif %}</span>
+          </div>
+          <span class="ann-dot" aria-hidden="true"></span>
+        {% endif %}
+      {% endfor %}
+    {% endfor %}
+  </div>
+  {% if section.settings.show_close %}
+    <button class="ann-close" id="annClose" aria-label="Dismiss announcements">✕</button>
+  {% endif %}
+</div>
+
 <script>
-(function () {
-
-  /* ── 1. Dismiss bar ── */
-  var closeBtn = document.getElementById('annClose');
-  var bar      = document.getElementById('annBar');
-  if (closeBtn && bar) {
-    closeBtn.addEventListener('click', function () {
-      bar.style.transition = 'max-height .3s ease, opacity .25s ease';
-      bar.style.maxHeight  = bar.offsetHeight + 'px';
-      bar.style.overflow   = 'hidden';
-      requestAnimationFrame(function () {
-        bar.style.maxHeight = '0';
-        bar.style.opacity   = '0';
-      });
-      setTimeout(function () { bar.style.display = 'none'; }, 320);
+(function(){
+  var bar = document.getElementById('annBar');
+  var btn = document.getElementById('annClose');
+  if(btn) btn.addEventListener('click', function(){
+    bar.style.maxHeight = bar.offsetHeight + 'px';
+    requestAnimationFrame(function(){
+      bar.style.transition = 'max-height .4s ease, opacity .4s ease';
+      bar.style.maxHeight = '0';
+      bar.style.opacity   = '0';
     });
-  }
-
-  /* ── 2. Copy code button ── */
-  document.addEventListener('click', function (e) {
-    var btn = e.target.closest('.ann-copy-btn');
-    if (!btn) return;
-    var code = btn.dataset.code;
-    if (!code) return;
-    navigator.clipboard ? navigator.clipboard.writeText(code) : fallbackCopy(code);
-    var label = btn.querySelector('#annCopyLabel') || btn;
-    label.textContent = '✓ Copied!';
-    btn.classList.add('copied');
-    setTimeout(function () {
-      label.textContent = 'Copy';
-      btn.classList.remove('copied');
-    }, 2400);
   });
-
-  function fallbackCopy(text) {
-    var el = document.createElement('textarea');
-    el.value = text;
-    document.body.appendChild(el);
-    el.select();
-    document.execCommand('copy');
-    document.body.removeChild(el);
-  }
-
-  /* ── 3. AUTO-DETECT active discount code ──────────────────────────────
-     Shopify exposes automatic discounts through the cart object.
-     Steps:
-       a. Fetch /cart.js  → check cart.discount_codes[] (applied discounts)
-       b. If none found, try the Shopify Storefront GQL introspection
-          (not available without Storefront token — skip gracefully)
-       c. Render detected code into the promo item slot, or keep
-          the merchant-set manual code if configured.
-  ── */
-  var promoItem  = document.getElementById('annPromoItem');
-  var promoText  = document.getElementById('annPromoText');
-  var copyBtn    = document.getElementById('annCopyBtn');
-
-  if (!promoItem) return; // block not in use
-
-  var manualCode  = promoItem.dataset.manualCode  || '';
-  var manualText  = promoItem.dataset.manualText  || '';
-  var fallbackTxt = promoItem.dataset.fallbackText || '';
-
-  function renderCode(code, textTemplate) {
-    if (!code) {
-      // no code at all — hide promo item and adjacent separator
-      promoItem.style.display = 'none';
-      var prev = promoItem.previousElementSibling;
-      if (prev && prev.classList.contains('ann-bar__sep')) prev.style.display = 'none';
-      return;
-    }
-
-    // Build display: replace {code} token in text template
-    var txt = (textTemplate || 'Use code {code} for savings').replace('{code}', '');
-    promoText.innerHTML = txt + ' <span class="ann-code-highlight">' + code + '</span>';
-
-    if (copyBtn) {
-      copyBtn.dataset.code = code;
-      var lbl = copyBtn.querySelector('#annCopyLabel');
-      if (lbl) lbl.textContent = 'Copy';
-    }
-  }
-
-  // a. If merchant hardcoded a code, use it immediately (no delay)
-  if (manualCode && manualCode.trim() !== '') {
-    renderCode(manualCode.trim(), manualText);
-    return; // done — no need to auto-detect
-  }
-
-  // b. Auto-detect from cart (works for auto-applied discounts)
-  fetch('/cart.js', {
-    headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
-  })
-  .then(function (res) { return res.json(); })
-  .then(function (cart) {
-    var codes = cart.discount_codes || [];
-    var active = codes.find(function (d) { return d.applicable !== false; });
-
-    if (active && active.code) {
-      renderCode(active.code, manualText || 'Use code {code} at checkout');
-    } else {
-      // c. No cart-level code found. Fall back to manual text (no copy button)
-      if (fallbackTxt && fallbackTxt.trim() !== '') {
-        promoText.textContent = fallbackTxt;
-        if (copyBtn) copyBtn.style.display = 'none';
-      } else {
-        // nothing to show — hide whole item
-        renderCode('', '');
-      }
-    }
-  })
-  .catch(function () {
-    // Network error — show fallback quietly
-    if (fallbackTxt) promoText.textContent = fallbackTxt;
-    if (copyBtn) copyBtn.style.display = 'none';
-  });
-
-  /* ── 4. Mobile: duplicate list for seamless marquee ── */
-  var list = document.getElementById('annList');
-  if (list && window.innerWidth <= 640) {
-    list.innerHTML += list.innerHTML;
-  }
-
+  // Auto-detect active discount code from metafield or global variable
+  {% if section.settings.discount_code != blank %}
+  (function(){
+    var code = '{{ section.settings.discount_code }}';
+    document.querySelectorAll('.ann-code-slot').forEach(function(el){ el.textContent = code; });
+  })();
+  {% endif %}
 })();
 </script>
 
@@ -393,54 +58,32 @@
 {
   "name": "Announcement Bar",
   "settings": [
-    {"type":"checkbox","id":"show","label":"Show announcement bar","default":true},
-    {"type":"color","id":"bg_color","label":"Background color","default":"#1a1a1a"},
-    {"type":"color","id":"text_color","label":"Text color","default":"#ffffff"},
-    {"type":"range","id":"bar_height","min":32,"max":60,"step":2,"unit":"px","label":"Bar height","default":40},
-    {"type":"range","id":"font_size","min":11,"max":16,"step":1,"unit":"px","label":"Font size","default":13},
-    {"type":"checkbox","id":"dismissible","label":"Show close (×) button","default":true}
+    {"type":"color","id":"bg_color","label":"Background colour","default":"#1a1a1a"},
+    {"type":"color","id":"text_color","label":"Text colour","default":"#ffffff"},
+    {"type":"range","id":"bar_height","min":30,"max":56,"step":2,"unit":"px","label":"Bar height","default":40},
+    {"type":"range","id":"speed","min":10,"max":60,"step":5,"unit":"s","label":"Scroll speed","default":30},
+    {"type":"checkbox","id":"show_close","label":"Show close button","default":true},
+    {"type":"text","id":"discount_code","label":"Active discount code (auto-inject)","info":"Shown as .ann-code-slot in any block text that contains that placeholder.","default":""}
   ],
-  "blocks": [
+  "blocks":[
     {
-      "type": "shipping",
-      "name": "🚚 Shipping message",
-      "limit": 2,
-      "settings": [
-        {"type":"text","id":"icon","label":"Icon (emoji)","default":"🚚"},
-        {"type":"text","id":"text","label":"Message","default":"Free U.S. shipping on orders $75+"},
-        {"type":"url","id":"link_url","label":"Link URL (optional)"},
-        {"type":"text","id":"link_label","label":"Link label","default":""}
-      ]
-    },
-    {
-      "type": "promo_code",
-      "name": "🏷 Discount code",
-      "limit": 1,
-      "settings": [
-        {"type":"text","id":"icon","label":"Icon (emoji)","default":"🏷"},
-        {"type":"text","id":"code","label":"Discount code (leave blank = auto-detect from store)","default":"","info":"If blank, the bar will auto-read any discount code applied in the shopper's cart. Type a code here to force-display it always."},
-        {"type":"text","id":"text","label":"Message text (use {code} placeholder)","default":"Use code {code} for 10% off","info":"The placeholder {code} is replaced with the actual code automatically."},
-        {"type":"text","id":"fallback_text","label":"Fallback text (shown if no code found)","default":"Join our list for exclusive discounts"}
-      ]
-    },
-    {
-      "type": "custom",
-      "name": "✏️ Custom message",
-      "settings": [
-        {"type":"text","id":"icon","label":"Icon (emoji)","default":"🎁"},
-        {"type":"text","id":"text","label":"Message","default":"New arrivals every week"},
-        {"type":"url","id":"link_url","label":"Link URL (optional)"},
-        {"type":"text","id":"link_label","label":"Link label","default":"Shop Now"}
+      "type":"message",
+      "name":"Message",
+      "settings":[
+        {"type":"text","id":"icon","label":"Emoji / icon","default":"🚚"},
+        {"type":"richtext","id":"text","label":"Message text","default":"<p>Free U.S. shipping on orders $75+</p>"},
+        {"type":"text","id":"link_label","label":"Link label (optional)","default":""},
+        {"type":"url","id":"link_url","label":"Link URL","default":""}
       ]
     }
   ],
-  "presets": [{
-    "name": "Announcement Bar",
-    "blocks": [
-      {"type":"shipping","settings":{"icon":"🚚","text":"Free U.S. shipping on orders $75+","link_url":"/pages/shipping"}},
-      {"type":"promo_code","settings":{"icon":"🏷","code":"","text":"Use code {code} for 10% off","fallback_text":""}},
-      {"type":"custom","settings":{"icon":"↩","text":"30-day easy returns","link_url":"/pages/returns","link_label":"Learn more"}}
+  "default":{
+    "blocks":[
+      {"type":"message","settings":{"icon":"🚚","text":"<p>Free U.S. shipping on orders $75+</p>","link_label":"","link_url":""}},
+      {"type":"message","settings":{"icon":"🎁","text":"<p>Use code <strong>WELCOME10</strong> for 10% off your first order</p>","link_label":"Shop now","link_url":"/collections/all"}},
+      {"type":"message","settings":{"icon":"✨","text":"<p>30-day easy returns · No questions asked</p>","link_label":"","link_url":""}}
     ]
-  }]
+  },
+  "presets":[{"name":"Announcement Bar"}]
 }
 {% endschema %}
