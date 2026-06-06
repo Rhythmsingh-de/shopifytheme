@@ -30,7 +30,7 @@
 
   /* ── view_item_list on collection + homepage grids ── */
   function fireViewItemList() {
-    var cards = document.querySelectorAll('.p-card[data-product-id]');
+    var cards = document.querySelectorAll('.prod-card[data-product-id]');
     if (!cards.length) return;
     var items = [];
     cards.forEach(function (card, i) {
@@ -61,7 +61,7 @@
     if (!variantId) return;
 
     /* fetch variant price from Shopify AJAX if not on card */
-    var card   = btn.closest('.p-card');
+    var card   = btn.closest('.prod-card');
     var price  = card ? parseFloat(card.dataset.price || 0) : 0;
     var name   = card ? (card.dataset.productTitle || '') : (document.querySelector('h1') ? document.querySelector('h1').textContent.trim() : '');
 
