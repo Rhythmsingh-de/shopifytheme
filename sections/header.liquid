@@ -1,0 +1,18 @@
+<header class="site-header">
+  <div class="page-width header-inner">
+    <a class="brand" href="{{ routes.root_url }}">North<span>Co</span></a>
+    <nav class="nav" aria-label="Primary">
+      <a href="{{ routes.all_products_collection_url }}">Shop</a>
+      <a href="/collections/best-sellers">Best Sellers</a>
+      <a href="/collections/new-arrivals">New Arrivals</a>
+      <a href="/pages/faq">FAQ</a>
+    </nav>
+    <div class="header-actions">
+      <div class="header-badge">USD • Ships in USA</div>
+      <a href="{{ routes.cart_url }}">Cart</a>
+    </div>
+  </div>
+</header>
+{% schema %}
+{ "name": "Header", "settings": [] }
+{% endschema %}
