@@ -25,7 +25,7 @@
     "header_height": 60,
     "show_search": true,
     "show_account": true,
-    "search_placeholder": "Search products…",
+    "search_placeholder": "Search products\u2026",
     "cart_type": "drawer",
     "show_cart_note": false,
     "free_shipping_threshold": "75",
@@ -54,7 +54,15 @@
     "social_facebook": "",
     "social_pinterest": "",
     "social_youtube": "",
-    "social_twitter": ""
+    "social_twitter": "",
+    "color_sale": "#e8260d",
+    "color_sale_bg": "#fff4f3",
+    "color_deco": "#2d7a4f",
+    "color_deco_light": "#e8f5ee",
+    "button_border_radius": "9999px",
+    "logo_height": 40,
+    "gtm_id": "",
+    "favicon": ""
   },
   "sections": {
     "announcement-bar": {
@@ -71,7 +79,7 @@
         "block-ship": {
           "type": "shipping",
           "settings": {
-            "icon": "🚚",
+            "icon": "\ud83d\ude9a",
             "text": "Free U.S. shipping on orders $75+",
             "link_url": "",
             "link_label": ""
@@ -80,7 +88,7 @@
         "block-promo": {
           "type": "promo_code",
           "settings": {
-            "icon": "🏷",
+            "icon": "\ud83c\udff7",
             "code": "",
             "text": "Use code {code} for 10% off",
             "fallback_text": ""
@@ -89,7 +97,7 @@
         "block-returns": {
           "type": "custom",
           "settings": {
-            "icon": "↩",
+            "icon": "\u21a9",
             "text": "30-day easy returns",
             "link_url": "",
             "link_label": "Learn more"
@@ -105,7 +113,7 @@
     "header": {
       "type": "header",
       "settings": {
-        "search_placeholder": "Search products…"
+        "search_placeholder": "Search products\u2026"
       }
     },
     "footer": {
