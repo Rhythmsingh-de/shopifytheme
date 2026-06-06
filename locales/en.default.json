@@ -1,29 +1,79 @@
 {
   "general": {
-    "password_page": {
-      "login_form_heading": "Enter store password",
-      "login_form_password_label": "Password",
-      "login_form_password_placeholder": "Password",
-      "login_form_submit": "Enter"
+    "search": { "placeholder": "Search products...", "submit": "Search", "no_results": "No results for \"{{ terms }}\"" },
+    "currency": { "symbol": "$" },
+    "close": "Close",
+    "back": "Back",
+    "loading": "Loading...",
+    "skip_content": "Skip to content"
+  },
+  "products": {
+    "product": {
+      "add_to_cart": "Add to Cart",
+      "sold_out": "Sold Out",
+      "unavailable": "Unavailable",
+      "select_options": "Select Options",
+      "quantity": "Quantity",
+      "description": "Description",
+      "reviews": "Reviews",
+      "share": "Share",
+      "sku": "SKU",
+      "vendor": "Brand",
+      "type": "Type",
+      "sale": "Sale",
+      "new": "New",
+      "bestseller": "Bestseller",
+      "free_shipping": "Free Shipping over $75",
+      "in_stock": "In stock",
+      "low_stock": "Low stock — order soon",
+      "out_of_stock": "Out of stock"
     },
-    "404": {
-      "title": "Page not found"
-    },
-    "pagination": {
-      "previous": "Previous",
-      "next": "Next"
-    },
-    "cart": {
-      "title": "Your cart",
+    "general": { "from": "From", "sale_badge": "Sale", "new_badge": "New" }
+  },
+  "cart": {
+    "general": {
+      "title": "Your Cart",
       "empty": "Your cart is empty",
-      "checkout": "Checkout",
-      "subtotal": "Subtotal"
-    },
-    "search": {
-      "placeholder": "Search\u2026",
-      "submit": "Search",
-      "title": "Search results for"
-    },
-    "continue_shopping": "Continue shopping"
+      "empty_cta": "Shop Now",
+      "items_count_one": "{{ count }} item",
+      "items_count_other": "{{ count }} items",
+      "subtotal": "Subtotal",
+      "tax_note": "Taxes and shipping calculated at checkout",
+      "checkout": "Proceed to Checkout",
+      "view_cart": "View Full Cart",
+      "remove": "Remove",
+      "continue_shopping": "Continue Shopping",
+      "update": "Update Cart",
+      "note_label": "Add order note",
+      "note_placeholder": "Special instructions..."
+    }
+  },
+  "sections": {
+    "header": { "menu": "Menu", "cart": "Cart", "search": "Search", "account": "Account" },
+    "footer": { "newsletter_label": "Subscribe", "newsletter_placeholder": "Your email address" },
+    "announcement_bar": { "default_message": "🚚 Free U.S. shipping on orders $75+ · Use code WELCOME10 for 10% off" },
+    "collection_hero": { "default_subheading": "Explore our collection" },
+    "hero": {
+      "default_heading": "Luxury Wellness for You, Your Home & Your Pets",
+      "default_subheading": "Premium products designed for comfort, beauty, recovery, and everyday luxury.",
+      "default_cta1": "Shop Women",
+      "default_cta2": "Shop Home"
+    }
+  },
+  "accessibility": {
+    "skip_to_content": "Skip to content",
+    "close_menu": "Close menu",
+    "open_menu": "Open menu",
+    "close_cart": "Close cart",
+    "open_cart": "Open cart",
+    "increase_quantity": "Increase quantity",
+    "decrease_quantity": "Decrease quantity",
+    "remove_item": "Remove {{ title }} from cart",
+    "loading": "Loading"
+  },
+  "customer": {
+    "login": { "title": "Sign In", "email": "Email", "password": "Password", "submit": "Sign In", "forgot_password": "Forgot password?", "create_account": "Create account" },
+    "register": { "title": "Create Account", "first_name": "First Name", "last_name": "Last Name", "email": "Email", "password": "Password", "submit": "Create Account", "login": "Already have an account? Sign in" },
+    "account": { "title": "My Account", "orders": "Order History", "addresses": "Addresses", "logout": "Sign Out" }
   }
 }
