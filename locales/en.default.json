@@ -1,0 +1,29 @@
+{
+  "general": {
+    "password_page": {
+      "login_form_heading": "Enter store password",
+      "login_form_password_label": "Password",
+      "login_form_password_placeholder": "Password",
+      "login_form_submit": "Enter"
+    },
+    "404": {
+      "title": "Page not found"
+    },
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "cart": {
+      "title": "Your cart",
+      "empty": "Your cart is empty",
+      "checkout": "Checkout",
+      "subtotal": "Subtotal"
+    },
+    "search": {
+      "placeholder": "Search\u2026",
+      "submit": "Search",
+      "title": "Search results for"
+    },
+    "continue_shopping": "Continue shopping"
+  }
+}
