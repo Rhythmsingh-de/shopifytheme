@@ -109,7 +109,7 @@
                      style="width:42px;text-align:center;border:none;font-weight:700;background:transparent;font-size:var(--text-sm)">
               <button class="qty__btn" onclick="BLC.updateCartLine(${i + 1}, ${item.quantity + 1})" aria-label="Increase quantity">+</button>
             </div>
-            <button onclick="BLC.updateCartLine(${i + 1}, 0)" style="font-size:var(--text-xs);color:var(--color-text-muted);text-decoration:underline" aria-label="Remove ${escHtml(item.product_title)}">Remove</button>
+            <button onclick="BLC.updateCartLine(${i + 1}, 0)" class="cart-item__del" data-line="${i + 1}" style="font-size:var(--text-xs);color:var(--color-text-muted);text-decoration:underline;transition:color var(--trans-fast)" aria-label="Remove ${escHtml(item.product_title)}">Remove</button>
           </div>
         </div>
       </div>`).join('');
