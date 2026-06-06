@@ -1,0 +1,33 @@
+<section class="section">
+  <div class="page-width" style="max-width:760px;">
+    <h1 style="font-size:clamp(28px,4vw,42px);font-weight:900;letter-spacing:-.04em;margin:0 0 24px;">Search</h1>
+    <form action="{{ routes.search_url }}" method="get" style="display:flex;gap:10px;margin-bottom:32px;">
+      <input type="text" name="q" value="{{ search.terms | escape }}" placeholder="Search products…" style="flex:1;padding:12px 16px;border:1px solid #dfd7cc;border-radius:999px;font-size:16px;">
+      <button class="btn btn-primary" type="submit">Search</button>
+    </form>
+    {% if search.performed %}
+      <div class="collection-grid">
+        {% for item in search.results %}
+          {% if item.object_type == 'product' %}
+            <article class="card">
+              <a href="{{ item.url }}">
+                <div class="product-media">
+                  {% if item.featured_image %}
+                    {{ item.featured_image | image_url: width: 800 | image_tag: loading: "lazy", alt: item.title }}
+                  {% endif %}
+                </div>
+                <div class="product-card-content">
+                  <h3 class="product-card-title">{{ item.title }}</h3>
+                  <div class="price">{{ item.price | money }}</div>
+                </div>
+              </a>
+            </article>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% schema %}
+{ "name": "Search", "settings": [] }
+{% endschema %}
