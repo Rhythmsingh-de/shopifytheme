@@ -1,16 +1,147 @@
 {
   "current": {
     "color_primary": "#1a1a1a",
+    "color_primary_text": "#ffffff",
+    "color_secondary": "#e85d26",
     "color_bg": "#ffffff",
+    "color_text": "#1a1a1a",
+    "color_text_muted": "#888888",
+    "color_border": "#e8e8e8",
+    "color_header_bg": "#ffffff",
+    "color_header_text": "#1a1a1a",
+    "color_header_border": "#e8e8e8",
+    "color_footer_bg": "#1a1a1a",
+    "color_footer_text": "#ffffff",
+    "color_btn_primary_bg": "#1a1a1a",
+    "color_btn_primary_text": "#ffffff",
+    "color_btn_secondary_bg": "#ffffff",
+    "color_btn_secondary_text": "#1a1a1a",
+    "logo_width": 140,
+    "logo_width_mobile": 100,
+    "header_layout": "center",
+    "header_sticky": true,
+    "header_border": true,
+    "header_shadow_on_scroll": true,
+    "header_height": 60,
+    "show_search": true,
+    "show_account": true,
+    "search_placeholder": "Search products…",
     "cart_type": "drawer",
+    "show_cart_note": false,
+    "free_shipping_threshold": "75",
+    "free_shipping_message": "Free U.S. shipping on orders $75+",
+    "card_show_vendor": false,
+    "card_show_type": true,
+    "card_show_swatches": true,
+    "card_show_atc": true,
+    "card_image_ratio": "0.8",
+    "card_border_radius": "4px",
+    "card_hover_zoom": true,
+    "collection_cols_desktop": 4,
+    "collection_cols_mobile": 2,
+    "products_per_page": 16,
+    "collection_show_filter_tags": true,
+    "collection_show_sort": true,
     "show_cookie_banner": true,
-    "cookie_banner_text": "We use cookies to improve your experience and for analytics. By continuing, you agree to our Privacy Policy.",
+    "cookie_banner_text": "We use cookies to improve your experience. See our Privacy Policy.",
     "cookie_accept_label": "Accept All",
-    "cookie_decline_label": "Decline",
-    "show_trust_bar": true,
-    "trust_item_1": "Free Shipping $75+",
-    "trust_item_2": "30-Day Easy Returns",
-    "trust_item_3": "Secure Checkout",
-    "trust_item_4": "1 Purchased = 1 Donated"
+    "cookie_decline_label": "No thanks",
+    "section_spacing": 56,
+    "container_max_width": 1280,
+    "button_style": "9999px",
+    "social_instagram": "",
+    "social_tiktok": "",
+    "social_facebook": "",
+    "social_pinterest": "",
+    "social_youtube": "",
+    "social_twitter": ""
+  },
+  "sections": {
+    "announcement-bar": {
+      "type": "announcement-bar",
+      "settings": {
+        "show": true,
+        "bg_color": "#1a1a1a",
+        "text_color": "#ffffff",
+        "bar_height": 40,
+        "font_size": 13,
+        "dismissible": true
+      },
+      "blocks": {
+        "block-ship": {
+          "type": "shipping",
+          "settings": {
+            "icon": "🚚",
+            "text": "Free U.S. shipping on orders $75+",
+            "link_url": "",
+            "link_label": ""
+          }
+        },
+        "block-promo": {
+          "type": "promo_code",
+          "settings": {
+            "icon": "🏷",
+            "code": "",
+            "text": "Use code {code} for 10% off",
+            "fallback_text": ""
+          }
+        },
+        "block-returns": {
+          "type": "custom",
+          "settings": {
+            "icon": "↩",
+            "text": "30-day easy returns",
+            "link_url": "",
+            "link_label": "Learn more"
+          }
+        }
+      },
+      "blocks_order": [
+        "block-ship",
+        "block-promo",
+        "block-returns"
+      ]
+    },
+    "header": {
+      "type": "header",
+      "settings": {
+        "search_placeholder": "Search products…"
+      }
+    },
+    "footer": {
+      "type": "footer",
+      "settings": {
+        "tagline": "Premium style for women, men & the ones you love.",
+        "copyright_extra": "All rights reserved."
+      },
+      "blocks": {
+        "col-shop": {
+          "type": "menu_col",
+          "settings": {
+            "heading": "Shop",
+            "links_manual": "Women|/collections/womens\nMen|/collections/mens\nJewellery|/collections/jewellery\nPet & Home|/collections/pet-home\nSale|/collections/sale"
+          }
+        },
+        "col-help": {
+          "type": "menu_col",
+          "settings": {
+            "heading": "Help",
+            "links_manual": "Contact Us|/pages/contact\nShipping & Returns|/pages/shipping\nFAQ|/pages/faq\nSize Guide|/pages/size-guide\nOrder Tracking|/pages/tracking"
+          }
+        },
+        "col-company": {
+          "type": "menu_col",
+          "settings": {
+            "heading": "Company",
+            "links_manual": "Our Story|/pages/about\nSustainability|/pages/sustainability\nCareers|/pages/careers\nPress|/pages/press"
+          }
+        }
+      },
+      "blocks_order": [
+        "col-shop",
+        "col-help",
+        "col-company"
+      ]
+    }
   }
 }
