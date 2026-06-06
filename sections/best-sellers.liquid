@@ -1,0 +1,70 @@
+{%- comment -%} BodyLuxCare — Best Sellers Section {%- endcomment -%}
+<section class="best-sellers reveal" style="padding:clamp(40px,6vw,80px) 0;background:var(--color-bg)">
+  <div class="page-w">
+    {%- if section.settings.eyebrow != blank -%}
+      <p class="label-eyebrow" style="text-align:center;margin-bottom:8px">{{ section.settings.eyebrow }}</p>
+    {%- endif -%}
+    <h2 style="text-align:center;font-family:var(--font-display);font-size:clamp(1.6rem,3vw,2.4rem);margin-bottom:clamp(24px,4vw,48px)">{{ section.settings.heading | default: 'Best Sellers' }}</h2>
+
+    {%- assign coll = collections[section.settings.collection] -%}
+    <div class="prod-grid" style="display:grid;grid-template-columns:repeat({{ section.settings.columns_desktop | default: 4 }},1fr);gap:var(--sp-5);--cols:{{ section.settings.columns_desktop | default: 4 }}">
+      {%- if coll != blank -%}
+        {%- for product in coll.products limit: section.settings.products_to_show | default: 4 -%}
+          {%- render 'product-card', product: product -%}
+        {%- else -%}
+          <p style="grid-column:1/-1;text-align:center;color:var(--color-text-muted);padding:40px">Select a collection in the theme editor.</p>
+        {%- endfor -%}
+      {%- else -%}
+        {%- for i in (1..4) -%}
+          <article class="prod-card">
+            <a href="/collections/all">
+              <div class="prod-card__media">
+                <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&q=75&auto=format&fit=crop" alt="Best seller product" width="600" height="750" loading="lazy">
+                <span class="prod-card__badge prod-card__badge--best">Best Seller</span>
+              </div>
+              <div class="prod-card__body">
+                <div class="prod-card__meta">{{ section.settings.mock_type | default: 'Premium Collection' }}</div>
+                <div class="prod-card__name">{{ section.settings.mock_name | default: 'Luxury Product' }}</div>
+                <div class="prod-card__price-row">
+                  <span class="prod-card__price">$49.99</span>
+                </div>
+              </div>
+            </a>
+          </article>
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+
+    {%- if section.settings.view_all_label != blank -%}
+      <div style="text-align:center;margin-top:clamp(24px,4vw,40px)">
+        <a href="{{ section.settings.view_all_url | default: '/collections/all' }}" class="btn btn--outline">{{ section.settings.view_all_label }}</a>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+<style>
+@media(max-width:1023px){.best-sellers .prod-grid{grid-template-columns:repeat(2,1fr)!important;}}
+@media(max-width:480px){.best-sellers .prod-grid{grid-template-columns:repeat(2,1fr)!important;gap:var(--sp-3)!important;}}
+</style>
+
+{% schema %}
+{
+  "name": "Best Sellers",
+  "tag": "section",
+  "class": "section-best-sellers",
+  "settings": [
+    {"type":"text","id":"eyebrow","label":"Eyebrow label","default":"Customer Favourites"},
+    {"type":"text","id":"heading","label":"Heading","default":"Best Sellers"},
+    {"type":"collection","id":"collection","label":"Collection"},
+    {"type":"range","id":"products_to_show","label":"Products to show","min":2,"max":12,"step":2,"default":4},
+    {"type":"select","id":"columns_desktop","label":"Columns (desktop)","options":[{"value":"2","label":"2"},{"value":"3","label":"3"},{"value":"4","label":"4"}],"default":"4"},
+    {"type":"text","id":"view_all_label","label":"'View All' button label","default":"View All"},
+    {"type":"url","id":"view_all_url","label":"'View All' link"},
+    {"type":"header","content":"Mock content (shown when no collection selected)"},
+    {"type":"text","id":"mock_type","label":"Mock product type","default":"Premium Collection"},
+    {"type":"text","id":"mock_name","label":"Mock product name","default":"Luxury Product"}
+  ],
+  "presets":[{"name":"Best Sellers"}]
+}
+{% endschema %}
