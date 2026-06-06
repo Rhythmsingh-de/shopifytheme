@@ -1,0 +1,118 @@
+{% comment %} DataLayer — Server-side GTM/GA4 event tracking {% endcomment %}
+<script>
+window.dataLayer = window.dataLayer || [];
+{% if request.page_type == 'index' %}
+dataLayer.push({
+  event: 'page_view',
+  page_type: 'home',
+  page_title: {{ page_title | json }},
+  page_url: '{{ canonical_url }}',
+  currency: {{ cart.currency.iso_code | json }}
+});
+{% elsif request.page_type == 'product' %}
+dataLayer.push({
+  event: 'view_item',
+  page_type: 'product',
+  ecommerce: {
+    currency: {{ cart.currency.iso_code | json }},
+    value: {{ product.price | divided_by: 100.0 }},
+    items: [{
+      item_id: {{ product.id | json }},
+      item_name: {{ product.title | json }},
+      item_brand: {{ product.vendor | json }},
+      item_category: {{ product.type | json }},
+      price: {{ product.price | divided_by: 100.0 }},
+      quantity: 1
+      {% for collection in product.collections %},
+      item_category{{ forloop.index | plus: 1 }}: {{ collection.title | json }}
+      {% endfor %}
+    }]
+  }
+});
+{% elsif request.page_type == 'collection' %}
+dataLayer.push({
+  event: 'view_item_list',
+  page_type: 'collection',
+  ecommerce: {
+    item_list_name: {{ collection.title | json }},
+    item_list_id: {{ collection.handle | json }},
+    items: [
+      {% for product in collection.products limit: 20 %}
+      {
+        item_id: {{ product.id | json }},
+        item_name: {{ product.title | json }},
+        item_brand: {{ product.vendor | json }},
+        price: {{ product.price | divided_by: 100.0 }},
+        index: {{ forloop.index }}
+      }{% unless forloop.last %},{% endunless %}
+      {% endfor %}
+    ]
+  }
+});
+{% elsif request.page_type == 'cart' %}
+dataLayer.push({
+  event: 'view_cart',
+  page_type: 'cart',
+  ecommerce: {
+    currency: {{ cart.currency.iso_code | json }},
+    value: {{ cart.total_price | divided_by: 100.0 }},
+    items: [
+      {% for item in cart.items %}
+      {
+        item_id: {{ item.product_id | json }},
+        item_name: {{ item.product.title | json }},
+        item_variant: {{ item.variant.title | json }},
+        price: {{ item.price | divided_by: 100.0 }},
+        quantity: {{ item.quantity }}
+      }{% unless forloop.last %},{% endunless %}
+      {% endfor %}
+    ]
+  }
+});
+{% elsif request.page_type == 'search' %}
+dataLayer.push({
+  event: 'search',
+  page_type: 'search',
+  search_term: {{ search.terms | json }}
+});
+{% elsif request.page_type == 'customers/order' %}
+dataLayer.push({
+  event: 'purchase',
+  page_type: 'order',
+  ecommerce: {
+    transaction_id: {{ order.order_number | json }},
+    value: {{ order.total_price | divided_by: 100.0 }},
+    tax: {{ order.total_tax | divided_by: 100.0 }},
+    shipping: {{ order.shipping_price | divided_by: 100.0 }},
+    currency: {{ order.currency | json }},
+    items: [
+      {% for line_item in order.line_items %}
+      {
+        item_id: {{ line_item.product_id | json }},
+        item_name: {{ line_item.title | json }},
+        item_variant: {{ line_item.variant.title | json }},
+        price: {{ line_item.price | divided_by: 100.0 }},
+        quantity: {{ line_item.quantity }}
+      }{% unless forloop.last %},{% endunless %}
+      {% endfor %}
+    ]
+  }
+});
+{% else %}
+dataLayer.push({
+  event: 'page_view',
+  page_type: {{ request.page_type | json }},
+  page_title: {{ page_title | json }},
+  page_url: '{{ canonical_url }}'
+});
+{% endif %}
+
+{% if customer %}
+dataLayer.push({
+  user_id: {{ customer.id | json }},
+  user_email_hash: {{ customer.email | sha256 | json }},
+  customer_tags: {{ customer.tags | json }},
+  customer_orders_count: {{ customer.orders_count | json }}
+});
+{% endif %}
+</script>
