@@ -1,0 +1,70 @@
+
+<section class="cat-strip" id="categories">
+  <div class="page-w">
+    <div class="cat-strip__head">
+      <h2>{{ section.settings.heading }}</h2>
+      {% if section.settings.view_all_url != blank %}
+        <a href="{{ section.settings.view_all_url }}" class="label-section" style="display:flex;align-items:center;gap:4px">
+          {{ section.settings.view_all_text }} →
+        </a>
+      {% endif %}
+    </div>
+    <div class="cat-strip__grid">
+      {% for block in section.blocks %}
+        <a class="cat-tile" href="{{ block.settings.url }}" {{ block.shopify_attributes }}>
+          {% if block.settings.image != blank %}
+            {{ block.settings.image | image_url: width: 800 | image_tag:
+               loading: 'lazy',
+               widths: '400,600,800',
+               sizes: '(max-width:640px) 50vw,(max-width:1024px) 25vw,300px',
+               alt: block.settings.name }}
+          {% else %}
+            <img src="https://images.unsplash.com/photo-{{ block.settings.fallback_seed }}?w=800&q=75&auto=format&fit=crop"
+                 alt="{{ block.settings.name }}" width="400" height="533" loading="lazy">
+          {% endif %}
+          <div class="cat-tile__body">
+            {% if block.settings.label != blank %}
+              <div class="cat-tile__label">{{ block.settings.label }}</div>
+            {% endif %}
+            <div class="cat-tile__name">{{ block.settings.name }}</div>
+            <span class="cat-tile__btn">{{ block.settings.cta }}</span>
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Category Strip",
+  "settings": [
+    {"type":"text","id":"heading","label":"Heading","default":"Shop by Category"},
+    {"type":"url","id":"view_all_url","label":"View all URL"},
+    {"type":"text","id":"view_all_text","label":"View all text","default":"View All"}
+  ],
+  "blocks": [
+    {
+      "type":"category",
+      "name":"Category tile",
+      "settings": [
+        {"type":"image_picker","id":"image","label":"Category image"},
+        {"type":"text","id":"fallback_seed","label":"Fallback image seed (Unsplash ID)","default":"1483985988355-763728e1935b"},
+        {"type":"text","id":"label","label":"Eyebrow label","default":"New"},
+        {"type":"text","id":"name","label":"Category name","default":"Women's Fashion"},
+        {"type":"text","id":"cta","label":"CTA text","default":"Shop Now"},
+        {"type":"url","id":"url","label":"Link URL"}
+      ]
+    }
+  ],
+  "presets": [{
+    "name":"Category Strip",
+    "blocks": [
+      {"type":"category","settings":{"label":"New Arrivals","name":"Women's Fashion","cta":"Shop Women","fallback_seed":"1483985988355-763728e1935b"}},
+      {"type":"category","settings":{"label":"Trending","name":"Men's Style","cta":"Shop Men","fallback_seed":"1617137707691-e47ed09efa4b"}},
+      {"type":"category","settings":{"label":"Fine Jewellery","name":"Women's Jewellery","cta":"Shop Jewellery","fallback_seed":"1535632066927-ab7c9ab60908"}},
+      {"type":"category","settings":{"label":"Gifts & Toys","name":"Pet & Home","cta":"Shop Gifts","fallback_seed":"1601758174110-50f8a3fcaebb"}}
+    ]
+  }]
+}
+{% endschema %}
