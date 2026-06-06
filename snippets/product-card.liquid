@@ -17,11 +17,14 @@
                class="prod-card__img prod-card__img--hover">
         {%- endif -%}
       {%- else -%}
-        <img src="https://picsum.photos/seed/{{ card_product.handle }}/600/750"
-             alt="{{ card_product.title | escape }}"
-             width="600" height="750"
-             loading="lazy" decoding="async"
-             class="prod-card__img prod-card__img--primary">
+        <div class="prod-card__img prod-card__img--primary prod-card__no-img" aria-label="{{ card_product.title | escape }}">
+          <svg viewBox="0 0 100 120" width="64" height="76" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect x="10" y="20" width="80" height="90" rx="6" fill="currentColor" opacity="0.08"/>
+            <rect x="24" y="8" width="52" height="20" rx="4" fill="currentColor" opacity="0.12"/>
+            <rect x="30" y="50" width="40" height="4" rx="2" fill="currentColor" opacity="0.18"/>
+            <rect x="30" y="62" width="28" height="4" rx="2" fill="currentColor" opacity="0.12"/>
+          </svg>
+        </div>
       {%- endif -%}
     </a>
 
@@ -152,5 +155,14 @@
 .prod-card__price--compare {
   font-size: var(--text-sm); color: var(--color-text-muted);
   text-decoration: line-through;
+}
+</style>
+
+<style>
+.prod-card__no-img {
+  background: var(--color-surface);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--color-text-muted);
+  position: absolute; inset: 0; width: 100%; height: 100%;
 }
 </style>
