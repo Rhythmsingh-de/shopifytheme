@@ -1,0 +1,44 @@
+<section class="product-template">
+  <div class="page-width product-grid">
+    <div class="product-gallery">
+      {% if product.featured_image %}
+        {{ product.featured_image | image_url: width: 1200 | image_tag: loading: 'eager', widths: '500, 700, 900, 1200', alt: product.title }}
+      {% endif %}
+    </div>
+    <div class="product-info">
+      <span class="badge">Best seller potential</span>
+      <h1>{{ product.title }}</h1>
+      <div class="price">{{ product.price | money }}</div>
+      <div class="product-meta">
+        <span class="badge">U.S. shipping</span>
+        <span class="badge">Secure checkout</span>
+        <span class="badge">Easy returns</span>
+      </div>
+      <div class="description">{{ product.description }}</div>
+      <div class="info-strip">
+        <div><strong>Fast dispatch</strong><br>Clear domestic shipping messaging.</div>
+        <div><strong>Buy with confidence</strong><br>Trust signals placed near CTA.</div>
+        <div><strong>English-only copy</strong><br>Built for U.S. audiences.</div>
+      </div>
+      <div class="buy-box">
+        {% form 'product', product %}
+          {% if product.has_only_default_variant == false %}
+            <label for="variant-select">Choose option</label>
+            <select id="variant-select" name="id">
+              {% for variant in product.variants %}
+                <option value="{{ variant.id }}" {% if variant == product.selected_or_first_available_variant %}selected{% endif %}>{{ variant.title }} - {{ variant.price | money }}</option>
+              {% endfor %}
+            </select>
+          {% else %}
+            <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+          {% endif %}
+          <button class="btn btn-primary" type="submit">Add to cart</button>
+        {% endform %}
+        <a class="btn btn-secondary" href="{{ routes.cart_url }}">Go to cart</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% schema %}
+{ "name": "Main product", "settings": [] }
+{% endschema %}
