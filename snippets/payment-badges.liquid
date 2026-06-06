@@ -1,0 +1,118 @@
+
+{%- comment -%}
+  Renders payment method badges.
+  Usage: {% render 'payment-badges', show_label: true, size: 'md' %}
+  size: 'sm' | 'md' | 'lg'
+{%- endcomment -%}
+
+{%- liquid
+  assign badge_size = size | default: 'md'
+  assign label      = show_label | default: false
+-%}
+
+<div class="pay-badges pay-badges--{{ badge_size }}" aria-label="Accepted payment methods">
+  {%- if label -%}
+    <p class="pay-badges__label">We accept</p>
+  {%- endif -%}
+
+  <div class="pay-badges__row">
+
+    <!-- VISA — navy blue wordmark on white -->
+    <span class="pay-badge" title="Visa">
+      <svg viewBox="0 0 50 32" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Visa">
+        <rect width="50" height="32" rx="4" fill="#fff" stroke="#e0e0e0" stroke-width="1"/>
+        <path d="M19.5 21.5H17l1.56-9.5h2.5L19.5 21.5z" fill="#1A1F71"/>
+        <path d="M29 12.2a6.7 6.7 0 0 0-2.4-.43c-2.6 0-4.44 1.3-4.45 3.17-.02 1.38 1.3 2.15 2.3 2.6 1 .47 1.35.77 1.35 1.19-.01.64-.81.93-1.56.93a5.5 5.5 0 0 1-2.46-.5l-.34-.15-.37 2.18c.62.27 1.76.5 2.95.51 2.77 0 4.57-1.3 4.59-3.3.01-1.1-.69-1.94-2.2-2.63-.92-.45-1.48-.75-1.48-1.2 0-.4.48-.83 1.51-.83a4.8 4.8 0 0 1 1.98.37l.24.11L29 12.2z" fill="#1A1F71"/>
+        <path d="M32.3 12h-2.04c-.63 0-1.1.17-1.38.8L25 21.5h2.77l.55-1.44h3.38l.32 1.44h2.45L32.3 12zm-3.24 6.05.98-2.64.32-.93.2.9.68 2.67h-2.18z" fill="#1A1F71"/>
+        <path d="M16.8 12l-2.58 6.48-.28-1.32c-.48-1.54-1.97-3.21-3.63-4.04l2.36 8.37h2.79L19.6 12H16.8z" fill="#1A1F71"/>
+        <path d="M12.2 12H8.03l-.03.19c3.25.78 5.4 2.65 6.3 4.9l-.91-4.3c-.16-.62-.62-.79-1.19-.79z" fill="#F9A533"/>
+      </svg>
+    </span>
+
+    <!-- MASTERCARD — interlocked red & orange circles -->
+    <span class="pay-badge" title="Mastercard">
+      <svg viewBox="0 0 50 32" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Mastercard">
+        <rect width="50" height="32" rx="4" fill="#fff" stroke="#e0e0e0" stroke-width="1"/>
+        <circle cx="19.5" cy="16" r="8" fill="#EB001B"/>
+        <circle cx="30.5" cy="16" r="8" fill="#F79E1B"/>
+        <path d="M25 9.8a8 8 0 0 1 0 12.4A8 8 0 0 1 25 9.8z" fill="#FF5F00"/>
+      </svg>
+    </span>
+
+    <!-- AMEX — blue card with centurion-style text -->
+    <span class="pay-badge" title="American Express">
+      <svg viewBox="0 0 50 32" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="American Express">
+        <rect width="50" height="32" rx="4" fill="#2E77BC"/>
+        <text x="7" y="13" font-family="Arial,sans-serif" font-size="5.5" font-weight="700" fill="#fff" letter-spacing="0.4">AMERICAN</text>
+        <text x="7" y="20" font-family="Arial,sans-serif" font-size="5.5" font-weight="700" fill="#fff" letter-spacing="0.4">EXPRESS</text>
+        <!-- centurion silhouette simplified -->
+        <circle cx="40" cy="16" r="8" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="5"/>
+        <text x="36.5" y="19" font-family="Arial,sans-serif" font-size="9" font-weight="900" fill="rgba(255,255,255,0.35)">C</text>
+      </svg>
+    </span>
+
+    <!-- PAYPAL — dual-P wordmark -->
+    <span class="pay-badge" title="PayPal">
+      <svg viewBox="0 0 50 32" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="PayPal">
+        <rect width="50" height="32" rx="4" fill="#fff" stroke="#e0e0e0" stroke-width="1"/>
+        <!-- Shadow P -->
+        <path d="M22 10h5.5c2.8 0 4.5 1.4 4.2 3.8-.4 3-2.8 4.4-5.5 4.4h-1.5l-1 5h-2.8L22 10z" fill="#009CDE"/>
+        <!-- Main P -->
+        <path d="M18 13h5.5c2.8 0 4.5 1.4 4.2 3.8-.4 3-2.8 4.4-5.5 4.4H20.7l-1 5h-2.8L18 13zm3.5 6h1.8c1.3 0 2.3-.6 2.5-2 .2-1.1-.5-1.7-1.7-1.7h-1.8l-.8 3.7z" fill="#003087"/>
+      </svg>
+    </span>
+
+    <!-- APPLE PAY — black background white logo -->
+    <span class="pay-badge" title="Apple Pay">
+      <svg viewBox="0 0 50 32" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Apple Pay">
+        <rect width="50" height="32" rx="4" fill="#000"/>
+        <!-- Apple logo -->
+        <path d="M20.5 11.8c.6-.8 1-.5 1-.5s.1 1-.5 1.8c-.6.7-1.3.6-1.3.6s-.2-.9.8-1.9zM19 14.3c.4 0 1.2-.6 2.3-.5 1.8.2 2.5 2 2.5 2s-1.4.7-1.4 2.4c0 1.9 1.7 2.5 1.7 2.5s-1.2 3-2.7 3c-.7 0-1.3-.5-2-.5-.7 0-1.4.5-2 .5-1.5 0-3.3-2.9-3.3-5.8 0-2.8 1.7-4.1 3.2-4.1.8 0 1.4.5 1.7.5z" fill="#fff"/>
+        <!-- Pay text -->
+        <text x="27" y="19" font-family="Arial,sans-serif" font-size="7" font-weight="600" fill="#fff" letter-spacing="-0.2">Pay</text>
+      </svg>
+    </span>
+
+    <!-- GOOGLE PAY — white with coloured G -->
+    <span class="pay-badge" title="Google Pay">
+      <svg viewBox="0 0 50 32" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Google Pay">
+        <rect width="50" height="32" rx="4" fill="#fff" stroke="#e0e0e0" stroke-width="1"/>
+        <!-- G mark -->
+        <path d="M16.5 16.3v-1.5h4.5a4 4 0 0 1 .1.9 4.2 4.2 0 0 1-4.3 4.3 4.5 4.5 0 1 1 0-9 4.3 4.3 0 0 1 3 1.2l-1.1 1c-.5-.5-1.2-.8-1.9-.8a3 3 0 1 0 0 6c1.5 0 2.6-.9 2.8-2.1h-3.1z" fill="#4285F4"/>
+        <!-- Pay text -->
+        <text x="24" y="20" font-family="Arial,sans-serif" font-size="7.5" font-weight="500" fill="#3C4043" letter-spacing="-0.3">Pay</text>
+      </svg>
+    </span>
+
+    <!-- SHOP PAY — purple pill -->
+    <span class="pay-badge" title="Shop Pay">
+      <svg viewBox="0 0 50 32" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Shop Pay">
+        <rect width="50" height="32" rx="4" fill="#5A31F4"/>
+        <text x="8.5" y="20" font-family="Arial,sans-serif" font-size="7.5" font-weight="700" fill="#fff" letter-spacing="-0.2">shop</text>
+        <rect x="33" y="10" width="10" height="12" rx="5" fill="#fff"/>
+        <text x="35.5" y="19" font-family="Arial,sans-serif" font-size="8" font-weight="700" fill="#5A31F4">P</text>
+      </svg>
+    </span>
+
+  </div><!-- /.pay-badges__row -->
+</div>
+
+<style>
+  .pay-badges { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+  .pay-badges__label { font-size: 11px; font-weight: 600; letter-spacing: .05em; color: #888; text-transform: uppercase; margin: 0; }
+  .pay-badges__row { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; }
+
+  .pay-badge {
+    display: inline-flex;
+    border-radius: 4px;
+    overflow: hidden;
+    transition: transform 150ms ease, box-shadow 150ms ease;
+    cursor: default;
+  }
+  .pay-badge:hover { transform: translateY(-1px); box-shadow: 0 3px 8px rgba(0,0,0,0.12); }
+
+  /* Sizes */
+  .pay-badges--sm .pay-badge svg { width: 38px; height: 24px; }
+  .pay-badges--md .pay-badge svg { width: 46px; height: 29px; }
+  .pay-badges--lg .pay-badge svg { width: 56px; height: 36px; }
+</style>
