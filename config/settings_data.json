@@ -1,7 +1,16 @@
 {
   "current": {
-    "sections": {},
-    "blocks": {}
-  },
-  "presets": {}
+    "color_primary": "#1a1a1a",
+    "color_bg": "#ffffff",
+    "cart_type": "drawer",
+    "show_cookie_banner": true,
+    "cookie_banner_text": "We use cookies to improve your experience and for analytics. By continuing, you agree to our Privacy Policy.",
+    "cookie_accept_label": "Accept All",
+    "cookie_decline_label": "Decline",
+    "show_trust_bar": true,
+    "trust_item_1": "Free Shipping $75+",
+    "trust_item_2": "30-Day Easy Returns",
+    "trust_item_3": "Secure Checkout",
+    "trust_item_4": "1 Purchased = 1 Donated"
+  }
 }
