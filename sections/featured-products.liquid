@@ -1,0 +1,64 @@
+<section class="section featured-products-section">
+  <div class="container">
+    <div class="section-head reveal">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="section-eyebrow">{{ section.settings.eyebrow }}</p>
+      {%- endif -%}
+      {%- if section.settings.title != blank -%}
+        <h2 class="section-title">{{ section.settings.title }}</h2>
+      {%- endif -%}
+      {%- if section.settings.subtitle != blank -%}
+        <p class="section-subtitle">{{ section.settings.subtitle }}</p>
+      {%- endif -%}
+    </div>
+
+    <div class="prod-grid" style="--cols:{{ section.settings.columns | default: 4 }}">
+      {%- assign featured_col = collections[section.settings.collection] -%}
+      {%- if featured_col != blank and featured_col.products.size > 0 -%}
+        {%- for product in featured_col.products limit: section.settings.products_count -%}
+          {%- render 'product-card', product: product, index: forloop.index0 -%}
+        {%- endfor -%}
+      {%- else -%}
+        {%- for product in collections.all.products limit: section.settings.products_count -%}
+          {%- render 'product-card', product: product, index: forloop.index0 -%}
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+
+    {%- if section.settings.cta_text != blank -%}
+      <div style="text-align:center;margin-top:clamp(var(--sp-8),4vw,var(--sp-12))">
+        <a href="{{ section.settings.cta_url | default: '/collections/all' }}" class="btn btn--outline btn--lg reveal">
+          {{ section.settings.cta_text }}
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+<style>
+.section-subtitle { font-size:var(--text-base);color:var(--color-text-muted);margin-top:var(--sp-2);max-width:56ch;margin-inline:auto; }
+.prod-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--cols,4),1fr);
+  gap: clamp(var(--sp-4),2vw,var(--sp-6));
+}
+@media (max-width:1023px) { .prod-grid { --cols:2 !important; } }
+@media (max-width:480px)  { .prod-grid { --cols:2 !important; gap:var(--sp-3); } }
+</style>
+{% schema %}
+{
+  "name": "Featured Products",
+  "tag": "section",
+  "settings": [
+    { "type": "text",       "id": "eyebrow",        "label": "Eyebrow",          "default": "Handpicked for You" },
+    { "type": "text",       "id": "title",          "label": "Title",            "default": "Best Sellers" },
+    { "type": "textarea",   "id": "subtitle",       "label": "Subtitle",         "default": "Our most-loved products, chosen by thousands of happy customers." },
+    { "type": "collection", "id": "collection",     "label": "Collection to show" },
+    { "type": "range",      "id": "products_count", "label": "Number of products","min": 2, "max": 12, "step": 1, "default": 8 },
+    { "type": "range",      "id": "columns",        "label": "Columns (desktop)", "min": 2, "max": 5,  "step": 1, "default": 4 },
+    { "type": "text",       "id": "cta_text",       "label": "CTA button text",  "default": "View All Products" },
+    { "type": "url",        "id": "cta_url",        "label": "CTA link" }
+  ],
+  "presets": [{ "name": "Featured Products" }]
+}
+{% endschema %}
