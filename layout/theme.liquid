@@ -1,149 +1,158 @@
 <!doctype html>
-<html lang="{{ request.locale.iso_code }}">
+<html lang="{{ request.locale.iso_code }}" dir="ltr">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#111111">
+  <meta name="theme-color" content="#ffffff">
   <title>{{ page_title }}{% unless page_title contains shop.name %} – {{ shop.name }}{% endunless %}</title>
-  <meta name="description" content="{{ page_description | default: shop.description | escape }}">
+  <meta name="description" content="{{ page_description | escape }}">
+
+  {% if settings.favicon != blank %}
+    <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32 }}">
+  {% endif %}
+
+  <!-- Canonical / hreflang -->
   <link rel="canonical" href="{{ canonical_url }}">
+  {% if template == 'product' %}
+    <meta property="og:type" content="product">
+    <meta property="og:title" content="{{ product.title | escape }}">
+    <meta property="og:image" content="{{ product.featured_image | image_url: width: 1200 }}">
+    <meta property="og:price:amount" content="{{ product.price | money_without_currency }}">
+    <meta property="og:price:currency" content="{{ cart.currency.iso_code }}">
+  {% elsif template == 'collection' %}
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="{{ collection.image | image_url: width: 1200 }}">
+  {% else %}
+    <meta property="og:type" content="website">
+    {% if settings.share_image %}
+      <meta property="og:image" content="{{ settings.share_image | image_url: width: 1200 }}">
+    {% endif %}
+  {% endif %}
+  <meta property="og:url" content="{{ canonical_url }}">
+  <meta property="og:site_name" content="{{ shop.name }}">
+
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  {{ content_for_header }}
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
   {{ 'base.css' | asset_url | stylesheet_tag }}
-  {{ 'datalayer.js' | asset_url | script_tag }}
-  <script src="{{ 'theme.js' | asset_url }}" defer></script>
+
+  <!-- Shopify required -->
+  {{ content_for_header }}
+
+  <!-- GTM / dataLayer init -->
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+      event: 'pageview',
+      page_type: '{{ template.name }}',
+      page_title: {{ page_title | json }},
+      page_url: '{{ canonical_url }}'
+    });
+  </script>
+  {% if settings.gtm_id != blank %}
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer',{{ settings.gtm_id | json }});</script>
+  {% endif %}
 </head>
-<body>
-  <a class="skip-link" href="#MainContent">Skip to main content</a>
+<body class="template-{{ template.name }}">
+  {% if settings.gtm_id != blank %}
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ settings.gtm_id }}" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  {% endif %}
+
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- DataLayer JS -->
+  <script src="{{ 'datalayer.js' | asset_url }}" defer></script>
 
   {% section 'announcement-bar' %}
   {% section 'header' %}
 
-  <main id="MainContent" role="main" tabindex="-1">
+  <main id="main">
     {{ content_for_layout }}
   </main>
 
   {% section 'footer' %}
 
-  <!-- Mobile menu drawer -->
-  <div id="mobile-menu" class="mobile-menu" role="dialog" aria-modal="true" aria-label="Navigation menu">
-    <div class="mobile-menu__overlay" id="mobile-menu-overlay"></div>
-    <div class="mobile-menu__panel">
-      <div class="mobile-menu__header">
-        <span class="brand">{{ shop.name }}</span>
-        <button class="mobile-menu__close" id="mobile-menu-close" aria-label="Close menu">&#x2715;</button>
-      </div>
-      <nav class="mobile-menu__nav">
-        {% for link in linklists.main-menu.links %}
-          <a class="mobile-menu__link" href="{{ link.url }}">
-            {{ link.title }}
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M9 18l6-6-6-6"/></svg>
-          </a>
-        {% endfor %}
-      </nav>
-      <div class="mobile-menu__footer">
-        <a class="btn btn-primary btn-full" href="{{ routes.cart_url }}">
-          View Cart
-        </a>
-        <a class="btn btn-outline btn-full" href="{{ routes.search_url }}">
-          Search
-        </a>
-      </div>
-    </div>
-  </div>
-
-  <!-- Cart drawer -->
-  <div id="cart-drawer" class="cart-drawer" role="dialog" aria-modal="true" aria-label="Shopping cart">
-    <div class="cart-drawer__overlay" id="cart-drawer-overlay"></div>
+  <!-- Cart Drawer -->
+  <div class="cart-drawer" id="cartDrawer" aria-hidden="true" role="dialog" aria-label="Shopping cart">
+    <div class="cart-drawer__overlay" id="cartOverlay"></div>
     <div class="cart-drawer__panel">
-      <div class="cart-drawer__header">
-        <span class="cart-drawer__title">Your Cart ({{ cart.item_count }})</span>
-        <button class="cart-drawer__close" id="cart-drawer-close" aria-label="Close cart">&#x2715;</button>
+      <div class="cart-drawer__head">
+        <span class="cart-drawer__title">Your Cart (<span id="drawerCount">{{ cart.item_count }}</span>)</span>
+        <span class="cart-drawer__close" id="cartClose" aria-label="Close cart">✕</span>
       </div>
-      <div class="cart-drawer__body" id="cart-drawer-body">
+      <div class="cart-drawer__body" id="cartBody">
         {% if cart.item_count == 0 %}
           <div class="cart-drawer__empty">
             <p>Your cart is empty.</p>
-            <a class="btn btn-primary" href="{{ routes.all_products_collection_url }}">Start shopping</a>
+            <a href="{{ routes.all_products_collection_url }}" class="btn btn-black btn-sm">Shop Now</a>
           </div>
         {% else %}
           {% for item in cart.items %}
-            <div class="cart-item">
-              {% if item.image %}
-                <img class="cart-item__img" src="{{ item.image | image_url: width: 160 }}" alt="{{ item.title | escape }}" width="76" height="90" loading="lazy">
-              {% else %}
-                <div class="cart-item__img" style="background:var(--surface-alt)"></div>
-              {% endif %}
+            <div class="cart-item" data-key="{{ item.key }}">
+              <img class="cart-item__img" src="{{ item.image | image_url: width: 140 }}" alt="{{ item.title }}" width="70" height="88" loading="lazy">
               <div class="cart-item__info">
-                <div class="cart-item__title">{{ item.product.title }}</div>
-                {% unless item.variant.title == 'Default Title' %}
-                  <div class="cart-item__variant">{{ item.variant.title }}</div>
-                {% endunless %}
-                <div class="cart-item__price">{{ item.line_price | money }}</div>
-                <div class="cart-item__qty">
-                  <button class="qty-btn" data-cart-qty="{{ item.key }}" data-action="minus" aria-label="Remove one">−</button>
+                <div class="cart-item__name">{{ item.product.title }}</div>
+                <div class="cart-item__variant">{{ item.variant.title }}</div>
+                <div class="cart-item__price">{{ item.final_line_price | money }}</div>
+                <div class="cart-qty">
+                  <button class="qty-btn" data-action="dec" data-key="{{ item.key }}" data-qty="{{ item.quantity }}" aria-label="Decrease">−</button>
                   <span class="qty-val">{{ item.quantity }}</span>
-                  <button class="qty-btn" data-cart-qty="{{ item.key }}" data-action="plus" aria-label="Add one">+</button>
+                  <button class="qty-btn" data-action="inc" data-key="{{ item.key }}" data-qty="{{ item.quantity }}" aria-label="Increase">+</button>
                 </div>
               </div>
-              <button class="cart-item__remove" data-cart-remove="{{ item.key }}" aria-label="Remove {{ item.title | escape }}">Remove</button>
+              <span class="cart-item__del" data-key="{{ item.key }}" aria-label="Remove">✕</span>
             </div>
           {% endfor %}
         {% endif %}
       </div>
-      {% if cart.item_count > 0 %}
-        <div class="cart-drawer__footer">
-          <div class="cart-subtotal">
-            <span>Subtotal</span>
-            <strong>{{ cart.total_price | money }}</strong>
-          </div>
-          <p class="cart-taxes">Taxes and shipping calculated at checkout</p>
-          <a href="{{ routes.checkout_url }}" class="cart-drawer__checkout">
-            Checkout → {{ cart.total_price | money }}
-          </a>
-          <button class="cart-drawer__view" onclick="document.getElementById('cart-drawer').classList.remove('open')">
-            Continue Shopping
-          </button>
-          <div class="trust-mini">
-            <span>🔒 Secure</span>
-            <span>🚚 Free shipping $75+</span>
-            <span>↩ 30-day returns</span>
-          </div>
+      <div class="cart-drawer__foot" {% if cart.item_count == 0 %}style="display:none"{% endif %} id="cartFoot">
+        <div class="cart-subtotal-row">
+          <span>Subtotal</span>
+          <strong>{{ cart.total_price | money }}</strong>
         </div>
-      {% endif %}
-    </div>
-  </div>
-
-  <!-- Toast notifications -->
-  <div class="toast-wrap" id="toast-wrap" aria-live="polite"></div>
-
-  <!-- Cookie banner -->
-  <div id="cookie-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;" role="region" aria-label="Cookie consent">
-    <div id="cookie-banner" style="background:#111;color:#fff;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:13px;">
-      <span>We use cookies to enhance your experience. <a href="/pages/privacy-policy" style="color:#c9a96e;text-decoration:underline;">Privacy Policy</a></span>
-      <div class="cookie-btns">
-        <button onclick="blcAcceptCookies()" class="btn btn-accent btn-sm">Accept All</button>
-        <button onclick="blcDismissCookies()" class="btn btn-outline btn-sm" style="color:#fff;border-color:rgba(255,255,255,.3);">Dismiss</button>
+        <p class="cart-tax-note">Taxes and shipping calculated at checkout.</p>
+        <a href="{{ routes.checkout }}" class="btn-checkout">Checkout →</a>
+        <button class="btn-continue" id="cartContinue">Continue Shopping</button>
+        <div class="cart-trust">
+          <span>🔒 Secure</span>
+          <span>🚚 Free shipping $75+</span>
+          <span>↩ Easy returns</span>
+        </div>
       </div>
     </div>
   </div>
 
-  <script>
-    function blcAcceptCookies(){document.getElementById('cookie-banner').style.display='none';try{localStorage.setItem('blc_cookie','1')}catch(e){}}
-    function blcDismissCookies(){document.getElementById('cookie-banner').style.display='none';}
-    try{if(!localStorage.getItem('blc_cookie'))document.getElementById('cookie-banner').style.display='block'}catch(e){document.getElementById('cookie-banner').style.display='block'}
+  <!-- Mobile Nav -->
+  <nav class="mobile-nav" id="mobileNav" aria-hidden="true" role="dialog" aria-label="Navigation menu">
+    <div class="mobile-nav__overlay" id="mobileOverlay"></div>
+    <div class="mobile-nav__panel">
+      <div class="mobile-nav__head">
+        <span style="font-size:18px;font-weight:900;letter-spacing:-.04em">{{ shop.name }}</span>
+        <span class="mobile-nav__close" id="mobileClose">✕</span>
+      </div>
+      <div class="mobile-nav__links">
+        <a class="mobile-nav__link" href="{{ routes.all_products_collection_url }}">Shop All →</a>
+        {% for link in linklists.main-menu.links %}
+          <a class="mobile-nav__link" href="{{ link.url }}">{{ link.title }} →</a>
+        {% endfor %}
+      </div>
+      <div class="mobile-nav__foot">
+        <a href="{{ routes.cart_url }}" class="btn btn-black btn-full">Cart ({{ cart.item_count }})</a>
+        {% if customer %}
+          <a href="{{ routes.account_url }}" class="btn btn-outline btn-full">My Account</a>
+        {% else %}
+          <a href="{{ routes.account_login_url }}" class="btn btn-outline btn-full">Sign In</a>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
 
-    // Page view datalayer
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({
-      event: 'page_view',
-      page_type: '{{ request.page_type }}',
-      page_title: {{ page_title | json }},
-      shop_currency: {{ shop.currency | json }},
-      customer_logged_in: {{ customer | json | default: 'false' | replace: '{', 'true' | truncate: 4, '' }}
-    });
-  </script>
+  <!-- Toast container -->
+  <div class="toasts" id="toasts" aria-live="polite"></div>
+
+  <script src="{{ 'theme.js' | asset_url }}" defer></script>
 </body>
 </html>
