@@ -1,38 +1,149 @@
 <!doctype html>
-<html lang="en">
+<html lang="{{ request.locale.iso_code }}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#111111">
   <title>{{ page_title }}{% unless page_title contains shop.name %} – {{ shop.name }}{% endunless %}</title>
-  <meta name="description" content="{% if page_description %}{{ page_description | escape }}{% else %}{{ shop.description | escape }}{% endif %}">
+  <meta name="description" content="{{ page_description | default: shop.description | escape }}">
   <link rel="canonical" href="{{ canonical_url }}">
-  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   {{ content_for_header }}
   {{ 'base.css' | asset_url | stylesheet_tag }}
+  {{ 'datalayer.js' | asset_url | script_tag }}
   <script src="{{ 'theme.js' | asset_url }}" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#MainContent">Skip to main content</a>
-  {% sections 'header-group' %}
+
+  {% section 'announcement-bar' %}
+  {% section 'header' %}
+
   <main id="MainContent" role="main" tabindex="-1">
     {{ content_for_layout }}
   </main>
-  {% sections 'footer-group' %}
-  <!-- Cookie consent (Google compliance) -->
-  <div id="cookie-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#111;color:#fff;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:14px;">
-    <span>We use cookies to improve your experience. By continuing, you agree to our <a href="/pages/privacy-policy" style="color:#c9a96e;text-decoration:underline;">Privacy Policy</a>.</span>
-    <div style="display:flex;gap:10px;flex-shrink:0;">
-      <button onclick="acceptCookies()" style="background:#c9a96e;color:#fff;border:none;border-radius:999px;padding:9px 20px;font-weight:700;cursor:pointer;font-size:14px;">Accept</button>
-      <button onclick="document.getElementById('cookie-banner').style.display='none'" style="background:rgba(255,255,255,.1);color:#fff;border:none;border-radius:999px;padding:9px 20px;font-weight:600;cursor:pointer;font-size:14px;">Dismiss</button>
+
+  {% section 'footer' %}
+
+  <!-- Mobile menu drawer -->
+  <div id="mobile-menu" class="mobile-menu" role="dialog" aria-modal="true" aria-label="Navigation menu">
+    <div class="mobile-menu__overlay" id="mobile-menu-overlay"></div>
+    <div class="mobile-menu__panel">
+      <div class="mobile-menu__header">
+        <span class="brand">{{ shop.name }}</span>
+        <button class="mobile-menu__close" id="mobile-menu-close" aria-label="Close menu">&#x2715;</button>
+      </div>
+      <nav class="mobile-menu__nav">
+        {% for link in linklists.main-menu.links %}
+          <a class="mobile-menu__link" href="{{ link.url }}">
+            {{ link.title }}
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M9 18l6-6-6-6"/></svg>
+          </a>
+        {% endfor %}
+      </nav>
+      <div class="mobile-menu__footer">
+        <a class="btn btn-primary btn-full" href="{{ routes.cart_url }}">
+          View Cart
+        </a>
+        <a class="btn btn-outline btn-full" href="{{ routes.search_url }}">
+          Search
+        </a>
+      </div>
     </div>
   </div>
+
+  <!-- Cart drawer -->
+  <div id="cart-drawer" class="cart-drawer" role="dialog" aria-modal="true" aria-label="Shopping cart">
+    <div class="cart-drawer__overlay" id="cart-drawer-overlay"></div>
+    <div class="cart-drawer__panel">
+      <div class="cart-drawer__header">
+        <span class="cart-drawer__title">Your Cart ({{ cart.item_count }})</span>
+        <button class="cart-drawer__close" id="cart-drawer-close" aria-label="Close cart">&#x2715;</button>
+      </div>
+      <div class="cart-drawer__body" id="cart-drawer-body">
+        {% if cart.item_count == 0 %}
+          <div class="cart-drawer__empty">
+            <p>Your cart is empty.</p>
+            <a class="btn btn-primary" href="{{ routes.all_products_collection_url }}">Start shopping</a>
+          </div>
+        {% else %}
+          {% for item in cart.items %}
+            <div class="cart-item">
+              {% if item.image %}
+                <img class="cart-item__img" src="{{ item.image | image_url: width: 160 }}" alt="{{ item.title | escape }}" width="76" height="90" loading="lazy">
+              {% else %}
+                <div class="cart-item__img" style="background:var(--surface-alt)"></div>
+              {% endif %}
+              <div class="cart-item__info">
+                <div class="cart-item__title">{{ item.product.title }}</div>
+                {% unless item.variant.title == 'Default Title' %}
+                  <div class="cart-item__variant">{{ item.variant.title }}</div>
+                {% endunless %}
+                <div class="cart-item__price">{{ item.line_price | money }}</div>
+                <div class="cart-item__qty">
+                  <button class="qty-btn" data-cart-qty="{{ item.key }}" data-action="minus" aria-label="Remove one">−</button>
+                  <span class="qty-val">{{ item.quantity }}</span>
+                  <button class="qty-btn" data-cart-qty="{{ item.key }}" data-action="plus" aria-label="Add one">+</button>
+                </div>
+              </div>
+              <button class="cart-item__remove" data-cart-remove="{{ item.key }}" aria-label="Remove {{ item.title | escape }}">Remove</button>
+            </div>
+          {% endfor %}
+        {% endif %}
+      </div>
+      {% if cart.item_count > 0 %}
+        <div class="cart-drawer__footer">
+          <div class="cart-subtotal">
+            <span>Subtotal</span>
+            <strong>{{ cart.total_price | money }}</strong>
+          </div>
+          <p class="cart-taxes">Taxes and shipping calculated at checkout</p>
+          <a href="{{ routes.checkout_url }}" class="cart-drawer__checkout">
+            Checkout → {{ cart.total_price | money }}
+          </a>
+          <button class="cart-drawer__view" onclick="document.getElementById('cart-drawer').classList.remove('open')">
+            Continue Shopping
+          </button>
+          <div class="trust-mini">
+            <span>🔒 Secure</span>
+            <span>🚚 Free shipping $75+</span>
+            <span>↩ 30-day returns</span>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Toast notifications -->
+  <div class="toast-wrap" id="toast-wrap" aria-live="polite"></div>
+
+  <!-- Cookie banner -->
+  <div id="cookie-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;" role="region" aria-label="Cookie consent">
+    <div id="cookie-banner" style="background:#111;color:#fff;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:13px;">
+      <span>We use cookies to enhance your experience. <a href="/pages/privacy-policy" style="color:#c9a96e;text-decoration:underline;">Privacy Policy</a></span>
+      <div class="cookie-btns">
+        <button onclick="blcAcceptCookies()" class="btn btn-accent btn-sm">Accept All</button>
+        <button onclick="blcDismissCookies()" class="btn btn-outline btn-sm" style="color:#fff;border-color:rgba(255,255,255,.3);">Dismiss</button>
+      </div>
+    </div>
+  </div>
+
   <script>
-    function acceptCookies(){document.getElementById('cookie-banner').style.display='none';try{localStorage.setItem('cookies_accepted','1')}catch(e){}}
-    try{if(!localStorage.getItem('cookies_accepted'))document.getElementById('cookie-banner').style.display='flex'}catch(e){document.getElementById('cookie-banner').style.display='flex'}
+    function blcAcceptCookies(){document.getElementById('cookie-banner').style.display='none';try{localStorage.setItem('blc_cookie','1')}catch(e){}}
+    function blcDismissCookies(){document.getElementById('cookie-banner').style.display='none';}
+    try{if(!localStorage.getItem('blc_cookie'))document.getElementById('cookie-banner').style.display='block'}catch(e){document.getElementById('cookie-banner').style.display='block'}
+
+    // Page view datalayer
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+      event: 'page_view',
+      page_type: '{{ request.page_type }}',
+      page_title: {{ page_title | json }},
+      shop_currency: {{ shop.currency | json }},
+      customer_logged_in: {{ customer | json | default: 'false' | replace: '{', 'true' | truncate: 4, '' }}
+    });
   </script>
 </body>
 </html>
