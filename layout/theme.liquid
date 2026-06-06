@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#ffffff">
+  <meta name="theme-color" content="{{ settings.color_header_bg | default: '#ffffff' }}">
   <title>{{ page_title }}{% unless page_title contains shop.name %} – {{ shop.name }}{% endunless %}</title>
   <meta name="description" content="{{ page_description | escape }}">
 
@@ -11,22 +11,20 @@
     <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32 }}">
   {% endif %}
 
-  <!-- Canonical / hreflang -->
   <link rel="canonical" href="{{ canonical_url }}">
+
   {% if template == 'product' %}
     <meta property="og:type" content="product">
     <meta property="og:title" content="{{ product.title | escape }}">
-    <meta property="og:image" content="{{ product.featured_image | image_url: width: 1200 }}">
+    {% if product.featured_image %}<meta property="og:image" content="{{ product.featured_image | image_url: width: 1200 }}">{% endif %}
     <meta property="og:price:amount" content="{{ product.price | money_without_currency }}">
     <meta property="og:price:currency" content="{{ cart.currency.iso_code }}">
   {% elsif template == 'collection' %}
     <meta property="og:type" content="website">
-    <meta property="og:image" content="{{ collection.image | image_url: width: 1200 }}">
+    {% if collection.image %}<meta property="og:image" content="{{ collection.image | image_url: width: 1200 }}">{% endif %}
   {% else %}
     <meta property="og:type" content="website">
-    {% if settings.share_image %}
-      <meta property="og:image" content="{{ settings.share_image | image_url: width: 1200 }}">
-    {% endif %}
+    {% if settings.share_image %}<meta property="og:image" content="{{ settings.share_image | image_url: width: 1200 }}">{% endif %}
   {% endif %}
   <meta property="og:url" content="{{ canonical_url }}">
   <meta property="og:site_name" content="{{ shop.name }}">
@@ -36,123 +34,195 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-  <!-- Styles -->
-  {{ 'base.css.liquid' | asset_url | stylesheet_tag }}
+  <!-- ✅ CSS Custom Properties — injected inline as Liquid so settings values apply -->
+  <style>
+    :root {
+      --c-primary:      {{ settings.color_primary | default: '#1a1a1a' }};
+      --c-primary-text: {{ settings.color_primary_text | default: '#ffffff' }};
+      --c-secondary:    {{ settings.color_secondary | default: '#e85d26' }};
+      --c-sale:         {{ settings.color_sale | default: '#e8260d' }};
+      --c-sale-bg:      {{ settings.color_sale_bg | default: '#fff4f3' }};
+      --c-deco:         {{ settings.color_deco | default: '#2d7a4f' }};
+      --c-deco-light:   {{ settings.color_deco_light | default: '#e8f5ee' }};
+      --c-bg:           {{ settings.color_bg | default: '#ffffff' }};
+      --c-surface:      #ffffff;
+      --c-surface-2:    #f5f3f0;
+      --c-surface-3:    #edeae6;
+      --c-text:         {{ settings.color_text | default: '#1a1a1a' }};
+      --c-text-muted:   {{ settings.color_text_muted | default: '#666666' }};
+      --c-text-faint:   #aaaaaa;
+      --c-text-inv:     #ffffff;
+      --c-border:       {{ settings.color_border | default: '#e4e2de' }};
+      --c-header-bg:    {{ settings.color_header_bg | default: '#ffffff' }};
+      --c-header-text:  {{ settings.color_header_text | default: '#1a1a1a' }};
+      --c-header-border:{{ settings.color_header_border | default: '#e8e8e8' }};
+      --c-footer-bg:    {{ settings.color_footer_bg | default: '#1a1a1a' }};
+      --c-footer-text:  {{ settings.color_footer_text | default: '#ffffff' }};
+      --c-ann-bg:       {{ settings.color_announcement_bg | default: '#1a1a1a' }};
+      --c-ann-text:     {{ settings.color_announcement_text | default: '#ffffff' }};
+      --c-btn-bg:       {{ settings.color_btn_primary_bg | default: '#1a1a1a' }};
+      --c-btn-text:     {{ settings.color_btn_primary_text | default: '#ffffff' }};
+      --btn-radius:     {{ settings.button_border_radius | default: '9999px' }};
+      --card-radius:    {{ settings.card_border_radius | default: '4px' }};
+      --page-w:         {{ settings.container_max_width | default: 1280 }}px;
+      --header-h:       {{ settings.header_height | default: 60 }}px;
+      --section-gap:    clamp(48px,6vw,{{ settings.section_spacing | default: 80 }}px);
+      --font-body:      'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --shadow-sm:      0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+      --shadow-md:      0 4px 16px rgba(0,0,0,.08),0 2px 4px rgba(0,0,0,.04);
+      --shadow-lg:      0 12px 40px rgba(0,0,0,.12),0 4px 8px rgba(0,0,0,.06);
+      --shadow-xl:      0 24px 64px rgba(0,0,0,.16);
+      --ease-out:       cubic-bezier(0.16,1,0.3,1);
+      --transition:     180ms cubic-bezier(0.16,1,0.3,1);
+      --space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;
+      --space-6:24px;--space-8:32px;--space-10:40px;--space-12:48px;
+      --space-16:64px;--space-20:80px;
+    }
+  </style>
+
+  <!-- Static stylesheet (no Liquid needed — vars come from inline :root above) -->
+  {{ 'theme.css' | asset_url | stylesheet_tag }}
 
   <!-- Shopify required -->
   {{ content_for_header }}
 
-  <!-- GTM / dataLayer init -->
+  <!-- dataLayer init -->
   <script>
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push({
-      event: 'pageview',
+      event: 'page_view',
       page_type: '{{ template.name }}',
       page_title: {{ page_title | json }},
-      page_url: '{{ canonical_url }}'
+      page_url: '{{ canonical_url }}',
+      currency: '{{ cart.currency.iso_code }}'
     });
+    {% if customer %}
+    window.dataLayer.push({
+      event: 'user_data',
+      user_id: {{ customer.id | json }},
+      user_email_hash: {{ customer.email | sha256 | json }}
+    });
+    {% endif %}
   </script>
   {% if settings.gtm_id != blank %}
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer',{{ settings.gtm_id | json }});</script>
   {% endif %}
 </head>
-<body class="template-{{ template.name }}">
+<body class="template-{{ template.name }}{% if customer %} customer-logged-in{% endif %}">
   {% if settings.gtm_id != blank %}
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ settings.gtm_id }}" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   {% endif %}
 
-  <a class="skip-link" href="#main">Skip to content</a>
+  <a class="skip-link sr-only" href="#main">Skip to content</a>
+  <div id="toasts" aria-live="polite" aria-atomic="false"></div>
 
-  <!-- DataLayer JS -->
-  <script src="{{ 'datalayer.js' | asset_url }}" defer></script>
+  {{ sections['announcement-bar'] }}
+  {{ sections['header'] }}
 
-  {% section 'announcement-bar' %}
-  {% section 'header' %}
-
-  <main id="main">
+  <main id="main" tabindex="-1">
     {{ content_for_layout }}
   </main>
 
-  {% section 'footer' %}
+  {{ sections['footer'] }}
 
-  <!-- Cart Drawer -->
-  <div class="cart-drawer" id="cartDrawer" aria-hidden="true" role="dialog" aria-label="Shopping cart">
-    <div class="cart-drawer__overlay" id="cartOverlay"></div>
-    <div class="cart-drawer__panel">
-      <div class="cart-drawer__head">
-        <span class="cart-drawer__title">Your Cart (<span id="drawerCount">{{ cart.item_count }}</span>)</span>
-        <span class="cart-drawer__close" id="cartClose" aria-label="Close cart">✕</span>
-      </div>
-      <div class="cart-drawer__body" id="cartBody">
-        {% if cart.item_count == 0 %}
-          <div class="cart-drawer__empty">
-            <p>Your cart is empty.</p>
-            <a href="{{ routes.all_products_collection_url }}" class="btn btn-black btn-sm">Shop Now</a>
-          </div>
-        {% else %}
-          {% for item in cart.items %}
-            <div class="cart-item" data-key="{{ item.key }}">
-              <img class="cart-item__img" src="{{ item.image | image_url: width: 140 }}" alt="{{ item.title }}" width="70" height="88" loading="lazy">
-              <div class="cart-item__info">
-                <div class="cart-item__name">{{ item.product.title }}</div>
-                <div class="cart-item__variant">{{ item.variant.title }}</div>
-                <div class="cart-item__price">{{ item.final_line_price | money }}</div>
-                <div class="cart-qty">
-                  <button class="qty-btn" data-action="dec" data-key="{{ item.key }}" data-qty="{{ item.quantity }}" aria-label="Decrease">−</button>
+  <!-- Cart overlay + drawer -->
+  <div id="cartOverlay" class="cart-overlay" aria-hidden="true"></div>
+  <div id="cartDrawer" class="cart-drawer" aria-label="Shopping cart" aria-hidden="true">
+    <div class="cart-drawer__header">
+      <span class="cart-drawer__title">Your Cart (<span id="drawerCount">{{ cart.item_count }}</span>)</span>
+      <button id="cartDrawerClose" class="icon-btn" aria-label="Close cart">
+        <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="cart-drawer__body" id="cartDrawerBody">
+      {% if cart.item_count == 0 %}
+        <div class="cart-empty">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+          <p>Your cart is empty</p>
+          <a href="/collections/all" class="btn btn-primary">Shop Now</a>
+        </div>
+      {% else %}
+        {% for item in cart.items %}
+          <div class="cart-drawer__item">
+            <a href="{{ item.url }}" tabindex="-1">
+              {% if item.image %}{{ item.image | image_url: width: 120 | image_tag: loading: 'lazy', alt: item.title, width: 60, height: 60, class: 'cart-item__img' }}{% endif %}
+            </a>
+            <div class="cart-item__info">
+              <a href="{{ item.url }}" class="cart-item__title">{{ item.product.title }}</a>
+              {% unless item.variant.title == 'Default Title' %}<p class="cart-item__variant">{{ item.variant.title }}</p>{% endunless %}
+              <div class="cart-item__row">
+                <div class="qty-ctrl">
+                  <button class="qty-btn" data-key="{{ item.key }}" data-qty="{{ item.quantity }}" data-action="dec" aria-label="Decrease">−</button>
                   <span class="qty-val">{{ item.quantity }}</span>
-                  <button class="qty-btn" data-action="inc" data-key="{{ item.key }}" data-qty="{{ item.quantity }}" aria-label="Increase">+</button>
+                  <button class="qty-btn" data-key="{{ item.key }}" data-qty="{{ item.quantity }}" data-action="inc" aria-label="Increase">+</button>
                 </div>
+                <span class="cart-item__price">{{ item.final_line_price | money }}</span>
               </div>
-              <span class="cart-item__del" data-key="{{ item.key }}" aria-label="Remove">✕</span>
             </div>
-          {% endfor %}
-        {% endif %}
-      </div>
-      <div class="cart-drawer__foot" {% if cart.item_count == 0 %}style="display:none"{% endif %} id="cartFoot">
-        <div class="cart-subtotal-row">
+            <button class="cart-item__remove icon-btn" data-key="{{ item.key }}" aria-label="Remove">
+              <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    </div>
+    {% if cart.item_count > 0 %}
+      <div class="cart-drawer__footer">
+        <div class="cart-drawer__subtotal">
           <span>Subtotal</span>
-          <strong>{{ cart.total_price | money }}</strong>
+          <span class="fw-800">{{ cart.total_price | money }}</span>
         </div>
-        <p class="cart-tax-note">Taxes and shipping calculated at checkout.</p>
-        <a href="{{ routes.checkout }}" class="btn-checkout">Checkout →</a>
-        <button class="btn-continue" id="cartContinue">Continue Shopping</button>
-        <div class="cart-trust">
-          <span>🔒 Secure</span>
-          <span>🚚 Free shipping $75+</span>
-          <span>↩ Easy returns</span>
-        </div>
+        <p class="cart-drawer__note">Shipping & taxes calculated at checkout</p>
+        <a href="/checkout" class="btn btn-primary btn-full btn-lg">Checkout →</a>
+        <a href="/cart" class="btn btn-outline btn-full mt-2">View Cart</a>
       </div>
+    {% endif %}
+  </div>
+
+  <!-- Mobile nav overlay -->
+  <div id="mobileNavOverlay" class="cart-overlay" aria-hidden="true"></div>
+  <div id="mobileNav" class="mobile-nav" aria-hidden="true" aria-label="Mobile navigation">
+    <div class="mobile-nav__header">
+      <a href="/" class="header-logo-text">{{ shop.name | split: '' | first }}<span class="accent">{{ shop.name | remove_first: shop.name | first }}LuxCare</span></a>
+      <button id="mobileNavClose" class="icon-btn" aria-label="Close">
+        <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <nav class="mobile-nav__links" role="navigation">
+      {% for link in linklists[settings.main_menu | default: 'main-menu'].links %}
+        {% if link.links != blank %}
+          <details class="mobile-nav__group">
+            <summary class="mobile-nav__link">{{ link.title }}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg></summary>
+            {% for child in link.links %}
+              <a href="{{ child.url }}" class="mobile-nav__sublink">{{ child.title }}</a>
+            {% endfor %}
+          </details>
+        {% else %}
+          <a href="{{ link.url }}" class="mobile-nav__link">{{ link.title }}</a>
+        {% endif %}
+      {% endfor %}
+    </nav>
+    <div class="mobile-nav__footer">
+      {% if customer %}<a href="/account" class="btn btn-outline btn-full">My Account</a>
+      {% else %}<a href="/account/login" class="btn btn-primary btn-full">Sign In</a>{% endif %}
     </div>
   </div>
 
-  <!-- Mobile Nav -->
-  <nav class="mobile-nav" id="mobileNav" aria-hidden="true" role="dialog" aria-label="Navigation menu">
-    <div class="mobile-nav__overlay" id="mobileOverlay"></div>
-    <div class="mobile-nav__panel">
-      <div class="mobile-nav__head">
-        <span style="font-size:18px;font-weight:900;letter-spacing:-.04em">{{ shop.name }}</span>
-        <span class="mobile-nav__close" id="mobileClose">✕</span>
-      </div>
-      <div class="mobile-nav__links">
-        <a class="mobile-nav__link" href="{{ routes.all_products_collection_url }}">Shop All →</a>
-        {% for link in linklists.main-menu.links %}
-          <a class="mobile-nav__link" href="{{ link.url }}">{{ link.title }} →</a>
-        {% endfor %}
-      </div>
-      <div class="mobile-nav__foot">
-        <a href="{{ routes.cart_url }}" class="btn btn-black btn-full">Cart ({{ cart.item_count }})</a>
-        {% if customer %}
-          <a href="{{ routes.account_url }}" class="btn btn-outline btn-full">My Account</a>
-        {% else %}
-          <a href="{{ routes.account_login_url }}" class="btn btn-outline btn-full">Sign In</a>
-        {% endif %}
-      </div>
-    </div>
-  </nav>
-
-  <!-- Toast container -->
-  <div class="toasts" id="toasts" aria-live="polite"></div>
+  <!-- Search overlay -->
+  <div id="searchOverlay" class="search-overlay" aria-hidden="true">
+    <button id="searchClose" class="search-overlay__close icon-btn" aria-label="Close search">
+      <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+    <form action="/search" method="get" class="search-overlay__form" role="search">
+      <input type="hidden" name="type" value="product">
+      <input id="searchInput" type="search" name="q" placeholder="{{ settings.search_placeholder | default: 'Search products…' }}" class="search-overlay__input" autocomplete="off" aria-label="Search">
+      <button type="submit" class="icon-btn" aria-label="Search">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </button>
+    </form>
+  </div>
 
   <script src="{{ 'theme.js' | asset_url }}" defer></script>
+  <script src="{{ 'datalayer.js' | asset_url }}" defer></script>
 </body>
 </html>
