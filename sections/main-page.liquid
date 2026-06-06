@@ -1,9 +1,8 @@
-<section class="section">
-  <div class="page-width" style="max-width:760px;">
-    <h1 style="font-size:clamp(28px,4vw,42px);font-weight:900;letter-spacing:-.04em;margin:0 0 24px;">{{ page.title }}</h1>
-    <div class="description">{{ page.content }}</div>
+
+<section style="padding:48px 0 72px">
+  <div class="page-w" style="max-width:800px">
+    <h1 style="margin-bottom:32px">{{ page.title }}</h1>
+    <div style="font-size:15px;line-height:1.8;color:#444">{{ page.content }}</div>
   </div>
 </section>
-{% schema %}
-{ "name": "Page", "settings": [] }
-{% endschema %}
+{% schema %}{"name":"Page","settings":[],"presets":[{"name":"Page"}]}{% endschema %}
