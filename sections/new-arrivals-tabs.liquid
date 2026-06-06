@@ -1,0 +1,134 @@
+
+<section class="tab-section">
+  <div class="page-w">
+    <div class="tab-section__head">
+      <div class="tab-section__left">
+        <h2>{{ section.settings.heading }}</h2>
+        <div class="tab-pills" role="tablist">
+          {% for block in section.blocks %}
+            <button class="tab-pill{% if forloop.first %} active{% endif %}"
+                    role="tab"
+                    aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+                    aria-controls="tab-pane-{{ block.id }}"
+                    id="tab-btn-{{ block.id }}"
+                    data-tab="{{ block.id }}"
+                    {{ block.shopify_attributes }}>
+              {{ block.settings.label }}
+            </button>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="tab-section__right">
+        {% if section.settings.cta1_label != blank %}
+          <a href="{{ section.settings.cta1_url }}" class="btn btn-outline btn-sm">{{ section.settings.cta1_label }}</a>
+        {% endif %}
+        {% if section.settings.cta2_label != blank %}
+          <a href="{{ section.settings.cta2_url }}" class="btn btn-black btn-sm">{{ section.settings.cta2_label }}</a>
+        {% endif %}
+      </div>
+    </div>
+
+    {% for block in section.blocks %}
+      <div class="tab-pane{% if forloop.first %} active{% endif %}"
+           id="tab-pane-{{ block.id }}"
+           role="tabpanel"
+           aria-labelledby="tab-btn-{{ block.id }}">
+        {% assign coll = collections[block.settings.collection] %}
+        {% if coll != blank %}
+          {% for product in coll.products limit: section.settings.products_per_tab %}
+            <article class="p-card">
+              <a href="{{ product.url }}">
+                <div class="p-card__media">
+                  {% if product.featured_image %}
+                    {{ product.featured_image | image_url: width: 600 | image_tag:
+                       loading: 'lazy', widths: '300,450,600',
+                       sizes: '(max-width:640px) 50vw,(max-width:1024px) 25vw,280px',
+                       alt: product.title }}
+                  {% else %}
+                    <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=600&q=75&auto=format&fit=crop"
+                         alt="{{ product.title }}" width="300" height="375" loading="lazy">
+                  {% endif %}
+                  {% if product.available == false %}
+                    <span class="p-card__badge badge-sale">Sold Out</span>
+                  {% elsif product.compare_at_price > product.price %}
+                    <span class="p-card__badge badge-sale">Sale</span>
+                  {% elsif product.created_at > 'now' | date: '%s' | minus: 2592000 | date: '%Y-%m-%dT%H:%M:%SZ' %}
+                    <span class="p-card__badge badge-new">New</span>
+                  {% endif %}
+                </div>
+                <div class="p-card__swatches">
+                  {% for variant in product.variants limit: 5 %}
+                    {% if variant.option1 contains '#' or variant.option1 contains 'color' or variant.option1 contains 'Color' %}
+                      <span class="swatch{% if forloop.first %} active{% endif %}" title="{{ variant.option1 }}"></span>
+                    {% endif %}
+                  {% endfor %}
+                </div>
+                <div class="p-card__meta">{{ product.type }}</div>
+                <div class="p-card__name">{{ product.title }}</div>
+                <div class="p-card__price-row">
+                  <span class="p-card__price">{{ product.price | money }}</span>
+                  {% if product.compare_at_price > product.price %}
+                    <span class="p-card__was">{{ product.compare_at_price | money }}</span>
+                    <span class="p-card__save">Save {{ product.compare_at_price | minus: product.price | money }}</span>
+                  {% endif %}
+                </div>
+              </a>
+              <button class="atc-btn" data-variant="{{ product.first_available_variant.id }}" data-product="{{ product.handle }}" aria-label="Add {{ product.title }} to cart">
+                Add to Cart
+              </button>
+            </article>
+          {% else %}
+            <p style="color:#888;font-size:14px;grid-column:1/-1;padding:24px 0">No products in this collection yet.</p>
+          {% endfor %}
+        {% else %}
+          <p style="color:#888;font-size:14px;grid-column:1/-1;padding:24px 0">Select a collection in theme editor.</p>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+<script>
+(function(){
+  var pills = document.querySelectorAll('.tab-pill');
+  pills.forEach(function(pill){
+    pill.addEventListener('click', function(){
+      var id = this.dataset.tab;
+      document.querySelectorAll('.tab-pill').forEach(function(p){ p.classList.remove('active'); p.setAttribute('aria-selected','false'); });
+      document.querySelectorAll('.tab-pane').forEach(function(p){ p.classList.remove('active'); });
+      this.classList.add('active'); this.setAttribute('aria-selected','true');
+      document.getElementById('tab-pane-'+id).classList.add('active');
+    });
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "New Arrivals Tabs",
+  "settings": [
+    {"type":"text","id":"heading","label":"Section heading","default":"New Arrivals"},
+    {"type":"range","id":"products_per_tab","min":2,"max":8,"step":1,"label":"Products per tab","default":4},
+    {"type":"text","id":"cta1_label","label":"Link 1 label","default":"Shop All"},
+    {"type":"url","id":"cta1_url","label":"Link 1 URL"},
+    {"type":"text","id":"cta2_label","label":"Link 2 label","default":"Best Sellers"},
+    {"type":"url","id":"cta2_url","label":"Link 2 URL"}
+  ],
+  "blocks":[{
+    "type":"tab","name":"Tab",
+    "settings":[
+      {"type":"text","id":"label","label":"Tab label","default":"Women"},
+      {"type":"collection","id":"collection","label":"Collection"}
+    ]
+  }],
+  "presets":[{
+    "name":"New Arrivals Tabs",
+    "blocks":[
+      {"type":"tab","settings":{"label":"Women"}},
+      {"type":"tab","settings":{"label":"Men"}},
+      {"type":"tab","settings":{"label":"Jewellery"}},
+      {"type":"tab","settings":{"label":"Gifts"}}
+    ]
+  }]
+}
+{% endschema %}
