@@ -1,27 +1,120 @@
-<footer class="site-footer">
-  <div class="page-width">
-    <div class="footer-box">
-      <div class="footer-grid">
-        <div>
-          <div class="brand">North<span>Co</span></div>
-          <p class="footer-meta">English-only storefront built for U.S. shoppers, fast checkout, clean product pages, and trust-first messaging.</p>
+
+<footer class="site-footer" role="contentinfo">
+  <div class="page-w">
+    <div class="footer-grid">
+
+      <!-- Brand col -->
+      <div class="footer-brand">
+        <a href="{{ routes.root_url }}" style="font-size:22px;font-weight:900;letter-spacing:-.04em;color:#fff">
+          {% if section.settings.logo != blank %}
+            {{ section.settings.logo | image_url: width: 160 | image_tag: alt: shop.name, width: 120, height: 36, loading: 'lazy' }}
+          {% else %}
+            {{ shop.name | upcase }}
+          {% endif %}
+        </a>
+        <p>{{ section.settings.tagline }}</p>
+        <div class="footer-social">
+          {% if section.settings.instagram != blank %}
+            <a class="social-btn" href="{{ section.settings.instagram }}" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+              </svg>
+            </a>
+          {% endif %}
+          {% if section.settings.tiktok != blank %}
+            <a class="social-btn" href="{{ section.settings.tiktok }}" target="_blank" rel="noopener noreferrer" aria-label="TikTok">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="15" height="15">
+                <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.34-6.34V8.69a8.18 8.18 0 004.79 1.54V6.78a4.85 4.85 0 01-1.03-.09z"/>
+              </svg>
+            </a>
+          {% endif %}
+          {% if section.settings.facebook != blank %}
+            <a class="social-btn" href="{{ section.settings.facebook }}" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="15" height="15">
+                <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/>
+              </svg>
+            </a>
+          {% endif %}
+          {% if section.settings.pinterest != blank %}
+            <a class="social-btn" href="{{ section.settings.pinterest }}" target="_blank" rel="noopener noreferrer" aria-label="Pinterest">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="15" height="15">
+                <path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 01.083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/>
+              </svg>
+            </a>
+          {% endif %}
         </div>
-        <div class="footer-links">
-          <p><strong>Shop</strong></p>
-          <p><a href="{{ routes.all_products_collection_url }}">All products</a></p>
-          <p><a href="/collections/best-sellers">Best sellers</a></p>
-          <p><a href="/collections/new-arrivals">New arrivals</a></p>
+      </div>
+
+      <!-- Menu cols from blocks -->
+      {% for block in section.blocks %}
+        <div class="footer-col" {{ block.shopify_attributes }}>
+          <h4>{{ block.settings.heading }}</h4>
+          {% if block.settings.linklist != blank %}
+            {% for link in linklists[block.settings.linklist].links %}
+              <a href="{{ link.url }}">{{ link.title }}</a>
+            {% endfor %}
+          {% else %}
+            {% assign lines = block.settings.links_manual | newline_to_br | split: '<br />' %}
+            {% for line in lines %}
+              {% assign parts = line | strip | split: '|' %}
+              {% if parts.size >= 2 %}
+                <a href="{{ parts[1] | strip }}">{{ parts[0] | strip }}</a>
+              {% endif %}
+            {% endfor %}
+          {% endif %}
         </div>
-        <div class="footer-links">
-          <p><strong>Help</strong></p>
-          <p><a href="/pages/shipping-policy">Shipping</a></p>
-          <p><a href="/pages/refund-policy">Returns</a></p>
-          <p><a href="/pages/contact">Contact</a></p>
-        </div>
+      {% endfor %}
+
+    </div><!-- /footer-grid -->
+
+    <div class="footer-bottom">
+      <p>© {{ 'now' | date: '%Y' }} {{ shop.name }}. {{ section.settings.copyright_extra }}</p>
+      <div class="footer-legal">
+        {% for link in linklists['footer'].links %}
+          <a href="{{ link.url }}">{{ link.title }}</a>
+        {% endfor %}
+      </div>
+      <div class="footer-payments" aria-label="Accepted payment methods">
+        <span class="pay-badge">Visa</span>
+        <span class="pay-badge">MC</span>
+        <span class="pay-badge">Amex</span>
+        <span class="pay-badge">PayPal</span>
+        <span class="pay-badge">Apple Pay</span>
+        <span class="pay-badge">Google Pay</span>
       </div>
     </div>
   </div>
 </footer>
+
 {% schema %}
-{ "name": "Footer", "settings": [] }
+{
+  "name": "Footer",
+  "settings": [
+    {"type":"image_picker","id":"logo","label":"Footer logo (leave blank to use store name)"},
+    {"type":"textarea","id":"tagline","label":"Brand tagline","default":"Premium style for women, men & the ones you love."},
+    {"type":"text","id":"copyright_extra","label":"Extra copyright text","default":"All rights reserved."},
+    {"type":"url","id":"instagram","label":"Instagram URL"},
+    {"type":"url","id":"tiktok","label":"TikTok URL"},
+    {"type":"url","id":"facebook","label":"Facebook URL"},
+    {"type":"url","id":"pinterest","label":"Pinterest URL"}
+  ],
+  "blocks":[{
+    "type":"menu_col","name":"Menu Column",
+    "settings":[
+      {"type":"text","id":"heading","label":"Column heading","default":"Company"},
+      {"type":"link_list","id":"linklist","label":"Navigation menu (pick from menus)"},
+      {"type":"textarea","id":"links_manual","label":"Or paste links manually (Title|/url, one per line)","info":"Only used if no menu is selected above."}
+    ]
+  }],
+  "presets":[{
+    "name":"Footer",
+    "blocks":[
+      {"type":"menu_col","settings":{"heading":"Shop","links_manual":"Women|/collections/womens\nMen|/collections/mens\nJewellery|/collections/jewellery\nPet & Home|/collections/pet-home\nSale|/collections/sale"}},
+      {"type":"menu_col","settings":{"heading":"Help","links_manual":"Contact Us|/pages/contact\nShipping & Returns|/pages/shipping\nFAQ|/pages/faq\nSize Guide|/pages/size-guide\nOrder Tracking|/pages/tracking"}},
+      {"type":"menu_col","settings":{"heading":"Company","links_manual":"Our Story|/pages/about\nSustainability|/pages/sustainability\nCareers|/pages/careers\nPress|/pages/press\nAffiliates|/pages/affiliates"}}
+    ]
+  }]
+}
 {% endschema %}
