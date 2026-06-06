@@ -1,0 +1,64 @@
+{% layout 'theme' %}
+<main id="main-content" class="section">
+  <div class="container" style="max-width:860px">
+    <h1 style="font-family:var(--font-display);font-size:var(--text-xl);margin-bottom:var(--sp-8)">Your Cart</h1>
+    {% if cart.item_count == 0 %}
+      <div style="text-align:center;padding:var(--sp-16) 0">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-faint)" stroke-width="1.5" style="margin:0 auto var(--sp-4)" aria-hidden="true"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        <h2 style="font-size:var(--text-lg);margin-bottom:var(--sp-3)">Your cart is empty</h2>
+        <p style="color:var(--color-text-muted);margin-bottom:var(--sp-6)">Add something beautiful to get started.</p>
+        <a href="/collections/all" class="btn btn--primary btn--lg">Shop Now</a>
+      </div>
+    {% else %}
+      <form action="/cart" method="post">
+        <table style="width:100%;border-collapse:collapse">
+          <thead>
+            <tr style="border-bottom:2px solid var(--color-border)">
+              <th style="text-align:left;padding:var(--sp-3) 0;font-size:var(--text-sm);font-weight:600">Product</th>
+              <th style="text-align:center;padding:var(--sp-3);font-size:var(--text-sm);font-weight:600">Quantity</th>
+              <th style="text-align:right;padding:var(--sp-3) 0;font-size:var(--text-sm);font-weight:600">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in cart.items %}
+            <tr style="border-bottom:1px solid var(--color-border)">
+              <td style="padding:var(--sp-4) 0">
+                <div style="display:flex;gap:var(--sp-4);align-items:flex-start">
+                  <a href="{{ item.url }}">
+                    <img src="{{ item.image | image_url: width: 120 }}" alt="{{ item.title | escape }}" width="80" height="80" style="border-radius:var(--radius-md);object-fit:cover" loading="lazy">
+                  </a>
+                  <div>
+                    <a href="{{ item.url }}" style="font-weight:600;font-size:var(--text-sm)">{{ item.product.title }}</a>
+                    {% unless item.variant.title == 'Default Title' %}<p style="font-size:var(--text-xs);color:var(--color-text-muted)">{{ item.variant.title }}</p>{% endunless %}
+                    <p style="font-size:var(--text-sm);margin-top:var(--sp-1)">{{ item.price | money }}</p>
+                    <a href="/cart/change?line={{ forloop.index }}&quantity=0" style="font-size:var(--text-xs);color:var(--color-text-muted);text-decoration:underline;margin-top:var(--sp-2);display:inline-block">Remove</a>
+                  </div>
+                </div>
+              </td>
+              <td style="text-align:center;padding:var(--sp-4)">
+                <div class="qty qty--sm" style="display:inline-flex">
+                  <button type="button" class="qty__btn" onclick="this.nextElementSibling.value=Math.max(1,+this.nextElementSibling.value-1)" aria-label="Decrease">−</button>
+                  <input type="number" name="updates[]" value="{{ item.quantity }}" min="1" class="qty__input" style="width:48px;text-align:center;border:none;font-weight:600;background:transparent;font-size:var(--text-sm)" aria-label="Quantity">
+                  <button type="button" class="qty__btn" onclick="this.previousElementSibling.value=+this.previousElementSibling.value+1" aria-label="Increase">+</button>
+                </div>
+              </td>
+              <td style="text-align:right;padding:var(--sp-4) 0;font-weight:700">{{ item.line_price | money }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <div style="display:flex;justify-content:flex-end;margin-top:var(--sp-8)">
+          <div style="width:min(360px,100%);display:flex;flex-direction:column;gap:var(--sp-3)">
+            <div style="display:flex;justify-content:space-between;font-size:var(--text-base)">
+              <span style="color:var(--color-text-muted)">Subtotal</span>
+              <span style="font-weight:700;font-size:var(--text-lg)">{{ cart.total_price | money }}</span>
+            </div>
+            <p style="font-size:var(--text-xs);color:var(--color-text-muted)">Taxes and shipping calculated at checkout.</p>
+            <button type="submit" name="checkout" class="btn btn--primary btn--full btn--lg">Proceed to Checkout</button>
+            <button type="submit" name="update" class="btn btn--ghost btn--full">Update Cart</button>
+          </div>
+        </div>
+      </form>
+    {% endif %}
+  </div>
+</main>
