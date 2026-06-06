@@ -118,12 +118,14 @@
   });
 
   /* ── remove_from_cart ── */
+  /* Targets .cart-item__del (added to remove buttons) OR data-line=0 qty updates */
   document.addEventListener('click', function (e) {
     var btn = e.target.closest('.cart-item__del, [data-remove]');
     if (!btn) return;
-    var key  = safeData(btn, 'key', '') || safeData(btn, 'remove', '');
-    var item = key ? document.querySelector('.cart-item[data-key="' + key + '"]') : null;
-    var name = item ? ((item.querySelector('.cart-item__name') || {}).textContent || '').trim() : '';
+    /* Support both data-key and data-line attribute patterns */
+    var key  = safeData(btn, 'key', '') || safeData(btn, 'remove', '') || safeData(btn, 'line', '');
+    var card = btn.closest('.cart-item');
+    var name = card ? ((card.querySelector('.cart-item__name, .cart-item__title') || {}).textContent || '').trim() : '';
     push({ ecommerce: null });
     push({
       event: 'remove_from_cart',
@@ -134,8 +136,9 @@
   });
 
   /* ── begin_checkout ── */
+  /* Targets .btn-checkout class OR #cart-checkout-btn OR any /checkout link */
   document.addEventListener('click', function (e) {
-    if (!e.target.closest('.btn-checkout, [href*="/checkout"]')) return;
+    if (!e.target.closest('.btn-checkout, #cart-checkout-btn, [href*="/checkout"]')) return;
     fetch('/cart.js')
       .then(function (r) { return r.json(); })
       .then(function (cart) {
@@ -153,13 +156,18 @@
   });
 
   /* ── cart_update (qty +/-) ── */
+  /* Targets qty__btn (cart drawer inline) AND qty-btn (any other usage) */
   document.addEventListener('click', function (e) {
-    var btn = e.target.closest('.qty-btn');
+    var btn = e.target.closest('.qty__btn, .qty-btn');
     if (!btn) return;
+    var card    = btn.closest('.cart-item');
+    var line    = card ? safeData(card, 'line', '') : '';
+    var action  = btn.getAttribute('aria-label') || safeData(btn, 'action', '');
     push({
       event:  'cart_update',
-      action: safeData(btn, 'action', ''),
-      key:    safeData(btn, 'key',    '')
+      action: action.toLowerCase().includes('decrease') ? 'decrease' : 'increase',
+      line:   line,
+      key:    safeData(btn, 'key', line)
     });
   });
 
