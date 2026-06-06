@@ -1,11 +1,11 @@
 {
   "sections": {
-    "hero": {"type": "hero-conversion", "settings": {}},
-    "collection": {"type": "featured-collection-conversion", "settings": {}},
-    "benefits": {"type": "benefits-conversion", "settings": {}},
-    "proof": {"type": "social-proof", "settings": {}},
-    "promo": {"type": "promo-split", "settings": {}},
-    "faq": {"type": "faq-conversion", "settings": {}}
+    "hero": { "type": "hero-conversion", "settings": {} },
+    "collection": { "type": "featured-collection-conversion", "settings": {} },
+    "benefits": { "type": "benefits-conversion", "settings": {} },
+    "proof": { "type": "social-proof", "settings": {} },
+    "promo": { "type": "promo-split", "settings": {} },
+    "faq": { "type": "faq-conversion", "settings": {} }
   },
-  "order": ["hero", "collection", "benefits", "proof", "promo", "faq"]
+  "order": ["hero","collection","benefits","proof","promo","faq"]
 }
