@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{{ gift_card.initial_value | money_without_trailing_zeros }} Gift Card – {{ shop.name }}</title>
+  {{ 'base.css' | asset_url | stylesheet_tag }}
+</head>
+<body>
+  <div class="page-width" style="text-align:center;padding:80px 20px;">
+    <h1>Your Gift Card</h1>
+    <p style="font-size:32px;font-weight:900;">{{ gift_card.initial_value | money }}</p>
+    <p>Code: <strong>{{ gift_card.code | format_code }}</strong></p>
+    {% if gift_card.enabled %}
+      <p>Balance: {{ gift_card.balance | money }}</p>
+    {% else %}
+      <p>This gift card has been disabled.</p>
+    {% endif %}
+  </div>
+</body>
+</html>
