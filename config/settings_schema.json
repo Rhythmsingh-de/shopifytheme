@@ -1,159 +1,166 @@
 [
   {
     "name": "theme_info",
-    "theme_name": "Bombas Style",
-    "theme_version": "2.1.0",
-    "theme_author": "Custom",
-    "theme_documentation_url": "https://help.shopify.com/en/manual/online-store/themes",
-    "theme_support_url": "https://help.shopify.com"
+    "theme_name": "BodyLuxCare",
+    "theme_version": "2.0.0",
+    "theme_author": "BodyLuxCare",
+    "theme_documentation_url": "https://bodyluxcare.com",
+    "theme_support_url": "https://bodyluxcare.com/pages/contact"
   },
   {
-    "name": "Logo & Favicon",
+    "name": "Brand & Logo",
     "settings": [
-      {"type":"image_picker","id":"logo","label":"Store logo","info":"Shown in header & footer. SVG or PNG with transparent background works best."},
-      {"type":"range","id":"logo_width","min":60,"max":300,"step":10,"unit":"px","label":"Logo width (desktop)","default":140},
-      {"type":"range","id":"logo_width_mobile","min":60,"max":200,"step":10,"unit":"px","label":"Logo width (mobile)","default":100},
-      {"type":"image_picker","id":"favicon","label":"Favicon","info":"32×32px recommended."},
-      {"type":"image_picker","id":"share_image","label":"Default social share image","info":"Used when sharing pages without a product image. 1200×630px."}
+      { "type": "image_picker", "id": "logo", "label": "Logo image" },
+      { "type": "range", "id": "logo_width", "label": "Logo width (px)", "min": 60, "max": 300, "step": 10, "default": 140 },
+      { "type": "text", "id": "brand_name", "label": "Brand name (fallback if no logo)", "default": "BodyLuxCare" },
+      { "type": "image_picker", "id": "favicon", "label": "Favicon" }
     ]
   },
   {
     "name": "Colors",
     "settings": [
-      {"type":"header","content":"Brand"},
-      {"type":"color","id":"color_primary","label":"Primary accent","default":"#1a1a1a","info":"Used for buttons, links, badges."},
-      {"type":"color","id":"color_primary_text","label":"Text on primary","default":"#ffffff"},
-      {"type":"color","id":"color_secondary","label":"Secondary accent","default":"#e85d26","info":"Used for sale badges and highlights."},
-      {"type":"header","content":"Page"},
-      {"type":"color","id":"color_bg","label":"Page background","default":"#ffffff"},
-      {"type":"color","id":"color_text","label":"Body text","default":"#1a1a1a"},
-      {"type":"color","id":"color_text_muted","label":"Muted text","default":"#888888"},
-      {"type":"color","id":"color_border","label":"Borders & dividers","default":"#e8e8e8"},
-      {"type":"header","content":"Header"},
-      {"type":"color","id":"color_header_bg","label":"Header background","default":"#ffffff"},
-      {"type":"color","id":"color_header_text","label":"Header text & icons","default":"#1a1a1a"},
-      {"type":"color","id":"color_header_border","label":"Header bottom border","default":"#e8e8e8"},
-      {"type":"header","content":"Footer"},
-      {"type":"color","id":"color_footer_bg","label":"Footer background","default":"#1a1a1a"},
-      {"type":"color","id":"color_footer_text","label":"Footer text","default":"#ffffff"},
-      {"type":"header","content":"Buttons"},
-      {"type":"color","id":"color_btn_primary_bg","label":"Primary button background","default":"#1a1a1a"},
-      {"type":"color","id":"color_btn_primary_text","label":"Primary button text","default":"#ffffff"},
-      {"type":"color","id":"color_btn_secondary_bg","label":"Secondary button background","default":"#ffffff"},
-      {"type":"color","id":"color_btn_secondary_text","label":"Secondary button text","default":"#1a1a1a"}
+      { "type": "color", "id": "color_bg", "label": "Page background", "default": "#ffffff" },
+      { "type": "color", "id": "color_surface", "label": "Surface / card background", "default": "#f9f8f5" },
+      { "type": "color", "id": "color_text", "label": "Body text", "default": "#1a1a1a" },
+      { "type": "color", "id": "color_text_muted", "label": "Muted text", "default": "#6b7280" },
+      { "type": "color", "id": "color_primary", "label": "Primary accent (buttons, links)", "default": "#1d5c3a" },
+      { "type": "color", "id": "color_primary_hover", "label": "Primary hover", "default": "#164530" },
+      { "type": "color", "id": "color_sale", "label": "Sale / badge color", "default": "#dc2626" },
+      { "type": "color", "id": "color_border", "label": "Border color", "default": "#e5e7eb" },
+      { "type": "color", "id": "color_announcement_bg", "label": "Announcement bar background", "default": "#1d5c3a" },
+      { "type": "color", "id": "color_announcement_text", "label": "Announcement bar text", "default": "#ffffff" },
+      { "type": "color", "id": "color_header_bg", "label": "Header background", "default": "#ffffff" },
+      { "type": "color", "id": "color_footer_bg", "label": "Footer background", "default": "#111827" },
+      { "type": "color", "id": "color_footer_text", "label": "Footer text", "default": "#f9fafb" }
     ]
   },
   {
     "name": "Typography",
     "settings": [
-      {"type":"font_picker","id":"heading_font","label":"Heading font","default":"inter_n8"},
-      {"type":"font_picker","id":"body_font","label":"Body font","default":"inter_n4"},
-      {"type":"range","id":"body_font_size","min":14,"max":20,"step":1,"unit":"px","label":"Base font size","default":16},
-      {"type":"range","id":"heading_weight","min":600,"max":900,"step":100,"label":"Heading weight","default":800},
-      {"type":"select","id":"letter_spacing","label":"Heading letter-spacing","options":[
-        {"value":"-0.04em","label":"Tight (−0.04em)"},
-        {"value":"-0.02em","label":"Normal (−0.02em)"},
-        {"value":"0em","label":"Wide (0em)"}
-      ],"default":"-0.03em"}
+      { "type": "font_picker", "id": "font_display", "label": "Display / heading font", "default": "playfair_display_n4" },
+      { "type": "font_picker", "id": "font_body", "label": "Body font", "default": "work_sans_n4" },
+      { "type": "select", "id": "type_base_size", "label": "Base font size", "options": [
+        { "value": "14px", "label": "Small (14px)" },
+        { "value": "16px", "label": "Medium (16px)" },
+        { "value": "18px", "label": "Large (18px)" }
+      ], "default": "16px" }
+    ]
+  },
+  {
+    "name": "Buttons",
+    "settings": [
+      { "type": "select", "id": "btn_radius", "label": "Button shape", "options": [
+        { "value": "0px", "label": "Square" },
+        { "value": "6px", "label": "Rounded (default)" },
+        { "value": "9999px", "label": "Pill" }
+      ], "default": "6px" },
+      { "type": "select", "id": "btn_size", "label": "Button size", "options": [
+        { "value": "sm", "label": "Small" },
+        { "value": "md", "label": "Medium" },
+        { "value": "lg", "label": "Large" }
+      ], "default": "md" }
+    ]
+  },
+  {
+    "name": "Announcement Bar",
+    "settings": [
+      { "type": "checkbox", "id": "announcement_enabled", "label": "Show announcement bar", "default": true },
+      { "type": "text", "id": "announcement_text_1", "label": "Message 1", "default": "🚚 Free U.S. shipping on orders $75+ · 30-day easy returns" },
+      { "type": "text", "id": "announcement_text_2", "label": "Message 2 (optional)", "default": "Use code WELCOME10 for 10% off your first order" },
+      { "type": "text", "id": "announcement_text_3", "label": "Message 3 (optional)", "default": "" },
+      { "type": "url", "id": "announcement_link", "label": "Link (optional)" },
+      { "type": "checkbox", "id": "announcement_auto_rotate", "label": "Auto-rotate messages", "default": true },
+      { "type": "range", "id": "announcement_speed", "label": "Rotation speed (seconds)", "min": 2, "max": 10, "step": 1, "default": 4 }
     ]
   },
   {
     "name": "Header",
     "settings": [
-      {"type":"select","id":"header_layout","label":"Logo position","options":[
-        {"value":"center","label":"Center (Bombas style)"},
-        {"value":"left","label":"Left"}
-      ],"default":"center"},
-      {"type":"checkbox","id":"header_sticky","label":"Sticky header (stays on scroll)","default":true},
-      {"type":"checkbox","id":"header_border","label":"Show bottom border","default":true},
-      {"type":"checkbox","id":"header_shadow_on_scroll","label":"Show shadow when scrolled","default":true},
-      {"type":"range","id":"header_height","min":48,"max":90,"step":2,"unit":"px","label":"Header height","default":60},
-      {"type":"checkbox","id":"show_search","label":"Show search icon","default":true},
-      {"type":"checkbox","id":"show_account","label":"Show account icon","default":true},
-      {"type":"text","id":"search_placeholder","label":"Search placeholder text","default":"Search products…"}
-    ]
-  },
-  {
-    "name": "Cart",
-    "settings": [
-      {"type":"select","id":"cart_type","label":"Cart type","options":[
-        {"value":"drawer","label":"Slide-out drawer"},
-        {"value":"page","label":"Full cart page"}
-      ],"default":"drawer"},
-      {"type":"checkbox","id":"show_cart_note","label":"Show order note field","default":false},
-      {"type":"text","id":"free_shipping_threshold","label":"Free shipping threshold amount","default":"75","info":"Number only, no $ sign. Used in cart messaging."},
-      {"type":"text","id":"free_shipping_message","label":"Free shipping message","default":"Free U.S. shipping on orders $75+"}
+      { "type": "checkbox", "id": "header_sticky", "label": "Sticky header", "default": true },
+      { "type": "checkbox", "id": "header_show_search", "label": "Show search icon", "default": true },
+      { "type": "checkbox", "id": "header_show_account", "label": "Show account icon", "default": true },
+      { "type": "checkbox", "id": "header_transparent", "label": "Transparent header on homepage hero", "default": true },
+      { "type": "link_list", "id": "main_menu", "label": "Main navigation menu", "default": "main-menu" }
     ]
   },
   {
     "name": "Product Cards",
     "settings": [
-      {"type":"checkbox","id":"card_show_vendor","label":"Show vendor / brand name","default":false},
-      {"type":"checkbox","id":"card_show_type","label":"Show product type","default":true},
-      {"type":"checkbox","id":"card_show_swatches","label":"Show color swatches","default":true},
-      {"type":"checkbox","id":"card_show_atc","label":"Show Add to Cart button on cards","default":true},
-      {"type":"select","id":"card_image_ratio","label":"Product image ratio","options":[
-        {"value":"0.8","label":"Portrait (4:5)"},
-        {"value":"1","label":"Square (1:1)"},
-        {"value":"0.75","label":"Tall (3:4)"},
-        {"value":"1.33","label":"Landscape (4:3)"}
-      ],"default":"0.8"},
-      {"type":"select","id":"card_border_radius","label":"Card corner style","options":[
-        {"value":"0px","label":"Sharp"},
-        {"value":"4px","label":"Slight"},
-        {"value":"8px","label":"Rounded"},
-        {"value":"12px","label":"Very rounded"}
-      ],"default":"4px"},
-      {"type":"checkbox","id":"card_hover_zoom","label":"Zoom image on hover","default":true}
+      { "type": "select", "id": "card_radius", "label": "Card corner radius", "options": [
+        { "value": "0px", "label": "None" },
+        { "value": "8px", "label": "Soft (8px)" },
+        { "value": "16px", "label": "Rounded (16px)" }
+      ], "default": "8px" },
+      { "type": "checkbox", "id": "card_show_vendor", "label": "Show vendor name", "default": false },
+      { "type": "checkbox", "id": "card_show_rating", "label": "Show star rating", "default": true },
+      { "type": "checkbox", "id": "card_hover_second_image", "label": "Show second image on hover", "default": true },
+      { "type": "checkbox", "id": "card_quick_add", "label": "Show quick add button", "default": true }
     ]
   },
   {
-    "name": "Collection Page",
+    "name": "Cart",
     "settings": [
-      {"type":"range","id":"collection_cols_desktop","min":2,"max":5,"step":1,"label":"Columns (desktop)","default":4},
-      {"type":"range","id":"collection_cols_mobile","min":1,"max":2,"step":1,"label":"Columns (mobile)","default":2},
-      {"type":"range","id":"products_per_page","min":8,"max":48,"step":4,"label":"Products per page","default":16},
-      {"type":"checkbox","id":"collection_show_filter_tags","label":"Show filter tags","default":true},
-      {"type":"checkbox","id":"collection_show_sort","label":"Show sort dropdown","default":true}
+      { "type": "select", "id": "cart_type", "label": "Cart type", "options": [
+        { "value": "drawer", "label": "Slide-out drawer" },
+        { "value": "page", "label": "Cart page" }
+      ], "default": "drawer" },
+      { "type": "checkbox", "id": "cart_show_order_note", "label": "Show order note field", "default": true },
+      { "type": "text", "id": "cart_upsell_text", "label": "Free shipping threshold message", "default": "You're {{ amount }} away from FREE shipping! 🚚" },
+      { "type": "range", "id": "cart_free_shipping_threshold", "label": "Free shipping threshold ($)", "min": 0, "max": 200, "step": 5, "default": 75 }
     ]
   },
   {
-    "name": "Tracking & Compliance",
+    "name": "Trust & Social Proof",
     "settings": [
-      {"type":"text","id":"gtm_id","label":"Google Tag Manager ID","placeholder":"GTM-XXXXXXX","info":"Paste your GTM container ID. Leave blank to disable."},
-      {"type":"textarea","id":"google_site_verification","label":"Google Search Console meta tag","info":"Paste the full <meta name=google-site-verification ...> tag here."},
-      {"type":"textarea","id":"custom_head_scripts","label":"Custom <head> scripts / pixels","info":"Injected just before </head>. For Meta Pixel, Klaviyo, etc."},
-      {"type":"textarea","id":"custom_body_scripts","label":"Custom <body> scripts","info":"Injected just after <body> open."},
-      {"type":"header","content":"Cookie Banner"},
-      {"type":"checkbox","id":"show_cookie_banner","label":"Show GDPR/CCPA cookie consent banner","default":true},
-      {"type":"textarea","id":"cookie_banner_text","label":"Banner message","default":"We use cookies to improve your experience and for analytics. See our Privacy Policy."},
-      {"type":"text","id":"cookie_accept_label","label":"Accept button label","default":"Accept All"},
-      {"type":"text","id":"cookie_decline_label","label":"Decline label","default":"No thanks"},
-      {"type":"url","id":"privacy_policy_url","label":"Privacy policy page URL"}
+      { "type": "checkbox", "id": "trust_show_payment_icons", "label": "Show payment icons", "default": true },
+      { "type": "text", "id": "trust_badge_1", "label": "Trust badge 1 label", "default": "14-Day Returns" },
+      { "type": "text", "id": "trust_badge_2", "label": "Trust badge 2 label", "default": "7–10 Day Shipping" },
+      { "type": "text", "id": "trust_badge_3", "label": "Trust badge 3 label", "default": "Secure Payments" },
+      { "type": "text", "id": "trust_badge_4", "label": "Trust badge 4 label", "default": "Satisfaction Guarantee" }
+    ]
+  },
+  {
+    "name": "Footer",
+    "settings": [
+      { "type": "image_picker", "id": "footer_logo", "label": "Footer logo (optional)" },
+      { "type": "richtext", "id": "footer_about_text", "label": "About / brand description", "default": "<p>Premium wellness and lifestyle products for you, your home, and your pets.</p>" },
+      { "type": "text", "id": "footer_email", "label": "Contact email", "default": "info@bodyluxcare.com" },
+      { "type": "text", "id": "footer_phone", "label": "Phone number (optional)", "default": "" },
+      { "type": "text", "id": "footer_instagram", "label": "Instagram URL", "default": "" },
+      { "type": "text", "id": "footer_facebook", "label": "Facebook URL", "default": "" },
+      { "type": "text", "id": "footer_tiktok", "label": "TikTok URL", "default": "" },
+      { "type": "text", "id": "footer_pinterest", "label": "Pinterest URL", "default": "" },
+      { "type": "checkbox", "id": "footer_show_payment_icons", "label": "Show payment icons in footer", "default": true },
+      { "type": "text", "id": "footer_copyright", "label": "Copyright text", "default": "© 2026 BodyLuxCare. All rights reserved." }
     ]
   },
   {
     "name": "Social Media",
     "settings": [
-      {"type":"url","id":"social_instagram","label":"Instagram URL"},
-      {"type":"url","id":"social_tiktok","label":"TikTok URL"},
-      {"type":"url","id":"social_facebook","label":"Facebook URL"},
-      {"type":"url","id":"social_pinterest","label":"Pinterest URL"},
-      {"type":"url","id":"social_youtube","label":"YouTube URL"},
-      {"type":"url","id":"social_twitter","label":"X / Twitter URL"}
+      { "type": "text", "id": "social_instagram", "label": "Instagram handle", "default": "@bodyluxcare" },
+      { "type": "text", "id": "social_facebook", "label": "Facebook URL", "default": "" },
+      { "type": "text", "id": "social_tiktok", "label": "TikTok URL", "default": "" }
     ]
   },
   {
-    "name": "Spacing & Layout",
+    "name": "SEO & Analytics",
     "settings": [
-      {"type":"range","id":"section_spacing","min":32,"max":96,"step":8,"unit":"px","label":"Section vertical spacing","default":56},
-      {"type":"range","id":"container_max_width","min":960,"max":1440,"step":40,"unit":"px","label":"Max content width","default":1280},
-      {"type":"select","id":"button_style","label":"Button corner style","options":[
-        {"value":"9999px","label":"Pill (fully rounded)"},
-        {"value":"8px","label":"Rounded"},
-        {"value":"4px","label":"Slight"},
-        {"value":"0px","label":"Sharp / Square"}
-      ],"default":"9999px"}
+      { "type": "text", "id": "seo_title_suffix", "label": "Page title suffix", "default": "| BodyLuxCare" },
+      { "type": "textarea", "id": "seo_meta_description", "label": "Default meta description", "default": "Premium wellness and lifestyle products for women, men, pets, and home." },
+      { "type": "text", "id": "gtm_id", "label": "Google Tag Manager ID (GTM-XXXXXX)", "default": "" },
+      { "type": "text", "id": "ga4_id", "label": "GA4 Measurement ID (G-XXXXXXXX)", "default": "" },
+      { "type": "text", "id": "pixel_id", "label": "Meta Pixel ID", "default": "" },
+      { "type": "text", "id": "tiktok_pixel_id", "label": "TikTok Pixel ID", "default": "" }
+    ]
+  },
+  {
+    "name": "Cookie Consent (GDPR)",
+    "settings": [
+      { "type": "checkbox", "id": "cookie_consent_enabled", "label": "Show cookie consent banner", "default": true },
+      { "type": "textarea", "id": "cookie_consent_text", "label": "Cookie banner message", "default": "We use cookies to improve your experience and for marketing. By continuing, you accept our Privacy Policy." },
+      { "type": "text", "id": "cookie_accept_text", "label": "Accept button text", "default": "Accept All" },
+      { "type": "text", "id": "cookie_decline_text", "label": "Decline button text", "default": "Essential Only" },
+      { "type": "url", "id": "cookie_policy_url", "label": "Privacy policy URL", "default": "/policies/privacy-policy" }
     ]
   }
 ]
