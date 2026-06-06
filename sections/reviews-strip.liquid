@@ -1,0 +1,50 @@
+
+<section class="reviews-strip">
+  <div class="page-w">
+    <div class="reviews-strip__head">
+      <h2>{{ section.settings.heading }}</h2>
+      {% if section.settings.subtext != blank %}
+        <p style="color:#888;font-size:15px">{{ section.settings.subtext }}</p>
+      {% endif %}
+    </div>
+    <div class="reviews-strip__grid">
+      {% for block in section.blocks %}
+        <div class="review-card" {{ block.shopify_attributes }}>
+          <div class="review-stars">{{ block.settings.stars }}</div>
+          <p class="review-text">"{{ block.settings.text }}"</p>
+          <div class="review-author">{{ block.settings.author }}</div>
+          {% if block.settings.verified %}
+            <div class="review-verified">✓ Verified Purchase</div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Reviews Strip",
+  "settings": [
+    {"type":"text","id":"heading","label":"Heading","default":"What Our Customers Say"},
+    {"type":"text","id":"subtext","label":"Subtext","default":"4.9 out of 5 stars · 12,000+ reviews"}
+  ],
+  "blocks":[{
+    "type":"review","name":"Review",
+    "settings":[
+      {"type":"text","id":"stars","label":"Stars (use ★)","default":"★★★★★"},
+      {"type":"textarea","id":"text","label":"Review text","default":"I ordered three items and every single one arrived beautifully packaged. The quality is outstanding — soft, well-fitted and exactly as described."},
+      {"type":"text","id":"author","label":"Author name","default":"Sarah M."},
+      {"type":"checkbox","id":"verified","label":"Verified purchase badge","default":true}
+    ]
+  }],
+  "presets":[{
+    "name":"Reviews Strip",
+    "blocks":[
+      {"type":"review","settings":{"stars":"★★★★★","text":"Absolutely love the quality. These are the most comfortable clothes I've ever worn — worth every penny!","author":"Emma L.","verified":true}},
+      {"type":"review","settings":{"stars":"★★★★★","text":"The jewellery is stunning. Packaged beautifully, arrived fast, and the craftsmanship is incredible. Already ordered again.","author":"Priya K.","verified":true}},
+      {"type":"review","settings":{"stars":"★★★★★","text":"My dog went crazy for the toys — built really tough too. Great brand, great mission. I'll be a customer for life.","author":"James T.","verified":true}}
+    ]
+  }]
+}
+{% endschema %}
