@@ -36,7 +36,7 @@
         {% assign coll = collections[block.settings.collection] %}
         {% if coll != blank %}
           {% for product in coll.products limit: section.settings.products_per_tab %}
-            <article class="prod-card">
+            <article class="prod-card" data-product-id="{{ product.id }}" data-product-title="{{ product.title | escape }}" data-product-type="{{ product.type | escape }}" data-price="{{ product.price | divided_by: 100.0 }}">
               <a href="{{ product.url }}">
                 <div class="prod-card__media">
                   {% if product.featured_image %}
