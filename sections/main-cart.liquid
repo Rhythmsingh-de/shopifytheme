@@ -1,0 +1,39 @@
+<section class="section">
+  <div class="page-width" style="max-width:720px;">
+    <h1 style="font-size:clamp(28px,4vw,42px);font-weight:900;letter-spacing:-.04em;margin:0 0 24px;">Your cart</h1>
+    {% if cart.item_count == 0 %}
+      <div style="text-align:center;padding:60px 0;">
+        <p style="color:#666;margin:0 0 20px;">Your cart is empty.</p>
+        <a class="btn btn-primary" href="/collections/all">Shop now</a>
+      </div>
+    {% else %}
+      {% form 'cart', cart %}
+        {% for item in cart.items %}
+          <div style="display:flex;gap:16px;padding:20px 0;border-bottom:1px solid #dfd7cc;align-items:center;">
+            <a href="{{ item.url }}" style="flex-shrink:0;">
+              {{ item.image | image_url: width: 120 | image_tag: width: 80, height: 80, style: "border-radius:12px;object-fit:cover;" }}
+            </a>
+            <div style="flex:1;">
+              <div style="font-weight:700;">{{ item.product.title }}</div>
+              {% unless item.variant.title == "Default Title" %}
+                <div style="color:#666;font-size:14px;">{{ item.variant.title }}</div>
+              {% endunless %}
+              <div style="font-weight:800;margin-top:6px;">{{ item.line_price | money }}</div>
+            </div>
+            <input type="number" name="updates[]" value="{{ item.quantity }}" min="0" style="width:56px;padding:8px;border:1px solid #dfd7cc;border-radius:10px;text-align:center;">
+          </div>
+        {% endfor %}
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:24px 0;">
+          <div><strong>Total:</strong> {{ cart.total_price | money }}</div>
+          <div style="display:flex;gap:12px;">
+            <button type="submit" name="update" class="btn btn-secondary">Update</button>
+            <button type="submit" name="checkout" class="btn btn-primary">Checkout →</button>
+          </div>
+        </div>
+      {% endform %}
+    {% endif %}
+  </div>
+</section>
+{% schema %}
+{ "name": "Cart", "settings": [] }
+{% endschema %}
