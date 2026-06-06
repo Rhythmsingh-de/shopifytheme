@@ -1,203 +1,247 @@
-{%- assign current_variant = product.selected_or_first_available_variant -%}
-<section class="section" style="padding-top:clamp(var(--sp-6),3vw,var(--sp-10))">
+{%- liquid
+  assign product = product
+  assign first_variant = product.selected_or_first_available_variant
+  assign price = first_variant.price
+  assign compare_price = first_variant.compare_at_price
+  assign is_sale = false
+  if compare_price > price
+    assign is_sale = true
+    assign saving_pct = compare_price | minus: price | times: 100 | divided_by: compare_price
+  endif
+-%}
+<section class="section-spacing" {{ section.shopify_attributes }}>
   <div class="container">
-    <!-- Breadcrumb -->
-    <nav aria-label="Breadcrumb" style="font-size:var(--text-xs);color:var(--color-text-muted);margin-bottom:var(--sp-6);display:flex;gap:var(--sp-2);align-items:center;flex-wrap:wrap">
-      <a href="/" style="color:var(--color-text-muted)">Home</a>
-      <span aria-hidden="true">/</span>
-      {%- if product.collections.first -%}
-        <a href="{{ product.collections.first.url }}" style="color:var(--color-text-muted)">{{ product.collections.first.title }}</a>
-        <span aria-hidden="true">/</span>
-      {%- endif -%}
-      <span style="color:var(--color-text);font-weight:600">{{ product.title }}</span>
-    </nav>
+    <div class="product-page-grid" data-product-detail
+      data-product-id="{{ product.id }}"
+      data-product-title="{{ product.title | escape }}"
+      data-product-type="{{ product.type | escape }}"
+      data-price="{{ price | divided_by: 100.0 }}"
+      data-variant-title="{{ first_variant.title | escape }}">
 
-    <div class="product-layout">
-      <!-- Gallery -->
-      <div class="product-gallery">
-        <div class="product-gallery__thumbs" style="display:flex;flex-direction:column;gap:var(--sp-2);width:72px">
-          {%- for img in product.images limit: 6 -%}
-            <div class="product-gallery__thumb {% if forloop.first %}active{% endif %}"
-                 data-src="{{ img | image_url: width: 900 }}"
-                 data-alt="{{ img.alt | default: product.title | escape }}"
-                 role="button" tabindex="0"
-                 aria-label="View image {{ forloop.index }}">
-              <img src="{{ img | image_url: width: 150 }}"
-                   alt="{{ img.alt | default: product.title | escape }}"
-                   width="72" height="72" loading="lazy" decoding="async">
-            </div>
-          {%- endfor -%}
-        </div>
-        <div class="product-gallery__main">
-          <img id="product-gallery-main"
-               src="{{ product.featured_image | image_url: width: 900 }}"
-               alt="{{ product.featured_image.alt | default: product.title | escape }}"
-               width="900" height="1100"
-               loading="eager" decoding="async"
-               style="width:100%;height:100%;object-fit:cover">
-          {%- if current_variant.compare_at_price > current_variant.price -%}
-            {%- assign save_pct = current_variant.compare_at_price | minus: current_variant.price | times: 100 | divided_by: current_variant.compare_at_price -%}
-            <span class="badge badge--sale" style="position:absolute;top:var(--sp-4);left:var(--sp-4)">-{{ save_pct }}%</span>
+      <!-- Media -->
+      <div class="product-media-stack">
+        <div class="product-media-main">
+          {%- if product.featured_image != blank -%}
+            {{ product.featured_image | image_url: width: 900 | image_tag:
+              id: 'ProductMainImage',
+              loading: 'eager',
+              width: 900, height: 900,
+              alt: product.featured_image.alt | default: product.title
+            }}
+          {%- else -%}
+            {{ 'product-1' | placeholder_svg_tag }}
           {%- endif -%}
         </div>
+        {%- if product.images.size > 1 -%}
+          <div class="product-media-thumbs" role="list">
+            {%- for image in product.images limit: 6 -%}
+              <button class="product-media-thumb{% if forloop.first %} is-active{% endif %}"
+                aria-label="View image {{ forloop.index }}" role="listitem">
+                {{ image | image_url: width: 144 | image_tag:
+                  loading: 'lazy',
+                  width: 72, height: 72,
+                  alt: image.alt | default: product.title
+                }}
+              </button>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
       </div>
 
       <!-- Info -->
       <div class="product-info">
         {%- if product.vendor != blank -%}
-          <p style="font-size:var(--text-xs);font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--color-primary);margin-bottom:var(--sp-2)">{{ product.vendor }}</p>
+          <p class="product-info__vendor">{{ product.vendor }}</p>
         {%- endif -%}
-        <h1 style="font-family:var(--font-display);font-size:var(--text-xl);font-weight:800;line-height:1.2;margin-bottom:var(--sp-3)">{{ product.title }}</h1>
+        <h1 class="product-info__title">{{ product.title }}</h1>
 
-        <!-- Rating -->
-        <div style="display:flex;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-4)">
-          <div class="stars" aria-label="4.8 out of 5 stars">
-            {%- for i in (1..5) -%}
-              <svg viewBox="0 0 24 24" fill="#f59e0b" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            {%- endfor -%}
+        {%- if product.metafields.reviews.rating.value != blank -%}
+          <div class="product-info__rating">
+            {%- assign rating = product.metafields.reviews.rating.value | round -%}
+            <div style="display:flex;gap:3px;color:var(--color-gold)">
+              {%- for i in (1..5) -%}
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="{% if i <= rating %}currentColor{% else %}none{% endif %}" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              {%- endfor -%}
+            </div>
+            {%- if product.metafields.reviews.rating_count.value != blank -%}
+              <span style="font-size:var(--text-xs);color:var(--color-text-muted)">{{ product.metafields.reviews.rating_count.value }} reviews</span>
+            {%- endif -%}
           </div>
-          <span style="font-size:var(--text-xs);color:var(--color-text-muted)">({{ product.id | modulo: 89 | plus: 18 }} reviews)</span>
-        </div>
+        {%- endif -%}
 
-        <!-- Price -->
-        <div style="display:flex;align-items:center;gap:var(--sp-3);margin-bottom:var(--sp-6)">
-          <span id="product-price" style="font-size:var(--text-xl);font-weight:800;color:{% if current_variant.compare_at_price > current_variant.price %}var(--color-sale){% else %}var(--color-text){% endif %}">
-            {{ current_variant.price | money }}
-          </span>
-          {%- if current_variant.compare_at_price > current_variant.price -%}
-            <span id="product-compare-price" class="price--compare" style="font-size:var(--text-lg)">{{ current_variant.compare_at_price | money }}</span>
+        <div class="product-info__price">
+          <span class="{% if is_sale %}product-info__price-sale{% endif %}">{{ price | money }}</span>
+          {%- if is_sale -%}
+            <span class="product-info__price-compare">{{ compare_price | money }}</span>
+            <span class="badge badge--sale">Save {{ saving_pct }}%</span>
           {%- endif -%}
         </div>
 
-        <!-- Product Form -->
-        <form id="product-form" method="post" action="/cart/add" enctype="multipart/form-data" novalidate>
-          <input type="hidden" name="form_type" value="product">
-          <input type="hidden" name="utf8" value="✓">
-
-          {%- unless product.has_only_default_variant -%}
+        {%- if product.has_only_default_variant == false -%}
+          <div class="product-options">
             {%- for option in product.options_with_values -%}
-              <div style="margin-bottom:var(--sp-5)">
-                <p style="font-size:var(--text-xs);font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--color-text-muted);margin-bottom:var(--sp-2)">
-                  {{ option.name }}
-                  {%- if option.name == 'Color' or option.name == 'Colour' -%}
-                    : <span style="font-weight:800;color:var(--color-text)" id="selected-{{ option.name | handleize }}">{{ option.selected_value }}</span>
-                  {%- endif -%}
-                </p>
-                {%- if option.name == 'Size' -%}
-                  <div style="display:flex;flex-wrap:wrap;gap:var(--sp-2)" role="radiogroup" aria-label="{{ option.name }}">
-                    {%- for value in option.values -%}
-                      <label style="cursor:pointer">
-                        <input type="radio" name="option-{{ option.position }}" value="{{ value | escape }}" class="sr-only"
-                               {% if option.selected_value == value %}checked{% endif %}
-                               onchange="document.querySelector('[name=id]').value=this.closest('form').querySelector('.variant-id-map').dataset[this.value.toLowerCase().replace(/ /g,'-')] || ''">
-                        <span style="display:inline-flex;align-items:center;justify-content:center;min-width:44px;height:44px;padding:0 var(--sp-3);border:2px solid var(--color-border);border-radius:var(--radius-md);font-size:var(--text-sm);font-weight:600;transition:all var(--trans-fast)">{{ value }}</span>
-                      </label>
-                    {%- endfor -%}
-                  </div>
-                {%- else -%}
-                  <select name="option-{{ option.position }}" class="form-input" style="max-width:280px" aria-label="{{ option.name }}">
-                    {%- for value in option.values -%}
-                      <option value="{{ value | escape }}" {% if option.selected_value == value %}selected{% endif %}>{{ value }}</option>
-                    {%- endfor -%}
-                  </select>
-                {%- endif -%}
+              <div style="margin-bottom:var(--space-5)">
+                <p class="product-option__label">{{ option.name }}: <strong id="selected-{{ option.name | handleize }}">{{ option.selected_value }}</strong></p>
+                <div class="product-option__swatches" role="radiogroup" aria-label="{{ option.name }}">
+                  {%- for value in option.values -%}
+                    <button class="option-swatch{% if value == option.selected_value %} is-active{% endif %}"
+                      data-option-name="{{ option.name }}"
+                      data-option-value="{{ value }}"
+                      aria-pressed="{% if value == option.selected_value %}true{% else %}false{% endif %}">
+                      {{ value }}
+                    </button>
+                  {%- endfor -%}
+                </div>
               </div>
             {%- endfor -%}
-          {%- endunless -%}
+          </div>
+        {%- endif -%}
 
-          <select name="id" id="variant-select" data-variants="{{ product.variants_json | escape }}" style="display:none" aria-label="Product variant">
-            {%- for variant in product.variants -%}
-              <option value="{{ variant.id }}" {% if variant == current_variant %}selected{% endif %} {% unless variant.available %}disabled{% endunless %}>
-                {{ variant.title }} — {{ variant.price | money }}
-              </option>
-            {%- endfor -%}
-          </select>
-
-          <!-- Quantity -->
-          <div style="display:flex;align-items:center;gap:var(--sp-4);margin-bottom:var(--sp-4)">
-            <label style="font-size:var(--text-xs);font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--color-text-muted)">Qty</label>
-            <div class="qty">
-              <button type="button" class="qty__btn" onclick="var i=this.nextElementSibling;i.value=Math.max(1,+i.value-1)" aria-label="Decrease quantity">−</button>
-              <input type="number" name="quantity" class="qty__input" value="1" min="1" max="99" aria-label="Quantity">
-              <button type="button" class="qty__btn" onclick="var i=this.previousElementSibling;i.value=+i.value+1" aria-label="Increase quantity">+</button>
+        <div class="product-add-to-cart">
+          <div data-qty-stepper style="display:flex;align-items:center;gap:var(--space-3);margin-bottom:var(--space-3)">
+            <div class="product-qty">
+              <button class="product-qty__btn" data-qty-minus aria-label="Decrease quantity">−</button>
+              <input class="product-qty__val" type="number" data-qty-input value="1" min="1" aria-label="Quantity" readonly>
+              <button class="product-qty__btn" data-qty-plus aria-label="Increase quantity">+</button>
             </div>
+            <span style="font-size:var(--text-xs);color:var(--color-text-muted)">
+              {%- if first_variant.available -%}In stock{%- else -%}Out of stock{%- endif -%}
+            </span>
           </div>
 
-          <!-- Add to Cart -->
-          <button type="submit" id="add-to-cart-btn" class="btn btn--primary btn--full btn--lg"
-                  {% unless current_variant.available %}disabled{% endunless %}
-                  style="margin-bottom:var(--sp-3)">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
-            {% if current_variant.available %}Add to Cart{% else %}Sold Out{% endif %}
-          </button>
-        </form>
-
-        <!-- Trust Badges -->
-        <div style="padding:var(--sp-4) 0;border-top:1px solid var(--color-border);border-bottom:1px solid var(--color-border);margin-bottom:var(--sp-5)">
-          {%- render 'trust-badges', style: 'horizontal' -%}
+          {%- if first_variant.available -%}
+            <button class="btn btn--primary btn--full btn--lg"
+              id="ProductAddToCart"
+              data-add-to-cart
+              data-variant-id="{{ first_variant.id }}"
+              data-qty="1"
+              data-label="Add to Cart">
+              Add to Cart — {{ price | money }}
+            </button>
+            <a href="/checkout?variant={{ first_variant.id }}&quantity=1" class="btn btn--ghost btn--full btn--lg">
+              Buy It Now
+            </a>
+          {%- else -%}
+            <button class="btn btn--primary btn--full btn--lg" disabled style="opacity:0.5;cursor:not-allowed">
+              Sold Out
+            </button>
+          {%- endif -%}
         </div>
 
-        <!-- Payment Icons -->
-        <div style="margin-bottom:var(--sp-5)">
-          <p style="font-size:var(--text-xs);color:var(--color-text-muted);margin-bottom:var(--sp-2)">Secure payment</p>
+        <!-- Benefits -->
+        <ul class="product-benefits">
+          {%- if section.settings.benefit_1 != blank -%}
+            <li>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+              {{ section.settings.benefit_1 }}
+            </li>
+          {%- endif -%}
+          {%- if section.settings.benefit_2 != blank -%}
+            <li>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+              {{ section.settings.benefit_2 }}
+            </li>
+          {%- endif -%}
+          {%- if section.settings.benefit_3 != blank -%}
+            <li>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+              {{ section.settings.benefit_3 }}
+            </li>
+          {%- endif -%}
+          {%- if section.settings.benefit_4 != blank -%}
+            <li>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+              {{ section.settings.benefit_4 }}
+            </li>
+          {%- endif -%}
+        </ul>
+
+        <!-- Trust badges -->
+        <div class="product-trust">
+          <div class="product-trust-item">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+            <span class="product-trust-item__label">{{ section.settings.trust_1_title | default: '30-Day Returns' }}</span>
+            <span class="product-trust-item__sub">{{ section.settings.trust_1_sub | default: 'Easy returns' }}</span>
+          </div>
+          <div class="product-trust-item">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M1 3h15v13H1zM16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+            <span class="product-trust-item__label">{{ section.settings.trust_2_title | default: 'Fast Shipping' }}</span>
+            <span class="product-trust-item__sub">{{ section.settings.trust_2_sub | default: '7–10 days' }}</span>
+          </div>
+          <div class="product-trust-item">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span class="product-trust-item__label">{{ section.settings.trust_3_title | default: 'Secure Payment' }}</span>
+            <span class="product-trust-item__sub">{{ section.settings.trust_3_sub | default: 'SSL protected' }}</span>
+          </div>
+        </div>
+
+        <!-- Payment icons -->
+        <div class="product-payment-icons">
+          <span class="product-payment-icons__label">We accept:</span>
           {%- render 'payment-icons' -%}
         </div>
 
-        <!-- Description -->
-        {%- if product.description != blank -%}
-          <details style="border-top:1px solid var(--color-border);padding-top:var(--sp-4)">
-            <summary style="font-weight:700;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;font-size:var(--text-sm)">
-              Description
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true" class="details-icon"><polyline points="6 9 12 15 18 9"/></svg>
-            </summary>
-            <div style="padding-top:var(--sp-3);font-size:var(--text-sm);color:var(--color-text-muted);line-height:1.8">
-              {{ product.description }}
+        <!-- Accordion -->
+        <div style="margin-top:var(--space-8)">
+          {%- if product.description != blank -%}
+            <div class="accordion-item">
+              <button class="accordion-trigger" aria-expanded="true" aria-controls="acc-desc">
+                Description
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+              <div class="accordion-body is-open" id="acc-desc">
+                <div class="accordion-body__inner rte">{{ product.description }}</div>
+              </div>
             </div>
-          </details>
-        {%- endif -%}
+          {%- endif -%}
+
+          <div class="accordion-item">
+            <button class="accordion-trigger" aria-expanded="false" aria-controls="acc-shipping">
+              Shipping & Returns
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="accordion-body" id="acc-shipping">
+              <div class="accordion-body__inner">{{ section.settings.shipping_text | default: 'Free shipping on orders over $75. Standard delivery 7–10 business days. Easy 30-day returns.' }}</div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <button class="accordion-trigger" aria-expanded="false" aria-controls="acc-returns">
+              Return Policy
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="accordion-body" id="acc-returns">
+              <div class="accordion-body__inner">{{ section.settings.returns_text | default: 'Returns accepted within 30 days of delivery. Items must be unused and in original packaging. Contact us at info@bodyluxcare.com to initiate a return.' }}</div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Sticky ATC Mobile -->
-<div id="sticky-atc" class="sticky-atc">
-  <div style="flex:1;min-width:0">
-    <p style="font-size:var(--text-xs);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ product.title }}</p>
-    <p style="font-size:var(--text-sm);font-weight:800;color:var(--color-primary)">{{ current_variant.price | money }}</p>
-  </div>
-  <button class="btn btn--primary" onclick="document.getElementById('add-to-cart-btn').click()" style="flex-shrink:0">Add to Cart</button>
-</div>
-
-<style>
-.product-layout {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: clamp(var(--sp-8), 5vw, var(--sp-16));
-  align-items: start;
+{% schema %}
+{
+  "name": "Product main",
+  "tag": "section",
+  "class": "shopify-section--product",
+  "settings": [
+    { "type": "header", "content": "Product Benefits" },
+    { "type": "text", "id": "benefit_1", "label": "Benefit 1", "default": "Premium quality, built to last" },
+    { "type": "text", "id": "benefit_2", "label": "Benefit 2", "default": "Free shipping on orders over $75" },
+    { "type": "text", "id": "benefit_3", "label": "Benefit 3", "default": "30-day hassle-free returns" },
+    { "type": "text", "id": "benefit_4", "label": "Benefit 4", "default": "Secure checkout guaranteed" },
+    { "type": "header", "content": "Trust Badges" },
+    { "type": "text", "id": "trust_1_title", "label": "Badge 1 title", "default": "30-Day Returns" },
+    { "type": "text", "id": "trust_1_sub", "label": "Badge 1 subtitle", "default": "Easy returns" },
+    { "type": "text", "id": "trust_2_title", "label": "Badge 2 title", "default": "Fast Shipping" },
+    { "type": "text", "id": "trust_2_sub", "label": "Badge 2 subtitle", "default": "7–10 days" },
+    { "type": "text", "id": "trust_3_title", "label": "Badge 3 title", "default": "Secure Payment" },
+    { "type": "text", "id": "trust_3_sub", "label": "Badge 3 subtitle", "default": "SSL protected" },
+    { "type": "header", "content": "Policy Text" },
+    { "type": "richtext", "id": "shipping_text", "label": "Shipping info" },
+    { "type": "richtext", "id": "returns_text", "label": "Returns info" }
+  ],
+  "presets": [{ "name": "Product main" }]
 }
-.product-gallery {
-  position: sticky;
-  top: calc(var(--header-h) + var(--sp-4));
-  display: flex;
-  gap: var(--sp-3);
-}
-.product-gallery__main {
-  flex: 1;
-  aspect-ratio: 3/4;
-  border-radius: var(--radius-xl);
-  overflow: hidden;
-  background: var(--color-surface);
-  position: relative;
-}
-@media (max-width: 767px) {
-  .product-layout { grid-template-columns: 1fr; }
-  .product-gallery { flex-direction: column-reverse; position: static; }
-  .product-gallery__thumbs { flex-direction: row; width: 100%; overflow-x: auto; }
-  .product-gallery__thumb { width: 60px; height: 60px; flex-shrink: 0; }
-}
-details summary::-webkit-details-marker { display: none; }
-details[open] .details-icon { transform: rotate(180deg); }
-.details-icon { transition: transform var(--trans-base); }
-</style>
-{% schema %}{ "name": "Product", "tag": "section", "settings": [], "presets": [{ "name": "Product" }] }{% endschema %}
+{% endschema %}
