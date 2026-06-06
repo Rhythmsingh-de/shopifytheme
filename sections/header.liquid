@@ -1,91 +1,100 @@
 
-<header class="site-header" id="site-header" role="banner" style="--header-bg:{{ section.settings.bg_color }};">
-  <style>
-    .site-header { background: {{ section.settings.bg_color }}; }
-    .brand { font-size: {{ section.settings.brand_size }}px; }
-    .nav__link { color: {{ section.settings.nav_color }}; }
-    .cart-btn { background: {{ section.settings.cart_btn_color }}; color: {{ section.settings.cart_btn_text }}; }
-  </style>
-  <div class="page-width header-inner">
+<header class="site-header" id="siteHeader" role="banner">
+  <div class="page-w">
+    <div class="header-inner">
 
-    <a class="brand" href="{{ routes.root_url }}" aria-label="{{ shop.name }} home">
-      {%- if section.settings.logo != blank -%}
-        <img src="{{ section.settings.logo | image_url: width: 300 }}"
-             alt="{{ shop.name }}"
-             width="{{ section.settings.logo_width }}"
-             height="auto"
-             loading="eager">
-      {%- else -%}
-        {{ section.settings.brand_name | default: shop.name }}
-      {%- endif -%}
-    </a>
+      <!-- Left: hamburger + nav -->
+      <div style="display:flex;align-items:center;gap:4px">
+        <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="mobileNav">
+          <span class="ham-line"></span><span class="ham-line"></span><span class="ham-line"></span>
+        </button>
+        <nav class="header-nav" aria-label="Main navigation">
+          {% for link in linklists.main-menu.links %}
+            <a href="{{ link.url }}"{% if link.url == request.path %} class="active"{% endif %}>{{ link.title }}</a>
+          {% endfor %}
+        </nav>
+      </div>
 
-    <nav class="nav" aria-label="Main navigation">
-      {%- for link in linklists[section.settings.menu].links -%}
-        <a class="nav__link{% if link.active %} active{% endif %}" href="{{ link.url }}">
-          {{ link.title }}
-        </a>
-      {%- endfor -%}
-    </nav>
+      <!-- Center: logo -->
+      <a class="header-logo" href="{{ routes.root_url }}" aria-label="{{ shop.name }} home">
+        {% if section.settings.logo != blank %}
+          {{ section.settings.logo | image_url: width: 200 | image_tag: alt: shop.name, width: 120, height: 38, loading: 'eager' }}
+        {% else %}
+          <span>{{ shop.name | upcase }}</span>
+        {% endif %}
+      </a>
 
-    <div class="header-actions">
-      {%- if section.settings.show_search -%}
-        <a class="header-icon-btn" href="{{ routes.search_url }}" aria-label="Search">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="20" height="20"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <!-- Right: search, account, cart -->
+      <div class="header-actions">
+        <button class="icon-btn" id="searchToggle" aria-label="Search">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        </button>
+        <a class="icon-btn" href="{{ routes.account_url }}" aria-label="Account">
+          <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         </a>
-      {%- endif -%}
-      {%- if section.settings.show_account and shop.customer_accounts_enabled -%}
-        <a class="header-icon-btn" href="{{ routes.account_url }}" aria-label="Account">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="20" height="20"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        </a>
-      {%- endif -%}
-      <button class="cart-btn" id="cart-drawer-trigger" aria-label="Open cart">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-        {{ section.settings.cart_label | default: "Cart" }}
-        <span class="cart-count" id="cart-count">{{ cart.item_count }}</span>
-      </button>
-      <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false">
-        <span class="hamburger-line"></span>
-        <span class="hamburger-line"></span>
-        <span class="hamburger-line"></span>
-      </button>
+        <button class="icon-btn cart-icon-btn" id="cartToggle" aria-label="Open cart ({{ cart.item_count }} items)">
+          <svg viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <span class="cart-badge" id="cartBadge" {% if cart.item_count == 0 %}style="display:none"{% endif %}>{{ cart.item_count }}</span>
+        </button>
+      </div>
+
     </div>
+  </div>
 
+  <!-- Search bar -->
+  <div id="searchBar" style="display:none;padding:12px;border-top:1px solid #e8e8e8;background:#fff">
+    <form action="{{ routes.search_url }}" method="get" style="max-width:500px;margin:0 auto;display:flex;gap:8px">
+      <input type="hidden" name="type" value="product">
+      <input type="search" name="q" placeholder="{{ section.settings.search_placeholder }}" aria-label="Search products"
+             style="flex:1;padding:10px 16px;border:1.5px solid #e8e8e8;border-radius:9999px;font-size:14px"
+             value="{{ search.terms | escape }}" autofocus>
+      <button type="submit" class="btn btn-black btn-sm" aria-label="Submit search">Search</button>
+    </form>
   </div>
 </header>
+
+<script>
+(function(){
+  var hdr = document.getElementById('siteHeader');
+  window.addEventListener('scroll', function(){
+    hdr.classList.toggle('scrolled', window.scrollY > 10);
+  }, {passive:true});
+
+  // Search toggle
+  document.getElementById('searchToggle').addEventListener('click', function(){
+    var sb = document.getElementById('searchBar');
+    var hidden = sb.style.display === 'none' || !sb.style.display;
+    sb.style.display = hidden ? 'block' : 'none';
+    if(hidden) sb.querySelector('input').focus();
+  });
+
+  // Cart drawer
+  function openCart(){ document.getElementById('cartDrawer').classList.add('open'); document.getElementById('cartDrawer').removeAttribute('aria-hidden'); document.body.style.overflow='hidden'; }
+  function closeCart(){ document.getElementById('cartDrawer').classList.remove('open'); document.getElementById('cartDrawer').setAttribute('aria-hidden','true'); document.body.style.overflow=''; }
+  document.getElementById('cartToggle')?.addEventListener('click', openCart);
+  document.getElementById('cartClose')?.addEventListener('click', closeCart);
+  document.getElementById('cartOverlay')?.addEventListener('click', closeCart);
+  document.getElementById('cartContinue')?.addEventListener('click', closeCart);
+
+  // Mobile nav
+  function openNav(){ document.getElementById('mobileNav').classList.add('open'); document.getElementById('mobileNav').removeAttribute('aria-hidden'); document.body.style.overflow='hidden'; document.getElementById('hamburger').classList.add('open'); document.getElementById('hamburger').setAttribute('aria-expanded','true'); }
+  function closeNav(){ document.getElementById('mobileNav').classList.remove('open'); document.getElementById('mobileNav').setAttribute('aria-hidden','true'); document.body.style.overflow=''; document.getElementById('hamburger').classList.remove('open'); document.getElementById('hamburger').setAttribute('aria-expanded','false'); }
+  document.getElementById('hamburger')?.addEventListener('click', function(){ this.classList.contains('open') ? closeNav() : openNav(); });
+  document.getElementById('mobileClose')?.addEventListener('click', closeNav);
+  document.getElementById('mobileOverlay')?.addEventListener('click', closeNav);
+
+  // Keyboard close
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ closeCart(); closeNav(); } });
+})();
+</script>
 
 {% schema %}
 {
   "name": "Header",
   "settings": [
-    {
-      "type": "header",
-      "content": "Logo"
-    },
-    { "type": "image_picker", "id": "logo", "label": "Logo image" },
-    { "type": "range", "id": "logo_width", "min": 60, "max": 300, "step": 10, "unit": "px", "label": "Logo width", "default": 140 },
-    { "type": "text", "id": "brand_name", "label": "Brand name (used if no logo)", "default": "BodyLuxCare" },
-    { "type": "range", "id": "brand_size", "min": 14, "max": 36, "step": 1, "unit": "px", "label": "Brand name size", "default": 22 },
-    {
-      "type": "header",
-      "content": "Navigation"
-    },
-    { "type": "link_list", "id": "menu", "label": "Menu", "default": "main-menu" },
-    { "type": "color", "id": "nav_color", "label": "Nav link color", "default": "#111111" },
-    {
-      "type": "header",
-      "content": "Actions"
-    },
-    { "type": "checkbox", "id": "show_search", "label": "Show search icon", "default": true },
-    { "type": "checkbox", "id": "show_account", "label": "Show account icon", "default": true },
-    { "type": "text", "id": "cart_label", "label": "Cart button label", "default": "Cart" },
-    {
-      "type": "header",
-      "content": "Colors"
-    },
-    { "type": "color", "id": "bg_color", "label": "Header background", "default": "#faf8f5" },
-    { "type": "color", "id": "cart_btn_color", "label": "Cart button color", "default": "#111111" },
-    { "type": "color", "id": "cart_btn_text", "label": "Cart button text color", "default": "#ffffff" }
-  ]
+    {"type":"image_picker","id":"logo","label":"Logo image"},
+    {"type":"text","id":"search_placeholder","label":"Search placeholder","default":"Search for products…"}
+  ],
+  "presets":[{"name":"Header"}]
 }
 {% endschema %}
