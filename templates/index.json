@@ -1,24 +1,70 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
+    "urgency_banner": {
+      "type": "urgency-banner",
+      "settings": {
+        "text": "⚡ LIMITED OFFER — Free Express Shipping Ends Tonight at Midnight",
+        "bg_color": "#111111",
+        "text_color": "#ffffff"
+      }
+    },
     "featured_product": {
       "type": "featured-product",
       "settings": {
         "show_reviews_summary": true,
+        "review_count": "4,812",
         "show_sale_badge": true,
         "show_scarcity_bar": true,
+        "scarcity_max": 50,
         "show_trust_badges": true,
-        "cta_text": "Add to Cart"
+        "cta_text": "Add to Cart — Order Now",
+        "delivery_text": "Free express shipping on all orders",
+        "returns_text": "60-day risk-free returns",
+        "privacy_text": "Secure & encrypted checkout",
+        "section_padding": 80
       }
+    },
+    "trust_bar": {
+      "type": "trust-bar",
+      "settings": {}
+    },
+    "impact_band": {
+      "type": "impact-band",
+      "settings": {}
+    },
+    "reviews_strip": {
+      "type": "reviews-strip",
+      "settings": {
+        "heading": "What 4,800+ Customers Are Saying",
+        "subtext": "4.9 out of 5 stars · Verified purchases only"
+      }
+    },
+    "testimonials": {
+      "type": "testimonials",
+      "settings": {
+        "eyebrow": "Real Results",
+        "title": "Thousands of Happy Customers"
+      }
+    },
+    "faq": {
+      "type": "faq",
+      "settings": {
+        "heading": "Frequently Asked Questions"
+      }
+    },
+    "email_capture": {
+      "type": "email-capture",
+      "settings": {}
     }
   },
-  "order": ["featured_product"]
+  "order": [
+    "urgency_banner",
+    "featured_product",
+    "trust_bar",
+    "impact_band",
+    "reviews_strip",
+    "testimonials",
+    "faq",
+    "email_capture"
+  ]
 }

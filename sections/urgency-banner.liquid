@@ -1,0 +1,52 @@
+{%- if section.settings.text != blank -%}
+<div class="ub" style="background: {{ section.settings.bg_color }}; color: {{ section.settings.text_color }};">
+  <div class="ub__inner">
+    <p class="ub__text">{{ section.settings.text }}</p>
+    {%- if section.settings.show_timer -%}
+      <span class="ub__timer" id="UBTimer"></span>
+    {%- endif -%}
+  </div>
+</div>
+{%- endif -%}
+
+{%- if section.settings.show_timer -%}
+<script>
+(function () {
+  var el = document.getElementById('UBTimer');
+  if (!el) return;
+  var end = new Date();
+  end.setHours(23, 59, 59, 0);
+  function tick() {
+    var now = new Date();
+    var diff = Math.max(0, end - now);
+    var h = Math.floor(diff / 3600000);
+    var m = Math.floor((diff % 3600000) / 60000);
+    var s = Math.floor((diff % 60000) / 1000);
+    el.textContent = '\u00a0' + String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+    if (diff > 0) requestAnimationFrame(tick);
+  }
+  tick();
+}());
+</script>
+{%- endif -%}
+
+<style>
+  .ub { width: 100%; text-align: center; padding: 10px 16px; }
+  .ub__inner { display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; }
+  .ub__text { font-size: 0.85rem; font-weight: 600; letter-spacing: 0.03em; }
+  .ub__timer { font-size: 0.85rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+</style>
+
+{% schema %}
+{
+  "name": "Urgency Banner",
+  "tag": "div",
+  "settings": [
+    { "type": "text", "id": "text", "label": "Banner text", "default": "\u26a1 LIMITED OFFER \u2014 Free Express Shipping Ends Tonight" },
+    { "type": "checkbox", "id": "show_timer", "label": "Show countdown to midnight", "default": true },
+    { "type": "color", "id": "bg_color", "label": "Background", "default": "#111111" },
+    { "type": "color", "id": "text_color", "label": "Text color", "default": "#ffffff" }
+  ],
+  "presets": [{ "name": "Urgency Banner" }]
+}
+{% endschema %}
