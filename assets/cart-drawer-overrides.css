@@ -1,0 +1,5 @@
+/* make cart overlay slightly transparent so page is visible behind */
+.cart-drawer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 800; opacity: 0; pointer-events: none; transition: opacity var(--transition-slow); }
+.cart-drawer-overlay.is-open { opacity: 1; pointer-events: auto; }
+.cart-drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(420px, 100vw); background: color-mix(in oklch, var(--color-bg) 96%, black); z-index: 900; transform: translateX(100%); transition: transform var(--transition-slow); display: flex; flex-direction: column; box-shadow: var(--shadow-lg); backdrop-filter: blur(10px); }
+.cart-drawer.is-open { transform: none; }
