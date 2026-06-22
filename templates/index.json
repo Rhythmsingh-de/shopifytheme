@@ -1,9 +1,18 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "urgency_banner": {
       "type": "urgency-banner",
       "settings": {
-        "text": "\u26a1 LIMITED OFFER \u2014 Free Express Shipping Ends Tonight at Midnight",
+        "text": "⚡ LIMITED OFFER — Free Express Shipping Ends Tonight at Midnight",
         "show_timer": true,
         "bg_color": "#ff3c00",
         "text_color": "#ffffff"
@@ -12,44 +21,67 @@
     "featured_product": {
       "type": "featured-product",
       "settings": {
+        "product": "outdoor-large-capacity-messenger-bag-men-chest-bag-simple-fashion-men-bag-shoulder-bag",
         "show_reviews_summary": true,
-        "review_count": "4,812",
         "show_sale_badge": true,
         "show_scarcity_bar": true,
-        "scarcity_max": 50,
         "show_trust_badges": true,
-        "cta_text": "Add to Cart \u2014 Order Now",
+        "review_count": "4,812",
+        "cta_text": "Add to Cart — Order Now",
         "delivery_text": "Free express shipping on all orders",
         "returns_text": "60-day risk-free returns",
         "privacy_text": "Secure & encrypted checkout",
-        "section_padding": 80
+        "section_padding": 72,
+        "scarcity_max": 80
       }
     },
     "trust_bar": {
       "type": "trust-bar",
-      "settings": {}
+      "settings": {
+        "bg_color": "#ffffff"
+      }
     },
     "impact_band": {
       "type": "impact-band",
-      "settings": {}
+      "settings": {
+        "eyebrow": "Our Promise",
+        "heading": "One Purchased = One Donated",
+        "subtext": "For every item you buy, we donate one to someone in need. Over 100 million items donated and counting.",
+        "cta_label": "Learn About Our Mission",
+        "cta_url": ""
+      }
     },
     "reviews_strip": {
       "type": "reviews-strip",
       "settings": {
         "heading": "What 4,800+ Customers Are Saying",
-        "subtext": "4.9 out of 5 stars \u00b7 Verified purchases only"
+        "subtext": "4.9 out of 5 stars · Verified purchases only"
       }
     },
     "testimonials": {
       "type": "testimonials",
       "settings": {
         "eyebrow": "Real Results",
-        "title": "Thousands of Happy Customers"
+        "title": "Thousands of Happy Customers",
+        "show_summary": true,
+        "avg_rating": "4.9",
+        "review_count": "2,400+"
       }
     },
     "trust_badges": {
       "type": "trust-badges",
-      "settings": {}
+      "settings": {
+        "layout": "contained",
+        "bg_color": "#f7f7f7",
+        "icon_color": "#1a1a1a",
+        "text_color": "#1a1a1a",
+        "divider_color": "#cccccc",
+        "show_dividers": true,
+        "icon_size": 38,
+        "padding_top": 20,
+        "padding_bottom": 20,
+        "padding_sides": 20
+      }
     },
     "faq": {
       "type": "faq",
@@ -59,7 +91,14 @@
     },
     "email_capture": {
       "type": "email-capture",
-      "settings": {}
+      "settings": {
+        "eyebrow": "Exclusive Offer",
+        "title": "Get 10% Off Your First Order",
+        "subtitle": "Join the BodyLuxCare family and be the first to hear about new arrivals, exclusive deals, and wellness tips.",
+        "placeholder": "Enter your email address",
+        "button_text": "Claim My 10% Off",
+        "disclaimer": "No spam ever. Unsubscribe anytime. By subscribing you agree to our Privacy Policy."
+      }
     }
   },
   "order": [
