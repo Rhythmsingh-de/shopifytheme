@@ -7,9 +7,10 @@
     <h2 style="text-align:center;font-family:var(--font-display);font-size:clamp(1.6rem,3vw,2.4rem);margin-bottom:clamp(24px,4vw,48px)">{{ section.settings.heading | default: 'Best Sellers' }}</h2>
 
     {%- assign coll = collections[section.settings.collection] -%}
+    {%- assign products_limit = section.settings.products_to_show | default: 4 -%}
     <div class="prod-grid" style="display:grid;grid-template-columns:repeat({{ section.settings.columns_desktop | default: 4 }},1fr);gap:var(--sp-5);--cols:{{ section.settings.columns_desktop | default: 4 }}">
       {%- if coll != blank -%}
-        {%- for product in coll.products limit: section.settings.products_to_show | default: 4 -%}
+        {%- for product in coll.products limit: products_limit -%}
           {%- render 'product-card', product: product -%}
         {%- else -%}
           <p style="grid-column:1/-1;text-align:center;color:var(--color-text-muted);padding:40px">Select a collection in the theme editor.</p>

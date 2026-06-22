@@ -28,6 +28,9 @@
       </div>
     </div>
 
+    {% assign now_seconds = 'now' | date: '%s' %}
+    {% assign cutoff_seconds = now_seconds | minus: 2592000 %}
+
     {% for block in section.blocks %}
       <div class="tab-pane{% if forloop.first %} active{% endif %}"
            id="tab-pane-{{ block.id }}"
@@ -36,6 +39,7 @@
         {% assign coll = collections[block.settings.collection] %}
         {% if coll != blank %}
           {% for product in coll.products limit: section.settings.products_per_tab %}
+            {% assign product_seconds = product.created_at | date: '%s' %}
             <article class="prod-card" data-product-id="{{ product.id }}" data-product-title="{{ product.title | escape }}" data-product-type="{{ product.type | escape }}" data-price="{{ product.price | divided_by: 100.0 }}">
               <a href="{{ product.url }}">
                 <div class="prod-card__media">
@@ -52,7 +56,7 @@
                     <span class="prod-card__badge badge-sale">Sold Out</span>
                   {% elsif product.compare_at_price > product.price %}
                     <span class="prod-card__badge badge-sale">Sale</span>
-                  {% elsif product.created_at > 'now' | date: '%s' | minus: 2592000 | date: '%Y-%m-%dT%H:%M:%SZ' %}
+                  {% elsif product_seconds > cutoff_seconds %}
                     <span class="prod-card__badge badge-new">New</span>
                   {% endif %}
                 </div>

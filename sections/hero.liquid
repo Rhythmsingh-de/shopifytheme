@@ -18,7 +18,7 @@
         loading="eager" decoding="async"
         style="width:100%;height:100%;object-fit:cover;object-position:center"
       >
-      <div style="position:absolute;inset:0;background:rgba(0,0,0,{{ section.settings.overlay_opacity | default: 0.45 }})"></div>
+      <div style="position:absolute;inset:0;background:rgba(0,0,0,{{ section.settings.overlay_opacity | default: 0.5 }})"></div>
     </div>
   {%- else -%}
     <div style="position:absolute;inset:0;z-index:0;background:linear-gradient(135deg,#0d2318 0%,#1a4a2e 50%,#0d2318 100%)"></div>
@@ -135,14 +135,14 @@
     { "type": "url", "id": "cta2_link", "label": "Button 2 link" },
     { "type": "header", "content": "Background" },
     { "type": "image_picker", "id": "bg_image", "label": "Background image" },
-    { "type": "range", "id": "overlay_opacity", "label": "Image overlay opacity", "min": 0, "max": 0.9, "step": 0.05, "default": 0.45 },
+    { "type": "range", "id": "overlay_opacity", "label": "Image overlay opacity", "min": 0.0, "max": 0.9, "step": 0.1, "default": 0.5 },
     { "type": "color", "id": "bg_color", "label": "Background color (no image)", "default": "#0d2318" },
     { "type": "header", "content": "Typography" },
     { "type": "color", "id": "heading_color", "label": "Heading color", "default": "#ffffff" },
     { "type": "color", "id": "subheading_color", "label": "Subheading color", "default": "#cccccc" },
     { "type": "color", "id": "accent_color", "label": "Eyebrow accent color", "default": "#7dc98f" },
     { "type": "header", "content": "Layout" },
-    { "type": "range", "id": "min_height", "label": "Min height (px)", "min": 300, "max": 900, "step": 50, "default": 620 },
+    { "type": "range", "id": "min_height", "label": "Min height (px)", "min": 300, "max": 900, "step": 50, "default": 600 },
     { "type": "select", "id": "btn_radius", "label": "Button style", "options": [{"value":"9999px","label":"Pill"},{"value":"8px","label":"Rounded"},{"value":"4px","label":"Square"}], "default": "9999px" }
   ],
   "presets": [
