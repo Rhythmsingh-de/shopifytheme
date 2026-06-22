@@ -4,10 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="{{ settings.bg_color | default: '#ffffff' }}">
-  <title>{{ page_title }} — {{ shop.name }}</title>
-  <meta name="description" content="{{ page_description | escape }}">
 
   {{ content_for_header }}
+
+  {% render 'meta-tags' %}
+
+  {{ 'theme.css' | asset_url | stylesheet_tag }}
 
   <style>
     :root {
@@ -52,10 +54,17 @@
   {%- if settings.custom_css != blank -%}
     <style>{{ settings.custom_css }}</style>
   {%- endif -%}
+
+  {% render 'datalayer' %}
 </head>
 
 <body>
+  <a href="#MainContent" class="visually-hidden">Skip to content</a>
+
   {%- sections 'header-group' -%}
+
+  {% render 'nav-drawer' %}
+  {% render 'cart-drawer' %}
 
   <main id="MainContent" role="main" tabindex="-1">
     {{ content_for_layout }}
@@ -63,9 +72,11 @@
 
   {%- sections 'footer-group' -%}
 
+  {% render 'cookie-consent' %}
+
   <script>
-    window.DataLayer = window.DataLayer || [];
-    window.ShopEvents = (function() {
+    window.dataLayer = window.dataLayer || [];
+    window.ShopEvents = window.ShopEvents || (function() {
       var listeners = {};
       return {
         on: function(event, fn) { (listeners[event] = listeners[event] || []).push(fn); },
@@ -73,10 +84,13 @@
       };
     })();
     window.trackEvent = function(payload) {
-      window.DataLayer.push(payload);
+      window.dataLayer.push(payload);
       window.ShopEvents.emit('track', payload);
     };
   </script>
+
+  {{ 'datalayer.js' | asset_url | script_tag }}
+  {{ 'theme.js' | asset_url | script_tag }}
 
   {{ content_for_footer }}
 </body>
