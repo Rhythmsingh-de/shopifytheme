@@ -1,0 +1,12 @@
+/* Product details meta row (SKU/specs) */
+.product-meta-row{display:flex;flex-wrap:wrap;gap:var(--space-3);margin-bottom:var(--space-4);font-size:var(--text-xs);color:var(--color-text-faint)}
+.product-meta-pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;background:var(--color-surface);border:1px solid var(--color-border)}
+.product-meta-pill svg{width:14px;height:14px;color:var(--color-text-muted)}
+.product-specs-list{margin-top:var(--space-3);padding-left:1.1em;font-size:var(--text-xs);color:var(--color-text-muted);display:flex;flex-direction:column;gap:2px}
+@media(max-width:768px){.product-meta-row{flex-direction:column;align-items:flex-start}}
+
+/* Transparent cart drawer overlay and frosted panel */
+.cart-drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:800;opacity:0;pointer-events:none;transition:opacity var(--transition-slow)}
+.cart-drawer-overlay.is-open{opacity:1;pointer-events:auto}
+.cart-drawer{position:fixed;top:0;right:0;bottom:0;width:min(420px,100vw);background:color-mix(in oklch,var(--color-bg) 94%,black);z-index:900;transform:translateX(100%);transition:transform var(--transition-slow);display:flex;flex-direction:column;box-shadow:var(--shadow-lg);backdrop-filter:blur(14px)}
+.cart-drawer.is-open{transform:none}

@@ -2,7 +2,7 @@
   {
     "name": "theme_info",
     "theme_name": "Minimal Conversion",
-    "theme_version": "1.3.0",
+    "theme_version": "1.4.0",
     "theme_author": "Rhythmsingh",
     "theme_documentation_url": "https://github.com/Rhythmsingh-de/shopifytheme",
     "theme_support_url": "https://github.com/Rhythmsingh-de/shopifytheme"
@@ -33,13 +33,14 @@
       {"type": "url", "id": "privacy_policy_url", "label": "Privacy policy URL"},
       {"type": "text", "id": "facebook_pixel_id", "label": "Facebook Pixel ID", "info": "Optional. Used by your marketing stack or GTM; theme does not inject fbq() by itself."},
       {"type": "text", "id": "tiktok_pixel_id", "label": "TikTok Pixel ID", "info": "Optional. Used by your marketing stack or GTM; theme does not inject ttq() by itself."},
-      {"type": "text", "id": "gtm_container_id", "label": "Google Tag Manager container ID", "info": "Optional. Example: GTM-XXXXXXX."}
+      {"type": "text", "id": "gtm_container_id", "label": "Google Tag Manager container ID", "info": "Optional. Example: GTM-XXXXXXX."},
+      {"type": "text", "id": "google_site_verification", "label": "Google site verification meta tag value"}
     ]
   },
   {
     "name": "Advanced",
     "settings": [
-      {"type": "textarea", "id": "custom_css", "label": "Custom CSS"}
+      {"type": "textarea", "id": "custom_css", "label": "Custom CSS" }
     ]
   }
 ]
