@@ -1,35 +1,40 @@
-{%- if settings.announcement_enabled -%}
-<div id="announcement-bar" style="background:{{ settings.color_announcement_bg }};color:{{ settings.color_announcement_text }};" role="region" aria-label="Store announcements">
+{%- if section.settings.enabled -%}
+<div
+  id="announcement-bar-{{ section.id }}"
+  style="background:{{ section.settings.bg_color }};color:{{ section.settings.text_color }};"
+  role="region"
+  aria-label="Store announcements"
+>
   <div class="ann-inner">
-    <button class="ann-nav-btn" id="ann-prev" aria-label="Previous announcement">
+    <button class="ann-nav-btn" id="ann-prev-{{ section.id }}" aria-label="Previous announcement">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
     </button>
-    <div class="ann-track" id="ann-track" role="status" aria-live="polite">
-      {%- if settings.announcement_text_1 != blank -%}
+    <div class="ann-track" id="ann-track-{{ section.id }}" role="status" aria-live="polite">
+      {%- if section.settings.text_1 != blank -%}
         <span class="ann-msg ann-msg--active">
-          {%- if settings.announcement_link != blank -%}<a href="{{ settings.announcement_link }}" style="color:inherit;text-decoration:underline;text-underline-offset:2px">{%- endif -%}
-          {{ settings.announcement_text_1 }}
-          {%- if settings.announcement_link != blank -%}</a>{%- endif -%}
+          {%- if section.settings.link != blank -%}<a href="{{ section.settings.link }}" style="color:inherit;text-decoration:underline;text-underline-offset:2px">{%- endif -%}
+          {{ section.settings.text_1 }}
+          {%- if section.settings.link != blank -%}</a>{%- endif -%}
         </span>
       {%- endif -%}
-      {%- if settings.announcement_text_2 != blank -%}
-        <span class="ann-msg">{{ settings.announcement_text_2 }}</span>
+      {%- if section.settings.text_2 != blank -%}
+        <span class="ann-msg">{{ section.settings.text_2 }}</span>
       {%- endif -%}
-      {%- if settings.announcement_text_3 != blank -%}
-        <span class="ann-msg">{{ settings.announcement_text_3 }}</span>
+      {%- if section.settings.text_3 != blank -%}
+        <span class="ann-msg">{{ section.settings.text_3 }}</span>
       {%- endif -%}
     </div>
-    <button class="ann-nav-btn" id="ann-next" aria-label="Next announcement">
+    <button class="ann-nav-btn" id="ann-next-{{ section.id }}" aria-label="Next announcement">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
     </button>
-    <button class="ann-close" id="ann-close" aria-label="Dismiss announcement bar">
+    <button class="ann-close" id="ann-close-{{ section.id }}" aria-label="Dismiss">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>
   </div>
 </div>
 
 <style>
-#announcement-bar {
+#announcement-bar-{{ section.id }} {
   position: relative; z-index: 600;
   font-size: clamp(11px, 1.3vw, 13px);
   font-weight: 600; letter-spacing: 0.04em;
@@ -37,7 +42,7 @@
 .ann-inner {
   display: flex; align-items: center; justify-content: center;
   min-height: 44px; padding: 0 clamp(48px, 7vw, 100px);
-  gap: var(--sp-2); position: relative;
+  gap: 8px; position: relative;
 }
 .ann-track {
   position: relative; flex: 1;
@@ -50,80 +55,91 @@
   display: flex; align-items: center; justify-content: center;
   text-align: center; white-space: nowrap;
   opacity: 0; transform: translateY(8px);
-  transition: opacity 0.4s var(--ease-out), transform 0.4s var(--ease-out);
+  transition: opacity 0.4s ease, transform 0.4s ease;
   pointer-events: none;
 }
 .ann-msg--active { opacity: 1; transform: translateY(0); pointer-events: auto; }
 .ann-msg--exit   { opacity: 0; transform: translateY(-8px); }
-.ann-nav-btn {
+.ann-nav-btn, .ann-close {
   flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   background: rgba(255,255,255,0.18); color: inherit;
   border: none; cursor: pointer;
-  transition: background var(--trans-fast);
+  transition: background 0.15s ease;
 }
-.ann-nav-btn:hover { background: rgba(255,255,255,0.32); }
-.ann-close {
-  position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
-  width: 28px; height: 28px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  background: rgba(255,255,255,0.18); color: inherit;
-  border: none; cursor: pointer;
-  transition: background var(--trans-fast);
-}
-.ann-close:hover { background: rgba(255,255,255,0.32); }
+.ann-nav-btn:hover, .ann-close:hover { background: rgba(255,255,255,0.32); }
+.ann-close { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); }
 @media (max-width: 480px) {
   .ann-msg { white-space: normal; font-size: 11px; }
   .ann-nav-btn { display: none; }
-  .ann-inner { padding: 0 44px 0 var(--sp-4); }
+  .ann-inner { padding: 0 44px 0 16px; }
 }
 </style>
 
 <script>
-(function() {
-  const bar   = document.getElementById('announcement-bar');
-  const track = document.getElementById('ann-track');
+(function () {
+  var sid = '{{ section.id }}';
+  var bar   = document.getElementById('announcement-bar-' + sid);
+  var track = document.getElementById('ann-track-' + sid);
   if (!bar || !track) return;
 
-  // Dismiss
-  document.getElementById('ann-close')?.addEventListener('click', () => {
+  document.getElementById('ann-close-' + sid).addEventListener('click', function () {
     bar.style.transition = 'max-height 0.3s, padding 0.3s, opacity 0.3s';
     bar.style.maxHeight  = bar.offsetHeight + 'px';
     bar.style.overflow   = 'hidden';
-    requestAnimationFrame(() => { bar.style.maxHeight = '0'; bar.style.opacity = '0'; bar.style.padding = '0'; });
-    setTimeout(() => bar.remove(), 350);
+    requestAnimationFrame(function () {
+      bar.style.maxHeight = '0';
+      bar.style.opacity   = '0';
+      bar.style.padding   = '0';
+    });
+    setTimeout(function () { bar.remove(); }, 350);
   });
 
-  const msgs = track.querySelectorAll('.ann-msg');
+  var msgs = track.querySelectorAll('.ann-msg');
   if (msgs.length < 2) return;
 
-  let current = 0;
-  const speed = {{ settings.announcement_speed | default: 4 }} * 1000;
+  var current = 0;
+  var speed = {{ section.settings.speed }} * 1000;
+  var timer;
 
   function goTo(n) {
     msgs[current].classList.add('ann-msg--exit');
-    const leaving = msgs[current];
-    setTimeout(() => leaving.classList.remove('ann-msg--active', 'ann-msg--exit'), 420);
+    var leaving = msgs[current];
+    setTimeout(function () { leaving.classList.remove('ann-msg--active', 'ann-msg--exit'); }, 420);
     current = ((n % msgs.length) + msgs.length) % msgs.length;
     msgs[current].classList.add('ann-msg--active');
   }
 
-  let timer;
   function start() {
     clearInterval(timer);
-    {%- if settings.announcement_auto_rotate -%}
-    timer = setInterval(() => goTo(current + 1), speed);
-    {%- endif -%}
+    if ({{ section.settings.auto_rotate | json }}) {
+      timer = setInterval(function () { goTo(current + 1); }, speed);
+    }
   }
 
-  document.getElementById('ann-next')?.addEventListener('click', () => { goTo(current + 1); start(); });
-  document.getElementById('ann-prev')?.addEventListener('click', () => { goTo(current - 1); start(); });
+  document.getElementById('ann-next-' + sid).addEventListener('click', function () { goTo(current + 1); start(); });
+  document.getElementById('ann-prev-' + sid).addEventListener('click', function () { goTo(current - 1); start(); });
 
   start();
-})();
+}());
 </script>
 {%- endif -%}
 
 {% schema %}
-{ "name": "Announcement Bar", "settings": [] }
+{
+  "name": "Announcement Bar",
+  "tag": "div",
+  "settings": [
+    { "type": "checkbox", "id": "enabled", "label": "Show announcement bar", "default": true },
+    { "type": "color", "id": "bg_color", "label": "Background color", "default": "#111111" },
+    { "type": "color", "id": "text_color", "label": "Text color", "default": "#ffffff" },
+    { "type": "text", "id": "text_1", "label": "Message 1", "default": "\u26a1 Free shipping on orders over \u20ac50" },
+    { "type": "text", "id": "text_2", "label": "Message 2", "default": "\ud83d\udd12 60-Day Money-Back Guarantee" },
+    { "type": "text", "id": "text_3", "label": "Message 3", "default": "" },
+    { "type": "url",  "id": "link",   "label": "Link (optional)" },
+    { "type": "checkbox", "id": "auto_rotate", "label": "Auto-rotate messages", "default": true },
+    { "type": "range", "id": "speed", "label": "Rotation speed", "min": 2, "max": 10, "step": 1, "default": 4, "unit": "s" }
+  ],
+  "presets": [{ "name": "Announcement Bar" }]
+}
 {% endschema %}

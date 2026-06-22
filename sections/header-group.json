@@ -4,11 +4,21 @@
   "sections": {
     "announcement": {
       "type": "announcement-bar",
-      "settings": {}
+      "settings": {
+        "enabled": true,
+        "bg_color": "#111111",
+        "text_color": "#ffffff",
+        "text_1": "\u26a1 Free shipping on orders over \u20ac50",
+        "text_2": "\ud83d\udd12 60-Day Money-Back Guarantee",
+        "auto_rotate": true,
+        "speed": 4
+      }
     },
     "header": {
       "type": "header",
-      "settings": {}
+      "settings": {
+        "sticky": true
+      }
     }
   },
   "order": ["announcement", "header"]

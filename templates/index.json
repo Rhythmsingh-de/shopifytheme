@@ -3,8 +3,9 @@
     "urgency_banner": {
       "type": "urgency-banner",
       "settings": {
-        "text": "⚡ LIMITED OFFER — Free Express Shipping Ends Tonight at Midnight",
-        "bg_color": "#111111",
+        "text": "\u26a1 LIMITED OFFER \u2014 Free Express Shipping Ends Tonight at Midnight",
+        "show_timer": true,
+        "bg_color": "#ff3c00",
         "text_color": "#ffffff"
       }
     },
@@ -17,7 +18,7 @@
         "show_scarcity_bar": true,
         "scarcity_max": 50,
         "show_trust_badges": true,
-        "cta_text": "Add to Cart — Order Now",
+        "cta_text": "Add to Cart \u2014 Order Now",
         "delivery_text": "Free express shipping on all orders",
         "returns_text": "60-day risk-free returns",
         "privacy_text": "Secure & encrypted checkout",
@@ -36,7 +37,7 @@
       "type": "reviews-strip",
       "settings": {
         "heading": "What 4,800+ Customers Are Saying",
-        "subtext": "4.9 out of 5 stars · Verified purchases only"
+        "subtext": "4.9 out of 5 stars \u00b7 Verified purchases only"
       }
     },
     "testimonials": {
@@ -45,6 +46,10 @@
         "eyebrow": "Real Results",
         "title": "Thousands of Happy Customers"
       }
+    },
+    "trust_badges": {
+      "type": "trust-badges",
+      "settings": {}
     },
     "faq": {
       "type": "faq",
@@ -64,6 +69,7 @@
     "impact_band",
     "reviews_strip",
     "testimonials",
+    "trust_badges",
     "faq",
     "email_capture"
   ]
