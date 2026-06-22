@@ -98,7 +98,7 @@
           {%- endif -%}
         {%- endfor -%}
         {%- if section.blocks.size == 0 -%}
-          {%- assign mock_items = 'Women\'s Silk Blouse,Men\'s Premium Tee,Gold Hoop Earrings,Luxury Pet Toy Set' | split: ',' -%}
+          {%- assign mock_items = "Women's Silk Blouse,Men's Premium Tee,Gold Hoop Earrings,Luxury Pet Toy Set" | split: ',' -%}
           {%- assign mock_cats  = 'women,men,jewelry,pets' | split: ',' -%}
           {%- assign mock_prices= '$38.00,$42.00,$28.00,$24.00' | split: ',' -%}
           {%- for i in (0..3) -%}
