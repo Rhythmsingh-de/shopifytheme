@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#ffffff">
+  <meta name="theme-color" content="{{ settings.bg_color | default: '#ffffff' }}">
   <title>{{ page_title }} — {{ shop.name }}</title>
   <meta name="description" content="{{ page_description | escape }}">
 
@@ -11,41 +11,35 @@
 
   <style>
     :root {
-      --bg-color: #ffffff;
-      --text-color: #111111;
-      --text-muted: #666666;
-      --accent-color: #ff3c00;
-      --accent-hover: #e03500;
-      --surface: #f7f7f7;
-      --border-radius: 4px;
-      --max-width: 1200px;
-      --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --bg-color: {{ settings.bg_color | default: '#ffffff' }};
+      --text-color: {{ settings.text_color | default: '#111111' }};
+      --text-muted: {{ settings.text_muted | default: '#666666' }};
+      --accent-color: {{ settings.accent_color | default: '#ff3c00' }};
+      --accent-hover: {{ settings.accent_hover | default: '#e03500' }};
+      --surface: {{ settings.surface_color | default: '#f7f7f7' }};
+      --border-radius: {{ settings.border_radius | default: '4' }}px;
+      --max-width: {{ settings.max_width | default: '1200' }}px;
       --transition: 0.2s ease;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     html { font-size: 16px; scroll-behavior: smooth; }
-
     body {
       background-color: var(--bg-color);
       color: var(--text-color);
-      font-family: var(--font-body);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       font-weight: 400;
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
     }
-
     a { color: inherit; text-decoration: none; }
     img { max-width: 100%; display: block; }
     button { cursor: pointer; border: none; background: none; font-family: inherit; }
-
     .container {
       max-width: var(--max-width);
       margin: 0 auto;
       padding: 0 24px;
     }
-
     .visually-hidden {
       position: absolute;
       width: 1px; height: 1px;
@@ -61,31 +55,23 @@
 </head>
 
 <body>
-  {%- sections 'header' -%}
+  {%- sections 'header-group' -%}
 
   <main id="MainContent" role="main" tabindex="-1">
     {{ content_for_layout }}
   </main>
 
-  {%- sections 'footer' -%}
+  {%- sections 'footer-group' -%}
 
   <script>
     window.DataLayer = window.DataLayer || [];
-
-    // Lightweight pub/sub event bus
     window.ShopEvents = (function() {
-      const listeners = {};
+      var listeners = {};
       return {
-        on: function(event, fn) {
-          (listeners[event] = listeners[event] || []).push(fn);
-        },
-        emit: function(event, data) {
-          (listeners[event] || []).forEach(fn => fn(data));
-        }
+        on: function(event, fn) { (listeners[event] = listeners[event] || []).push(fn); },
+        emit: function(event, data) { (listeners[event] || []).forEach(function(fn) { fn(data); }); }
       };
     })();
-
-    // DataLayer push helper
     window.trackEvent = function(payload) {
       window.DataLayer.push(payload);
       window.ShopEvents.emit('track', payload);

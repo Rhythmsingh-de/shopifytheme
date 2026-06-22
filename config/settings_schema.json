@@ -1,1 +1,86 @@
-[]
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Minimal Conversion",
+    "theme_version": "1.0.0",
+    "theme_author": "Rhythmsingh",
+    "theme_documentation_url": "https://github.com/Rhythmsingh-de/shopifytheme",
+    "theme_support_url": "https://github.com/Rhythmsingh-de/shopifytheme"
+  },
+  {
+    "name": "Colors",
+    "settings": [
+      {
+        "type": "color",
+        "id": "bg_color",
+        "label": "Background",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "text_color",
+        "label": "Body text",
+        "default": "#111111"
+      },
+      {
+        "type": "color",
+        "id": "text_muted",
+        "label": "Muted text",
+        "default": "#666666"
+      },
+      {
+        "type": "color",
+        "id": "accent_color",
+        "label": "Accent (CTA buttons)",
+        "default": "#ff3c00"
+      },
+      {
+        "type": "color",
+        "id": "accent_hover",
+        "label": "Accent hover",
+        "default": "#e03500"
+      },
+      {
+        "type": "color",
+        "id": "surface_color",
+        "label": "Surface / card background",
+        "default": "#f7f7f7"
+      }
+    ]
+  },
+  {
+    "name": "Layout",
+    "settings": [
+      {
+        "type": "range",
+        "id": "max_width",
+        "label": "Max page width",
+        "min": 960,
+        "max": 1440,
+        "step": 40,
+        "default": 1200,
+        "unit": "px"
+      },
+      {
+        "type": "range",
+        "id": "border_radius",
+        "label": "Button / card radius",
+        "min": 0,
+        "max": 16,
+        "step": 2,
+        "default": 4,
+        "unit": "px"
+      }
+    ]
+  },
+  {
+    "name": "Advanced",
+    "settings": [
+      {
+        "type": "textarea",
+        "id": "custom_css",
+        "label": "Custom CSS"
+      }
+    ]
+  }
+]

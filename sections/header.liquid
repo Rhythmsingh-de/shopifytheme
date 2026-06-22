@@ -1,9 +1,15 @@
-<header class="site-header">
+<header class="site-header{% if section.settings.sticky %  site-header--sticky{% endif %}">
   <div class="container">
     <div class="header__inner">
-      <a href="/" class="header__logo">
+
+      <a href="/" class="header__logo" aria-label="{{ shop.name }} home">
         {%- if section.settings.logo != blank -%}
-          <img src="{{ section.settings.logo | image_url: width: 200 }}" alt="{{ shop.name }}" width="120" height="40" loading="eager">
+          <img
+            src="{{ section.settings.logo | image_url: width: 240 }}"
+            alt="{{ shop.name }}"
+            width="120" height="40"
+            loading="eager"
+          >
         {%- else -%}
           <span class="header__logo-text">{{ shop.name }}</span>
         {%- endif -%}
@@ -16,37 +22,41 @@
       </nav>
 
       <div class="header__actions">
-        <a href="/cart" class="header__cart" aria-label="Cart">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <a href="/cart" class="header__cart" aria-label="Cart ({{ cart.item_count }} items)">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
             <line x1="3" y1="6" x2="21" y2="6"/>
             <path d="M16 10a4 4 0 01-8 0"/>
           </svg>
           {%- if cart.item_count > 0 -%}
-            <span class="header__cart-count">{{ cart.item_count }}</span>
+            <span class="header__cart-count" aria-hidden="true">{{ cart.item_count }}</span>
           {%- endif -%}
         </a>
       </div>
+
     </div>
   </div>
 </header>
 
 <style>
   .site-header {
-    position: sticky; top: 0; z-index: 100;
     background: var(--bg-color);
     padding: 20px 0;
     border-bottom: 1px solid #f0f0f0;
+    z-index: 100;
   }
+  .site-header--sticky { position: sticky; top: 0; }
   .header__inner {
-    display: flex; align-items: center; justify-content: space-between; gap: 24px;
+    display: flex; align-items: center;
+    justify-content: space-between; gap: 24px;
   }
   .header__logo-text {
     font-size: 1.2rem; font-weight: 700; letter-spacing: -0.02em;
   }
   .header__nav { display: flex; gap: 32px; }
   .header__nav-link {
-    font-size: 0.9rem; font-weight: 500; color: var(--text-muted);
+    font-size: 0.9rem; font-weight: 500;
+    color: var(--text-muted);
     transition: color var(--transition);
   }
   .header__nav-link:hover { color: var(--text-color); }
@@ -57,7 +67,8 @@
     background: var(--accent-color); color: #fff;
     font-size: 0.65rem; font-weight: 700;
     width: 16px; height: 16px;
-    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
   }
   @media (max-width: 768px) {
     .header__nav { display: none; }
@@ -69,7 +80,8 @@
   "name": "Header",
   "settings": [
     { "type": "image_picker", "id": "logo", "label": "Logo" },
-    { "type": "link_list", "id": "menu", "label": "Navigation menu", "default": "main-menu" }
+    { "type": "link_list", "id": "menu", "label": "Navigation menu", "default": "main-menu" },
+    { "type": "checkbox", "id": "sticky", "label": "Sticky header", "default": true }
   ]
 }
 {% endschema %}

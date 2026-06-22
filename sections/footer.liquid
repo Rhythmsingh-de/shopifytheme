@@ -13,16 +13,19 @@
 
 <style>
   .site-footer {
-    padding: 40px 0;
-    margin-top: 80px;
+    padding: {{ section.settings.padding_top }}px 0 {{ section.settings.padding_bottom }}px;
     border-top: 1px solid #f0f0f0;
   }
   .footer__inner {
-    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+    display: flex; align-items: center;
+    justify-content: space-between; flex-wrap: wrap; gap: 16px;
   }
   .footer__copy { font-size: 0.85rem; color: var(--text-muted); }
-  .footer__links { display: flex; gap: 24px; }
-  .footer__link { font-size: 0.85rem; color: var(--text-muted); transition: color var(--transition); }
+  .footer__links { display: flex; gap: 24px; flex-wrap: wrap; }
+  .footer__link {
+    font-size: 0.85rem; color: var(--text-muted);
+    transition: color var(--transition);
+  }
   .footer__link:hover { color: var(--text-color); }
 </style>
 
@@ -30,7 +33,9 @@
 {
   "name": "Footer",
   "settings": [
-    { "type": "link_list", "id": "footer_menu", "label": "Footer menu", "default": "footer" }
+    { "type": "link_list", "id": "footer_menu", "label": "Footer menu", "default": "footer" },
+    { "type": "range", "id": "padding_top", "label": "Padding top", "min": 20, "max": 100, "step": 4, "default": 40, "unit": "px" },
+    { "type": "range", "id": "padding_bottom", "label": "Padding bottom", "min": 20, "max": 100, "step": 4, "default": 40, "unit": "px" }
   ]
 }
 {% endschema %}

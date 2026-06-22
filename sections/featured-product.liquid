@@ -13,18 +13,17 @@
   <div class="container">
     <div class="fp__grid">
 
-      <!-- LEFT: Media -->
+      <!-- Media -->
       <div class="fp__media">
         <div class="fp__media-wrap">
           {%- if on_sale and section.settings.show_sale_badge -%}
-            <span class="fp__badge">SALE</span>
+            <span class="fp__badge" aria-label="On sale">SALE</span>
           {%- endif -%}
           {%- if product.featured_image -%}
             <img
               src="{{ product.featured_image | image_url: width: 900 }}"
               alt="{{ product.featured_image.alt | escape }}"
-              width="900"
-              height="900"
+              width="900" height="900"
               loading="eager"
               class="fp__img"
             >
@@ -32,20 +31,19 @@
         </div>
       </div>
 
-      <!-- RIGHT: Info -->
+      <!-- Info column -->
       <div class="fp__info">
 
-        <!-- 1. Social Proof -->
+        <!-- Social proof -->
         {%- if section.settings.show_reviews_summary -%}
           <div class="fp__reviews">
-            <span class="fp__stars" aria-label="5 stars">★★★★★</span>
-            <span class="fp__review-count">{{ section.settings.review_count | default: '1,248' }} reviews</span>
+            <span class="fp__stars" aria-hidden="true">★★★★★</span>
+            <span class="fp__review-count">{{ section.settings.review_count }} reviews</span>
           </div>
         {%- endif -%}
 
-        <!-- 2. Identity -->
+        <!-- Title + Price -->
         <h1 class="fp__title">{{ product.title }}</h1>
-
         <div class="fp__price">
           {%- if on_sale -%}
             <span class="fp__price-sale">{{ sale_price | money }}</span>
@@ -55,43 +53,41 @@
           {%- endif -%}
         </div>
 
-        <!-- 3. Scarcity -->
+        <!-- Scarcity -->
         {%- if section.settings.show_scarcity_bar -%}
           {%- assign inventory = current_variant.inventory_quantity | default: 12 -%}
-          {%- assign max_stock = 50 -%}
-          {%- assign pct = inventory | times: 100 | divided_by: max_stock -%}
+          {%- assign pct = inventory | times: 100 | divided_by: section.settings.scarcity_max -%}
           <div class="fp__scarcity">
-            <div class="fp__scarcity-bar">
-              <div class="fp__scarcity-fill" style="width: {{ pct }}%"></div>
+            <div class="fp__scarcity-bar" role="progressbar" aria-valuenow="{{ pct }}" aria-valuemin="0" aria-valuemax="100">
+              <div class="fp__scarcity-fill" style="width: {{ pct | at_most: 100 }}%"></div>
             </div>
             <p class="fp__scarcity-text">⚡ Only <strong>{{ inventory }} left</strong> — selling fast</p>
           </div>
         {%- endif -%}
 
-        <!-- 4. Action Layer -->
+        <!-- CTA -->
         {%- form 'product', product, id: 'FeaturedProductForm', class: 'fp__form' -%}
           <input type="hidden" name="id" value="{{ current_variant.id }}">
-
           <button
             type="submit"
             class="fp__cta"
             id="FeaturedProductCTA"
-            {% if current_variant.available == false %}disabled{% endif %}
+            {%- unless current_variant.available -%}disabled aria-disabled="true"{%- endunless -%}
           >
             {%- if current_variant.available -%}
-              {{ section.settings.cta_text | default: 'Add to Cart' }}
+              {{ section.settings.cta_text }}
             {%- else -%}
               Sold Out
             {%- endif -%}
           </button>
         {%- endform -%}
 
-        <!-- 5. Trust Badges -->
+        <!-- Trust badges -->
         {%- if section.settings.show_trust_badges -%}
           <div class="fp__trust">
-            <div class="fp__trust-item">🚚 {{ section.settings.delivery_text | default: 'Free shipping over €50' }}</div>
-            <div class="fp__trust-item">↩️ {{ section.settings.returns_text | default: '30-day free returns' }}</div>
-            <div class="fp__trust-item">🔒 {{ section.settings.privacy_text | default: 'Secure & encrypted checkout' }}</div>
+            <div class="fp__trust-item">🚚 {{ section.settings.delivery_text }}</div>
+            <div class="fp__trust-item">↩️ {{ section.settings.returns_text }}</div>
+            <div class="fp__trust-item">🔒 {{ section.settings.privacy_text }}</div>
           </div>
         {%- endif -%}
 
@@ -101,9 +97,7 @@
 </section>
 
 <style>
-  .fp {
-    padding: 80px 0;
-  }
+  .fp { padding: {{ section.settings.section_padding }}px 0; }
   .fp__grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -141,8 +135,14 @@
 
   /* Scarcity */
   .fp__scarcity { margin-bottom: 28px; }
-  .fp__scarcity-bar { height: 6px; background: #e5e5e5; border-radius: 3px; overflow: hidden; margin-bottom: 8px; }
-  .fp__scarcity-fill { height: 100%; background: var(--accent-color); border-radius: 3px; transition: width 0.4s ease; }
+  .fp__scarcity-bar {
+    height: 6px; background: #e5e5e5;
+    border-radius: 3px; overflow: hidden; margin-bottom: 8px;
+  }
+  .fp__scarcity-fill {
+    height: 100%; background: var(--accent-color);
+    border-radius: 3px; transition: width 0.4s ease;
+  }
   .fp__scarcity-text { font-size: 0.85rem; color: var(--text-muted); }
   .fp__scarcity-text strong { color: var(--accent-color); }
 
@@ -151,42 +151,49 @@
   .fp__cta {
     display: block; width: 100%;
     background: var(--accent-color); color: #fff;
-    font-size: 1rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
+    font-size: 1rem; font-weight: 700;
+    letter-spacing: 0.04em; text-transform: uppercase;
     padding: 18px 24px; border-radius: var(--border-radius);
     transition: background var(--transition), transform var(--transition);
   }
-  .fp__cta:hover { background: var(--accent-hover); transform: translateY(-1px); }
-  .fp__cta:active { transform: translateY(0); }
-  .fp__cta:disabled { background: #ccc; cursor: not-allowed; transform: none; }
+  .fp__cta:hover:not(:disabled) { background: var(--accent-hover); transform: translateY(-1px); }
+  .fp__cta:active:not(:disabled) { transform: translateY(0); }
+  .fp__cta:disabled { background: #ccc; cursor: not-allowed; }
 
   /* Trust */
-  .fp__trust { display: flex; flex-direction: column; gap: 10px; padding-top: 8px; border-top: 1px solid #f0f0f0; }
+  .fp__trust {
+    display: flex; flex-direction: column; gap: 10px;
+    padding-top: 8px; border-top: 1px solid #f0f0f0;
+  }
   .fp__trust-item { font-size: 0.85rem; color: var(--text-muted); }
 </style>
 
 <script>
-  (function() {
-    var form = document.getElementById('FeaturedProductForm');
-    if (!form) return;
+(function () {
+  var form = document.getElementById('FeaturedProductForm');
+  if (!form) return;
 
-    form.addEventListener('submit', async function(e) {
-      e.preventDefault();
-      var btn = document.getElementById('FeaturedProductCTA');
-      var variantId = form.querySelector('[name="id"]').value;
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    var btn = document.getElementById('FeaturedProductCTA');
+    var variantId = form.querySelector('[name="id"]').value;
+    var originalText = btn.textContent.trim();
 
-      btn.textContent = 'Adding...';
-      btn.disabled = true;
+    btn.textContent = 'Adding\u2026';
+    btn.disabled = true;
 
-      try {
-        var res = await fetch('/cart/add.js', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-          body: JSON.stringify({ id: variantId, quantity: 1 })
-        });
+    try {
+      var res = await fetch('/cart/add.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ id: variantId, quantity: 1 })
+      });
 
-        var item = await res.json();
+      if (!res.ok) throw new Error('add_failed');
 
-        // Track event
+      var item = await res.json();
+
+      if (typeof window.trackEvent === 'function') {
         window.trackEvent({
           event: 'add_to_cart',
           content_type: 'product',
@@ -194,16 +201,16 @@
           value: (item.price / 100).toFixed(2),
           currency: {{ shop.currency | json }}
         });
-
-        // Instant checkout bypass
-        window.location.href = '/checkout';
-
-      } catch(err) {
-        btn.textContent = {{ section.settings.cta_text | default: 'Add to Cart' | json }};
-        btn.disabled = false;
       }
-    });
-  })();
+
+      window.location.href = '/checkout';
+
+    } catch (_) {
+      btn.textContent = originalText;
+      btn.disabled = false;
+    }
+  });
+}());
 </script>
 
 {% schema %}
@@ -218,16 +225,14 @@
       "label": "Product"
     },
     {
+      "type": "header",
+      "content": "Display toggles"
+    },
+    {
       "type": "checkbox",
       "id": "show_reviews_summary",
       "label": "Show reviews summary",
       "default": true
-    },
-    {
-      "type": "text",
-      "id": "review_count",
-      "label": "Review count (display)",
-      "default": "1,248"
     },
     {
       "type": "checkbox",
@@ -248,6 +253,16 @@
       "default": true
     },
     {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "review_count",
+      "label": "Review count (display)",
+      "default": "1,248"
+    },
+    {
       "type": "text",
       "id": "cta_text",
       "label": "CTA button text",
@@ -256,20 +271,43 @@
     {
       "type": "text",
       "id": "delivery_text",
-      "label": "Delivery trust text",
-      "default": "Free shipping over €50"
+      "label": "Delivery trust line",
+      "default": "Free shipping over \u20ac50"
     },
     {
       "type": "text",
       "id": "returns_text",
-      "label": "Returns trust text",
+      "label": "Returns trust line",
       "default": "30-day free returns"
     },
     {
       "type": "text",
       "id": "privacy_text",
-      "label": "Privacy trust text",
+      "label": "Privacy trust line",
       "default": "Secure & encrypted checkout"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "section_padding",
+      "label": "Section padding",
+      "min": 40,
+      "max": 120,
+      "step": 8,
+      "default": 80,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "scarcity_max",
+      "label": "Scarcity bar max stock",
+      "min": 10,
+      "max": 200,
+      "step": 10,
+      "default": 50
     }
   ],
   "presets": [
