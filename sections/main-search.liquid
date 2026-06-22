@@ -1,40 +1,29 @@
-
-<section style="padding:48px 0 72px">
-  <div class="page-w">
-    <h1 style="margin-bottom:24px">Search</h1>
-    <form action="{{ routes.search_url }}" method="get" style="display:flex;gap:10px;max-width:520px;margin-bottom:40px">
-      <input type="hidden" name="type" value="product">
-      <input type="search" name="q" value="{{ search.terms | escape }}"
-             placeholder="Search products…" aria-label="Search"
-             style="flex:1;padding:12px 18px;border:1.5px solid #e8e8e8;border-radius:9999px;font-size:15px">
-      <button class="btn btn-black" type="submit">Search</button>
+<section style="padding: 80px 0;">
+  <div class="container">
+    <h1 class="page-title">Search</h1>
+    <form action="/search" method="get" style="margin-bottom: 48px;">
+      <input type="search" name="q" value="{{ search.terms | escape }}" placeholder="Search products..." style="width: 100%; padding: 14px 18px; font-size: 1rem; border: 1px solid #e5e5e5; border-radius: var(--border-radius); outline: none;">
     </form>
-    {% if search.performed %}
-      {% if search.results_count == 0 %}
-        <p style="color:#888;font-size:15px">No results for "<strong>{{ search.terms }}</strong>".</p>
-      {% else %}
-        <p style="color:#888;font-size:14px;margin-bottom:24px">{{ search.results_count }} result{% if search.results_count != 1 %}s{% endif %} for "{{ search.terms }}"</p>
-        <div class="coll-grid">
-          {% for item in search.results %}
-            {% if item.object_type == 'product' %}
-              <article class="p-card">
-                <a href="{{ item.url }}">
-                  <div class="p-card__media">
-                    {% if item.featured_image %}
-                      {{ item.featured_image | image_url: width: 600 | image_tag: loading: 'lazy', alt: item.title }}
-                    {% endif %}
-                  </div>
-                  <div class="p-card__name">{{ item.title }}</div>
-                  <div class="p-card__price-row">
-                    <span class="p-card__price">{{ item.price | money }}</span>
-                  </div>
-                </a>
-              </article>
-            {% endif %}
-          {% endfor %}
+    {%- if search.performed -%}
+      {%- if search.results_count == 0 -%}
+        <p style="color: var(--text-muted);">No results for "{{ search.terms }}".</p>
+      {%- else -%}
+        <div class="collection-grid">
+          {%- for item in search.results -%}
+            <a href="{{ item.url }}" class="product-card">
+              {%- if item.featured_image -%}
+                <div class="product-card__img-wrap">
+                  <img src="{{ item.featured_image | image_url: width: 400 }}" alt="{{ item.title }}" width="400" height="400" loading="lazy">
+                </div>
+              {%- endif -%}
+              <p class="product-card__title">{{ item.title }}</p>
+            </a>
+          {%- endfor -%}
         </div>
-      {% endif %}
-    {% endif %}
+      {%- endif -%}
+    {%- endif -%}
   </div>
 </section>
-{% schema %}{"name":"Search Page","settings":[],"presets":[{"name":"Search Page"}]}{% endschema %}
+{% schema %}
+{ "name": "Search", "settings": [] }
+{% endschema %}

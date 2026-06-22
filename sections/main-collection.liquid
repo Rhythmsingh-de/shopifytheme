@@ -1,67 +1,32 @@
-{%- assign sort_by = collection.sort_by | default: collection.default_sort_by -%}
-<section class="section-spacing" {{ section.shopify_attributes }}
-  data-collection-title="{{ collection.title | escape }}">
+<section class="main-collection">
   <div class="container">
-    <div class="section-header section-header--flex">
-      <div>
-        <span class="section-eyebrow">{{ collection.all_products_count }} products</span>
-        <h1 class="section-title">{{ collection.title }}</h1>
-        {%- if collection.description != blank -%}
-          <p class="section-subtitle">{{ collection.description }}</p>
-        {%- endif -%}
-      </div>
-      <div style="display:flex;align-items:center;gap:var(--space-3)">
-        <label for="SortBy" class="sr-only">Sort by</label>
-        <select id="SortBy" name="sort_by" class="form-input" style="width:auto;padding:0.5em 2.5em 0.5em 1em" onchange="window.location.search='?sort_by='+this.value">
-          {%- assign sort_options = collection.sort_options -%}
-          {%- for option in sort_options -%}
-            <option value="{{ option.value }}" {% if option.value == sort_by %}selected{% endif %}>{{ option.name }}</option>
-          {%- endfor -%}
-        </select>
-      </div>
+    <h1 class="page-title">{{ collection.title }}</h1>
+    <div class="collection-grid">
+      {%- for product in collection.products -%}
+        <a href="{{ product.url }}" class="product-card">
+          <div class="product-card__img-wrap">
+            <img src="{{ product.featured_image | image_url: width: 600 }}" alt="{{ product.title }}" width="600" height="600" loading="lazy">
+          </div>
+          <p class="product-card__title">{{ product.title }}</p>
+          <p class="product-card__price">{{ product.price | money }}</p>
+        </a>
+      {%- endfor -%}
     </div>
-
-    {%- if collection.products.size > 0 -%}
-      <div class="product-grid product-grid--{{ section.settings.columns_desktop }}">
-        {%- for product in collection.products -%}
-          {%- render 'product-card', product: product -%}
-        {%- endfor -%}
-      </div>
-
-      {%- if paginate.pages > 1 -%}
-        <div style="display:flex;justify-content:center;gap:var(--space-2);margin-top:var(--space-12)">
-          {%- if paginate.previous -%}
-            <a href="{{ paginate.previous.url }}" class="btn btn--ghost btn--sm">← Previous</a>
-          {%- endif -%}
-          {%- for part in paginate.parts -%}
-            {%- if part.is_link -%}
-              <a href="{{ part.url }}" class="btn btn--ghost btn--sm">{{ part.title }}</a>
-            {%- else -%}
-              <span class="btn btn--primary btn--sm">{{ part.title }}</span>
-            {%- endif -%}
-          {%- endfor -%}
-          {%- if paginate.next -%}
-            <a href="{{ paginate.next.url }}" class="btn btn--ghost btn--sm">Next →</a>
-          {%- endif -%}
-        </div>
-      {%- endif -%}
-    {%- else -%}
-      <div style="text-align:center;padding:var(--space-20);color:var(--color-text-muted)">
-        <p style="font-size:var(--text-lg)">No products found</p>
-      </div>
-    {%- endif -%}
   </div>
 </section>
 
+<style>
+  .main-collection { padding: 80px 0; }
+  .page-title { font-size: 2rem; font-weight: 700; margin-bottom: 48px; }
+  .collection-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 32px; }
+  .product-card { display: block; }
+  .product-card__img-wrap { aspect-ratio: 1/1; overflow: hidden; border-radius: var(--border-radius); margin-bottom: 12px; background: var(--surface); }
+  .product-card__img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease; }
+  .product-card:hover .product-card__img-wrap img { transform: scale(1.03); }
+  .product-card__title { font-size: 0.95rem; font-weight: 600; margin-bottom: 4px; }
+  .product-card__price { font-size: 0.9rem; color: var(--text-muted); }
+</style>
+
 {% schema %}
-{
-  "name": "Collection main",
-  "tag": "section",
-  "class": "shopify-section--collection",
-  "settings": [
-    { "type": "select", "id": "columns_desktop", "label": "Columns on desktop",
-      "options": [{"value":"3","label":"3"},{"value":"4","label":"4"}], "default": "4" }
-  ],
-  "presets": [{ "name": "Collection main" }]
-}
+{ "name": "Collection", "settings": [] }
 {% endschema %}

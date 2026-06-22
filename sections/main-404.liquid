@@ -1,13 +1,10 @@
-
-<section class="page-404">
-  <div class="page-w">
-    <div class="page-404__num">404</div>
-    <h2>Page not found</h2>
-    <p>Sorry, the page you're looking for doesn't exist or has been moved.</p>
-    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
-      <a href="{{ routes.root_url }}" class="btn btn-black btn-lg">Go Home</a>
-      <a href="{{ routes.all_products_collection_url }}" class="btn btn-outline btn-lg">Shop All</a>
-    </div>
+<section style="padding: 100px 0; text-align: center;">
+  <div class="container">
+    <h1 style="font-size: 3rem; font-weight: 700; margin-bottom: 16px;">404</h1>
+    <p style="color: var(--text-muted); margin-bottom: 32px;">Page not found.</p>
+    <a href="/" style="color: var(--accent-color); font-weight: 600;">← Back to home</a>
   </div>
 </section>
-{% schema %}{"name":"404 Page","settings":[],"presets":[{"name":"404 Page"}]}{% endschema %}
+{% schema %}
+{ "name": "404", "settings": [] }
+{% endschema %}

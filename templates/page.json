@@ -1,6 +1,6 @@
 {
   "sections": {
-    "main-page": { "type": "main-page" }
+    "main_page": { "type": "main-page", "settings": {} }
   },
-  "order": ["main-page"]
+  "order": ["main_page"]
 }

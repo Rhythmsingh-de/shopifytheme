@@ -1,32 +1,29 @@
-
-<section class="contact-page">
-  <div class="page-w" style="max-width:480px">
-    <h1 style="margin-bottom:28px">Create Account</h1>
-    {% form 'create_customer' %}
+<section style="padding: 100px 0;">
+  <div class="container" style="max-width: 420px;">
+    <h1 style="font-size: 2rem; font-weight: 700; margin-bottom: 32px;">Create Account</h1>
+    {%- form 'create_customer' -%}
       {{ form.errors | default_errors }}
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label" for="FirstName">First name</label>
-          <input class="form-input" type="text" id="FirstName" name="customer[first_name]" autocomplete="given-name">
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="LastName">Last name</label>
-          <input class="form-input" type="text" id="LastName" name="customer[last_name]" autocomplete="family-name">
-        </div>
+      <div style="margin-bottom: 16px;">
+        <label style="display:block; font-size:.85rem; font-weight:600; margin-bottom:6px;">First Name</label>
+        <input type="text" name="customer[first_name]" style="width:100%; padding:12px 16px; border:1px solid #e5e5e5; border-radius:var(--border-radius); font-size:1rem;">
       </div>
-      <div class="form-group">
-        <label class="form-label" for="Email">Email</label>
-        <input class="form-input" type="email" id="Email" name="customer[email]" autocomplete="email" required>
+      <div style="margin-bottom: 16px;">
+        <label style="display:block; font-size:.85rem; font-weight:600; margin-bottom:6px;">Last Name</label>
+        <input type="text" name="customer[last_name]" style="width:100%; padding:12px 16px; border:1px solid #e5e5e5; border-radius:var(--border-radius); font-size:1rem;">
       </div>
-      <div class="form-group">
-        <label class="form-label" for="CreatePassword">Password</label>
-        <input class="form-input" type="password" id="CreatePassword" name="customer[password]" autocomplete="new-password" required>
+      <div style="margin-bottom: 16px;">
+        <label style="display:block; font-size:.85rem; font-weight:600; margin-bottom:6px;">Email</label>
+        <input type="email" name="customer[email]" style="width:100%; padding:12px 16px; border:1px solid #e5e5e5; border-radius:var(--border-radius); font-size:1rem;">
       </div>
-      <button class="btn btn-black btn-full btn-lg" type="submit" style="margin-bottom:14px">Create Account</button>
-    {% endform %}
-    <p style="font-size:14px;color:#888;text-align:center">
-      Already have an account? <a href="{{ routes.account_login_url }}" style="color:#1a1a1a;font-weight:600">Sign in</a>
-    </p>
+      <div style="margin-bottom: 24px;">
+        <label style="display:block; font-size:.85rem; font-weight:600; margin-bottom:6px;">Password</label>
+        <input type="password" name="customer[password]" style="width:100%; padding:12px 16px; border:1px solid #e5e5e5; border-radius:var(--border-radius); font-size:1rem;">
+      </div>
+      <button type="submit" class="fp__cta">Create Account</button>
+    {%- endform -%}
+    <p style="margin-top:16px; font-size:.85rem; color:var(--text-muted);">Already have an account? <a href="/account/login" style="color:var(--accent-color);">Log in</a></p>
   </div>
 </section>
-{% schema %}{"name":"Register Page","settings":[],"presets":[{"name":"Register Page"}]}{% endschema %}
+{% schema %}
+{ "name": "Register", "settings": [] }
+{% endschema %}

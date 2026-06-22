@@ -1,6 +1,15 @@
 {
   "sections": {
-    "main-product": { "type": "main-product" }
+    "main_product": {
+      "type": "featured-product",
+      "settings": {
+        "show_reviews_summary": true,
+        "show_sale_badge": true,
+        "show_scarcity_bar": true,
+        "show_trust_badges": true,
+        "cta_text": "Buy Now — Fast Delivery"
+      }
+    }
   },
-  "order": ["main-product"]
+  "order": ["main_product"]
 }

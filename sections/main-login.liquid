@@ -1,22 +1,21 @@
-
-<section class="contact-page">
-  <div class="page-w" style="max-width:480px">
-    <h1 style="margin-bottom:28px">Sign In</h1>
-    {% form 'customer_login' %}
+<section style="padding: 100px 0;">
+  <div class="container" style="max-width: 420px;">
+    <h1 style="font-size: 2rem; font-weight: 700; margin-bottom: 32px;">Log in</h1>
+    {%- form 'customer_login' -%}
       {{ form.errors | default_errors }}
-      <div class="form-group">
-        <label class="form-label" for="CustomerEmail">Email</label>
-        <input class="form-input" type="email" id="CustomerEmail" name="customer[email]" autocomplete="email" required>
+      <div style="margin-bottom: 16px;">
+        <label style="display:block; font-size:.85rem; font-weight:600; margin-bottom:6px;">Email</label>
+        <input type="email" name="customer[email]" autocomplete="email" style="width:100%; padding:12px 16px; border:1px solid #e5e5e5; border-radius:var(--border-radius); font-size:1rem;">
       </div>
-      <div class="form-group">
-        <label class="form-label" for="CustomerPassword">Password</label>
-        <input class="form-input" type="password" id="CustomerPassword" name="customer[password]" autocomplete="current-password" required>
+      <div style="margin-bottom: 24px;">
+        <label style="display:block; font-size:.85rem; font-weight:600; margin-bottom:6px;">Password</label>
+        <input type="password" name="customer[password]" autocomplete="current-password" style="width:100%; padding:12px 16px; border:1px solid #e5e5e5; border-radius:var(--border-radius); font-size:1rem;">
       </div>
-      <button class="btn btn-black btn-full btn-lg" type="submit" style="margin-bottom:14px">Sign In</button>
-    {% endform %}
-    <p style="font-size:14px;color:#888;text-align:center">
-      No account? <a href="{{ routes.account_register_url }}" style="color:#1a1a1a;font-weight:600">Create one</a>
-    </p>
+      <button type="submit" class="fp__cta">Log in</button>
+    {%- endform -%}
+    <p style="margin-top:16px; font-size:.85rem; color:var(--text-muted);">New customer? <a href="/account/register" style="color:var(--accent-color);">Create account</a></p>
   </div>
 </section>
-{% schema %}{"name":"Login Page","settings":[],"presets":[{"name":"Login Page"}]}{% endschema %}
+{% schema %}
+{ "name": "Login", "settings": [] }
+{% endschema %}

@@ -2,20 +2,13 @@
 <html lang="{{ request.locale.iso_code }}">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>{{ gift_card.initial_value | money_without_trailing_zeros }} Gift Card – {{ shop.name }}</title>
-  {{ 'base.css' | asset_url | stylesheet_tag }}
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ 'gift_cards.issued.title' | t }}</title>
+  {{ content_for_header }}
 </head>
-<body>
-  <div class="page-width" style="text-align:center;padding:80px 20px;">
-    <h1>Your Gift Card</h1>
-    <p style="font-size:32px;font-weight:900;">{{ gift_card.initial_value | money }}</p>
-    <p>Code: <strong>{{ gift_card.code | format_code }}</strong></p>
-    {% if gift_card.enabled %}
-      <p>Balance: {{ gift_card.balance | money }}</p>
-    {% else %}
-      <p>This gift card has been disabled.</p>
-    {% endif %}
-  </div>
+<body style="font-family: -apple-system, sans-serif; text-align: center; padding: 60px 24px; background: #fff;">
+  <h1 style="font-size: 2rem; font-weight: 700; margin-bottom: 16px;">🎁 Your Gift Card</h1>
+  <p style="font-size: 1.5rem; font-weight: 700; color: #ff3c00;">{{ gift_card.initial_value | money }}</p>
+  <p style="margin-top: 16px; font-size: 1rem; color: #666;">Code: <strong>{{ gift_card.code | format_code }}</strong></p>
 </body>
 </html>

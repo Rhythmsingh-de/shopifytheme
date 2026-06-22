@@ -1,105 +1,38 @@
-
-<section class="cart-page">
-  <div class="page-w">
-    <h1>Your Cart <span style="font-size:clamp(16px,2vw,22px);font-weight:500;color:#888">({{ cart.item_count }} item{% if cart.item_count != 1 %}s{% endif %})</span></h1>
-
-    {% if cart.item_count == 0 %}
-      <div style="text-align:center;padding:80px 20px">
-        <p style="font-size:18px;color:#888;margin-bottom:24px">Your cart is empty.</p>
-        <a href="{{ routes.all_products_collection_url }}" class="btn btn-black btn-lg">Continue Shopping</a>
-      </div>
-    {% else %}
-      <div class="cart-page-grid">
-
-        <!-- Items -->
-        <div>
-          <div class="cart-table">
-            {% for item in cart.items %}
-              <div class="cart-table-item" data-key="{{ item.key }}">
-                <img src="{{ item.image | image_url: width: 200 }}" alt="{{ item.title | escape }}"
-                     width="80" height="100" loading="lazy"
-                     style="width:80px;height:100px;object-fit:cover;border-radius:6px;background:#f0f0f0;flex-shrink:0">
-                <div style="flex:1;min-width:0">
-                  <a href="{{ item.url }}" style="font-size:15px;font-weight:700;display:block;margin-bottom:4px">{{ item.product.title }}</a>
-                  {% unless item.variant.title == 'Default Title' %}
-                    <div style="font-size:13px;color:#888;margin-bottom:8px">{{ item.variant.title }}</div>
-                  {% endunless %}
-                  <div style="font-size:16px;font-weight:800">{{ item.final_line_price | money }}</div>
-                  <div class="cart-qty" style="margin-top:10px">
-                    <button class="qty-btn" data-action="dec" data-key="{{ item.key }}" data-qty="{{ item.quantity }}" aria-label="Decrease quantity">−</button>
-                    <span class="qty-val">{{ item.quantity }}</span>
-                    <button class="qty-btn" data-action="inc" data-key="{{ item.key }}" data-qty="{{ item.quantity }}" aria-label="Increase quantity">+</button>
-                    <button style="margin-left:12px;font-size:12px;color:#888;cursor:pointer;background:none;border:none;text-decoration:underline"
-                            data-remove="{{ item.key }}" aria-label="Remove {{ item.title | escape }}">Remove</button>
-                  </div>
-                </div>
-              </div>
-            {% endfor %}
+<section class="main-cart">
+  <div class="container">
+    <h1 class="page-title">Your Cart</h1>
+    {%- if cart.item_count == 0 -%}
+      <p class="cart-empty">Your cart is empty. <a href="/">Continue shopping →</a></p>
+    {%- else -%}
+      {%- for item in cart.items -%}
+        <div class="cart-item">
+          <img src="{{ item.image | image_url: width: 100 }}" alt="{{ item.title }}" width="100" height="100">
+          <div class="cart-item__info">
+            <p class="cart-item__title">{{ item.title }}</p>
+            <p class="cart-item__price">{{ item.final_price | money }}</p>
           </div>
         </div>
-
-        <!-- Summary -->
-        <div class="cart-summary-box">
-          <h3>Order Summary</h3>
-          <div class="cs-row"><span>Subtotal</span><span>{{ cart.total_price | money }}</span></div>
-          <div class="cs-row"><span>Shipping</span><span style="color:#2e7d32;font-weight:700">Free over $75</span></div>
-          <div class="cs-row total"><span>Total</span><strong>{{ cart.total_price | money }}</strong></div>
-          <p style="font-size:12px;color:#aaa;margin-bottom:18px">Taxes calculated at checkout</p>
-
-          <!-- Coupon -->
-          <div class="coupon-row">
-            <input class="coupon-input" type="text" id="couponCode" placeholder="Discount code" aria-label="Discount code">
-            <button class="btn btn-outline btn-sm" id="applyCode">Apply</button>
-          </div>
-
-          <a href="{{ routes.checkout }}" class="btn btn-black btn-full btn-lg" style="margin-bottom:10px;display:flex;justify-content:center">
-            Checkout →
-          </a>
-          <div style="display:flex;justify-content:center;gap:16px;margin-top:12px;flex-wrap:wrap">
-            <span style="font-size:11px;color:#aaa">🔒 Secure checkout</span>
-            <span style="font-size:11px;color:#aaa">🚚 Free shipping $75+</span>
-          </div>
-        </div>
-
+      {%- endfor -%}
+      <div class="cart-total">
+        <strong>Total: {{ cart.total_price | money }}</strong>
       </div>
-    {% endif %}
+      <a href="/checkout" class="fp__cta" style="display:inline-block; margin-top:24px; padding:18px 48px; text-decoration:none;">Checkout</a>
+    {%- endif -%}
   </div>
 </section>
 
-<script>
-(function(){
-  function showToast(msg, type){
-    var t = document.createElement('div');
-    t.className = 'toast ' + (type||'');
-    t.textContent = msg;
-    document.getElementById('toasts').appendChild(t);
-    requestAnimationFrame(function(){ t.classList.add('show'); });
-    setTimeout(function(){ t.classList.remove('show'); setTimeout(function(){ t.remove(); }, 320); }, 2800);
-  }
-
-  function updateQty(key, qty){
-    fetch('/cart/change.js',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({id: key, quantity: qty})
-    }).then(function(){ location.reload(); }).catch(function(){ showToast('Error updating cart', 'error'); });
-  }
-
-  document.querySelectorAll('.qty-btn').forEach(function(btn){
-    btn.addEventListener('click', function(){
-      var key = this.dataset.key;
-      var current = parseInt(this.dataset.qty);
-      var newQty = this.dataset.action === 'inc' ? current + 1 : Math.max(0, current - 1);
-      updateQty(key, newQty);
-    });
-  });
-
-  document.querySelectorAll('[data-remove]').forEach(function(btn){
-    btn.addEventListener('click', function(){ updateQty(this.dataset.remove, 0); });
-  });
-})();
-</script>
+<style>
+  .main-cart { padding: 80px 0; }
+  .page-title { font-size: 2rem; font-weight: 700; margin-bottom: 40px; }
+  .cart-empty { color: var(--text-muted); font-size: 1rem; }
+  .cart-empty a { color: var(--accent-color); }
+  .cart-item { display: flex; gap: 24px; padding: 24px 0; border-bottom: 1px solid #f0f0f0; }
+  .cart-item img { border-radius: var(--border-radius); object-fit: cover; }
+  .cart-item__title { font-size: 1rem; font-weight: 600; margin-bottom: 8px; }
+  .cart-item__price { color: var(--text-muted); font-size: 0.95rem; }
+  .cart-total { padding: 24px 0; font-size: 1.2rem; }
+</style>
 
 {% schema %}
-{"name":"Cart Page","settings":[],"presets":[{"name":"Cart Page"}]}
+{ "name": "Cart", "settings": [] }
 {% endschema %}

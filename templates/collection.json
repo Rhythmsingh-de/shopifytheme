@@ -1,9 +1,6 @@
 {
   "sections": {
-    "main-collection": {
-      "type": "main-collection",
-      "settings": {}
-    }
+    "main_collection": { "type": "main-collection", "settings": {} }
   },
-  "order": ["main-collection"]
+  "order": ["main_collection"]
 }

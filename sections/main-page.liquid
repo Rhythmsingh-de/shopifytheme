@@ -1,7 +1,9 @@
-<main id="main-content" class="section">
-  <div class="container container--narrow">
-    <h1 style="font-family:var(--font-display);font-size:var(--text-xl);font-weight:800;margin-bottom:var(--sp-6)">{{ page.title }}</h1>
-    <div style="font-size:var(--text-base);line-height:1.8;color:var(--color-text)">{{ page.content }}</div>
+<section style="padding: 80px 0;">
+  <div class="container" style="max-width: 720px;">
+    <h1 style="font-size: 2.5rem; font-weight: 700; margin-bottom: 32px;">{{ page.title }}</h1>
+    <div style="line-height: 1.8; color: var(--text-muted);">{{ page.content }}</div>
   </div>
-</main>
-{% schema %}{ "name": "Page", "tag": "section", "settings": [], "presets": [{ "name": "Page" }] }{% endschema %}
+</section>
+{% schema %}
+{ "name": "Page", "settings": [] }
+{% endschema %}

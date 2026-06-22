@@ -1,86 +1,9 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "current": {
-    "color_primary": "#1d5c3a",
-    "color_bg": "#ffffff",
-    "cart_type": "drawer",
-    "gtm_id": "",
-    "color_surface": "#f9f8f5",
-    "color_text": "#1a1a1a",
-    "color_text_muted": "#6b7280",
-    "color_primary_hover": "#164530",
-    "color_sale": "#dc2626",
-    "color_border": "#e5e7eb",
-    "color_announcement_bg": "#1d5c3a",
-    "color_announcement_text": "#ffffff",
-    "color_header_bg": "#ffffff",
-    "color_footer_bg": "#111827",
-    "color_footer_text": "#f9fafb",
-    "brand_name": "BodyLuxCare",
-    "logo_width": 140,
-    "btn_radius": "6px",
-    "btn_size": "md",
-    "announcement_enabled": true,
-    "announcement_text_1": "🚚 Free U.S. shipping on orders $75+ · 30-day easy returns",
-    "announcement_text_2": "Use code WELCOME10 for 10% off your first order",
-    "announcement_text_3": "",
-    "announcement_auto_rotate": true,
-    "announcement_speed": 4,
-    "header_sticky": true,
-    "header_show_search": true,
-    "header_show_account": true,
-    "header_transparent": true,
-    "main_menu": "main-menu",
-    "card_radius": "8px",
-    "card_show_vendor": false,
-    "card_show_rating": true,
-    "card_hover_second_image": true,
-    "card_quick_add": true,
-    "cart_show_order_note": true,
-    "cart_upsell_text": "You're {{ amount }} away from FREE shipping! 🚚",
-    "cart_free_shipping_threshold": 75,
-    "trust_show_payment_icons": true,
-    "trust_badge_1": "14-Day Returns",
-    "trust_badge_2": "7–10 Day Shipping",
-    "trust_badge_3": "Secure Payments",
-    "trust_badge_4": "Satisfaction Guarantee",
-    "footer_about_text": "<p>Premium wellness and lifestyle products for you, your home, and your pets.</p>",
-    "footer_email": "info@bodyluxcare.com",
-    "footer_show_payment_icons": true,
-    "footer_copyright": "© 2026 BodyLuxCare. All rights reserved.",
-    "cookie_consent_enabled": true,
-    "cookie_consent_text": "We use cookies to improve your experience and for marketing. By continuing, you accept our Privacy Policy.",
-    "cookie_accept_text": "Accept All",
-    "cookie_decline_text": "Essential Only",
-    "cookie_policy_url": "/policies/privacy-policy",
-    "seo_title_suffix": "| BodyLuxCare",
-    "seo_meta_description": "Premium wellness and lifestyle products for women, men, pets, and home.",
-    "ga4_id": "",
-    "pixel_id": "",
-    "tiktok_pixel_id": "",
-    "sections": {
-      "announcement-bar": {
-        "type": "announcement-bar",
-        "settings": {}
-      },
-      "header": {
-        "type": "header",
-        "settings": {}
-      },
-      "footer": {
-        "type": "footer",
-        "settings": {}
-      }
-    },
-    "content_for_index": []
+    "accent_color": "#ff3c00",
+    "text_color": "#111111",
+    "bg_color": "#ffffff",
+    "custom_css": ""
   },
   "presets": {}
 }
