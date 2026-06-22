@@ -1,24 +1,11 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
     "main_product": {
-      "type": "featured-product",
-      "settings": {
-        "show_reviews_summary": true,
-        "show_sale_badge": true,
-        "show_scarcity_bar": true,
-        "show_trust_badges": true,
-        "cta_text": "Buy Now — Fast Delivery"
-      }
+      "type": "main-product",
+      "settings": {}
     }
   },
-  "order": ["main_product"]
+  "order": [
+    "main_product"
+  ]
 }
