@@ -74,6 +74,47 @@
     ]
   },
   {
+    "name": "Compliance & Tracking",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "gdpr_cookie_banner",
+        "label": "Show cookie consent banner",
+        "default": true
+      },
+      {
+        "type": "textarea",
+        "id": "cookie_text",
+        "label": "Cookie banner text",
+        "default": "We use cookies to enhance your experience, analyze traffic, and serve personalized content. By continuing you agree to our"
+      },
+      {
+        "type": "url",
+        "id": "privacy_policy_url",
+        "label": "Privacy policy URL",
+        "default": "/policies/privacy-policy"
+      },
+      {
+        "type": "text",
+        "id": "facebook_pixel_id",
+        "label": "Facebook Pixel ID",
+        "info": "Optional. Used by your marketing stack or GTM; theme does not inject fbq() by itself."
+      },
+      {
+        "type": "text",
+        "id": "tiktok_pixel_id",
+        "label": "TikTok Pixel ID",
+        "info": "Optional. Used by your marketing stack or GTM; theme does not inject ttq() by itself."
+      },
+      {
+        "type": "text",
+        "id": "gtm_container_id",
+        "label": "Google Tag Manager container ID",
+        "info": "Optional. Example: GTM-XXXXXXX."
+      }
+    ]
+  },
+  {
     "name": "Advanced",
     "settings": [
       {
