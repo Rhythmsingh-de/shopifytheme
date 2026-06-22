@@ -105,25 +105,37 @@
   function goTo(n) {
     msgs[current].classList.add('ann-msg--exit');
     var leaving = msgs[current];
-    setTimeout(function () { leaving.classList.remove('ann-msg--active', 'ann-msg--exit'); }, 420);
-    current = ((n % msgs.length) + msgs.length) % msgs.length;
+    setTimeout(function () {
+      leaving.classList.remove('ann-msg--active', 'ann-msg--exit');
+    }, 380);
+
+    current = (n + msgs.length) % msgs.length;
     msgs[current].classList.add('ann-msg--active');
   }
 
-  function start() {
-    clearInterval(timer);
-    if ({{ section.settings.auto_rotate | json }}) {
-      timer = setInterval(function () { goTo(current + 1); }, speed);
-    }
+  function playNext() {
+    timer = setTimeout(function () {
+      goTo(current + 1);
+      playNext();
+    }, speed);
   }
 
-  document.getElementById('ann-next-' + sid).addEventListener('click', function () { goTo(current + 1); start(); });
-  document.getElementById('ann-prev-' + sid).addEventListener('click', function () { goTo(current - 1); start(); });
+  document.getElementById('ann-prev-' + sid).addEventListener('click', function () {
+    clearTimeout(timer);
+    goTo(current - 1);
+    playNext();
+  });
 
-  start();
-}());
+  document.getElementById('ann-next-' + sid).addEventListener('click', function () {
+    clearTimeout(timer);
+    goTo(current + 1);
+    playNext();
+  });
+
+  playNext();
+})();
 </script>
-{%- endif -%}
+{% endif %}
 
 {% schema %}
 {
@@ -133,13 +145,15 @@
     { "type": "checkbox", "id": "enabled", "label": "Show announcement bar", "default": true },
     { "type": "color", "id": "bg_color", "label": "Background color", "default": "#111111" },
     { "type": "color", "id": "text_color", "label": "Text color", "default": "#ffffff" },
-    { "type": "text", "id": "text_1", "label": "Message 1", "default": "\u26a1 Free shipping on orders over \u20ac50" },
-    { "type": "text", "id": "text_2", "label": "Message 2", "default": "\ud83d\udd12 60-Day Money-Back Guarantee" },
-    { "type": "text", "id": "text_3", "label": "Message 3", "default": "" },
+    { "type": "text", "id": "text_1", "label": "Message 1", "default": "⚡ Free shipping on orders over €50" },
+    { "type": "text", "id": "text_2", "label": "Message 2", "default": "🔒 60-Day Money-Back Guarantee" },
+    { "type": "text", "id": "text_3", "label": "Message 3" },
     { "type": "url",  "id": "link",   "label": "Link (optional)" },
     { "type": "checkbox", "id": "auto_rotate", "label": "Auto-rotate messages", "default": true },
-    { "type": "range", "id": "speed", "label": "Rotation speed", "min": 2, "max": 10, "step": 1, "default": 4, "unit": "s" }
+    { "type": "range", "id": "speed", "label": "Rotation speed (seconds)", "min": 2, "max": 10, "step": 1, "default": 4 }
   ],
-  "presets": [{ "name": "Announcement Bar" }]
+  "presets": [
+    { "name": "Announcement Bar" }
+  ]
 }
 {% endschema %}

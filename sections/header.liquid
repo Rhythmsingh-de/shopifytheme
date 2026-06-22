@@ -1,4 +1,4 @@
-<header id="site-header" class="site-header{% if section.settings.sticky %  site-header--sticky{% endif %}">
+<header id="site-header" class="site-header{% if section.settings.sticky %} site-header--sticky{% endif %}">
   <div class="container">
     <div class="header__inner">
 
@@ -56,15 +56,15 @@
   .header__nav { display: flex; gap: 32px; }
   .header__nav-link {
     font-size: 0.9rem; font-weight: 500;
-    color: var(--text-muted);
+    color: var(--text_muted);
     transition: color var(--transition);
   }
-  .header__nav-link:hover { color: var(--text-color); }
+  .header__nav-link:hover { color: var(--text_color); }
   .header__actions { display: flex; align-items: center; gap: 16px; }
   .header__cart { position: relative; display: flex; }
   .header__cart-count {
     position: absolute; top: -6px; right: -8px;
-    background: var(--accent-color); color: #fff;
+    background: var(--accent_color); color: #fff;
     font-size: 0.65rem; font-weight: 700;
     width: 16px; height: 16px;
     border-radius: 50%;
