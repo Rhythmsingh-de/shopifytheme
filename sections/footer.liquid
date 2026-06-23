@@ -1,255 +1,313 @@
-{%- liquid
-  assign col_1_heading = section.settings.col_1_heading
-  assign col_2_heading = section.settings.col_2_heading
-  assign col_3_heading = section.settings.col_3_heading
--%}
+<footer class="site-footer" role="contentinfo" {{ section.shopify_attributes }}>
+  <div class="container">
 
-<footer class="site-footer" role="contentinfo">
+    <!-- Top row: brand + 3 nav columns -->
+    <div class="footer-top">
 
-  <!-- Guarantee strip -->
-  <div class="footer__guarantee">
-    <div class="container">
-      <div class="footer__guarantee-grid">
-        <div class="footer__guarantee-item">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-          <div>
-            <strong>{{ settings.trust_returns_title | default: '30-Day Money Back' }}</strong>
-            <span>{{ settings.trust_returns_sub | default: 'No questions asked' }}</span>
-          </div>
-        </div>
-        <div class="footer__guarantee-item">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M1 3h15v13H1zM16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
-          <div>
-            <strong>{{ settings.trust_shipping_title | default: 'International Shipping' }}</strong>
-            <span>{{ settings.trust_shipping_sub | default: '5–10 business days' }}</span>
-          </div>
-        </div>
-        <div class="footer__guarantee-item">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
-          <div>
-            <strong>{{ settings.trust_secure_title | default: 'Secure Checkout' }}</strong>
-            <span>{{ settings.trust_secure_sub | default: 'SSL encrypted' }}</span>
-          </div>
-        </div>
-        <div class="footer__guarantee-item">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          <div>
-            <strong>{{ section.settings.badge_4_title | default: '24/7 Support' }}</strong>
-            <span>{{ section.settings.badge_4_sub | default: 'We reply within hours' }}</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Main footer body -->
-  <div class="footer__body">
-    <div class="container">
-      <div class="footer__cols">
-
-        <!-- Col 1: Brand -->
-        <div class="footer__col footer__col--brand">
-          {%- if section.settings.logo != blank -%}
-            <img src="{{ section.settings.logo | image_url: width: 160 }}" alt="{{ shop.name }}" width="160" height="40" loading="lazy" class="footer__logo">
-          {%- else -%}
-            <span class="footer__brand-name">{{ shop.name }}</span>
-          {%- endif -%}
-          {%- if section.settings.brand_tagline != blank -%}
-            <p class="footer__tagline">{{ section.settings.brand_tagline }}</p>
-          {%- endif -%}
-          <!-- Social icons -->
-          <div class="footer__socials">
-            {%- if section.settings.social_instagram != blank -%}
-              <a href="{{ section.settings.social_instagram }}" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="footer__social-link">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/></svg>
-              </a>
-            {%- endif -%}
-            {%- if section.settings.social_facebook != blank -%}
-              <a href="{{ section.settings.social_facebook }}" target="_blank" rel="noopener noreferrer" aria-label="Facebook" class="footer__social-link">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
-              </a>
-            {%- endif -%}
-            {%- if section.settings.social_tiktok != blank -%}
-              <a href="{{ section.settings.social_tiktok }}" target="_blank" rel="noopener noreferrer" aria-label="TikTok" class="footer__social-link">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.77 1.52V6.76a4.85 4.85 0 0 1-1-.07z"/></svg>
-              </a>
-            {%- endif -%}
-          </div>
-        </div>
-
-        <!-- Col 2: Links -->
-        {%- if col_1_heading != blank or section.settings.col_1_menu != blank -%}
-        <div class="footer__col">
-          <h3 class="footer__col-heading">{{ col_1_heading | default: 'Shop' }}</h3>
-          <ul role="list" class="footer__nav">
-            {%- for link in section.settings.col_1_menu.links -%}
-              <li><a href="{{ link.url }}" class="footer__nav-link">{{ link.title }}</a></li>
-            {%- endfor -%}
-          </ul>
-        </div>
+      <!-- Brand col -->
+      <div class="footer-brand">
+        {%- if section.settings.logo != blank -%}
+          <a href="{{ routes.root_url }}" aria-label="{{ shop.name }} home">
+            <img
+              src="{{ section.settings.logo | image_url: width: 180 }}"
+              alt="{{ shop.name }}"
+              width="120" height="40"
+              loading="lazy" decoding="async">
+          </a>
+        {%- else -%}
+          <a href="{{ routes.root_url }}" class="footer-brand__name" aria-label="{{ shop.name }} home">
+            {{ shop.name }}
+          </a>
         {%- endif -%}
 
-        <!-- Col 3: Help -->
-        {%- if col_2_heading != blank or section.settings.col_2_menu != blank -%}
-        <div class="footer__col">
-          <h3 class="footer__col-heading">{{ col_2_heading | default: 'Help' }}</h3>
-          <ul role="list" class="footer__nav">
-            {%- for link in section.settings.col_2_menu.links -%}
-              <li><a href="{{ link.url }}" class="footer__nav-link">{{ link.title }}</a></li>
-            {%- endfor -%}
-          </ul>
-        </div>
+        {%- if section.settings.tagline != blank -%}
+          <p class="footer-brand__tagline">{{ section.settings.tagline }}</p>
         {%- endif -%}
 
-        <!-- Col 4: Contact / policies -->
-        {%- if col_3_heading != blank or section.settings.contact_email != blank -%}
-        <div class="footer__col">
-          <h3 class="footer__col-heading">{{ col_3_heading | default: 'Contact' }}</h3>
-          {%- if section.settings.contact_email != blank -%}
-            <p class="footer__contact-line">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-              <a href="mailto:{{ section.settings.contact_email }}">{{ section.settings.contact_email }}</a>
-            </p>
+        <!-- Social links -->
+        <div class="footer-social" aria-label="Social media">
+          {%- if section.settings.social_instagram != blank -%}
+            <a href="{{ section.settings.social_instagram }}" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+            </a>
           {%- endif -%}
-          {%- if section.settings.shipping_info != blank -%}
-            <p class="footer__contact-line">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M1 3h15v13H1z"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
-              <span>{{ section.settings.shipping_info }}</span>
-            </p>
+          {%- if section.settings.social_facebook != blank -%}
+            <a href="{{ section.settings.social_facebook }}" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+            </a>
           {%- endif -%}
-          <ul role="list" class="footer__nav" style="margin-top:var(--sp-4)">
-            {%- for link in section.settings.col_3_menu.links -%}
-              <li><a href="{{ link.url }}" class="footer__nav-link">{{ link.title }}</a></li>
-            {%- endfor -%}
-          </ul>
+          {%- if section.settings.social_tiktok != blank -%}
+            <a href="{{ section.settings.social_tiktok }}" target="_blank" rel="noopener noreferrer" aria-label="TikTok">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.76a4.85 4.85 0 0 1-1.01-.07z"/></svg>
+            </a>
+          {%- endif -%}
+          {%- if section.settings.social_pinterest != blank -%}
+            <a href="{{ section.settings.social_pinterest }}" target="_blank" rel="noopener noreferrer" aria-label="Pinterest">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.55 19.33c-.05-.72-.01-1.58.18-2.36l1.3-5.5s-.33-.66-.33-1.64c0-1.54.89-2.69 2-2.69.94 0 1.4.71 1.4 1.56 0 .95-.6 2.37-.92 3.69-.26 1.1.55 2 1.63 2 1.95 0 3.26-2.5 3.26-5.46 0-2.25-1.52-3.94-4.27-3.94-3.11 0-5.04 2.33-5.04 4.93 0 .9.27 1.53.68 2.02.19.22.22.31.15.57l-.25.97c-.08.32-.33.43-.6.31-1.68-.69-2.46-2.53-2.46-4.6 0-3.41 2.88-7.49 8.59-7.49 4.59 0 7.61 3.33 7.61 6.9 0 4.73-2.62 8.27-6.5 8.27-1.3 0-2.52-.7-2.94-1.49l-.82 3.17c-.25.94-.74 1.89-1.19 2.63.9.27 1.84.42 2.81.42A10 10 0 0 0 12 2z"/></svg>
+            </a>
+          {%- endif -%}
+          {%- if section.settings.social_youtube != blank -%}
+            <a href="{{ section.settings.social_youtube }}" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M22.54 6.42A2.78 2.78 0 0 0 20.58 4.44C18.88 4 12 4 12 4s-6.88 0-8.58.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.42 19.56C5.12 20 12 20 12 20s6.88 0 8.58-.46a2.78 2.78 0 0 0 1.96-1.98A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/></svg>
+            </a>
+          {%- endif -%}
         </div>
+      </div>
+
+      <!-- Nav columns -->
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'link_list' -%}
+          <div class="footer-nav-col" {{ block.shopify_attributes }}>
+            <h3 class="footer-nav-col__title">{{ block.settings.heading }}</h3>
+            {%- if block.settings.menu != blank -%}
+              <ul class="footer-nav-col__list" role="list">
+                {%- for link in linklists[block.settings.menu].links -%}
+                  <li>
+                    <a href="{{ link.url }}"{% if link.url contains 'http' %} target="_blank" rel="noopener noreferrer"{% endif %}>
+                      {{ link.title }}
+                    </a>
+                  </li>
+                {%- endfor -%}
+              </ul>
+            {%- endif -%}
+          </div>
         {%- endif -%}
+      {%- endfor -%}
 
-      </div>
-    </div>
-  </div>
+    </div><!-- /footer-top -->
 
-  <!-- Payment icons + copyright -->
-  <div class="footer__bottom">
-    <div class="container">
-      <div class="footer__bottom-inner">
-        <p class="footer__copy">&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}. All rights reserved.</p>
-        <div class="footer__payment">
-          {%- render 'payment-icons' -%}
+    <!-- Trust bar -->
+    {%- if section.settings.show_trust_bar -%}
+      <div class="footer-trust" aria-label="Store guarantees">
+        <div class="footer-trust-item">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+          <div><strong>{{ settings.trust_returns_title | default: '30-Day Returns' }}</strong><span>{{ settings.trust_returns_sub | default: 'No questions asked' }}</span></div>
+        </div>
+        <div class="footer-trust-item">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M1 3h15v13H1zM16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+          <div><strong>{{ settings.trust_shipping_title | default: 'International Shipping' }}</strong><span>{{ settings.trust_shipping_sub | default: '5–10 business days' }}</span></div>
+        </div>
+        <div class="footer-trust-item">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+          <div><strong>{{ settings.trust_secure_title | default: 'Secure Checkout' }}</strong><span>{{ settings.trust_secure_sub | default: 'SSL encrypted' }}</span></div>
+        </div>
+        <div class="footer-trust-item">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <div><strong>{{ settings.trust_support_title | default: '24/7 Support' }}</strong><span>{{ settings.trust_support_sub | default: 'We reply within hours' }}</span></div>
         </div>
       </div>
-    </div>
-  </div>
+    {%- endif -%}
 
+    <!-- Bottom bar -->
+    <div class="footer-bottom">
+      <p class="footer-bottom__copy">&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}. All rights reserved.</p>
+      <nav class="footer-bottom__legal" aria-label="Legal links">
+        {%- if shop.privacy_policy.url -%}
+          <a href="{{ shop.privacy_policy.url }}">Privacy Policy</a>
+        {%- endif -%}
+        {%- if shop.terms_of_service.url -%}
+          <a href="{{ shop.terms_of_service.url }}">Terms of Service</a>
+        {%- endif -%}
+        {%- if shop.refund_policy.url -%}
+          <a href="{{ shop.refund_policy.url }}">Refund Policy</a>
+        {%- endif -%}
+      </nav>
+      <div class="footer-bottom__payments" aria-label="Accepted payment methods">
+        {%- for type in shop.enabled_payment_types -%}
+          {{ type | payment_type_svg_tag: class: 'payment-icon' }}
+        {%- endfor -%}
+      </div>
+    </div>
+
+  </div>
 </footer>
 
 <style>
 .site-footer {
-  background: var(--color-footer-bg, #111);
-  color: var(--color-footer-text, #ccc);
+  background: var(--color-footer-bg, #111111);
+  color: var(--color-footer-text, #ffffff);
+  padding-block: var(--sp-16) var(--sp-8);
+  margin-top: var(--sp-16);
+}
+.site-footer a {
+  color: var(--color-footer-text, #ffffff);
+  text-decoration: none;
+  opacity: 0.75;
+  transition: opacity var(--trans-base);
+}
+.site-footer a:hover { opacity: 1; }
+.site-footer a:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+  border-radius: 2px;
 }
 
-/* Guarantee strip */
-.footer__guarantee {
-  background: #1a1a1a;
-  border-top: 1px solid rgba(255,255,255,0.08);
-  padding: var(--sp-6) 0;
-}
-.footer__guarantee-grid {
+.footer-top {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: var(--sp-4);
+  grid-template-columns: 260px repeat(3, 1fr);
+  gap: var(--sp-10);
+  padding-bottom: var(--sp-10);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
 }
-.footer__guarantee-item {
+@media (max-width: 900px) {
+  .footer-top { grid-template-columns: 1fr 1fr; row-gap: var(--sp-8); }
+}
+@media (max-width: 560px) {
+  .footer-top { grid-template-columns: 1fr; }
+}
+
+.footer-brand__name {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  opacity: 1 !important;
+}
+.footer-brand__tagline {
+  font-size: var(--text-xs);
+  opacity: 0.6;
+  margin-top: var(--sp-2);
+  line-height: 1.6;
+  max-width: 26ch;
+}
+.footer-social {
+  display: flex;
+  gap: var(--sp-3);
+  margin-top: var(--sp-6);
+}
+.footer-social a {
+  width: 38px; height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(255,255,255,0.2);
+  opacity: 0.7;
+  transition: opacity var(--trans-base), border-color var(--trans-base);
+}
+.footer-social a:hover { opacity: 1; border-color: rgba(255,255,255,0.6); }
+
+.footer-nav-col__title {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  opacity: 0.5;
+  margin-bottom: var(--sp-4);
+}
+.footer-nav-col__list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+.footer-nav-col__list a {
+  font-size: var(--text-sm);
+  opacity: 0.7;
+}
+.footer-nav-col__list a:hover { opacity: 1; }
+
+/* Trust bar */
+.footer-trust {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--sp-6);
+  padding-block: var(--sp-8);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+@media (max-width: 900px) {
+  .footer-trust { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 560px) {
+  .footer-trust { grid-template-columns: 1fr; }
+}
+.footer-trust-item {
   display: flex;
   align-items: flex-start;
   gap: var(--sp-3);
-  color: rgba(255,255,255,0.85);
+  opacity: 0.85;
 }
-.footer__guarantee-item svg { flex-shrink: 0; color: var(--color-deco, #1d6b44); }
-.footer__guarantee-item strong { display: block; font-size: var(--text-sm); font-weight: 600; color: #fff; }
-.footer__guarantee-item span { font-size: var(--text-xs); color: rgba(255,255,255,0.55); }
-
-/* Footer body */
-.footer__body { padding: var(--sp-16) 0 var(--sp-10); }
-.footer__cols {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
-  gap: var(--sp-10);
-}
-@media (max-width: 768px) {
-  .footer__cols { grid-template-columns: 1fr 1fr; gap: var(--sp-8); }
-  .footer__col--brand { grid-column: 1 / -1; }
-}
-@media (max-width: 480px) {
-  .footer__cols { grid-template-columns: 1fr; }
-}
-
-.footer__logo { max-height: 40px; width: auto; }
-.footer__brand-name { font-family: var(--font-display); font-size: var(--text-xl); font-weight: 700; color: #fff; }
-.footer__tagline { font-size: var(--text-sm); color: rgba(255,255,255,0.5); margin-top: var(--sp-3); max-width: 28ch; line-height: 1.5; }
-
-.footer__socials { display: flex; gap: var(--sp-3); margin-top: var(--sp-5); }
-.footer__social-link {
-  display: flex; align-items: center; justify-content: center;
-  width: 38px; height: 38px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.08);
-  color: rgba(255,255,255,0.7);
-  transition: background 180ms, color 180ms;
-}
-.footer__social-link:hover { background: var(--color-deco, #1d6b44); color: #fff; }
-
-.footer__col-heading { font-size: var(--text-sm); font-weight: 700; color: #fff; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: var(--sp-4); }
-.footer__nav { display: flex; flex-direction: column; gap: var(--sp-2); }
-.footer__nav-link { font-size: var(--text-sm); color: rgba(255,255,255,0.55); transition: color 180ms; }
-.footer__nav-link:hover { color: #fff; }
-
-.footer__contact-line { display: flex; align-items: center; gap: var(--sp-2); font-size: var(--text-sm); color: rgba(255,255,255,0.55); margin-bottom: var(--sp-2); }
-.footer__contact-line a { color: rgba(255,255,255,0.55); transition: color 180ms; }
-.footer__contact-line a:hover { color: #fff; }
+.footer-trust-item svg { flex-shrink: 0; margin-top: 2px; }
+.footer-trust-item strong { display: block; font-size: var(--text-xs); font-weight: 700; }
+.footer-trust-item span   { display: block; font-size: var(--text-xs); opacity: 0.6; margin-top: 2px; }
 
 /* Bottom bar */
-.footer__bottom {
-  border-top: 1px solid rgba(255,255,255,0.08);
-  padding: var(--sp-5) 0;
+.footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  padding-top: var(--sp-6);
+  flex-wrap: wrap;
 }
-.footer__bottom-inner {
-  display: flex; align-items: center; justify-content: space-between;
-  flex-wrap: wrap; gap: var(--sp-4);
+.footer-bottom__copy {
+  font-size: var(--text-xs);
+  opacity: 0.5;
+  max-width: none;
 }
-.footer__copy { font-size: var(--text-xs); color: rgba(255,255,255,0.35); }
-.footer__payment { display: flex; align-items: center; gap: var(--sp-2); flex-wrap: wrap; }
+.footer-bottom__legal {
+  display: flex;
+  gap: var(--sp-4);
+  flex-wrap: wrap;
+}
+.footer-bottom__legal a {
+  font-size: var(--text-xs);
+  opacity: 0.5;
+}
+.footer-bottom__legal a:hover { opacity: 0.85; }
+.footer-bottom__payments {
+  display: flex;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+  align-items: center;
+}
+.footer-bottom__payments .payment-icon {
+  height: 20px;
+  width: auto;
+  border-radius: 3px;
+  opacity: 0.7;
+}
+@media (max-width: 640px) {
+  .footer-bottom { flex-direction: column; align-items: flex-start; }
+}
 </style>
 
 {% schema %}
 {
   "name": "Footer",
-  "tag": "section",
-  "class": "footer-section",
+  "tag": "footer",
+  "class": "shopify-section-footer",
+  "blocks": [
+    {
+      "type": "link_list",
+      "name": "Navigation column",
+      "limit": 3,
+      "settings": [
+        { "type": "text",    "id": "heading", "label": "Column heading", "default": "Company" },
+        { "type": "link_list", "id": "menu",  "label": "Navigation menu" }
+      ]
+    }
+  ],
   "settings": [
-    { "type": "image_picker", "id": "logo", "label": "Footer logo" },
-    { "type": "text", "id": "brand_tagline", "label": "Brand tagline", "default": "Premium quality. Delivered worldwide." },
-    { "type": "text", "id": "contact_email", "label": "Contact email", "default": "support@bodyluxcare.com" },
-    { "type": "text", "id": "shipping_info", "label": "Shipping info line", "default": "Ships in 5–10 business days" },
-    { "type": "header", "content": "Column 1 — Shop links" },
-    { "type": "text", "id": "col_1_heading", "label": "Heading", "default": "Shop" },
-    { "type": "link_list", "id": "col_1_menu", "label": "Menu", "default": "main-menu" },
-    { "type": "header", "content": "Column 2 — Help links" },
-    { "type": "text", "id": "col_2_heading", "label": "Heading", "default": "Help" },
-    { "type": "link_list", "id": "col_2_menu", "label": "Menu", "default": "footer" },
-    { "type": "header", "content": "Column 3 — Policies" },
-    { "type": "text", "id": "col_3_heading", "label": "Heading", "default": "Policies" },
-    { "type": "link_list", "id": "col_3_menu", "label": "Menu" },
-    { "type": "header", "content": "Social" },
+    { "type": "image_picker", "id": "logo",    "label": "Footer logo (optional, overrides shop name text)" },
+    { "type": "text",        "id": "tagline",  "label": "Brand tagline",   "default": "Premium wellness products for you, your home & your pets." },
+    { "type": "header", "content": "Social links" },
     { "type": "url", "id": "social_instagram", "label": "Instagram URL" },
-    { "type": "url", "id": "social_facebook", "label": "Facebook URL" },
-    { "type": "url", "id": "social_tiktok", "label": "TikTok URL" },
-    { "type": "header", "content": "Extra guarantee badge 4" },
-    { "type": "text", "id": "badge_4_title", "label": "Badge 4 title", "default": "24/7 Support" },
-    { "type": "text", "id": "badge_4_sub", "label": "Badge 4 subtitle", "default": "We reply within hours" },
-    { "type": "range", "id": "padding_top", "label": "Guarantee strip padding top", "min": 0, "max": 60, "step": 4, "default": 24, "unit": "px" },
-    { "type": "range", "id": "padding_bottom", "label": "Bottom bar padding bottom", "min": 0, "max": 60, "step": 4, "default": 20, "unit": "px" }
+    { "type": "url", "id": "social_facebook",  "label": "Facebook URL" },
+    { "type": "url", "id": "social_tiktok",    "label": "TikTok URL" },
+    { "type": "url", "id": "social_pinterest", "label": "Pinterest URL" },
+    { "type": "url", "id": "social_youtube",   "label": "YouTube URL" },
+    { "type": "header", "content": "Trust bar" },
+    { "type": "checkbox", "id": "show_trust_bar", "label": "Show trust bar above footer bottom", "default": true }
+  ],
+  "presets": [
+    {
+      "name": "Footer",
+      "blocks": [
+        { "type": "link_list", "settings": { "heading": "Shop",    "menu": "main-menu" } },
+        { "type": "link_list", "settings": { "heading": "Help",    "menu": "footer" } },
+        { "type": "link_list", "settings": { "heading": "Company", "menu": "footer" } }
+      ]
+    }
   ]
 }
 {% endschema %}
