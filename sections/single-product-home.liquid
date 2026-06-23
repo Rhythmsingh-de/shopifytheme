@@ -1,0 +1,901 @@
+{%- liquid
+  assign sp = section.settings.product
+  if sp == blank
+    assign sp = product
+  endif
+  assign fv = sp.selected_or_first_available_variant
+  assign price = fv.price
+  assign compare = fv.compare_at_price
+  assign is_sale = false
+  if compare > price
+    assign is_sale = true
+    assign save_pct = compare | minus: price | times: 100 | divided_by: compare
+  endif
+-%}
+
+<!-- ─────────────────────────────────
+  HERO: sticky image left + info right
+──────────────────────────────── -->
+<section class="sph" id="SingleProductHome" {{ section.shopify_attributes }}>
+  <div class="sph__inner container">
+
+    <!-- LEFT: sticky image stack -->
+    <div class="sph__media" id="SphMedia">
+      <div class="sph__media-main">
+        {%- if sp != blank and sp.featured_image != blank -%}
+          <img
+            id="SphMainImg"
+            src="{{ sp.featured_image | image_url: width: 900 }}"
+            alt="{{ sp.featured_image.alt | default: sp.title | escape }}"
+            width="900" height="900"
+            loading="eager" decoding="async"
+            class="sph__img">
+        {%- elsif section.settings.fallback_image != blank -%}
+          <img
+            id="SphMainImg"
+            src="{{ section.settings.fallback_image | image_url: width: 900 }}"
+            alt="{{ section.settings.heading | escape }}"
+            width="900" height="900"
+            loading="eager" decoding="async"
+            class="sph__img">
+        {%- else -%}
+          <div class="sph__img-placeholder">
+            {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+          </div>
+        {%- endif -%}
+      </div>
+
+      {%- if sp != blank and sp.images.size > 1 -%}
+        <div class="sph__thumbs" role="list" aria-label="Product images">
+          {%- for img in sp.images limit: 5 -%}
+            <button
+              class="sph__thumb{% if forloop.first %} is-active{% endif %}"
+              data-sph-thumb
+              data-src="{{ img | image_url: width: 900 }}"
+              aria-label="View image {{ forloop.index }}"
+              role="listitem">
+              <img
+                src="{{ img | image_url: width: 120 }}"
+                alt="{{ img.alt | default: sp.title | escape }}"
+                width="60" height="60"
+                loading="lazy" decoding="async">
+            </button>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <!-- RIGHT: product info -->
+    <div class="sph__info">
+
+      {%- assign eyebrow = section.settings.eyebrow -%}
+      {%- if eyebrow == blank and sp != blank -%}
+        {%- assign eyebrow = sp.vendor -%}
+      {%- endif -%}
+      {%- if eyebrow != blank -%}
+        <p class="sph__eyebrow">{{ eyebrow | upcase }}</p>
+      {%- endif -%}
+
+      <h1 class="sph__title">
+        {%- if section.settings.heading != blank -%}
+          {{ section.settings.heading }}
+        {%- elsif sp != blank -%}
+          {{ sp.title }}
+        {%- else -%}
+          Adventure Ready
+        {%- endif -%}
+      </h1>
+
+      {%- assign subtitle = section.settings.subheading -%}
+      {%- if subtitle == blank and sp != blank -%}
+        {%- assign subtitle = sp.description | strip_html | truncate: 100 -%}
+      {%- endif -%}
+      {%- if subtitle != blank -%}
+        <p class="sph__sub">{{ subtitle }}</p>
+      {%- endif -%}
+
+      <!-- Price + rating -->
+      <div class="sph__price-row">
+        <span class="sph__price{% if is_sale %} is-sale{% endif %}">
+          {%- if sp != blank -%}{{ price | money }}{%- else -%}$149.00{%- endif -%}
+        </span>
+        {%- if is_sale -%}
+          <span class="sph__price-was">{{ compare | money }}</span>
+          <span class="sph__badge">Save {{ save_pct }}%</span>
+        {%- endif -%}
+
+        <!-- Stars (real metafield or fallback display) -->
+        {%- assign rating_val = sp.metafields.reviews.rating.value | plus: 0 -%}
+        {%- assign rating_count = sp.metafields.reviews.rating_count.value | plus: 0 -%}
+        {%- if rating_val > 0 or section.settings.show_demo_rating -%}
+          {%- unless rating_val > 0 -%}{%- assign rating_val = 4.8 -%}{%- assign rating_count = 1150 -%}{%- endunless -%}
+          <div class="sph__stars" aria-label="{{ rating_val }} out of 5 stars">
+            {%- assign full = rating_val | floor -%}
+            {%- for i in (1..5) -%}
+              <svg width="14" height="14" viewBox="0 0 24 24"
+                fill="{% if i <= full %}#f5a623{% else %}none{% endif %}"
+                stroke="#f5a623" stroke-width="1.5" aria-hidden="true">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+              </svg>
+            {%- endfor -%}
+            <span class="sph__rating-label">{{ rating_val }} | {{ rating_count | money_without_currency }}+ Reviews</span>
+          </div>
+        {%- endif -%}
+      </div>
+
+      <!-- Buttons -->
+      <div class="sph__btns">
+        {%- if sp != blank and fv.available -%}
+          <button
+            class="btn sph__btn-atc"
+            data-add-to-cart
+            data-variant-id="{{ fv.id }}"
+            data-qty="1"
+            aria-label="Add {{ sp.title | escape }} to cart">
+            {{ section.settings.atc_label | default: 'Add to Cart' }}
+          </button>
+          <a href="/checkout?variant={{ fv.id }}&quantity=1"
+            class="btn sph__btn-buy">
+            {{ section.settings.buy_label | default: 'Buy Now' }}
+          </a>
+        {%- else -%}
+          <button class="btn sph__btn-atc" disabled aria-disabled="true">Sold Out</button>
+        {%- endif -%}
+      </div>
+
+      <!-- Qty + variant options -->
+      <div class="sph__options-row">
+        <!-- Qty stepper -->
+        <div class="sph__qty-wrap">
+          <p class="sph__opt-label">Quantity</p>
+          <div class="sph__qty" data-qty-stepper>
+            <button class="sph__qty-btn" data-qty-minus aria-label="Decrease">&#8722;</button>
+            <input class="sph__qty-val" type="number" value="1" min="1" max="99"
+              readonly aria-label="Quantity">
+            <button class="sph__qty-btn" data-qty-plus aria-label="Increase">&#43;</button>
+          </div>
+        </div>
+
+        <!-- Color swatches (if option named Color exists) -->
+        {%- if sp != blank -%}
+          {%- for opt in sp.options_with_values -%}
+            {%- if opt.name == 'Color' or opt.name == 'Colour' -%}
+              <div class="sph__swatches-wrap">
+                <p class="sph__opt-label">{{ opt.name }}</p>
+                <div class="sph__swatches" role="radiogroup" aria-label="{{ opt.name }}">
+                  {%- for val in opt.values -%}
+                    <button
+                      class="sph__swatch{% if val == opt.selected_value %} is-active{% endif %}"
+                      data-swatch-val="{{ val | escape }}"
+                      data-swatch-option="{{ opt.name | escape }}"
+                      style="--swatch-color:{{ val | downcase | replace: ' ', '' }}"
+                      aria-pressed="{% if val == opt.selected_value %}true{% else %}false{% endif %}"
+                      aria-label="{{ val }}">
+                    </button>
+                  {%- endfor -%}
+                </div>
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+
+      <!-- Trust strip -->
+      <div class="sph__trust" aria-label="Guarantees">
+        <span>&#10003; {{ section.settings.trust_1 | default: 'Free Shipping' }}</span>
+        <span class="sph__trust-sep">|</span>
+        <span>&#10003; {{ section.settings.trust_2 | default: 'Secure Checkout' }}</span>
+        <span class="sph__trust-sep">|</span>
+        <span>&#10003; {{ section.settings.trust_3 | default: '30-Day Guarantee' }}</span>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────────────
+  FEATURES STRIP: 3 icons
+──────────────────────────────── -->
+{%- assign has_features = false -%}
+{%- for i in (1..3) -%}
+  {%- assign fkey = 'feat_' | append: i | append: '_title' -%}
+  {%- if section.settings[fkey] != blank -%}{%- assign has_features = true -%}{%- endif -%}
+{%- endfor -%}
+
+{%- if has_features -%}
+<section class="sph-features" aria-label="Key features">
+  <div class="container">
+    <div class="sph-features__grid">
+      {%- for i in (1..3) -%}
+        {%- assign t_key  = 'feat_' | append: i | append: '_title' -%}
+        {%- assign s_key  = 'feat_' | append: i | append: '_sub' -%}
+        {%- assign ic_key = 'feat_' | append: i | append: '_icon' -%}
+        {%- if section.settings[t_key] != blank -%}
+          <div class="sph-features__item">
+            <div class="sph-features__icon" aria-hidden="true">
+              {%- case section.settings[ic_key] -%}
+                {%- when 'water' -%}
+                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2C6 9 4 13 4 16a8 8 0 0 0 16 0c0-3-2-7-8-14z"/></svg>
+                {%- when 'leaf' -%}
+                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 8C8 10 5.9 16.17 3.82 19.31M15 8a6 6 0 0 0-6 6"/><path d="M3.82 19.31a10.32 10.32 0 0 0 9.4-8.19"/></svg>
+                {%- when 'bag' -%}
+                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                {%- when 'shield' -%}
+                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                {%- when 'truck' -%}
+                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 3h15v13H1zM16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                {%- when 'star' -%}
+                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                {%- else -%}
+                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 8 12 12 14 14"/></svg>
+              {%- endcase -%}
+            </div>
+            <strong class="sph-features__title">{{ section.settings[t_key] | upcase }}</strong>
+            {%- if section.settings[s_key] != blank -%}
+              <span class="sph-features__sub">{{ section.settings[s_key] }}</span>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+{%- endif -%}
+
+<!-- ─────────────────────────────────
+  REVIEWS + FAQ
+──────────────────────────────── -->
+<section class="sph-bottom section-spacing">
+  <div class="container">
+    <div class="sph-bottom__grid">
+
+      <!-- Reviews col -->
+      <div class="sph-reviews">
+        <h2 class="sph-section-title">{{ section.settings.reviews_title | default: 'Reviews' }}</h2>
+
+        {%- if sp != blank -%}
+          <!-- Metafield-driven reviews if app present -->
+          <div id="shopify-product-reviews" data-id="{{ sp.id }}"></div>
+        {%- endif -%}
+
+        <!-- Fallback / demo review cards -->
+        {%- if section.blocks.size > 0 -%}
+          <div class="sph-review-cards">
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'review' -%}
+                <div class="sph-review-card" {{ block.shopify_attributes }}>
+                  <div class="sph-review-card__head">
+                    {%- if block.settings.avatar != blank -%}
+                      <img
+                        src="{{ block.settings.avatar | image_url: width: 80 }}"
+                        alt="{{ block.settings.name | escape }}"
+                        width="40" height="40"
+                        loading="lazy" decoding="async"
+                        class="sph-review-card__avatar">
+                    {%- else -%}
+                      <div class="sph-review-card__avatar sph-review-card__avatar--initials">
+                        {{ block.settings.name | slice: 0, 1 | upcase }}
+                      </div>
+                    {%- endif -%}
+                    <div>
+                      <strong class="sph-review-card__name">{{ block.settings.name | default: 'Customer' }}</strong>
+                      <div class="sph-review-card__stars" aria-label="{{ block.settings.rating }} stars">
+                        {%- assign r = block.settings.rating | default: 5 | plus: 0 -%}
+                        {%- for i in (1..5) -%}
+                          <svg width="12" height="12" viewBox="0 0 24 24"
+                            fill="{% if i <= r %}#f5a623{% else %}none{% endif %}"
+                            stroke="#f5a623" stroke-width="1.5" aria-hidden="true">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                          </svg>
+                        {%- endfor -%}
+                      </div>
+                    </div>
+                  </div>
+                  {%- if block.settings.images != blank -%}
+                    <div class="sph-review-card__imgs">
+                      <img src="{{ block.settings.images | image_url: width: 200 }}"
+                        alt="Review photo" width="60" height="60"
+                        loading="lazy" decoding="async">
+                    </div>
+                  {%- endif -%}
+                  {%- if block.settings.body != blank -%}
+                    <p class="sph-review-card__body">{{ block.settings.body }}</p>
+                  {%- endif -%}
+                </div>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      </div>
+
+      <!-- FAQ col -->
+      <div class="sph-faq">
+        <h2 class="sph-section-title">{{ section.settings.faq_title | default: 'FAQ' }}</h2>
+        <div class="sph-faq__list">
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'faq' -%}
+              <details class="sph-faq__item" {{ block.shopify_attributes }}>
+                <summary class="sph-faq__q">
+                  {{ block.settings.question }}
+                  <svg class="sph-faq__chevron" width="16" height="16" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <polyline points="6 9 12 15 18 9"/>
+                  </svg>
+                </summary>
+                <div class="sph-faq__a">{{ block.settings.answer }}</div>
+              </details>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ────── STYLES ────── -->
+<style>
+/* ── Hero layout ── */
+.sph { background: var(--color-bg); padding-block: clamp(24px, 4vw, 48px) clamp(32px, 5vw, 64px); }
+.sph__inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(32px, 4vw, 80px);
+  align-items: start;
+}
+@media (max-width: 768px) {
+  .sph__inner { grid-template-columns: 1fr; }
+}
+
+/* ── Sticky image ── */
+.sph__media {
+  position: sticky;
+  top: 88px; /* below sticky header */
+}
+.sph__media-main {
+  border-radius: var(--radius-lg, 12px);
+  overflow: hidden;
+  aspect-ratio: 1;
+  background: var(--color-surface);
+}
+.sph__img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: opacity 0.25s ease;
+}
+.sph__img-placeholder {
+  width: 100%; height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+}
+.sph__thumbs {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+.sph__thumb {
+  width: 60px; height: 60px;
+  border-radius: var(--radius-sm, 4px);
+  overflow: hidden;
+  border: 2px solid transparent;
+  transition: border-color 0.18s ease;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.sph__thumb img { width: 100%; height: 100%; object-fit: cover; }
+.sph__thumb.is-active, .sph__thumb:hover { border-color: var(--color-text, #111); }
+
+/* ── Info col ── */
+.sph__info {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding-top: 4px;
+}
+.sph__eyebrow {
+  font-size: var(--text-xs, 0.75rem);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--color-text-muted, #666);
+}
+.sph__title {
+  font-family: var(--font-display, Georgia, serif);
+  font-size: clamp(1.8rem, 3.5vw, 3rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  color: var(--color-text, #111);
+}
+.sph__sub {
+  font-size: var(--text-base, 1rem);
+  color: var(--color-text-muted, #666);
+  line-height: 1.6;
+  max-width: 46ch;
+}
+
+/* Price + stars */
+.sph__price-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.sph__price {
+  font-size: clamp(1.5rem, 2.5vw, 2rem);
+  font-weight: 800;
+  color: var(--color-text, #111);
+  font-variant-numeric: tabular-nums;
+}
+.sph__price.is-sale { color: var(--color-sale, #e8260d); }
+.sph__price-was {
+  font-size: var(--text-base, 1rem);
+  color: var(--color-text-muted, #666);
+  text-decoration: line-through;
+}
+.sph__badge {
+  font-size: var(--text-xs, 0.75rem);
+  font-weight: 700;
+  background: var(--color-sale-bg, #ffeeed);
+  color: var(--color-sale, #e8260d);
+  padding: 3px 8px;
+  border-radius: var(--radius-full, 9999px);
+}
+.sph__stars {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.sph__rating-label {
+  font-size: var(--text-xs, 0.75rem);
+  color: var(--color-text-muted, #666);
+  margin-left: 4px;
+}
+
+/* Buttons */
+.sph__btns {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.sph__btn-atc {
+  flex: 1;
+  min-width: 160px;
+  padding: 16px 24px;
+  min-height: 54px;
+  background: var(--color-primary, #007c7c);
+  color: var(--color-primary-text, #fff);
+  font-size: var(--text-sm, 0.875rem);
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border-radius: var(--btn-radius, 6px);
+  border: none;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.sph__btn-atc:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+.sph__btn-atc:disabled {
+  background: var(--color-surface-2, #eee);
+  color: var(--color-text-muted, #999);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+.sph__btn-buy {
+  flex: 1;
+  min-width: 140px;
+  padding: 16px 24px;
+  min-height: 54px;
+  background: var(--color-text, #111);
+  color: #fff;
+  font-size: var(--text-sm, 0.875rem);
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border-radius: var(--btn-radius, 6px);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.sph__btn-buy:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+}
+
+/* Qty + swatches */
+.sph__options-row {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+.sph__opt-label {
+  font-size: var(--text-xs, 0.75rem);
+  font-weight: 600;
+  color: var(--color-text-muted, #666);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.sph__qty {
+  display: flex;
+  align-items: center;
+  border: 1.5px solid var(--color-border, #e5e5e5);
+  border-radius: var(--radius-md, 8px);
+  overflow: hidden;
+  height: 44px;
+}
+.sph__qty-btn {
+  width: 40px; height: 100%;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text, #111);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.sph__qty-btn:hover { background: var(--color-surface, #f9f9f9); }
+.sph__qty-val {
+  width: 48px;
+  height: 100%;
+  text-align: center;
+  font-size: var(--text-sm, 0.875rem);
+  font-weight: 700;
+  border: none;
+  border-left: 1.5px solid var(--color-border, #e5e5e5);
+  border-right: 1.5px solid var(--color-border, #e5e5e5);
+  background: transparent;
+  color: var(--color-text, #111);
+  -moz-appearance: textfield;
+}
+.sph__qty-val::-webkit-outer-spin-button,
+.sph__qty-val::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+/* Color swatches */
+.sph__swatches {
+  display: flex;
+  gap: 8px;
+}
+.sph__swatch {
+  width: 36px; height: 36px;
+  border-radius: var(--radius-full, 9999px);
+  border: 3px solid transparent;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+  background: var(--swatch-color, #ccc);
+}
+.sph__swatch[style*="teal"]    { background: #009688; }
+.sph__swatch[style*="black"]   { background: #111111; }
+.sph__swatch[style*="gray"],
+.sph__swatch[style*="grey"]    { background: #9e9e9e; }
+.sph__swatch[style*="red"]     { background: #e53935; }
+.sph__swatch[style*="blue"]    { background: #1e88e5; }
+.sph__swatch[style*="green"]   { background: #43a047; }
+.sph__swatch[style*="white"]   { background: #f5f5f5; border: 3px solid #e5e5e5; }
+.sph__swatch[style*="orange"]  { background: #fb8c00; }
+.sph__swatch.is-active {
+  border-color: var(--color-text, #111);
+  transform: scale(1.1);
+}
+.sph__swatch:hover:not(.is-active) {
+  border-color: var(--color-text-muted, #999);
+}
+
+/* Trust strip */
+.sph__trust {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 4px;
+  font-size: var(--text-xs, 0.75rem);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--color-text, #111);
+  padding-top: 4px;
+}
+.sph__trust-sep {
+  color: var(--color-border, #ccc);
+  font-weight: 300;
+}
+
+/* ── Features strip ── */
+.sph-features {
+  background: var(--color-surface, #f9f9f9);
+  border-top: 1px solid var(--color-border, #e5e5e5);
+  border-bottom: 1px solid var(--color-border, #e5e5e5);
+  padding-block: clamp(32px, 4vw, 56px);
+}
+.sph-features__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  text-align: center;
+}
+@media (max-width: 560px) {
+  .sph-features__grid { grid-template-columns: 1fr; }
+}
+.sph-features__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.sph-features__icon { color: var(--color-text, #111); }
+.sph-features__title {
+  font-size: var(--text-sm, 0.875rem);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--color-text, #111);
+}
+.sph-features__sub {
+  font-size: var(--text-xs, 0.75rem);
+  color: var(--color-text-muted, #666);
+}
+
+/* ── Reviews + FAQ ── */
+.sph-bottom__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(32px, 4vw, 80px);
+  align-items: start;
+}
+@media (max-width: 768px) {
+  .sph-bottom__grid { grid-template-columns: 1fr; }
+}
+.sph-section-title {
+  font-family: var(--font-display, Georgia, serif);
+  font-size: var(--text-xl, 1.5rem);
+  font-weight: 700;
+  color: var(--color-text, #111);
+  margin-bottom: 24px;
+}
+
+/* Review cards */
+.sph-review-cards { display: flex; flex-direction: column; gap: 16px; }
+.sph-review-card {
+  background: var(--color-surface, #f9f9f9);
+  border: 1px solid var(--color-border, #e5e5e5);
+  border-radius: var(--radius-md, 8px);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.sph-review-card__head { display: flex; align-items: center; gap: 10px; }
+.sph-review-card__avatar {
+  width: 40px; height: 40px;
+  border-radius: var(--radius-full, 9999px);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+.sph-review-card__avatar--initials {
+  background: var(--color-primary, #007c7c);
+  color: #fff;
+  font-size: var(--text-sm, 0.875rem);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full, 9999px);
+}
+.sph-review-card__name {
+  font-size: var(--text-sm, 0.875rem);
+  font-weight: 700;
+  color: var(--color-text, #111);
+  display: block;
+}
+.sph-review-card__stars { display: flex; gap: 2px; margin-top: 2px; }
+.sph-review-card__imgs img {
+  width: 60px; height: 60px;
+  object-fit: cover;
+  border-radius: var(--radius-sm, 4px);
+}
+.sph-review-card__body {
+  font-size: var(--text-sm, 0.875rem);
+  color: var(--color-text-muted, #666);
+  line-height: 1.6;
+}
+
+/* FAQ */
+.sph-faq__list { display: flex; flex-direction: column; }
+.sph-faq__item {
+  border-bottom: 1px solid var(--color-border, #e5e5e5);
+}
+.sph-faq__q {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0;
+  font-size: var(--text-sm, 0.875rem);
+  font-weight: 600;
+  color: var(--color-text, #111);
+  cursor: pointer;
+  user-select: none;
+  gap: 12px;
+}
+.sph-faq__q::-webkit-details-marker { display: none; }
+.sph-faq__chevron { flex-shrink: 0; transition: transform 0.2s ease; }
+.sph-faq__item[open] .sph-faq__chevron { transform: rotate(180deg); }
+.sph-faq__a {
+  font-size: var(--text-sm, 0.875rem);
+  color: var(--color-text-muted, #666);
+  line-height: 1.7;
+  padding-bottom: 16px;
+}
+
+/* Mobile: unstick image on small screens */
+@media (max-width: 768px) {
+  .sph__media { position: static; }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  /* Thumbnail switcher */
+  document.querySelectorAll('[data-sph-thumb]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var img = document.getElementById('SphMainImg');
+      if (img) {
+        img.style.opacity = '0';
+        setTimeout(function () {
+          img.src = btn.dataset.src;
+          img.style.opacity = '1';
+        }, 150);
+      }
+      document.querySelectorAll('[data-sph-thumb]').forEach(function (b) { b.classList.remove('is-active'); });
+      btn.classList.add('is-active');
+    });
+  });
+
+  /* Qty stepper */
+  document.querySelectorAll('[data-qty-stepper]').forEach(function (wrap) {
+    var inp = wrap.querySelector('.sph__qty-val');
+    wrap.querySelector('[data-qty-minus]').addEventListener('click', function () {
+      if (parseInt(inp.value) > 1) inp.value = parseInt(inp.value) - 1;
+      syncQty(inp.value);
+    });
+    wrap.querySelector('[data-qty-plus]').addEventListener('click', function () {
+      inp.value = parseInt(inp.value) + 1;
+      syncQty(inp.value);
+    });
+  });
+  function syncQty(val) {
+    document.querySelectorAll('[data-add-to-cart]').forEach(function (b) { b.dataset.qty = val; });
+  }
+
+  /* Color swatches */
+  document.querySelectorAll('.sph__swatch').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      document.querySelectorAll('.sph__swatch').forEach(function (b) {
+        b.classList.remove('is-active');
+        b.setAttribute('aria-pressed', 'false');
+      });
+      btn.classList.add('is-active');
+      btn.setAttribute('aria-pressed', 'true');
+    });
+  });
+
+  /* Add to cart */
+  document.querySelectorAll('[data-add-to-cart]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var id  = btn.dataset.variantId;
+      var qty = parseInt(btn.dataset.qty) || 1;
+      var orig = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = 'Adding...';
+      fetch('/cart/add.json', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: id, quantity: qty })
+      })
+      .then(function (r) { return r.json(); })
+      .then(function () {
+        btn.textContent = 'Added \u2713';
+        if (window.ShopEvents) window.ShopEvents.emit('cart:updated', {});
+        setTimeout(function () { btn.textContent = orig; btn.disabled = false; }, 2000);
+      })
+      .catch(function () { btn.textContent = orig; btn.disabled = false; });
+    });
+  });
+});
+</script>
+
+{% schema %}
+{
+  "name": "Single Product Home",
+  "tag": "div",
+  "class": "shopify-section-single-product-home",
+  "settings": [
+    { "type": "header", "content": "Product" },
+    { "type": "product", "id": "product", "label": "Product to feature" },
+    { "type": "image_picker", "id": "fallback_image", "label": "Fallback image (if no product selected)" },
+    { "type": "header", "content": "Hero text" },
+    { "type": "text",     "id": "eyebrow",    "label": "Eyebrow label",  "default": "APEX TRAILBLAZER BACKPACK:" },
+    { "type": "text",     "id": "heading",    "label": "Heading",        "default": "Adventure Ready" },
+    { "type": "textarea","id": "subheading", "label": "Subheading",     "default": "Durable, waterproof, and ergonomic for your toughest hikes." },
+    { "type": "text",    "id": "atc_label",  "label": "Add to Cart label", "default": "Add to Cart" },
+    { "type": "text",    "id": "buy_label",  "label": "Buy Now label",     "default": "Buy Now" },
+    { "type": "checkbox", "id": "show_demo_rating", "label": "Show demo star rating (if no reviews app)", "default": true },
+    { "type": "header", "content": "Trust strip" },
+    { "type": "text", "id": "trust_1", "label": "Trust item 1", "default": "Free Shipping" },
+    { "type": "text", "id": "trust_2", "label": "Trust item 2", "default": "Secure Checkout" },
+    { "type": "text", "id": "trust_3", "label": "Trust item 3", "default": "30-Day Guarantee" },
+    { "type": "header", "content": "Features strip" },
+    { "type": "text",   "id": "feat_1_title", "label": "Feature 1 title", "default": "Waterproof" },
+    { "type": "text",   "id": "feat_1_sub",   "label": "Feature 1 subtitle", "default": "Durable Materials" },
+    { "type": "select", "id": "feat_1_icon",  "label": "Feature 1 icon", "options": [
+      {"value":"water","label":"Water drops"},{"value":"leaf","label":"Leaf / lightweight"},{"value":"bag","label":"Bag"},{"value":"shield","label":"Shield"},{"value":"truck","label":"Truck"},{"value":"star","label":"Star"}
+    ], "default": "water" },
+    { "type": "text",   "id": "feat_2_title", "label": "Feature 2 title", "default": "Ultralight" },
+    { "type": "text",   "id": "feat_2_sub",   "label": "Feature 2 subtitle", "default": "30L Capacity" },
+    { "type": "select", "id": "feat_2_icon",  "label": "Feature 2 icon", "options": [
+      {"value":"water","label":"Water drops"},{"value":"leaf","label":"Leaf / lightweight"},{"value":"bag","label":"Bag"},{"value":"shield","label":"Shield"},{"value":"truck","label":"Truck"},{"value":"star","label":"Star"}
+    ], "default": "leaf" },
+    { "type": "text",   "id": "feat_3_title", "label": "Feature 3 title", "default": "Ergonomic" },
+    { "type": "text",   "id": "feat_3_sub",   "label": "Feature 3 subtitle", "default": "Comfort Straps" },
+    { "type": "select", "id": "feat_3_icon",  "label": "Feature 3 icon", "options": [
+      {"value":"water","label":"Water drops"},{"value":"leaf","label":"Leaf / lightweight"},{"value":"bag","label":"Bag"},{"value":"shield","label":"Shield"},{"value":"truck","label":"Truck"},{"value":"star","label":"Star"}
+    ], "default": "bag" },
+    { "type": "header", "content": "Reviews & FAQ titles" },
+    { "type": "text", "id": "reviews_title", "label": "Reviews section title", "default": "Reviews" },
+    { "type": "text", "id": "faq_title",     "label": "FAQ section title",     "default": "FAQ" }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Review card",
+      "settings": [
+        { "type": "text",         "id": "name",   "label": "Reviewer name",     "default": "Sarah M." },
+        { "type": "range",        "id": "rating", "label": "Star rating",        "min": 1, "max": 5, "step": 1, "default": 5 },
+        { "type": "image_picker", "id": "avatar", "label": "Reviewer avatar" },
+        { "type": "image_picker", "id": "images", "label": "Review photo" },
+        { "type": "textarea",     "id": "body",   "label": "Review text",
+          "default": "Absolutely love this product. Great quality and fast delivery!" }
+      ]
+    },
+    {
+      "type": "faq",
+      "name": "FAQ item",
+      "settings": [
+        { "type": "text",     "id": "question", "label": "Question", "default": "Key questions about this product?" },
+        { "type": "richtext", "id": "answer",   "label": "Answer",   "default": "<p>This is the answer to the question above.</p>" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Single Product Home",
+      "settings": {
+        "eyebrow": "APEX TRAILBLAZER BACKPACK:",
+        "heading": "Adventure Ready",
+        "subheading": "Durable, waterproof, and ergonomic for your toughest hikes.",
+        "feat_1_title": "Waterproof", "feat_1_sub": "Durable Materials", "feat_1_icon": "water",
+        "feat_2_title": "Ultralight",  "feat_2_sub": "30L Capacity",     "feat_2_icon": "leaf",
+        "feat_3_title": "Ergonomic",   "feat_3_sub": "Comfort Straps",   "feat_3_icon": "bag"
+      },
+      "blocks": [
+        { "type": "review", "settings": { "name": "Sarah M.", "rating": 5, "body": "Absolutely love this! Fits perfectly and looks amazing." } },
+        { "type": "review", "settings": { "name": "Mike L.",  "rating": 5, "body": "Best purchase I've made this year. Highly recommend." } },
+        { "type": "faq",    "settings": { "question": "Key questions about this product?", "answer": "<p>This product is designed for maximum comfort and performance.</p>" } },
+        { "type": "faq",    "settings": { "question": "How is the quality?", "answer": "<p>We use only premium materials tested for durability and longevity.</p>" } },
+        { "type": "faq",    "settings": { "question": "What are the shipping options?", "answer": "<p>Free shipping on all orders over $75. Standard delivery 5–10 business days.</p>" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
