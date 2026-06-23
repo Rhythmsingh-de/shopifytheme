@@ -1,41 +1,255 @@
-<footer class="site-footer">
-  <div class="container">
-    <div class="footer__inner">
-      <span class="footer__copy">&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}. All rights reserved.</span>
-      <div class="footer__links">
-        {%- for link in section.settings.footer_menu.links -%}
-          <a href="{{ link.url }}" class="footer__link">{{ link.title }}</a>
-        {%- endfor -%}
+{%- liquid
+  assign col_1_heading = section.settings.col_1_heading
+  assign col_2_heading = section.settings.col_2_heading
+  assign col_3_heading = section.settings.col_3_heading
+-%}
+
+<footer class="site-footer" role="contentinfo">
+
+  <!-- Guarantee strip -->
+  <div class="footer__guarantee">
+    <div class="container">
+      <div class="footer__guarantee-grid">
+        <div class="footer__guarantee-item">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+          <div>
+            <strong>{{ settings.trust_returns_title | default: '30-Day Money Back' }}</strong>
+            <span>{{ settings.trust_returns_sub | default: 'No questions asked' }}</span>
+          </div>
+        </div>
+        <div class="footer__guarantee-item">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M1 3h15v13H1zM16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+          <div>
+            <strong>{{ settings.trust_shipping_title | default: 'International Shipping' }}</strong>
+            <span>{{ settings.trust_shipping_sub | default: '5–10 business days' }}</span>
+          </div>
+        </div>
+        <div class="footer__guarantee-item">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+          <div>
+            <strong>{{ settings.trust_secure_title | default: 'Secure Checkout' }}</strong>
+            <span>{{ settings.trust_secure_sub | default: 'SSL encrypted' }}</span>
+          </div>
+        </div>
+        <div class="footer__guarantee-item">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <div>
+            <strong>{{ section.settings.badge_4_title | default: '24/7 Support' }}</strong>
+            <span>{{ section.settings.badge_4_sub | default: 'We reply within hours' }}</span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
+
+  <!-- Main footer body -->
+  <div class="footer__body">
+    <div class="container">
+      <div class="footer__cols">
+
+        <!-- Col 1: Brand -->
+        <div class="footer__col footer__col--brand">
+          {%- if section.settings.logo != blank -%}
+            <img src="{{ section.settings.logo | image_url: width: 160 }}" alt="{{ shop.name }}" width="160" height="40" loading="lazy" class="footer__logo">
+          {%- else -%}
+            <span class="footer__brand-name">{{ shop.name }}</span>
+          {%- endif -%}
+          {%- if section.settings.brand_tagline != blank -%}
+            <p class="footer__tagline">{{ section.settings.brand_tagline }}</p>
+          {%- endif -%}
+          <!-- Social icons -->
+          <div class="footer__socials">
+            {%- if section.settings.social_instagram != blank -%}
+              <a href="{{ section.settings.social_instagram }}" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="footer__social-link">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/></svg>
+              </a>
+            {%- endif -%}
+            {%- if section.settings.social_facebook != blank -%}
+              <a href="{{ section.settings.social_facebook }}" target="_blank" rel="noopener noreferrer" aria-label="Facebook" class="footer__social-link">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+              </a>
+            {%- endif -%}
+            {%- if section.settings.social_tiktok != blank -%}
+              <a href="{{ section.settings.social_tiktok }}" target="_blank" rel="noopener noreferrer" aria-label="TikTok" class="footer__social-link">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.77 1.52V6.76a4.85 4.85 0 0 1-1-.07z"/></svg>
+              </a>
+            {%- endif -%}
+          </div>
+        </div>
+
+        <!-- Col 2: Links -->
+        {%- if col_1_heading != blank or section.settings.col_1_menu != blank -%}
+        <div class="footer__col">
+          <h3 class="footer__col-heading">{{ col_1_heading | default: 'Shop' }}</h3>
+          <ul role="list" class="footer__nav">
+            {%- for link in section.settings.col_1_menu.links -%}
+              <li><a href="{{ link.url }}" class="footer__nav-link">{{ link.title }}</a></li>
+            {%- endfor -%}
+          </ul>
+        </div>
+        {%- endif -%}
+
+        <!-- Col 3: Help -->
+        {%- if col_2_heading != blank or section.settings.col_2_menu != blank -%}
+        <div class="footer__col">
+          <h3 class="footer__col-heading">{{ col_2_heading | default: 'Help' }}</h3>
+          <ul role="list" class="footer__nav">
+            {%- for link in section.settings.col_2_menu.links -%}
+              <li><a href="{{ link.url }}" class="footer__nav-link">{{ link.title }}</a></li>
+            {%- endfor -%}
+          </ul>
+        </div>
+        {%- endif -%}
+
+        <!-- Col 4: Contact / policies -->
+        {%- if col_3_heading != blank or section.settings.contact_email != blank -%}
+        <div class="footer__col">
+          <h3 class="footer__col-heading">{{ col_3_heading | default: 'Contact' }}</h3>
+          {%- if section.settings.contact_email != blank -%}
+            <p class="footer__contact-line">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              <a href="mailto:{{ section.settings.contact_email }}">{{ section.settings.contact_email }}</a>
+            </p>
+          {%- endif -%}
+          {%- if section.settings.shipping_info != blank -%}
+            <p class="footer__contact-line">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M1 3h15v13H1z"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+              <span>{{ section.settings.shipping_info }}</span>
+            </p>
+          {%- endif -%}
+          <ul role="list" class="footer__nav" style="margin-top:var(--sp-4)">
+            {%- for link in section.settings.col_3_menu.links -%}
+              <li><a href="{{ link.url }}" class="footer__nav-link">{{ link.title }}</a></li>
+            {%- endfor -%}
+          </ul>
+        </div>
+        {%- endif -%}
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Payment icons + copyright -->
+  <div class="footer__bottom">
+    <div class="container">
+      <div class="footer__bottom-inner">
+        <p class="footer__copy">&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}. All rights reserved.</p>
+        <div class="footer__payment">
+          {%- render 'payment-icons' -%}
+        </div>
+      </div>
+    </div>
+  </div>
+
 </footer>
 
 <style>
-  .site-footer {
-    padding: {{ section.settings.padding_top }}px 0 {{ section.settings.padding_bottom }}px;
-    border-top: 1px solid #f0f0f0;
-  }
-  .footer__inner {
-    display: flex; align-items: center;
-    justify-content: space-between; flex-wrap: wrap; gap: 16px;
-  }
-  .footer__copy { font-size: 0.85rem; color: var(--text-muted); }
-  .footer__links { display: flex; gap: 24px; flex-wrap: wrap; }
-  .footer__link {
-    font-size: 0.85rem; color: var(--text-muted);
-    transition: color var(--transition);
-  }
-  .footer__link:hover { color: var(--text-color); }
+.site-footer {
+  background: var(--color-footer-bg, #111);
+  color: var(--color-footer-text, #ccc);
+}
+
+/* Guarantee strip */
+.footer__guarantee {
+  background: #1a1a1a;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding: var(--sp-6) 0;
+}
+.footer__guarantee-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--sp-4);
+}
+.footer__guarantee-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  color: rgba(255,255,255,0.85);
+}
+.footer__guarantee-item svg { flex-shrink: 0; color: var(--color-deco, #1d6b44); }
+.footer__guarantee-item strong { display: block; font-size: var(--text-sm); font-weight: 600; color: #fff; }
+.footer__guarantee-item span { font-size: var(--text-xs); color: rgba(255,255,255,0.55); }
+
+/* Footer body */
+.footer__body { padding: var(--sp-16) 0 var(--sp-10); }
+.footer__cols {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: var(--sp-10);
+}
+@media (max-width: 768px) {
+  .footer__cols { grid-template-columns: 1fr 1fr; gap: var(--sp-8); }
+  .footer__col--brand { grid-column: 1 / -1; }
+}
+@media (max-width: 480px) {
+  .footer__cols { grid-template-columns: 1fr; }
+}
+
+.footer__logo { max-height: 40px; width: auto; }
+.footer__brand-name { font-family: var(--font-display); font-size: var(--text-xl); font-weight: 700; color: #fff; }
+.footer__tagline { font-size: var(--text-sm); color: rgba(255,255,255,0.5); margin-top: var(--sp-3); max-width: 28ch; line-height: 1.5; }
+
+.footer__socials { display: flex; gap: var(--sp-3); margin-top: var(--sp-5); }
+.footer__social-link {
+  display: flex; align-items: center; justify-content: center;
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.7);
+  transition: background 180ms, color 180ms;
+}
+.footer__social-link:hover { background: var(--color-deco, #1d6b44); color: #fff; }
+
+.footer__col-heading { font-size: var(--text-sm); font-weight: 700; color: #fff; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: var(--sp-4); }
+.footer__nav { display: flex; flex-direction: column; gap: var(--sp-2); }
+.footer__nav-link { font-size: var(--text-sm); color: rgba(255,255,255,0.55); transition: color 180ms; }
+.footer__nav-link:hover { color: #fff; }
+
+.footer__contact-line { display: flex; align-items: center; gap: var(--sp-2); font-size: var(--text-sm); color: rgba(255,255,255,0.55); margin-bottom: var(--sp-2); }
+.footer__contact-line a { color: rgba(255,255,255,0.55); transition: color 180ms; }
+.footer__contact-line a:hover { color: #fff; }
+
+/* Bottom bar */
+.footer__bottom {
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding: var(--sp-5) 0;
+}
+.footer__bottom-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: var(--sp-4);
+}
+.footer__copy { font-size: var(--text-xs); color: rgba(255,255,255,0.35); }
+.footer__payment { display: flex; align-items: center; gap: var(--sp-2); flex-wrap: wrap; }
 </style>
 
 {% schema %}
 {
   "name": "Footer",
+  "tag": "section",
+  "class": "footer-section",
   "settings": [
-    { "type": "link_list", "id": "footer_menu", "label": "Footer menu", "default": "footer" },
-    { "type": "range", "id": "padding_top", "label": "Padding top", "min": 20, "max": 100, "step": 4, "default": 40, "unit": "px" },
-    { "type": "range", "id": "padding_bottom", "label": "Padding bottom", "min": 20, "max": 100, "step": 4, "default": 40, "unit": "px" }
+    { "type": "image_picker", "id": "logo", "label": "Footer logo" },
+    { "type": "text", "id": "brand_tagline", "label": "Brand tagline", "default": "Premium quality. Delivered worldwide." },
+    { "type": "text", "id": "contact_email", "label": "Contact email", "default": "support@bodyluxcare.com" },
+    { "type": "text", "id": "shipping_info", "label": "Shipping info line", "default": "Ships in 5–10 business days" },
+    { "type": "header", "content": "Column 1 — Shop links" },
+    { "type": "text", "id": "col_1_heading", "label": "Heading", "default": "Shop" },
+    { "type": "link_list", "id": "col_1_menu", "label": "Menu", "default": "main-menu" },
+    { "type": "header", "content": "Column 2 — Help links" },
+    { "type": "text", "id": "col_2_heading", "label": "Heading", "default": "Help" },
+    { "type": "link_list", "id": "col_2_menu", "label": "Menu", "default": "footer" },
+    { "type": "header", "content": "Column 3 — Policies" },
+    { "type": "text", "id": "col_3_heading", "label": "Heading", "default": "Policies" },
+    { "type": "link_list", "id": "col_3_menu", "label": "Menu" },
+    { "type": "header", "content": "Social" },
+    { "type": "url", "id": "social_instagram", "label": "Instagram URL" },
+    { "type": "url", "id": "social_facebook", "label": "Facebook URL" },
+    { "type": "url", "id": "social_tiktok", "label": "TikTok URL" },
+    { "type": "header", "content": "Extra guarantee badge 4" },
+    { "type": "text", "id": "badge_4_title", "label": "Badge 4 title", "default": "24/7 Support" },
+    { "type": "text", "id": "badge_4_sub", "label": "Badge 4 subtitle", "default": "We reply within hours" },
+    { "type": "range", "id": "padding_top", "label": "Guarantee strip padding top", "min": 0, "max": 60, "step": 4, "default": 24, "unit": "px" },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom bar padding bottom", "min": 0, "max": 60, "step": 4, "default": 20, "unit": "px" }
   ]
 }
 {% endschema %}
