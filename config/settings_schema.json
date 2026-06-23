@@ -1,8 +1,8 @@
 [
   {
     "name": "theme_info",
-    "theme_name": "Minimal Conversion",
-    "theme_version": "1.4.0",
+    "theme_name": "BodyLuxCare",
+    "theme_version": "2.0.0",
     "theme_author": "Rhythmsingh",
     "theme_documentation_url": "https://github.com/Rhythmsingh-de/shopifytheme",
     "theme_support_url": "https://github.com/Rhythmsingh-de/shopifytheme"
@@ -10,37 +10,93 @@
   {
     "name": "Colors",
     "settings": [
-      {"type": "color", "id": "bg_color", "label": "Background", "default": "#ffffff"},
-      {"type": "color", "id": "text_color", "label": "Body text", "default": "#111111"},
-      {"type": "color", "id": "text_muted", "label": "Muted text", "default": "#666666"},
-      {"type": "color", "id": "accent_color", "label": "Accent (CTA buttons)", "default": "#ff3c00"},
-      {"type": "color", "id": "accent_hover", "label": "Accent hover", "default": "#e03500"},
-      {"type": "color", "id": "surface_color", "label": "Surface / card background", "default": "#f7f7f7"}
+      { "type": "header", "content": "Page Surfaces" },
+      { "type": "color", "id": "color_bg", "label": "Page background", "default": "#faf9f7" },
+      { "type": "color", "id": "color_surface", "label": "Card / surface background", "default": "#ffffff" },
+      { "type": "color", "id": "color_surface_2", "label": "Offset surface", "default": "#f5f3f0" },
+      { "type": "color", "id": "color_border", "label": "Border / divider", "default": "#dddbd7" },
+      { "type": "header", "content": "Text" },
+      { "type": "color", "id": "color_text", "label": "Body text", "default": "#1a1a1a" },
+      { "type": "color", "id": "color_text_muted", "label": "Muted text", "default": "#6b7280" },
+      { "type": "header", "content": "Buttons" },
+      { "type": "color", "id": "color_btn_primary_bg", "label": "Primary button background", "default": "#1a1a1a" },
+      { "type": "color", "id": "color_btn_primary_text", "label": "Primary button text", "default": "#ffffff" },
+      { "type": "color", "id": "color_secondary", "label": "CTA accent (sale/urgency)", "default": "#e8260d" },
+      { "type": "header", "content": "Sale & Badges" },
+      { "type": "color", "id": "color_sale", "label": "Sale badge color", "default": "#e8260d" },
+      { "type": "color", "id": "color_sale_bg", "label": "Sale badge background", "default": "#fff1f0" },
+      { "type": "color", "id": "color_deco", "label": "Trust/guarantee accent (emerald)", "default": "#1d6b44" },
+      { "type": "color", "id": "color_deco_light", "label": "Trust accent light background", "default": "#e6f4ed" },
+      { "type": "header", "content": "Header & Footer" },
+      { "type": "color", "id": "color_header_bg", "label": "Header background", "default": "#ffffff" },
+      { "type": "color", "id": "color_header_text", "label": "Header text", "default": "#1a1a1a" },
+      { "type": "color", "id": "color_footer_bg", "label": "Footer background", "default": "#111111" },
+      { "type": "color", "id": "color_footer_text", "label": "Footer text", "default": "#cccccc" }
+    ]
+  },
+  {
+    "name": "Typography",
+    "settings": [
+      { "type": "font_picker", "id": "font_display", "label": "Display / heading font", "default": "playfair_display_n4" },
+      { "type": "font_picker", "id": "font_body", "label": "Body font", "default": "work_sans_n4" },
+      { "type": "range", "id": "body_font_size", "label": "Base font size", "min": 14, "max": 18, "step": 1, "default": 16, "unit": "px" }
     ]
   },
   {
     "name": "Layout",
     "settings": [
-      {"type": "range", "id": "max_width", "label": "Max page width", "min": 960, "max": 1440, "step": 40, "default": 1200, "unit": "px"},
-      {"type": "range", "id": "border_radius", "label": "Button / card radius", "min": 0, "max": 16, "step": 2, "default": 4, "unit": "px"}
+      { "type": "range", "id": "container_max_width", "label": "Max page width", "min": 960, "max": 1440, "step": 40, "default": 1280, "unit": "px" },
+      { "type": "select", "id": "button_border_radius", "label": "Button shape", "options": [
+          { "value": "0px", "label": "Square" },
+          { "value": "6px", "label": "Slightly rounded" },
+          { "value": "12px", "label": "Rounded" },
+          { "value": "9999px", "label": "Pill" }
+        ], "default": "9999px" },
+      { "type": "range", "id": "card_border_radius", "label": "Card corner radius", "min": 0, "max": 24, "step": 2, "default": 12, "unit": "px" }
+    ]
+  },
+  {
+    "name": "Product Cards",
+    "settings": [
+      { "type": "checkbox", "id": "card_hover_second_image", "label": "Show alternate image on hover", "default": true },
+      { "type": "checkbox", "id": "card_quick_add", "label": "Show Quick Add button", "default": true },
+      { "type": "checkbox", "id": "card_show_vendor", "label": "Show vendor name", "default": false },
+      { "type": "checkbox", "id": "card_show_rating", "label": "Show star rating", "default": true },
+      { "type": "checkbox", "id": "card_show_sale_badge", "label": "Show sale % badge", "default": true },
+      { "type": "checkbox", "id": "card_show_new_badge", "label": "Show 'New' badge", "default": true }
+    ]
+  },
+  {
+    "name": "Trust & Conversion",
+    "settings": [
+      { "type": "header", "content": "Shipping & Returns" },
+      { "type": "text", "id": "trust_shipping_title", "label": "Shipping badge title", "default": "International Shipping" },
+      { "type": "text", "id": "trust_shipping_sub", "label": "Shipping badge subtitle", "default": "5–10 business days" },
+      { "type": "text", "id": "trust_returns_title", "label": "Returns badge title", "default": "30-Day Money Back" },
+      { "type": "text", "id": "trust_returns_sub", "label": "Returns badge subtitle", "default": "No questions asked" },
+      { "type": "text", "id": "trust_secure_title", "label": "Secure payment badge title", "default": "Secure Checkout" },
+      { "type": "text", "id": "trust_secure_sub", "label": "Secure payment badge subtitle", "default": "SSL encrypted" },
+      { "type": "header", "content": "Urgency / Scarcity" },
+      { "type": "checkbox", "id": "show_urgency_banner", "label": "Show announcement urgency banner", "default": true },
+      { "type": "checkbox", "id": "show_scarcity_bar", "label": "Show stock scarcity bar on product", "default": true }
     ]
   },
   {
     "name": "Compliance & Tracking",
     "settings": [
-      {"type": "checkbox", "id": "gdpr_cookie_banner", "label": "Show cookie consent banner", "default": true},
-      {"type": "textarea", "id": "cookie_text", "label": "Cookie banner text", "default": "We use cookies to enhance your experience, analyze traffic, and serve personalized content. By continuing you agree to our"},
-      {"type": "url", "id": "privacy_policy_url", "label": "Privacy policy URL"},
-      {"type": "text", "id": "facebook_pixel_id", "label": "Facebook Pixel ID", "info": "Optional. Used by your marketing stack or GTM; theme does not inject fbq() by itself."},
-      {"type": "text", "id": "tiktok_pixel_id", "label": "TikTok Pixel ID", "info": "Optional. Used by your marketing stack or GTM; theme does not inject ttq() by itself."},
-      {"type": "text", "id": "gtm_container_id", "label": "Google Tag Manager container ID", "info": "Optional. Example: GTM-XXXXXXX."},
-      {"type": "text", "id": "google_site_verification", "label": "Google site verification meta tag value"}
+      { "type": "checkbox", "id": "gdpr_cookie_banner", "label": "Show cookie consent banner", "default": true },
+      { "type": "textarea", "id": "cookie_text", "label": "Cookie banner body text", "default": "We use cookies to enhance your browsing experience, serve personalised content and analyse traffic. By clicking Accept you consent to our use of cookies." },
+      { "type": "url", "id": "privacy_policy_url", "label": "Privacy policy page URL" },
+      { "type": "text", "id": "facebook_pixel_id", "label": "Facebook Pixel ID", "info": "Paste your Pixel ID. The theme writes it to dataLayer; activate via GTM." },
+      { "type": "text", "id": "tiktok_pixel_id", "label": "TikTok Pixel ID" },
+      { "type": "text", "id": "gtm_container_id", "label": "Google Tag Manager container ID", "info": "Example: GTM-XXXXXXX" },
+      { "type": "text", "id": "google_site_verification", "label": "Google Search Console verification code" }
     ]
   },
   {
     "name": "Advanced",
     "settings": [
-      {"type": "textarea", "id": "custom_css", "label": "Custom CSS" }
+      { "type": "textarea", "id": "custom_css", "label": "Custom CSS", "info": "Injected inside a <style> tag before </body>." }
     ]
   }
 ]
