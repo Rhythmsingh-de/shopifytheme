@@ -1,0 +1,102 @@
+{%- comment -%}
+  Back-in-stock notification form.
+  Usage: {% render 'back-in-stock', product: product, variant: variant %}
+  Shows only when variant is unavailable.
+  Submits via Klaviyo Back-In-Stock or a simple mailto fallback.
+{%- endcomment -%}
+
+{%- if variant.available == false -%}
+<div class="bis" data-back-in-stock>
+  <p class="bis__label">Get notified when this is back in stock</p>
+  <form class="bis__form" data-bis-form>
+    <input type="hidden" name="variant_id" value="{{ variant.id }}">
+    <div class="bis__row">
+      <input
+        class="bis__email"
+        type="email"
+        name="email"
+        placeholder="Your email address"
+        required
+        autocomplete="email"
+        aria-label="Email address for back-in-stock notification">
+      <button class="bis__submit btn btn--primary" type="submit">Notify Me</button>
+    </div>
+    <p class="bis__success" style="display:none" aria-live="polite">&#10003; You're on the list!</p>
+    <p class="bis__error"   style="display:none" role="alert">Something went wrong. Please try again.</p>
+  </form>
+</div>
+
+<style>
+.bis { margin-top: 12px; }
+.bis__label {
+  font-size: var(--text-xs, 0.75rem);
+  font-weight: 600;
+  color: var(--color-text-muted, #666);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.bis__row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.bis__email {
+  flex: 1;
+  min-width: 180px;
+  height: 44px;
+  padding: 0 14px;
+  border: 1.5px solid var(--color-border, #e5e5e5);
+  border-radius: var(--radius-md, 6px);
+  font-size: var(--text-sm, 0.875rem);
+  color: var(--color-text, #111);
+  background: var(--color-bg, #fff);
+  transition: border-color 0.18s;
+}
+.bis__email:focus { outline: none; border-color: var(--color-primary, #007c7c); }
+.bis__submit { height: 44px; padding: 0 20px; white-space: nowrap; }
+.bis__success, .bis__error { font-size: var(--text-xs, 0.75rem); margin-top: 6px; }
+.bis__success { color: var(--color-success, #437a22); }
+.bis__error   { color: var(--color-error, #a12c7b); }
+</style>
+
+<script>
+(function () {
+  var form = document.querySelector('[data-bis-form]');
+  if (!form) return;
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var email = form.querySelector('.bis__email').value;
+    var variantId = form.querySelector('input[name="variant_id"]').value;
+    var success = form.querySelector('.bis__success');
+    var error   = form.querySelector('.bis__error');
+    var btn = form.querySelector('.bis__submit');
+    btn.disabled = true;
+    btn.textContent = 'Saving...';
+
+    /* Klaviyo BIS endpoint — replace KLAVIYO_COMPANY_ID with your real ID */
+    var KLAVIYO_ID = window.KLAVIYO_COMPANY_ID || '';
+    if (!KLAVIYO_ID) {
+      /* Fallback: fire event so merchant can hook their own BIS solution */
+      window.dispatchEvent(new CustomEvent('bis:signup', { detail: { email: email, variant_id: variantId } }));
+      success.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Notify Me';
+      return;
+    }
+
+    fetch('https://a.klaviyo.com/onsite/components/back-in-stock/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ a: KLAVIYO_ID, email: email, variant: variantId, platform: 'shopify' })
+    })
+    .then(function (r) {
+      if (r.ok) { success.style.display = 'block'; error.style.display = 'none'; }
+      else { error.style.display = 'block'; success.style.display = 'none'; }
+    })
+    .catch(function () { error.style.display = 'block'; })
+    .finally(function () { btn.disabled = false; btn.textContent = 'Notify Me'; });
+  });
+})();
+</script>
+{%- endif -%}

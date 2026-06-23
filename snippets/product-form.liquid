@@ -1,0 +1,344 @@
+{%- comment -%}
+  Reusable product form snippet.
+  Usage: {% render 'product-form', product: product, section_id: section.id %}
+
+  Renders: variant selector (radio buttons or select),
+           qty stepper, ATC button, Buy Now link.
+  Emits: window event 'variant:changed' with { variant } on variant switch.
+{%- endcomment -%}
+
+{%- liquid
+  assign pf_product = product
+  assign pf_fv = pf_product.selected_or_first_available_variant
+  assign pf_form_id = 'pf-form-' | append: section_id
+-%}
+
+<product-form data-product-id="{{ pf_product.id }}" data-section-id="{{ section_id }}">
+
+  {%- form 'product', pf_product,
+    id: pf_form_id,
+    class: 'pf',
+    novalidate: 'novalidate',
+    data-type: 'add-to-cart-form' -%}
+
+    <input type="hidden" name="id" value="{{ pf_fv.id }}" data-productid="{{ pf_product.id }}">
+
+    {%- unless pf_product.has_only_default_variant -%}
+      {%- for option in pf_product.options_with_values -%}
+        <div class="pf__option" data-option-index="{{ forloop.index0 }}">
+          <p class="pf__opt-label">
+            {{ option.name }}:
+            <span class="pf__opt-value" data-option-value="{{ forloop.index0 }}">{{ option.selected_value }}</span>
+          </p>
+
+          {%- if option.name == 'Color' or option.name == 'Colour' -%}
+            {%- comment %} Swatch row {%- endcomment -%}
+            <div class="pf__swatches" role="radiogroup" aria-label="{{ option.name }}">
+              {%- for value in option.values -%}
+                {%- assign is_selected = false -%}
+                {%- if value == option.selected_value -%}{%- assign is_selected = true -%}{%- endif -%}
+                <button type="button"
+                  class="pf__swatch{% if is_selected %} is-active{% endif %}"
+                  data-option-position="{{ forloop.parentloop.index0 }}"
+                  data-value="{{ value | escape }}"
+                  style="--sw-color:{{ value | downcase | replace: ' ', '' }}"
+                  aria-pressed="{{ is_selected }}"
+                  aria-label="{{ option.name }}: {{ value }}">
+                </button>
+              {%- endfor -%}
+            </div>
+
+          {%- else -%}
+            {%- comment %} Radio pill row {%- endcomment -%}
+            <div class="pf__pills" role="radiogroup" aria-label="{{ option.name }}">
+              {%- for value in option.values -%}
+                {%- assign is_selected = false -%}
+                {%- if value == option.selected_value -%}{%- assign is_selected = true -%}{%- endif -%}
+                <button type="button"
+                  class="pf__pill{% if is_selected %} is-active{% endif %}"
+                  data-option-position="{{ forloop.parentloop.index0 }}"
+                  data-value="{{ value | escape }}"
+                  aria-pressed="{{ is_selected }}"
+                  aria-label="{{ option.name }}: {{ value }}">
+                  {{ value }}
+                </button>
+              {%- endfor -%}
+            </div>
+          {%- endif -%}
+        </div>
+      {%- endfor -%}
+    {%- endunless -%}
+
+    {%- comment %} Qty stepper {%- endcomment -%}
+    <div class="pf__qty-wrap">
+      <label class="pf__opt-label" for="{{ pf_form_id }}-qty">{{ 'products.product.quantity' | t }}</label>
+      <div class="pf__qty" data-qty-stepper>
+        <button type="button" class="pf__qty-btn" data-qty-minus aria-label="Decrease quantity">&#8722;</button>
+        <input id="{{ pf_form_id }}-qty"
+          class="pf__qty-val"
+          type="number"
+          name="quantity"
+          value="1" min="1" max="99"
+          aria-label="{{ 'products.product.quantity' | t }}">
+        <button type="button" class="pf__qty-btn" data-qty-plus aria-label="Increase quantity">&#43;</button>
+      </div>
+    </div>
+
+    {%- comment %} ATC button {%- endcomment -%}
+    <div class="pf__btns">
+      <button type="submit"
+        name="add"
+        class="btn btn--primary pf__atc"
+        {% unless pf_fv.available %}disabled aria-disabled="true"{% endunless %}
+        aria-label="{% if pf_fv.available %}{{ 'products.product.add_to_cart' | t }}{% else %}{{ 'products.product.sold_out' | t }}{% endif %}">
+        <span class="pf__atc-text">
+          {% if pf_fv.available %}
+            {{ 'products.product.add_to_cart' | t }}
+          {% else %}
+            {{ 'products.product.sold_out' | t }}
+          {% endif %}
+        </span>
+        <span class="pf__atc-spinner" aria-hidden="true" style="display:none">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10" stroke-opacity="0.3"/>
+            <path d="M12 2a10 10 0 0 1 10 10"><animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="0.8s" repeatCount="indefinite"/></path>
+          </svg>
+        </span>
+      </button>
+
+      {%- if pf_fv.available -%}
+        <a href="/checkout?variant={{ pf_fv.id }}&quantity=1"
+          class="btn btn--secondary pf__buy"
+          aria-label="{{ 'products.product.buy_now' | t }}">
+          {{ 'products.product.buy_now' | t }}
+        </a>
+      {%- endif -%}
+    </div>
+
+  {%- endform -%}
+
+  {%- comment %} Variant JSON for JS {%- endcomment -%}
+  <script type="application/json" data-variant-json>
+    {{ pf_product.variants | json }}
+  </script>
+
+</product-form>
+
+<style>
+.pf { display: flex; flex-direction: column; gap: 18px; }
+.pf__opt-label {
+  font-size: var(--text-xs, 0.75rem);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-muted, #666);
+  margin-bottom: 8px;
+  display: block;
+}
+.pf__opt-value { font-weight: 400; text-transform: none; letter-spacing: 0; color: var(--color-text); }
+
+/* Swatches */
+.pf__swatches { display: flex; flex-wrap: wrap; gap: 8px; }
+.pf__swatch {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  cursor: pointer;
+  transition: border-color 0.15s, transform 0.15s;
+  outline: none;
+  background: var(--sw-color, #ccc);
+}
+.pf__swatch[style*="teal"]   { background: #009688; }
+.pf__swatch[style*="black"]  { background: #111; }
+.pf__swatch[style*="white"]  { background: #f5f5f5; }
+.pf__swatch[style*="gray"], .pf__swatch[style*="grey"] { background: #9e9e9e; }
+.pf__swatch[style*="red"]    { background: #e53935; }
+.pf__swatch[style*="blue"]   { background: #1e88e5; }
+.pf__swatch[style*="green"]  { background: #43a047; }
+.pf__swatch[style*="orange"] { background: #fb8c00; }
+.pf__swatch[style*="navy"]   { background: #1a237e; }
+.pf__swatch.is-active, .pf__swatch:hover { border-color: var(--color-text, #111); }
+.pf__swatch.is-active { transform: scale(1.12); }
+
+/* Pills */
+.pf__pills { display: flex; flex-wrap: wrap; gap: 8px; }
+.pf__pill {
+  padding: 7px 16px;
+  border: 1.5px solid var(--color-border, #e5e5e5);
+  border-radius: var(--radius-md, 6px);
+  font-size: var(--text-sm, 0.875rem);
+  font-weight: 500;
+  color: var(--color-text, #111);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+  background: transparent;
+}
+.pf__pill:hover { border-color: var(--color-text, #111); }
+.pf__pill.is-active {
+  background: var(--color-text, #111);
+  color: #fff;
+  border-color: var(--color-text, #111);
+}
+
+/* Qty stepper */
+.pf__qty {
+  display: inline-flex;
+  align-items: center;
+  border: 1.5px solid var(--color-border, #e5e5e5);
+  border-radius: var(--radius-md, 6px);
+  overflow: hidden;
+  height: 44px;
+}
+.pf__qty-btn {
+  width: 40px; height: 100%;
+  font-size: 1.1rem;
+  display: flex; align-items: center; justify-content: center;
+  background: none; border: none; cursor: pointer;
+  color: var(--color-text, #111);
+  transition: background 0.15s;
+}
+.pf__qty-btn:hover { background: var(--color-surface, #f5f5f5); }
+.pf__qty-val {
+  width: 48px; height: 100%;
+  text-align: center;
+  font-size: var(--text-sm, 0.875rem);
+  font-weight: 700;
+  border: none;
+  border-left: 1.5px solid var(--color-border, #e5e5e5);
+  border-right: 1.5px solid var(--color-border, #e5e5e5);
+  background: transparent;
+  color: var(--color-text, #111);
+  -moz-appearance: textfield;
+}
+.pf__qty-val::-webkit-outer-spin-button,
+.pf__qty-val::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+/* Buttons */
+.pf__btns { display: flex; gap: 12px; flex-wrap: wrap; }
+.pf__atc {
+  flex: 1; min-width: 150px; min-height: 52px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase;
+}
+.pf__atc:disabled { opacity: 0.55; cursor: not-allowed; }
+.pf__buy {
+  flex: 1; min-width: 130px; min-height: 52px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase;
+  text-decoration: none;
+}
+</style>
+
+<script>
+(function () {
+  var el = document.querySelector('product-form[data-product-id="{{ pf_product.id }}"]');
+  if (!el) return;
+
+  var variantsEl = el.querySelector('[data-variant-json]');
+  if (!variantsEl) return;
+  var variants = JSON.parse(variantsEl.textContent);
+  var form = el.querySelector('form');
+  var idInput = form ? form.querySelector('input[name="id"]') : null;
+  var atcBtn = el.querySelector('.pf__atc');
+  var atcText = el.querySelector('.pf__atc-text');
+  var atcSpinner = el.querySelector('.pf__atc-spinner');
+
+  /* Build current options state */
+  var selectedOptions = {{ pf_product.options_with_values | map: 'selected_value' | json }};
+
+  function getVariant() {
+    return variants.find(function (v) {
+      return v.options.every(function (opt, i) { return opt === selectedOptions[i]; });
+    });
+  }
+
+  function updateUI(variant) {
+    if (!variant) return;
+    /* Update hidden input */
+    if (idInput) idInput.value = variant.id;
+    /* Update ATC button state */
+    if (atcBtn) {
+      atcBtn.disabled = !variant.available;
+      atcBtn.setAttribute('aria-disabled', !variant.available);
+      if (atcText) {
+        atcText.textContent = variant.available
+          ? '{{ 'products.product.add_to_cart' | t | escape }}'
+          : '{{ 'products.product.sold_out' | t | escape }}';
+      }
+    }
+    /* Emit event for other components (price, image swap, etc.) */
+    window.dispatchEvent(new CustomEvent('variant:changed', { detail: { variant: variant } }));
+  }
+
+  /* Pill & Swatch click handlers */
+  el.querySelectorAll('.pf__pill, .pf__swatch').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var pos = parseInt(btn.dataset.optionPosition);
+      var val = btn.dataset.value;
+      selectedOptions[pos] = val;
+
+      /* Update active state within this group */
+      el.querySelectorAll('[data-option-position="' + pos + '"]').forEach(function (b) {
+        b.classList.remove('is-active');
+        b.setAttribute('aria-pressed', 'false');
+      });
+      btn.classList.add('is-active');
+      btn.setAttribute('aria-pressed', 'true');
+
+      /* Update displayed value label */
+      var label = el.querySelector('[data-option-value="' + pos + '"]');
+      if (label) label.textContent = val;
+
+      updateUI(getVariant());
+    });
+  });
+
+  /* Qty stepper */
+  el.querySelectorAll('[data-qty-stepper]').forEach(function (wrap) {
+    var inp = wrap.querySelector('.pf__qty-val');
+    if (!inp) return;
+    wrap.querySelector('[data-qty-minus]').addEventListener('click', function () {
+      if (parseInt(inp.value) > 1) inp.value = parseInt(inp.value) - 1;
+    });
+    wrap.querySelector('[data-qty-plus]').addEventListener('click', function () {
+      inp.value = parseInt(inp.value) + 1;
+    });
+  });
+
+  /* ATC submit with AJAX */
+  if (form) {
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (!atcBtn || atcBtn.disabled) return;
+      var qty = form.querySelector('input[name="quantity"]');
+      atcBtn.disabled = true;
+      if (atcSpinner) atcSpinner.style.display = 'inline-flex';
+      if (atcText) atcText.style.display = 'none';
+
+      fetch('/cart/add.json', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: idInput.value, quantity: qty ? parseInt(qty.value) || 1 : 1 })
+      })
+      .then(function (r) { return r.json(); })
+      .then(function () {
+        if (atcText) { atcText.textContent = 'Added \u2713'; atcText.style.display = ''; }
+        if (atcSpinner) atcSpinner.style.display = 'none';
+        window.dispatchEvent(new CustomEvent('cart:updated'));
+        setTimeout(function () {
+          atcBtn.disabled = false;
+          if (atcText) atcText.textContent = '{{ 'products.product.add_to_cart' | t | escape }}';
+        }, 2200);
+      })
+      .catch(function () {
+        atcBtn.disabled = false;
+        if (atcSpinner) atcSpinner.style.display = 'none';
+        if (atcText) { atcText.textContent = 'Try again'; atcText.style.display = ''; }
+      });
+    });
+  }
+
+  /* Initial variant sync */
+  updateUI(getVariant());
+})();
+</script>

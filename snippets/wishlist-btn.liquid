@@ -1,0 +1,82 @@
+{%- comment -%}
+  Wishlist / Save button — uses localStorage to persist.
+  Usage: {% render 'wishlist-btn', product: product %}
+  Classes: .wl-btn (base), .is-saved (active state)
+{%- endcomment -%}
+
+<button
+  class="wl-btn"
+  data-wishlist-btn
+  data-product-id="{{ product.id }}"
+  data-product-title="{{ product.title | escape }}"
+  data-product-url="{{ product.url }}"
+  aria-label="Save {{ product.title | escape }} to wishlist"
+  aria-pressed="false">
+  <svg class="wl-btn__icon wl-btn__icon--empty" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+  </svg>
+  <svg class="wl-btn__icon wl-btn__icon--filled" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.8" aria-hidden="true" style="display:none">
+    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+  </svg>
+</button>
+
+<style>
+.wl-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px; height: 36px;
+  border-radius: var(--radius-full, 9999px);
+  background: var(--color-surface, #fff);
+  border: 1.5px solid var(--color-border, #e5e5e5);
+  color: var(--color-text-muted, #888);
+  cursor: pointer;
+  transition: color 0.18s, border-color 0.18s, background 0.18s;
+  flex-shrink: 0;
+}
+.wl-btn:hover {
+  color: #e53935;
+  border-color: #e53935;
+}
+.wl-btn.is-saved {
+  color: #e53935;
+  border-color: #e53935;
+  background: #fff5f5;
+}
+.wl-btn.is-saved .wl-btn__icon--empty { display: none !important; }
+.wl-btn.is-saved .wl-btn__icon--filled { display: block !important; }
+</style>
+
+<script>
+(function () {
+  var WL_KEY = 'theme_wishlist';
+  function getWL() { try { return JSON.parse(localStorage.getItem(WL_KEY)) || []; } catch(e) { return []; } }
+  function saveWL(list) { try { localStorage.setItem(WL_KEY, JSON.stringify(list)); } catch(e) {} }
+
+  document.querySelectorAll('[data-wishlist-btn]').forEach(function (btn) {
+    var pid = btn.dataset.productId;
+    var wl = getWL();
+    if (wl.indexOf(pid) > -1) {
+      btn.classList.add('is-saved');
+      btn.setAttribute('aria-pressed', 'true');
+    }
+    btn.addEventListener('click', function () {
+      var list = getWL();
+      var idx = list.indexOf(pid);
+      if (idx > -1) {
+        list.splice(idx, 1);
+        btn.classList.remove('is-saved');
+        btn.setAttribute('aria-pressed', 'false');
+        btn.setAttribute('aria-label', 'Save ' + btn.dataset.productTitle + ' to wishlist');
+      } else {
+        list.push(pid);
+        btn.classList.add('is-saved');
+        btn.setAttribute('aria-pressed', 'true');
+        btn.setAttribute('aria-label', 'Remove ' + btn.dataset.productTitle + ' from wishlist');
+      }
+      saveWL(list);
+      window.dispatchEvent(new CustomEvent('wishlist:updated', { detail: { id: pid, saved: btn.classList.contains('is-saved') } }));
+    });
+  });
+})();
+</script>

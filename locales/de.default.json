@@ -1,101 +1,70 @@
 {
   "general": {
-    "404": { "title": "Seite nicht gefunden", "subtext": "Die gesuchte Seite existiert nicht.", "link": "Zur Startseite" },
-    "pagination": { "previous": "Zur\u00fcck", "next": "Weiter" },
-    "search": { "placeholder": "Suchen...", "button": "Suchen", "title": "Suchergebnisse", "no_results": "Keine Ergebnisse f\u00fcr \"{{ terms }}\"" }
+    "search": {
+      "placeholder": "Suche",
+      "submit": "Suchen"
+    },
+    "pagination": {
+      "previous": "Zur\u00fcck",
+      "next": "Weiter"
+    }
   },
   "products": {
     "product": {
       "add_to_cart": "In den Warenkorb",
       "sold_out": "Ausverkauft",
       "unavailable": "Nicht verf\u00fcgbar",
-      "buy_it_now": "Jetzt kaufen",
-      "quantity": "Menge",
-      "description": "Beschreibung",
-      "sku": "Artikelnummer",
-      "vendor": "Marke",
-      "regular_price": "Normalpreis",
-      "sale_price": "Angebotspreis",
-      "unit_price": "Grundpreis",
-      "save": "Sparen",
-      "shipping_policy_html": "Versandkosten werden beim Checkout berechnet.",
-      "review_count": "Bewertungen",
-      "in_stock": "Auf Lager",
-      "out_of_stock": "Ausverkauft"
+      "buy_now": "Jetzt kaufen",
+      "quantity": "Anzahl",
+      "color": "Farbe",
+      "size": "Gr\u00f6\u00dfe",
+      "reviews": "Bewertungen",
+      "select_options": "Optionen w\u00e4hlen"
     },
-    "general": {
-      "new_badge": "Neu",
-      "bestseller_badge": "Bestseller",
-      "sale_badge": "Sale",
-      "quick_add": "Schnell hinzuf\u00fcgen",
-      "from_price": "Ab {{ price }}"
+    "listing": {
+      "from": "ab",
+      "sale": "Angebot",
+      "new": "Neu",
+      "bestseller": "Bestseller"
     }
   },
   "cart": {
-    "title": "Warenkorb",
-    "empty": "Ihr Warenkorb ist leer.",
-    "empty_cta": "Jetzt einkaufen",
-    "items_count": { "one": "1 Artikel", "other": "{{ count }} Artikel" },
-    "subtotal": "Zwischensumme",
-    "note": "Anmerkung zur Bestellung",
-    "checkout": "Zur Kasse",
-    "update": "Aktualisieren",
-    "remove": "Entfernen",
-    "taxes_and_shipping": "Steuern und Versandkosten werden beim Checkout berechnet.",
-    "free_shipping_progress": { "unlocked": "Sie haben kostenlosen Versand freigeschaltet!", "remaining": "Noch {{ amount }} bis zum kostenlosen Versand" }
-  },
-  "collections": {
-    "title": "Alle Kollektionen",
-    "all_products": "Alle Produkte",
-    "filter": "Filtern",
-    "sort_by": "Sortieren nach",
-    "sort_options": {
-      "manual": "Empfohlen",
-      "best_selling": "Bestseller",
-      "title_ascending": "A\u2013Z",
-      "title_descending": "Z\u2013A",
-      "price_ascending": "Preis aufsteigend",
-      "price_descending": "Preis absteigend",
-      "created_ascending": "\u00C4lteste zuerst",
-      "created_descending": "Neueste zuerst"
-    },
-    "product_count": { "one": "1 Produkt", "other": "{{ count }} Produkte" }
-  },
-  "customer": {
-    "login": {
-      "title": "Anmelden",
-      "email": "E-Mail-Adresse",
-      "password": "Passwort",
-      "submit": "Anmelden",
-      "forgot_password": "Passwort vergessen?",
-      "no_account": "Noch kein Konto?",
-      "register": "Konto erstellen"
-    },
-    "register": {
-      "title": "Konto erstellen",
-      "first_name": "Vorname",
-      "last_name": "Nachname",
-      "email": "E-Mail-Adresse",
-      "password": "Passwort",
-      "submit": "Konto erstellen",
-      "have_account": "Bereits ein Konto?"
-    },
-    "orders": { "title": "Meine Bestellungen", "order_number": "Bestellnummer", "date": "Datum", "status": "Status", "total": "Gesamt" },
-    "account": { "title": "Mein Konto", "details": "Kontodaten", "logout": "Abmelden" }
+    "general": {
+      "title": "Warenkorb",
+      "empty": "Ihr Warenkorb ist leer.",
+      "checkout": "Zur Kasse",
+      "subtotal": "Zwischensumme",
+      "remove": "Entfernen",
+      "quantity": "Anzahl",
+      "add_note": "Notiz hinzuf\u00fcgen",
+      "continue_shopping": "Weiter einkaufen"
+    }
   },
   "sections": {
-    "header": { "cart_count": { "one": "1 Artikel", "other": "{{ count }} Artikel" } },
-    "newsletter": { "heading": "Newsletter abonnieren", "subtext": "Erhalten Sie exklusive Angebote und Neuigkeiten.", "email_placeholder": "Ihre E-Mail-Adresse", "button": "Abonnieren", "success": "Vielen Dank f\u00fcr Ihre Anmeldung!" }
+    "header": {
+      "menu": "Men\u00fc",
+      "search": "Suche",
+      "cart": "Warenkorb",
+      "account": "Konto"
+    },
+    "footer": {
+      "newsletter_label": "E-Mail-Adresse eingeben",
+      "newsletter_submit": "Abonnieren",
+      "copyright": "Alle Rechte vorbehalten"
+    },
+    "email_capture": {
+      "placeholder": "Ihre E-Mail-Adresse",
+      "submit": "Jetzt abonnieren"
+    },
+    "faq": {
+      "title": "H\u00e4ufig gestellte Fragen"
+    }
   },
   "accessibility": {
     "skip_to_content": "Zum Inhalt springen",
     "close": "Schlie\u00dfen",
     "open_menu": "Men\u00fc \u00f6ffnen",
-    "close_menu": "Men\u00fc schlie\u00dfen",
-    "open_cart": "Warenkorb \u00f6ffnen",
-    "close_cart": "Warenkorb schlie\u00dfen",
-    "search": "Suche",
-    "loading": "Wird geladen...",
-    "image_with_text_link": "Link zu {{ url }}"
+    "open_search": "Suche \u00f6ffnen",
+    "loading": "Wird geladen..."
   }
 }
