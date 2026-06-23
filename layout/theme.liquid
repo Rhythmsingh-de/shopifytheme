@@ -165,6 +165,19 @@
     }
     .reveal.is-visible { opacity: 1; transform: none; }
 
+    /* Focus ring — global */
+    :focus-visible {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 3px;
+      border-radius: var(--radius-sm);
+    }
+
+    /* Selection highlight */
+    ::selection {
+      background: color-mix(in oklab, var(--color-primary) 20%, transparent);
+      color: var(--color-text);
+    }
+
     @media (prefers-reduced-motion: reduce) {
       .reveal { opacity: 1; transform: none; transition: none; }
       *, *::before, *::after {
@@ -178,11 +191,16 @@
     <style>{{ settings.custom_css }}</style>
   {%- endif -%}
 
+  {%- comment -%}Expose Klaviyo company ID to back-in-stock snippet{%- endcomment -%}
+  {%- if settings.klaviyo_company_id != blank -%}
+    <script>window.KLAVIYO_COMPANY_ID = {{ settings.klaviyo_company_id | json }};</script>
+  {%- endif -%}
+
   {% render 'datalayer' %}
 </head>
 
 <body>
-  <a href="#MainContent" class="visually-hidden">Skip to content</a>
+  <a href="#MainContent" class="visually-hidden">{{ 'accessibility.skip_to_content' | t }}</a>
 
   {%- sections 'header-group' -%}
 
@@ -202,12 +220,14 @@
     window.ShopEvents = window.ShopEvents || (function(){
       var listeners = {};
       return {
-        on: function(event, fn){ (listeners[event] = listeners[event] || []).push(fn); },
+        on:   function(event, fn){ (listeners[event] = listeners[event] || []).push(fn); },
         emit: function(event, data){ (listeners[event] || []).forEach(function(fn){ fn(data); }); }
       };
     })();
     window.blcSettings = {
-      freeShippingThreshold: {{ settings.free_shipping_threshold | default: 75 }}
+      freeShippingThreshold: {{ settings.free_shipping_threshold | default: 75 }},
+      showFreeShippingBar:   {{ settings.show_free_shipping_bar | default: true }},
+      cartShowUpsell:        {{ settings.cart_show_upsell | default: true }}
     };
   </script>
 
