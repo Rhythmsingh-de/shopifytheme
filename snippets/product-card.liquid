@@ -1,6 +1,13 @@
 {%- assign card_product = product -%}
 {%- assign card_index = index | default: 0 -%}
-<div class="prod-card reveal" style="transition-delay:{{ card_index | times: 60 }}ms" data-product-id="{{ card_product.id }}" data-product-title="{{ card_product.title | escape }}" data-product-type="{{ card_product.type | escape }}" data-price="{{ card_product.price | divided_by: 100.0 }}">
+
+<div class="prod-card reveal"
+  style="transition-delay:{{ card_index | times: 60 }}ms"
+  data-product-id="{{ card_product.id }}"
+  data-product-title="{{ card_product.title | escape }}"
+  data-product-type="{{ card_product.type | escape }}"
+  data-price="{{ card_product.price | divided_by: 100.0 }}">
+
   <div class="prod-card__media">
     <a href="{{ card_product.url }}" tabindex="-1" aria-hidden="true">
       {%- if card_product.featured_image -%}
@@ -28,32 +35,32 @@
       {%- endif -%}
     </a>
 
-    <!-- Badges -->
     <div class="prod-card__badges">
       {%- if card_product.compare_at_price > card_product.price -%}
         {%- assign savings = card_product.compare_at_price | minus: card_product.price | times: 100 | divided_by: card_product.compare_at_price -%}
-        <span class="badge badge--sale">-{{ savings }}%</span>
-      {%- elsif card_product.tags contains 'new' or card_product.created_at > 'now' | date: '%s' | minus: 2592000 -%}
-        <span class="badge badge--new">New</span>
-      {%- elsif card_product.tags contains 'bestseller' -%}
-        <span class="badge badge--bestseller">Bestseller</span>
+        {%- if settings.card_show_sale_badge -%}
+          <span class="badge badge--sale">-{{ savings }}%</span>
+        {%- endif -%}
+      {%- elsif settings.card_show_new_badge -%}
+        {%- if card_product.tags contains 'new' -%}
+          <span class="badge badge--new">New</span>
+        {%- elsif card_product.tags contains 'bestseller' -%}
+          <span class="badge badge--bestseller">Bestseller</span>
+        {%- endif -%}
       {%- endif -%}
     </div>
 
-    <!-- Quick Add -->
     {%- if settings.card_quick_add -%}
       <div class="prod-card__quick-add">
         {%- if card_product.variants.size == 1 -%}
-          <button class="btn btn--primary btn--sm btn--full"
-                  onclick="BLC.addToCart({{ card_product.variants.first.id }}, 1, this)"
+          <button class="btn btn--primary btn--sm btn--full atc-btn"
+                  data-variant="{{ card_product.variants.first.id }}"
                   data-product-id="{{ card_product.id }}"
                   aria-label="Add {{ card_product.title | escape }} to cart">
             Add to Cart
           </button>
         {%- else -%}
-          <a href="{{ card_product.url }}" class="btn btn--primary btn--sm btn--full">
-            Select Options
-          </a>
+          <a href="{{ card_product.url }}" class="btn btn--primary btn--sm btn--full">Select Options</a>
         {%- endif -%}
       </div>
     {%- endif -%}
@@ -63,19 +70,30 @@
     {%- if settings.card_show_vendor and card_product.vendor != blank -%}
       <p class="prod-card__vendor">{{ card_product.vendor }}</p>
     {%- endif -%}
+
     <h3 class="prod-card__title">
       <a href="{{ card_product.url }}">{{ card_product.title }}</a>
     </h3>
+
     {%- if settings.card_show_rating -%}
-      <div class="prod-card__rating" aria-label="4.8 out of 5 stars">
-        <span class="stars">
-          {%- for i in (1..5) -%}
-            <svg viewBox="0 0 24 24" fill="#f59e0b" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-          {%- endfor -%}
-        </span>
-        <span style="font-size:var(--text-xs);color:var(--color-text-muted)">({{ card_product.id | modulo: 97 | plus: 12 }})</span>
-      </div>
+      {%- assign rating_value = card_product.metafields.reviews.rating.value -%}
+      {%- assign rating_count = card_product.metafields.reviews.rating_count.value -%}
+      {%- if rating_value != blank and rating_count != blank -%}
+        <div class="prod-card__rating" aria-label="{{ rating_value }} out of 5 stars">
+          <span class="stars" aria-hidden="true">
+            {%- for i in (1..5) -%}
+              {%- if i <= rating_value -%}
+                <svg viewBox="0 0 24 24" width="12" height="12" fill="var(--color-sale)" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              {%- else -%}
+                <svg viewBox="0 0 24 24" width="12" height="12" fill="var(--color-border)" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              {%- endif -%}
+            {%- endfor -%}
+          </span>
+          <span class="prod-card__rating-count">({{ rating_count }})</span>
+        </div>
+      {%- endif -%}
     {%- endif -%}
+
     <div class="prod-card__price">
       <span class="prod-card__price--current">{{ card_product.price | money }}</span>
       {%- if card_product.compare_at_price > card_product.price -%}
@@ -87,82 +105,109 @@
 
 <style>
 .prod-card {
-  --card-radius: {{ settings.card_radius | default: '8px' }};
-  display: flex; flex-direction: column;
+  display: flex;
+  flex-direction: column;
   background: var(--color-bg);
   border-radius: var(--card-radius);
   overflow: hidden;
-  transition: box-shadow var(--trans-base), transform var(--trans-slow);
-  transform-style: preserve-3d;
-  perspective: 1000px;
+  transition: box-shadow var(--trans-slow), transform var(--trans-slow);
 }
 .prod-card:hover {
-  box-shadow: var(--shadow-3d);
-  transform: translateY(-6px) rotateX(2deg);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-4px);
 }
 .prod-card__media {
-  position: relative; overflow: hidden;
-  aspect-ratio: 3/4; background: var(--color-surface);
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 3/4;
+  background: var(--color-surface);
   border-radius: var(--card-radius) var(--card-radius) 0 0;
 }
 .prod-card__img {
-  width: 100%; height: 100%; object-fit: cover;
-  transition: opacity 0.45s var(--ease-out), transform 0.6s var(--ease-out);
-  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: opacity 0.4s var(--ease-out), transform 0.5s var(--ease-out);
+  position: absolute;
+  inset: 0;
 }
 .prod-card__img--hover { opacity: 0; }
-.prod-card:hover .prod-card__img--primary { opacity: 0; transform: scale(1.04); }
-.prod-card:hover .prod-card__img--hover   { opacity: 1; }
-.prod-card:hover .prod-card__img--primary:only-child { opacity: 1; transform: scale(1.04); }
-
+.prod-card:hover .prod-card__img--primary { opacity: 0; transform: scale(1.03); }
+.prod-card:hover .prod-card__img--hover { opacity: 1; }
+.prod-card:hover .prod-card__img--primary:only-child { opacity: 1; transform: scale(1.03); }
+.prod-card__no-img {
+  background: var(--color-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-muted);
+  position: absolute;
+  inset: 0;
+}
 .prod-card__badges {
-  position: absolute; top: var(--sp-3); left: var(--sp-3);
-  display: flex; flex-direction: column; gap: var(--sp-1);
+  position: absolute;
+  top: var(--sp-3);
+  left: var(--sp-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  pointer-events: none;
 }
 .prod-card__quick-add {
-  position: absolute; bottom: 0; left: 0; right: 0;
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
   padding: var(--sp-3);
   transform: translateY(100%);
   transition: transform 0.3s var(--ease-out);
-  background: linear-gradient(0deg, rgba(0,0,0,0.5) 0%, transparent 100%);
+  background: linear-gradient(to top, rgba(0,0,0,0.45) 0%, transparent 100%);
 }
 .prod-card:hover .prod-card__quick-add { transform: translateY(0); }
-
 .prod-card__info {
   padding: var(--sp-3) var(--sp-4) var(--sp-4);
-  display: flex; flex-direction: column; gap: var(--sp-1);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
   flex: 1;
 }
 .prod-card__vendor {
-  font-size: var(--text-xs); color: var(--color-text-muted);
-  text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600;
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
 }
 .prod-card__title {
-  font-family: var(--font-body); font-weight: 600;
-  font-size: var(--text-sm); line-height: 1.35;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: var(--text-sm);
+  line-height: 1.35;
 }
+.prod-card__title a { transition: color var(--trans-base); }
 .prod-card__title a:hover { color: var(--color-primary); }
 .prod-card__rating {
-  display: flex; align-items: center; gap: var(--sp-1);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
 }
+.prod-card__rating-count {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+.stars { display: flex; gap: 2px; }
 .prod-card__price {
-  display: flex; align-items: center; gap: var(--sp-2);
-  margin-top: auto; padding-top: var(--sp-1);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-top: auto;
+  padding-top: var(--sp-1);
 }
 .prod-card__price--current {
-  font-weight: 700; font-size: var(--text-base); color: var(--color-text);
+  font-weight: 700;
+  font-size: var(--text-base);
+  color: var(--color-text);
 }
 .prod-card__price--compare {
-  font-size: var(--text-sm); color: var(--color-text-muted);
-  text-decoration: line-through;
-}
-</style>
-
-<style>
-.prod-card__no-img {
-  background: var(--color-surface);
-  display: flex; align-items: center; justify-content: center;
+  font-size: var(--text-sm);
   color: var(--color-text-muted);
-  position: absolute; inset: 0; width: 100%; height: 100%;
+  text-decoration: line-through;
 }
 </style>
