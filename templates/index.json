@@ -41,33 +41,6 @@
         "bg_color": "#ffffff"
       }
     },
-    "impact_band": {
-      "type": "impact-band",
-      "settings": {
-        "eyebrow": "Our Promise",
-        "heading": "One Purchased = One Donated",
-        "subtext": "For every item you buy, we donate one to someone in need. Over 100 million items donated and counting.",
-        "cta_label": "Learn About Our Mission",
-        "cta_url": ""
-      }
-    },
-    "reviews_strip": {
-      "type": "reviews-strip",
-      "settings": {
-        "heading": "What 4,800+ Customers Are Saying",
-        "subtext": "4.9 out of 5 stars · Verified purchases only"
-      }
-    },
-    "testimonials": {
-      "type": "testimonials",
-      "settings": {
-        "eyebrow": "Real Results",
-        "title": "Thousands of Happy Customers",
-        "show_summary": true,
-        "avg_rating": "4.9",
-        "review_count": "2,400+"
-      }
-    },
     "trust_badges": {
       "type": "trust-badges",
       "settings": {
@@ -105,9 +78,6 @@
     "urgency_banner",
     "featured_product",
     "trust_bar",
-    "impact_band",
-    "reviews_strip",
-    "testimonials",
     "trust_badges",
     "faq",
     "email_capture"
