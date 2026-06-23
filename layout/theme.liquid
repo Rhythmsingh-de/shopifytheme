@@ -9,12 +9,16 @@
 
   {% render 'meta-tags' %}
 
-  {%- if settings.font_display != blank -%}
-    {{ settings.font_display | font_face }}
-  {%- endif -%}
-  {%- if settings.font_body != blank -%}
-    {{ settings.font_body | font_face }}
-  {%- endif -%}
+  <style>
+    {%- if settings.font_display != blank -%}
+      {{ settings.font_display | font_face }}
+      {{ settings.font_display | font_modify: 'weight', 'bolder' | font_face }}
+    {%- endif -%}
+    {%- if settings.font_body != blank -%}
+      {{ settings.font_body | font_face }}
+      {{ settings.font_body | font_modify: 'weight', 'bolder' | font_face }}
+    {%- endif -%}
+  </style>
 
   {{ 'theme.css' | asset_url | stylesheet_tag }}
 
