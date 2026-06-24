@@ -29,10 +29,10 @@
         "review_count": "4,812",
         "cta_text": "Add to Cart — Order Now",
         "delivery_text": "Free express shipping on all orders",
-        "returns_text": "60-day risk-free returns",
+        "returns_text": "30-day risk-free returns",
         "privacy_text": "Secure & encrypted checkout",
-        "section_padding": 72,
-        "scarcity_max": 80
+        "section_padding": 56,
+        "scarcity_max": 10
       }
     },
     "trust_bar": {

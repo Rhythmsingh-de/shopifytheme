@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "type": "header",
   "name": "Header",
@@ -8,8 +17,10 @@
         "enabled": true,
         "bg_color": "#111111",
         "text_color": "#ffffff",
-        "text_1": "\u26a1 Free shipping on orders over \u20ac50",
-        "text_2": "\ud83d\udd12 60-Day Money-Back Guarantee",
+        "text_1": "⚡ Free shipping on orders",
+        "text_2": "🔒 30-Day Money-Back Guarantee",
+        "text_3": "",
+        "link": "shopify://collections/all",
         "auto_rotate": true,
         "speed": 4
       }
@@ -17,9 +28,13 @@
     "header": {
       "type": "header",
       "settings": {
+        "menu": "main-menu",
         "sticky": true
       }
     }
   },
-  "order": ["announcement", "header"]
+  "order": [
+    "announcement",
+    "header"
+  ]
 }
