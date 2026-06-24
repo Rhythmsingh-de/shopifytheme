@@ -27,7 +27,10 @@
       <div class="sph__media-main">
         {%- if sp != blank and sp.featured_image != blank -%}
           {%- assign sph_main_alt = sp.featured_image.alt | default: sp.title | escape -%}
-          {{ sp.featured_image | image_url: width: 900 | image_tag: id: 'SphMainImg', class: 'sph__img', widths: '450,900,1200', loading: 'eager', decoding: 'async', width: 900, height: 900, alt: sph_main_alt }}
+          {{ sp.featured_image | image_url: width: 900 | image_tag: id: 'SphMainImg', class: 'sph__img sph__img--primary', widths: '450,900,1200', loading: 'eager', decoding: 'async', width: 900, height: 900, alt: sph_main_alt }}
+          {%- if settings.card_hover_second_image and sp.images.size > 1 -%}
+            {{ sp.images[1] | image_url: width: 900 | image_tag: class: 'sph__img sph__img--hover', widths: '450,900,1200', loading: 'lazy', decoding: 'async', width: 900, height: 900, alt: sph_main_alt }}
+          {%- endif -%}
         {%- elsif section.settings.fallback_image != blank -%}
           {%- assign sph_fallback_alt = section.settings.heading | escape -%}
           {{ section.settings.fallback_image | image_url: width: 900 | image_tag: id: 'SphMainImg', class: 'sph__img', widths: '450,900,1200', loading: 'eager', decoding: 'async', width: 900, height: 900, alt: sph_fallback_alt }}
@@ -58,7 +61,7 @@
     <div class="sph__info">
 
       {%- assign eyebrow = section.settings.eyebrow -%}
-      {%- if eyebrow == blank and sp != blank -%}
+      {%- if eyebrow == blank and sp != blank and settings.card_show_vendor -%}
         {%- assign eyebrow = sp.vendor -%}
       {%- endif -%}
       {%- if eyebrow != blank -%}
@@ -89,24 +92,36 @@
         </span>
         {%- if is_sale -%}
           <span class="sph__price-was">{{ compare | money }}</span>
-          <span class="sph__badge">Save {{ save_pct }}%</span>
+          {%- if settings.card_show_sale_badge -%}
+            <span class="sph__badge">Save {{ save_pct }}%</span>
+          {%- endif -%}
         {%- endif -%}
 
-        {%- assign rating_val = sp.metafields.reviews.rating.value | plus: 0 -%}
-        {%- assign rating_count = sp.metafields.reviews.rating_count.value | plus: 0 -%}
-        {%- if rating_val > 0 or section.settings.show_demo_rating -%}
-          {%- unless rating_val > 0 -%}{%- assign rating_val = 4.8 -%}{%- assign rating_count = 1150 -%}{%- endunless -%}
-          <div class="sph__stars" aria-label="{{ rating_val }} out of 5 stars">
-            {%- assign full = rating_val | floor -%}
-            {%- for i in (1..5) -%}
-              <svg width="14" height="14" viewBox="0 0 24 24"
-                fill="{% if i <= full %}#f5a623{% else %}none{% endif %}"
-                stroke="#f5a623" stroke-width="1.5" aria-hidden="true">
-                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-              </svg>
-            {%- endfor -%}
-            <span class="sph__rating-label">{{ rating_val }} | {{ rating_count }} + Reviews</span>
-          </div>
+        {%- if settings.card_show_new_badge -%}
+          {%- if sp.tags contains 'new' -%}
+            <span class="sph__badge" style="background:var(--color-primary); color:var(--color-primary-text);">New</span>
+          {%- elsif sp.tags contains 'bestseller' -%}
+            <span class="sph__badge" style="background:var(--color-gold); color:#fff;">Bestseller</span>
+          {%- endif -%}
+        {%- endif -%}
+
+        {%- if settings.card_show_rating -%}
+          {%- assign rating_val = sp.metafields.reviews.rating.value | plus: 0 -%}
+          {%- assign rating_count = sp.metafields.reviews.rating_count.value | plus: 0 -%}
+          {%- if rating_val > 0 or section.settings.show_demo_rating -%}
+            {%- unless rating_val > 0 -%}{%- assign rating_val = 4.8 -%}{%- assign rating_count = 1150 -%}{%- endunless -%}
+            <div class="sph__stars" aria-label="{{ rating_val }} out of 5 stars">
+              {%- assign full = rating_val | floor -%}
+              {%- for i in (1..5) -%}
+                <svg width="14" height="14" viewBox="0 0 24 24"
+                  fill="{% if i <= full %}#f5a623{% else %}none{% endif %}"
+                  stroke="#f5a623" stroke-width="1.5" aria-hidden="true">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                </svg>
+              {%- endfor -%}
+              <span class="sph__rating-label">{{ rating_val }} | {{ rating_count }} + Reviews</span>
+            </div>
+          {%- endif -%}
         {%- endif -%}
       </div>
 
@@ -197,11 +212,18 @@
         <span>&#10003; {{ section.settings.trust_3 | default: '30-Day Guarantee' }}</span>
       </div>
 
-      <!-- Collapsible Description (unfold to check description) -->
-      <div class="sph__description-accordion">
-        <details class="sph-description__item">
+      {%- liquid
+        assign desc_open_desktop = section.settings.description_open_desktop
+        assign desc_open_mobile  = section.settings.description_open_mobile
+      -%}
+      <div class="sph__description-accordion"
+        data-desc-open-desktop="{{ desc_open_desktop }}"
+        data-desc-open-mobile="{{ desc_open_mobile }}">
+        <details
+          class="sph-description__item"
+          id="SphDescDetails">
           <summary class="sph-description__q">
-            <span>Description</span>
+            <span>{{ section.settings.description_label | default: 'Description' }}</span>
             <svg class="sph-description__chevron" width="16" height="16" viewBox="0 0 24 24"
               fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
               <polyline points="6 9 12 15 18 9"/>
@@ -216,6 +238,18 @@
           </div>
         </details>
       </div>
+      <script>
+      (function() {
+        var el = document.getElementById('SphDescDetails');
+        var wrap = el ? el.closest('[data-desc-open-desktop]') : null;
+        if (!el || !wrap) return;
+        var isMobile = window.innerWidth < 768;
+        var openDesktop = wrap.dataset.descOpenDesktop === 'true';
+        var openMobile  = wrap.dataset.descOpenMobile  === 'true';
+        if (isMobile && openMobile)  { el.setAttribute('open', ''); }
+        if (!isMobile && openDesktop) { el.setAttribute('open', ''); }
+      })();
+      </script>
 
     </div>
   </div>
@@ -364,6 +398,7 @@
   top: 88px; /* below sticky header */
 }
 .sph__media-main {
+  position: relative;
   border-radius: var(--radius-lg, 12px);
   overflow: hidden;
   aspect-ratio: 1;
@@ -374,6 +409,16 @@
   object-fit: cover;
   display: block;
   transition: opacity 0.25s ease;
+}
+.sph__img--hover {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+.sph__media-main:hover .sph__img--hover {
+  opacity: 1;
 }
 .sph__img-placeholder {
   width: 100%; height: 100%;
@@ -947,7 +992,11 @@
     { "type": "select", "id": "feat_3_icon",  "label": "Feature 3 icon", "options": [
       {"value":"water","label":"Water drops"},{"value":"leaf","label":"Leaf / lightweight"},{"value":"bag","label":"Bag"},{"value":"shield","label":"Shield"},{"value":"truck","label":"Truck"},{"value":"star","label":"Star"}
     ], "default": "bag" },
-    { "type": "header", "content": "Reviews & FAQ titles" },
+    { "type": "header", "content": "Description Accordion" },
+    { "type": "text",     "id": "description_label",        "label": "Description accordion label",   "default": "Description" },
+    { "type": "checkbox", "id": "description_open_desktop",  "label": "Open by default on desktop",     "default": true },
+    { "type": "checkbox", "id": "description_open_mobile",   "label": "Open by default on mobile",      "default": false },
+    { "type": "header", "content": "Reviews & FAQ" },
     { "type": "text", "id": "reviews_title", "label": "Reviews section title", "default": "Reviews" },
     { "type": "text", "id": "faq_title",     "label": "FAQ section title",     "default": "FAQ" }
   ],

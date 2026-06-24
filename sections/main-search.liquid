@@ -10,14 +10,14 @@
       {%- else -%}
         <div class="collection-grid">
           {%- for item in search.results -%}
-            <a href="{{ item.url }}" class="product-card">
-              {%- if item.featured_image -%}
-                <div class="product-card__img-wrap">
-                  <img src="{{ item.featured_image | image_url: width: 400 }}" alt="{{ item.title }}" width="400" height="400" loading="lazy">
-                </div>
-              {%- endif -%}
-              <p class="product-card__title">{{ item.title }}</p>
-            </a>
+            {%- if item.object_type == 'product' -%}
+              {%- render 'product-card', product: item, index: forloop.index0 -%}
+            {%- else -%}
+              <a href="{{ item.url }}" class="prod-card" style="padding: var(--sp-4); text-decoration: none; border: 1.5px solid var(--color-border); border-radius: var(--card-radius);">
+                <p class="prod-card__vendor" style="margin-bottom: 8px; font-size: var(--text-xs); color: var(--color-text-muted); text-transform: uppercase;">{{ item.object_type }}</p>
+                <h3 class="prod-card__title" style="font-size: var(--text-base); font-weight: 600; color: var(--color-text);">{{ item.title }}</h3>
+              </a>
+            {%- endif -%}
           {%- endfor -%}
         </div>
       {%- endif -%}

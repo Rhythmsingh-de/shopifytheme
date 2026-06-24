@@ -80,6 +80,13 @@
       {%- endif -%}
     {%- endif -%}
 
+    <div class="prod-card__price">
+      <span class="prod-card__price--current">{{ card_product.price | money }}</span>
+      {%- if card_product.compare_at_price > card_product.price -%}
+        <span class="prod-card__price--compare">{{ card_product.compare_at_price | money }}</span>
+      {%- endif -%}
+    </div>
+
     </div>
 
     {%- if settings.card_quick_add -%}

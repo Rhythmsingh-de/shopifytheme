@@ -115,6 +115,19 @@
 </nav>
 
 <style>
+.nav-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 750;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.nav-overlay.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
 .nav-drawer {
   position: fixed; top: 0; left: 0; bottom: 0;
   width: min(360px, 92vw);
@@ -126,7 +139,10 @@
   overflow: hidden;
   box-shadow: 8px 0 48px rgba(0,0,0,0.18);
 }
-.nav-drawer.open { transform: translateX(0); }
+.nav-drawer.open,
+.nav-drawer.is-open {
+  transform: translateX(0);
+}
 
 .nav-drawer__close-btn {
   width: 44px; height: 44px; border-radius: var(--radius-md);

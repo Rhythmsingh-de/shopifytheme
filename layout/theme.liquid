@@ -253,5 +253,114 @@
   <script src="{{ 'theme.js' | asset_url }}" defer></script>
 
   {{ content_for_footer }}
+
+  <div id="searchOverlay" class="search-overlay" aria-hidden="true"></div>
+  <div id="searchModal" class="search-modal" role="dialog" aria-modal="true" aria-label="Search" hidden>
+    <div class="search-modal__inner">
+      <form action="{{ routes.search_url }}" method="get" class="search-modal__form" role="search">
+        <input type="hidden" name="type" value="product">
+        <label for="SearchInput" class="visually-hidden">Search</label>
+        <input
+          type="search"
+          id="SearchInput"
+          name="q"
+          class="search-modal__input"
+          placeholder="Search products…"
+          autocomplete="off"
+          autocorrect="off"
+          spellcheck="false"
+          value="{{ search.terms | escape }}">
+        <button type="submit" class="search-modal__submit" aria-label="Submit search">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </button>
+        <button type="button" id="searchClose" class="search-modal__close" aria-label="Close search">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <style>
+  .search-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.45);
+    backdrop-filter: blur(4px);
+    z-index: 800;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+  .search-overlay.is-open { opacity: 1; pointer-events: auto; }
+  .search-modal {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 850;
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
+    box-shadow: 0 8px 40px rgba(0,0,0,0.12);
+    transform: translateY(-100%);
+    transition: transform 0.35s cubic-bezier(0.16,1,0.3,1);
+  }
+  .search-modal[hidden] { display: block !important; }
+  .search-modal.is-open { transform: translateY(0); }
+  .search-modal__inner { padding: 20px var(--sp-5, 20px); max-width: 760px; margin: 0 auto; }
+  .search-modal__form {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--color-surface);
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-full, 999px);
+    padding: 10px 16px;
+    transition: border-color 0.2s;
+  }
+  .search-modal__form:focus-within { border-color: var(--color-primary); }
+  .search-modal__input {
+    flex: 1; background: none; border: none; outline: none;
+    font-size: var(--text-base, 1rem);
+    color: var(--color-text);
+    font-family: var(--font-body);
+  }
+  .search-modal__input::placeholder { color: var(--color-text-muted); }
+  .search-modal__submit, .search-modal__close {
+    display: flex; align-items: center; justify-content: center;
+    width: 36px; height: 36px; flex-shrink: 0;
+    border-radius: var(--radius-full, 999px);
+    color: var(--color-text-muted);
+    transition: color 0.2s, background 0.2s;
+    cursor: pointer; background: none; border: none;
+  }
+  .search-modal__submit:hover { color: var(--color-primary); }
+  .search-modal__close:hover { color: var(--color-text); background: var(--color-surface-2); }
+  </style>
+
+  <script>
+  (function() {
+    var modal = document.getElementById('searchModal');
+    var overlay = document.getElementById('searchOverlay');
+    var closeBtn = document.getElementById('searchClose');
+    if (!modal) return;
+    function openSearch() {
+      modal.removeAttribute('hidden');
+      requestAnimationFrame(function() {
+        modal.classList.add('is-open');
+        overlay.classList.add('is-open');
+        var inp = modal.querySelector('input[type="search"]');
+        if (inp) setTimeout(function(){ inp.focus(); }, 60);
+      });
+    }
+    function closeSearch() {
+      modal.classList.remove('is-open');
+      overlay.classList.remove('is-open');
+      setTimeout(function(){ modal.setAttribute('hidden', ''); }, 350);
+    }
+    document.addEventListener('click', function(e) {
+      if (e.target.closest('.search-toggle, [data-search-toggle]')) { e.preventDefault(); openSearch(); }
+    });
+    if (overlay) overlay.addEventListener('click', closeSearch);
+    if (closeBtn) closeBtn.addEventListener('click', closeSearch);
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeSearch();
+    });
+  })();
+  </script>
+
 </body>
 </html>

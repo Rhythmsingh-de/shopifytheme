@@ -39,9 +39,7 @@
     var sub=btn.nextElementSibling;
     if(sub)sub.classList.toggle('open',!open);
   }
-  on(qs('#mobileNavTrigger'),'click',openNav);
-  on(qs('#mobileNavClose'),'click',closeNav);
-  on(qs('#nav-overlay'),'click',closeNav);
+  // Event listeners are bound inside DOMContentLoaded handler to guarantee elements exist.
 
   /* ─────────── HEADER SCROLL ─────────── */
   var hdr=qs('#site-header');
@@ -475,6 +473,11 @@
   document.addEventListener('DOMContentLoaded',function(){
     _updateCartCount();
     if(document.cookie.indexOf('blc_cookie_consent=accepted')>-1)_activateTracking();
+
+    // Bind mobile navigation drawer elements
+    on(qs('#mobileNavTrigger'),'click',openNav);
+    on(qs('#mobileNavClose'),'click',closeNav);
+    on(qs('#nav-overlay'),'click',closeNav);
   });
 
   /* ─────────── GLOBAL BLC NAMESPACE ─────────── */

@@ -1,4 +1,92 @@
-{%- if settings.gdpr_cookie_banner -%}
+{%- liquid
+  assign tracking_mode = settings.tracking_mode | default: 'consent'
+-%}
+
+{%- comment -%}
+  Tracking mode override — controlled from theme settings:
+  Compliance & Tracking > Tracking mode
+  Values: consent (default) | always_on | always_off
+{%- endcomment -%}
+
+<script>
+window.BLC = window.BLC || {};
+window.BLC.trackingMode = {{ tracking_mode | json }};
+
+(function() {
+  var mode = window.BLC.trackingMode;
+
+  function readConsent() {
+    var cookies = document.cookie.split(';');
+    for (var i = 0; i < cookies.length; i++) {
+      var c = cookies[i].trim();
+      if (c.indexOf('blc_cookie_consent=') === 0) return c.split('=')[1];
+    }
+    return null;
+  }
+
+  function writeConsent(value) {
+    var d = new Date();
+    d.setDate(d.getDate() + 365);
+    var exp = '; expires=' + d.toUTCString() + '; path=/; SameSite=Lax';
+    document.cookie = 'blc_cookie_consent=' + value + exp;
+    document.cookie = 'blc_cookie=' + (value === 'accepted' ? '1' : '0') + exp;
+  }
+
+  function setShopifyConsent(granted) {
+    if (window.Shopify && window.Shopify.customerPrivacy) {
+      try {
+        window.Shopify.customerPrivacy.setTrackingConsent(granted, function() {});
+      } catch (e) {}
+    }
+  }
+
+  function resolveConsent() {
+    if (mode === 'always_on')  return 'accepted';
+    if (mode === 'always_off') return 'declined';
+    return readConsent(); /* null = not yet decided */
+  }
+
+  window.BLC.isTrackingAllowed = function() {
+    var c = resolveConsent();
+    return c === 'accepted';
+  };
+
+  window.BLC.acceptCookies = function() {
+    writeConsent('accepted');
+    setShopifyConsent(true);
+    if (window.dataLayer) window.dataLayer.push({ event: 'cookie_consent', consent_choice: 'accepted', consent_timestamp: new Date().toISOString() });
+    var el = document.getElementById('cookie-consent');
+    if (el) hideBanner(el);
+  };
+
+  window.BLC.declineCookies = function() {
+    writeConsent('declined');
+    setShopifyConsent(false);
+    if (window.dataLayer) window.dataLayer.push({ event: 'cookie_consent', consent_choice: 'declined', consent_timestamp: new Date().toISOString() });
+    var el = document.getElementById('cookie-consent');
+    if (el) hideBanner(el);
+  };
+
+  function hideBanner(el) {
+    el.classList.add('is-hidden');
+    setTimeout(function() { el.setAttribute('hidden', ''); }, 380);
+  }
+
+  /* Emit resolved consent to dataLayer immediately */
+  var resolved = resolveConsent();
+  if (resolved === 'accepted') {
+    setShopifyConsent(true);
+  } else if (resolved === 'declined') {
+    setShopifyConsent(false);
+  }
+
+  /* Expose for GTM/datalayer.js to gate events */
+  window.BLC.consentResolved = resolved;
+
+})();
+</script>
+
+{%- if settings.gdpr_cookie_banner and tracking_mode == 'consent' -%}
 <div id="cookie-consent" class="cookie-consent" role="dialog" aria-modal="true" aria-label="Cookie consent" aria-live="polite" hidden>
   <div class="cookie-consent__inner">
     <div class="cookie-consent__text">
@@ -49,93 +137,33 @@
 </style>
 
 <script>
-(function () {
-  var EXPIRES = 365; /* days */
-
-  function readConsent() {
-    var cookies = document.cookie.split(';');
-    for (var i = 0; i < cookies.length; i++) {
-      var c = cookies[i].trim();
-      if (c.startsWith('blc_cookie_consent=')) return c.split('=')[1];
-    }
-    return null;
-  }
-
-  function writeConsent(value) {
-    var d = new Date();
-    d.setDate(d.getDate() + EXPIRES);
-    var expires = '; expires=' + d.toUTCString() + '; path=/; SameSite=Lax';
-    document.cookie = 'blc_cookie_consent=' + value + expires;
-    document.cookie = 'blc_cookie=' + (value === 'accepted' ? '1' : '0') + expires;
-
-    if (window.Shopify && window.Shopify.customerPrivacy) {
-      try {
-        window.Shopify.customerPrivacy.setTrackingConsent(value === 'accepted', function() {});
-      } catch (e) {
-        console.warn('[BLC Cookie] Shopify Customer Privacy API error:', e);
-      }
-    }
-  }
-
-  function hideBanner(el) {
-    el.classList.add('is-hidden');
-    setTimeout(function () { el.setAttribute('hidden', ''); }, 380);
-  }
-
-  function pushConsentEvent(choice) {
-    if (window.dataLayer) {
-      window.dataLayer.push({
-        event: 'cookie_consent',
-        consent_choice: choice,
-        consent_timestamp: new Date().toISOString()
-      });
-    }
-  }
-
+(function() {
   var el = document.getElementById('cookie-consent');
   if (!el) return;
 
-  var existing = readConsent();
+  /* Already resolved via override or prior consent — remove banner */
+  var existing = (document.cookie.split(';').map(function(c){return c.trim();}).filter(function(c){return c.indexOf('blc_cookie_consent=')===0;})[0] || '').split('=')[1];
   if (existing === 'accepted' || existing === 'declined') {
     el.remove();
     return;
   }
 
-  setTimeout(function () {
+  /* Show after short delay */
+  setTimeout(function() {
     el.removeAttribute('hidden');
     void el.offsetWidth;
-  }, 800);
+  }, 900);
 
-  document.getElementById('cookie-accept').addEventListener('click', function () {
-    if (window.BLC && typeof window.BLC.acceptCookies === 'function') {
-      window.BLC.acceptCookies();
-    } else {
-      writeConsent('accepted');
-      pushConsentEvent('accepted');
-      hideBanner(el);
-    }
+  document.getElementById('cookie-accept').addEventListener('click', function() {
+    window.BLC.acceptCookies();
   });
 
-  document.getElementById('cookie-decline').addEventListener('click', function () {
-    if (window.BLC && typeof window.BLC.declineCookies === 'function') {
-      window.BLC.declineCookies();
-    } else {
-      writeConsent('declined');
-      pushConsentEvent('declined');
-      hideBanner(el);
-    }
+  document.getElementById('cookie-decline').addEventListener('click', function() {
+    window.BLC.declineCookies();
   });
 
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && !el.hasAttribute('hidden')) {
-      if (window.BLC && typeof window.BLC.declineCookies === 'function') {
-        window.BLC.declineCookies();
-      } else {
-        writeConsent('declined');
-        pushConsentEvent('declined');
-        hideBanner(el);
-      }
-    }
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && !el.hasAttribute('hidden')) window.BLC.declineCookies();
   });
 })();
 </script>

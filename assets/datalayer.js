@@ -3,12 +3,25 @@
  * Events: page_view, view_item_list, select_item,
  *         add_to_cart, remove_from_cart, begin_checkout,
  *         cart_update, search, scroll_depth, user_data
+ * Gated by window.BLC.isTrackingAllowed() — set in cookie-consent.liquid
  */
 (function () {
   'use strict';
   window.dataLayer = window.dataLayer || [];
 
-  function push(obj) { window.dataLayer.push(obj); }
+  /* Tracking gate — respects theme setting: Compliance > Tracking mode */
+  function trackingAllowed() {
+    if (window.BLC && typeof window.BLC.isTrackingAllowed === 'function') {
+      return window.BLC.isTrackingAllowed();
+    }
+    /* Fallback: check cookie directly if BLC not yet loaded */
+    return document.cookie.indexOf('blc_cookie_consent=accepted') !== -1;
+  }
+
+  function push(obj) {
+    if (!trackingAllowed()) return;
+    window.dataLayer.push(obj);
+  }
   function money(cents) { return parseFloat((Number(cents) / 100).toFixed(2)); }
 
   function mapItem(p, idx) {

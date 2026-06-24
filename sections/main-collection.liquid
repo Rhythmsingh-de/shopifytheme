@@ -3,13 +3,7 @@
     <h1 class="page-title">{{ collection.title }}</h1>
     <div class="collection-grid">
       {%- for product in collection.products -%}
-        <a href="{{ product.url }}" class="product-card">
-          <div class="product-card__img-wrap">
-            <img src="{{ product.featured_image | image_url: width: 600 }}" alt="{{ product.title }}" width="600" height="600" loading="lazy">
-          </div>
-          <p class="product-card__title">{{ product.title }}</p>
-          <p class="product-card__price">{{ product.price | money }}</p>
-        </a>
+        {%- render 'product-card', product: product, index: forloop.index0 -%}
       {%- endfor -%}
     </div>
   </div>

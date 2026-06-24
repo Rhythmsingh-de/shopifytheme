@@ -2,7 +2,7 @@
   {
     "name": "theme_info",
     "theme_name": "BodyLuxCare",
-    "theme_version": "2.0.2",
+    "theme_version": "2.0.3",
     "theme_author": "Rhythmsingh",
     "theme_documentation_url": "https://github.com/Rhythmsingh-de/shopifytheme",
     "theme_support_url": "https://github.com/Rhythmsingh-de/shopifytheme"
@@ -112,19 +112,32 @@
   {
     "name": "Compliance & Tracking",
     "settings": [
-      { "type": "checkbox",  "id": "gdpr_cookie_banner", "label": "Show cookie consent banner", "default": true },
+      { "type": "header", "content": "Cookie Consent Banner" },
+      { "type": "checkbox", "id": "gdpr_cookie_banner", "label": "Show cookie consent banner", "default": true },
       { "type": "textarea", "id": "cookie_text",
         "label": "Cookie banner body text",
         "default": "We use cookies to enhance your browsing experience, serve personalised content and analyse traffic. By clicking Accept you consent to our use of cookies." },
-      { "type": "url",  "id": "privacy_policy_url",        "label": "Privacy policy page URL" },
-      { "type": "text", "id": "facebook_pixel_id",          "label": "Facebook Pixel ID",
+      { "type": "url", "id": "privacy_policy_url", "label": "Privacy policy page URL" },
+      { "type": "header", "content": "Tracking Override" },
+      { "type": "select", "id": "tracking_mode",
+        "label": "Tracking mode",
+        "info": "Controls whether analytics/pixels fire regardless of cookie consent. 'Respect user choice' is GDPR-safe default.",
+        "options": [
+          { "value": "consent", "label": "Respect user choice (GDPR safe — recommended)" },
+          { "value": "always_on", "label": "Always ON — fire tracking regardless of consent" },
+          { "value": "always_off", "label": "Always OFF — block all tracking (development/testing)" }
+        ],
+        "default": "consent" },
+      { "type": "paragraph", "content": "⚠️ 'Always ON' may violate GDPR/CCPA if no explicit consent is collected. Only use if you have a separate consent solution or operate outside these jurisdictions." },
+      { "type": "header", "content": "Analytics & Pixels" },
+      { "type": "text", "id": "facebook_pixel_id", "label": "Facebook Pixel ID",
         "info": "Paste your Pixel ID. The theme writes it to dataLayer; activate via GTM." },
-      { "type": "text", "id": "tiktok_pixel_id",            "label": "TikTok Pixel ID" },
-      { "type": "text", "id": "klaviyo_company_id",         "label": "Klaviyo Company ID",
-        "info": "Used for back-in-stock subscriptions. Find it in your Klaviyo account settings." },
-      { "type": "text", "id": "gtm_container_id",           "label": "Google Tag Manager container ID",
+      { "type": "text", "id": "tiktok_pixel_id", "label": "TikTok Pixel ID" },
+      { "type": "text", "id": "klaviyo_company_id", "label": "Klaviyo Company ID",
+        "info": "Used for back-in-stock subscriptions." },
+      { "type": "text", "id": "gtm_container_id", "label": "Google Tag Manager container ID",
         "info": "Example: GTM-XXXXXXX" },
-      { "type": "text", "id": "google_site_verification",   "label": "Google Search Console verification code" }
+      { "type": "text", "id": "google_site_verification", "label": "Google Search Console verification code" }
     ]
   },
   {
