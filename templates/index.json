@@ -22,7 +22,7 @@
       "type": "hero-bombas",
       "name": "Hero Banner",
       "settings": {
-        "image": "shopify://shop_images/BB8CFADB6715ED145CC7F034A989E676.jpg",
+        "image": "shopify://shop_images/BB8CFADB6715ED145CC7F034A989E676.png",
         "overlay_opacity": 0,
         "text_dark": false,
         "eyebrow": "New Collection · Summer 2025",
@@ -166,6 +166,7 @@
     "sticky_atc": {
       "type": "sp-sticky-atc",
       "settings": {
+        "product": "",
         "label": "Add to Cart — Order Now"
       }
     }
