@@ -9,7 +9,7 @@
  */
 {
   "current": {
-    "gdpr_cookie_banner": true,
+    "gdpr_cookie_banner": false,
     "custom_css": "",
     "accent_color": "#ff3c00",
     "text_color": "#111111",
