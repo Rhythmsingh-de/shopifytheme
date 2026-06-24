@@ -10,37 +10,11 @@
         <a href="{{ section.settings.cta_url }}" class="btn btn-outline btn-sm">{{ section.settings.cta_label }}</a>
       {% endif %}
     </div>
-    <div class="trending-strip__scroll" style="margin-top:28px">
+    <div class="trending-strip__scroll product-grid product-grid--4" style="margin-top:28px">
       {% assign coll = collections[section.settings.collection] %}
       {% if coll != blank %}
         {% for product in coll.products limit: 4 %}
-          <article class="prod-card" data-product-id="{{ product.id }}" data-product-title="{{ product.title | escape }}" data-product-type="{{ product.type | escape }}" data-price="{{ product.price | divided_by: 100.0 }}">
-            <a href="{{ product.url }}">
-              <div class="prod-card__media">
-                {% if product.featured_image %}
-                  {{ product.featured_image | image_url: width: 600 | image_tag:
-                     loading: 'lazy', widths: '300,450,600',
-                     sizes: '(max-width:640px) 50vw,280px',
-                     alt: product.title }}
-                {% else %}
-                  <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&q=75&auto=format&fit=crop"
-                       alt="{{ product.title }}" width="300" height="375" loading="lazy">
-                {% endif %}
-                <span class="prod-card__badge badge-best">Trending</span>
-              </div>
-              <div class="prod-card__meta">{{ product.type }}</div>
-              <div class="prod-card__name">{{ product.title }}</div>
-              <div class="prod-card__price-row">
-                <span class="prod-card__price">{{ product.price | money }}</span>
-                {% if product.compare_at_price > product.price %}
-                  <span class="prod-card__was">{{ product.compare_at_price | money }}</span>
-                {% endif %}
-              </div>
-            </a>
-            <button class="atc-btn" data-variant="{{ product.first_available_variant.id }}" data-product="{{ product.handle }}" aria-label="Add {{ product.title }} to cart">
-              Add to Cart
-            </button>
-          </article>
+          {%- render 'product-card', product: product, index: forloop.index0 -%}
         {% else %}
           <p style="color:#888;font-size:14px;grid-column:1/-1">Select a collection in theme editor.</p>
         {% endfor %}

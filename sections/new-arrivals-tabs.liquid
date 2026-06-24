@@ -38,52 +38,13 @@
            aria-labelledby="tab-btn-{{ block.id }}">
         {% assign coll = collections[block.settings.collection] %}
         {% if coll != blank %}
-          {% for product in coll.products limit: section.settings.products_per_tab %}
-            {% assign product_seconds = product.created_at | date: '%s' %}
-            <article class="prod-card" data-product-id="{{ product.id }}" data-product-title="{{ product.title | escape }}" data-product-type="{{ product.type | escape }}" data-price="{{ product.price | divided_by: 100.0 }}">
-              <a href="{{ product.url }}">
-                <div class="prod-card__media">
-                  {% if product.featured_image %}
-                    {{ product.featured_image | image_url: width: 600 | image_tag:
-                       loading: 'lazy', widths: '300,450,600',
-                       sizes: '(max-width:640px) 50vw,(max-width:1024px) 25vw,280px',
-                       alt: product.title }}
-                  {% else %}
-                    <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=600&q=75&auto=format&fit=crop"
-                         alt="{{ product.title }}" width="300" height="375" loading="lazy">
-                  {% endif %}
-                  {% if product.available == false %}
-                    <span class="prod-card__badge badge-sale">Sold Out</span>
-                  {% elsif product.compare_at_price > product.price %}
-                    <span class="prod-card__badge badge-sale">Sale</span>
-                  {% elsif product_seconds > cutoff_seconds %}
-                    <span class="prod-card__badge badge-new">New</span>
-                  {% endif %}
-                </div>
-                <div class="prod-card__swatches">
-                  {% for variant in product.variants limit: 5 %}
-                    {% if variant.option1 contains '#' or variant.option1 contains 'color' or variant.option1 contains 'Color' %}
-                      <span class="swatch{% if forloop.first %} active{% endif %}" title="{{ variant.option1 }}"></span>
-                    {% endif %}
-                  {% endfor %}
-                </div>
-                <div class="prod-card__meta">{{ product.type }}</div>
-                <div class="prod-card__name">{{ product.title }}</div>
-                <div class="prod-card__price-row">
-                  <span class="prod-card__price">{{ product.price | money }}</span>
-                  {% if product.compare_at_price > product.price %}
-                    <span class="prod-card__was">{{ product.compare_at_price | money }}</span>
-                    <span class="prod-card__save">Save {{ product.compare_at_price | minus: product.price | money }}</span>
-                  {% endif %}
-                </div>
-              </a>
-              <button class="atc-btn" data-variant="{{ product.first_available_variant.id }}" data-product="{{ product.handle }}" aria-label="Add {{ product.title }} to cart">
-                Add to Cart
-              </button>
-            </article>
-          {% else %}
-            <p style="color:#888;font-size:14px;grid-column:1/-1;padding:24px 0">No products in this collection yet.</p>
-          {% endfor %}
+          <div class="product-grid product-grid--4">
+            {% for product in coll.products limit: section.settings.products_per_tab %}
+              {%- render 'product-card', product: product, index: forloop.index0 -%}
+            {% else %}
+              <p style="color:#888;font-size:14px;grid-column:1/-1;padding:24px 0">No products in this collection yet.</p>
+            {% endfor %}
+          </div>
         {% else %}
           <p style="color:#888;font-size:14px;grid-column:1/-1;padding:24px 0">Select a collection in theme editor.</p>
         {% endif %}

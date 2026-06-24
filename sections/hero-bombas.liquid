@@ -2,22 +2,37 @@
 {%- assign overlay_opacity = section.settings.overlay_opacity | divided_by: 100.0 -%}
 <section class="hero-bombas{% if section.settings.text_dark %} hero-bombas--light{% endif %}">
   {% if section.settings.image != blank %}
+    {%- assign desktop_class = 'hero-bombas__img' -%}
+    {%- if section.settings.mobile_image != blank -%}
+      {%- assign desktop_class = 'hero-bombas__img hero-bombas__img--desktop' -%}
+    {%- endif -%}
     {{ section.settings.image | image_url: width: 2000 | image_tag:
        loading: 'eager',
        fetchpriority: 'high',
        widths: '750,1100,1500,2000',
        sizes: '100vw',
        alt: section.settings.heading,
-       class: 'hero-bombas__img' }}
+       class: desktop_class }}
+    {% if section.settings.mobile_image != blank %}
+      {{ section.settings.mobile_image | image_url: width: 1000 | image_tag:
+         loading: 'eager',
+         fetchpriority: 'high',
+         widths: '375,550,750,1000',
+         sizes: '100vw',
+         alt: section.settings.heading,
+         class: 'hero-bombas__img hero-bombas__img--mobile' }}
+    {% endif %}
   {% else %}
     <img class="hero-bombas__img"
          src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=2000&q=80&auto=format&fit=crop"
          alt="Fashion hero" width="2000" height="900" loading="eager">
   {% endif %}
 
-  <div class="hero-bombas__overlay"
-       style="background:linear-gradient(105deg, rgba(0,0,0,{{ overlay_opacity }}) 0%, rgba(0,0,0,{{ overlay_opacity | times: 0.3 }}) 100%)">
-  </div>
+  {%- if section.settings.show_overlay -%}
+    <div class="hero-bombas__overlay"
+         style="background:linear-gradient(105deg, rgba(0,0,0,{{ overlay_opacity }}) 0%, rgba(0,0,0,{{ overlay_opacity | times: 0.3 }}) 100%)">
+    </div>
+  {%- endif -%}
 
   <div class="page-w hero-bombas__content">
     <div class="hero-bombas__inner">
@@ -35,18 +50,20 @@
         <p class="hero-bombas__sub">{{ section.settings.subheading }}</p>
       {% endif %}
 
-      <div class="hero-bombas__ctas">
-        {% if section.settings.cta1_label != blank %}
-          <a href="{{ section.settings.cta1_url }}" class="btn btn-white btn-lg">
-            {{ section.settings.cta1_label }}
-          </a>
-        {% endif %}
-        {% if section.settings.cta2_label != blank %}
-          <a href="{{ section.settings.cta2_url }}" class="btn btn-outline-white btn-lg">
-            {{ section.settings.cta2_label }}
-          </a>
-        {% endif %}
-      </div>
+      {%- if section.settings.show_buttons -%}
+        <div class="hero-bombas__ctas">
+          {% if section.settings.cta1_label != blank %}
+            <a href="{{ section.settings.cta1_url }}" class="btn btn-white btn-lg">
+              {{ section.settings.cta1_label }}
+            </a>
+          {% endif %}
+          {% if section.settings.cta2_label != blank %}
+            <a href="{{ section.settings.cta2_url }}" class="btn btn-outline-white btn-lg">
+              {{ section.settings.cta2_label }}
+            </a>
+          {% endif %}
+        </div>
+      {%- endif -%}
     </div>
   </div>
 </section>
@@ -56,6 +73,9 @@
   "name": "Hero Banner",
   "settings": [
     {"type":"image_picker","id":"image","label":"Background image"},
+    {"type":"image_picker","id":"mobile_image","label":"Mobile background image (optional)"},
+    {"type":"checkbox","id":"show_overlay","label":"Show background overlay","default":true},
+    {"type":"checkbox","id":"show_buttons","label":"Show CTA buttons","default":true},
     {"type":"range","id":"overlay_opacity","min":0,"max":80,"step":5,"unit":"%","label":"Dark overlay","default":45},
     {"type":"checkbox","id":"text_dark","label":"Use dark text (light image)","default":false},
     {"type":"text","id":"eyebrow","label":"Eyebrow label","default":"New Collection · Summer 2025"},

@@ -9,8 +9,18 @@
         alt="{{ section.settings.bg_image.alt | default: 'Hero background' | escape }}"
         width="1800" height="900"
         loading="eager" decoding="async"
-        class="blc-hero__bg-img">
-      <div class="blc-hero__overlay" style="--overlay-opacity:{{ section.settings.overlay_opacity | default: 0.5 }}"></div>
+        class="blc-hero__bg-img{% if section.settings.mobile_bg_image != blank %} blc-hero__bg-img--desktop{% endif %}">
+      {%- if section.settings.mobile_bg_image != blank -%}
+        <img
+          src="{{ section.settings.mobile_bg_image | image_url: width: 800 }}"
+          alt="{{ section.settings.mobile_bg_image.alt | default: 'Hero background mobile' | escape }}"
+          width="800" height="1000"
+          loading="eager" decoding="async"
+          class="blc-hero__bg-img blc-hero__bg-img--mobile">
+      {%- endif -%}
+      {%- if section.settings.show_overlay -%}
+        <div class="blc-hero__overlay" style="--overlay-opacity:{{ section.settings.overlay_opacity | default: 0.5 }}"></div>
+      {%- endif -%}
     </div>
   {%- else -%}
     <div class="blc-hero__bg blc-hero__bg--gradient"></div>
@@ -29,14 +39,16 @@
         <p class="blc-hero__sub">{{ section.settings.subheading }}</p>
       {%- endif -%}
 
-      <div class="blc-hero__btns">
-        {%- if section.settings.cta1_label != blank -%}
-          <a href="{{ section.settings.cta1_link | default: '/collections/all' }}" class="btn btn--hero-primary">{{ section.settings.cta1_label }}</a>
-        {%- endif -%}
-        {%- if section.settings.cta2_label != blank -%}
-          <a href="{{ section.settings.cta2_link | default: '/collections/all' }}" class="btn btn--hero-ghost">{{ section.settings.cta2_label }}</a>
-        {%- endif -%}
-      </div>
+      {%- if section.settings.show_buttons -%}
+        <div class="blc-hero__btns">
+          {%- if section.settings.cta1_label != blank -%}
+            <a href="{{ section.settings.cta1_link | default: '/collections/all' }}" class="btn btn--hero-primary">{{ section.settings.cta1_label }}</a>
+          {%- endif -%}
+          {%- if section.settings.cta2_label != blank -%}
+            <a href="{{ section.settings.cta2_link | default: '/collections/all' }}" class="btn btn--hero-ghost">{{ section.settings.cta2_label }}</a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
 
       {%- if section.settings.trust_text != blank -%}
         <p class="blc-hero__trust">{{ section.settings.trust_text }}</p>
@@ -66,6 +78,11 @@
   width: 100%; height: 100%;
   object-fit: cover;
   object-position: center;
+}
+.blc-hero__bg-img--mobile { display: none; }
+@media (max-width: 768px) {
+  .blc-hero__bg-img--desktop { display: none; }
+  .blc-hero__bg-img--mobile { display: block; }
 }
 .blc-hero__bg--gradient {
   background: linear-gradient(135deg, #0d2318 0%, #1a4a2e 50%, #0d2318 100%);
@@ -200,6 +217,7 @@
       { "value": "dark",  "label": "Dark (text on image)" },
       { "value": "light", "label": "Light (text on white)" }
     ], "default": "dark" },
+    { "type": "checkbox", "id": "show_buttons", "label": "Show CTA buttons", "default": true },
     { "type": "header", "content": "Primary Button" },
     { "type": "text", "id": "cta1_label", "label": "Button 1 label", "default": "Shop Now" },
     { "type": "url",  "id": "cta1_link",  "label": "Button 1 link" },
@@ -210,6 +228,8 @@
     { "type": "url",  "id": "cta2_link",  "label": "Button 2 link" },
     { "type": "header", "content": "Background" },
     { "type": "image_picker", "id": "bg_image", "label": "Background image" },
+    { "type": "image_picker", "id": "mobile_bg_image", "label": "Mobile background image (optional)" },
+    { "type": "checkbox", "id": "show_overlay", "label": "Show background overlay", "default": true },
     { "type": "range", "id": "overlay_opacity", "label": "Image overlay opacity", "min": 0, "max": 9, "step": 1, "default": 5, "unit": "/10" },
     { "type": "color", "id": "bg_color", "label": "Background color (no image)", "default": "#0d2318" },
     { "type": "header", "content": "Typography Colors" },

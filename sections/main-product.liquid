@@ -75,11 +75,24 @@
           </div>
         {%- endif -%}
 
-        <div class="product-info__price">
-          <span class="product-info__price-now{% if is_sale %} is-sale{% endif %}">{{ price | money }}</span>
-          {%- if is_sale -%}
-            <span class="product-info__price-was">{{ compare_price | money }}</span>
+        <div class="product-info__price-row" style="display:flex; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:var(--space-3);">
+          <div class="product-info__price">
+            <span class="product-info__price-now{% if is_sale %} is-sale{% endif %}">{{ price | money }}</span>
+            {%- if is_sale -%}
+              <span class="product-info__price-was">{{ compare_price | money }}</span>
+            {%- endif -%}
+          </div>
+
+          {%- if is_sale and settings.card_show_sale_badge and section.settings.show_sale_badge -%}
             <span class="badge badge--sale">Save {{ saving_pct }}%</span>
+          {%- endif -%}
+
+          {%- if settings.card_show_new_badge -%}
+            {%- if product.tags contains 'new' -%}
+              <span class="badge badge--new" style="background:var(--color-primary); color:var(--color-primary-text);">New</span>
+            {%- elsif product.tags contains 'bestseller' -%}
+              <span class="badge badge--bestseller" style="background:var(--color-gold); color:#fff;">Bestseller</span>
+            {%- endif -%}
           {%- endif -%}
         </div>
 
@@ -170,7 +183,7 @@
         {%- if section.settings.benefit_1 != blank or section.settings.benefit_2 != blank or section.settings.benefit_3 != blank or section.settings.benefit_4 != blank -%}
           {%- assign has_benefits = true -%}
         {%- endif -%}
-        {%- if has_benefits -%}
+        {%- if section.settings.show_benefits and has_benefits -%}
           <ul class="product-benefits" aria-label="Product benefits">
             {%- for i in (1..4) -%}
               {%- assign key = 'benefit_' | append: i -%}
@@ -188,29 +201,31 @@
         {%- endif -%}
 
         <!-- Trust icons row -->
-        <div class="product-trust" aria-label="Guarantees">
-          <div class="product-trust-item">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-            <div>
-              <strong>{{ section.settings.trust_1_title | default: settings.trust_returns_title | default: '30-Day Returns' }}</strong>
-              <span>{{ section.settings.trust_1_sub | default: settings.trust_returns_sub | default: 'Easy returns' }}</span>
+        {%- if section.settings.show_trust -%}
+          <div class="product-trust" aria-label="Guarantees">
+            <div class="product-trust-item">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+              <div>
+                <strong>{{ section.settings.trust_1_title | default: settings.trust_returns_title | default: '30-Day Returns' }}</strong>
+                <span>{{ section.settings.trust_1_sub | default: settings.trust_returns_sub | default: 'Easy returns' }}</span>
+              </div>
+            </div>
+            <div class="product-trust-item">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M1 3h15v13H1zM16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+              <div>
+                <strong>{{ section.settings.trust_2_title | default: settings.trust_shipping_title | default: 'Fast Shipping' }}</strong>
+                <span>{{ section.settings.trust_2_sub | default: settings.trust_shipping_sub | default: '7–10 days' }}</span>
+              </div>
+            </div>
+            <div class="product-trust-item">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+              <div>
+                <strong>{{ section.settings.trust_3_title | default: settings.trust_secure_title | default: 'Secure Payment' }}</strong>
+                <span>{{ section.settings.trust_3_sub | default: settings.trust_secure_sub | default: 'SSL protected' }}</span>
+              </div>
             </div>
           </div>
-          <div class="product-trust-item">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M1 3h15v13H1zM16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
-            <div>
-              <strong>{{ section.settings.trust_2_title | default: settings.trust_shipping_title | default: 'Fast Shipping' }}</strong>
-              <span>{{ section.settings.trust_2_sub | default: settings.trust_shipping_sub | default: '7–10 days' }}</span>
-            </div>
-          </div>
-          <div class="product-trust-item">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
-            <div>
-              <strong>{{ section.settings.trust_3_title | default: settings.trust_secure_title | default: 'Secure Payment' }}</strong>
-              <span>{{ section.settings.trust_3_sub | default: settings.trust_secure_sub | default: 'SSL protected' }}</span>
-            </div>
-          </div>
-        </div>
+        {%- endif -%}
 
         <!-- Payment icons -->
         {%- if section.settings.show_payment_icons -%}
@@ -598,6 +613,9 @@
       { "value": "center", "label": "Center" },
       { "value": "right",  "label": "Right" }
     ], "default": "left" },
+    { "type": "checkbox", "id": "show_sale_badge", "label": "Show sale badge", "default": true },
+    { "type": "checkbox", "id": "show_benefits", "label": "Show benefits checklist", "default": true },
+    { "type": "checkbox", "id": "show_trust", "label": "Show trust badges", "default": true },
     { "type": "header", "content": "Checkout Buttons" },
     { "type": "text", "id": "atc_label", "label": "Add to Cart button text", "default": "Add to Cart" },
     { "type": "text", "id": "buy_label", "label": "Buy It Now button text", "default": "Buy It Now" },

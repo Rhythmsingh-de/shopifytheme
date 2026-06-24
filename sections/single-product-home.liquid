@@ -45,7 +45,7 @@
           <div class="sph__badges">
             {%- if compare > price -%}
               {%- assign savings = compare | minus: price | times: 100 | divided_by: compare -%}
-              {%- if settings.card_show_sale_badge -%}
+              {%- if settings.card_show_sale_badge and section.settings.show_sale_badge -%}
                 <span class="badge badge--sale">-{{ savings }}%</span>
               {%- endif -%}
             {%- elsif settings.card_show_new_badge -%}
@@ -110,7 +110,7 @@
         </span>
         {%- if is_sale -%}
           <span class="sph__price-was">{{ compare | money }}</span>
-          {%- if settings.card_show_sale_badge -%}
+          {%- if settings.card_show_sale_badge and section.settings.show_sale_badge -%}
             <span class="sph__badge">Save {{ save_pct }}%</span>
           {%- endif -%}
         {%- endif -%}
@@ -220,13 +220,15 @@
         {%- endif -%}
       </div>
 
-      <div class="sph__trust" aria-label="Guarantees">
-        <span>&#10003; {{ section.settings.trust_1 | default: 'Free Shipping' }}</span>
-        <span class="sph__trust-sep">|</span>
-        <span>&#10003; {{ section.settings.trust_2 | default: 'Secure Checkout' }}</span>
-        <span class="sph__trust-sep">|</span>
-        <span>&#10003; {{ section.settings.trust_3 | default: '30-Day Guarantee' }}</span>
-      </div>
+      {%- if section.settings.show_trust_strip -%}
+        <div class="sph__trust" aria-label="Guarantees">
+          <span>&#10003; {{ section.settings.trust_1 | default: 'Free Shipping' }}</span>
+          <span class="sph__trust-sep">|</span>
+          <span>&#10003; {{ section.settings.trust_2 | default: 'Secure Checkout' }}</span>
+          <span class="sph__trust-sep">|</span>
+          <span>&#10003; {{ section.settings.trust_3 | default: '30-Day Guarantee' }}</span>
+        </div>
+      {%- endif -%}
 
       {%- liquid
         assign desc_open_desktop = section.settings.description_open_desktop
@@ -1076,7 +1078,9 @@
     { "type": "text",    "id": "buy_label",  "label": "Buy Now label",     "default": "Buy Now" },
     { "type": "checkbox", "id": "show_demo_rating", "label": "Show demo star rating (if no reviews app)", "default": true },
     { "type": "checkbox", "id": "show_payment_icons", "label": "Show accepted payment icons", "default": true },
+    { "type": "checkbox", "id": "show_sale_badge", "label": "Show sale badge", "default": true },
     { "type": "header", "content": "Trust strip" },
+    { "type": "checkbox", "id": "show_trust_strip", "label": "Show trust strip", "default": true },
     { "type": "text", "id": "trust_1", "label": "Trust item 1", "default": "Free Shipping" },
     { "type": "text", "id": "trust_2", "label": "Trust item 2", "default": "Secure Checkout" },
     { "type": "text", "id": "trust_3", "label": "Trust item 3", "default": "30-Day Guarantee" },

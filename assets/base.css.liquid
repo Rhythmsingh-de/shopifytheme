@@ -783,6 +783,11 @@ table { border-collapse: collapse; width: 100%; }
   transform-origin: center; will-change: transform;
   transition: transform 10s ease;
 }
+.hero-bombas__img--mobile { display: none; }
+@media (max-width: 768px) {
+  .hero-bombas__img--desktop { display: none; }
+  .hero-bombas__img--mobile { display: block; }
+}
 .hero-bombas:hover .hero-bombas__img { transform: scale(1.04); }
 .hero-bombas__overlay {
   position: absolute; inset: 0; z-index: 1;
