@@ -312,6 +312,21 @@
     if(lbl){var sp=lbl.querySelector('[id^="selected-"]');if(sp)sp.textContent=sw.dataset.optionValue;}
     _syncVariant(sw.closest('[data-product-detail]'));
   });
+  /* ─────────── CARD VARIANT SELECTOR ─────────── */
+  document.addEventListener('change', function(e){
+    var sel=e.target.closest('[data-card-variant-selector]');if(!sel)return;
+    var card=sel.closest('.prod-card');if(!card)return;
+    var vid=sel.value;
+    
+    // Update ATC button data-variant-id
+    var atc=card.querySelector('.atc-btn');
+    if(atc)atc.dataset.variantId=vid;
+    
+    // Update Buy Now link href
+    var buy=card.querySelector('[data-card-buy-now]');
+    if(buy)buy.href='/checkout?variant='+vid+'&quantity=1';
+  });
+
   function _syncVariant(form){
     if(!form)return;
     var vals=qsa('.option-swatch.is-active',form).map(function(s){return s.dataset.optionValue;});
@@ -349,6 +364,27 @@
         }
         var priceEl=form.querySelector('.product-info__price-sale, .product-info__price-now, .sph__price, [data-price-now]');
         if(priceEl)priceEl.textContent=_fmt(match.price);
+
+        var compareEl=form.querySelector('.product-info__price-was, .sph__price-was, [data-price-compare]');
+        if(compareEl){
+          if(match.compare_at_price && match.compare_at_price > match.price){
+            compareEl.textContent=_fmt(match.compare_at_price);
+            compareEl.style.display='';
+          }else{
+            compareEl.style.display='none';
+          }
+        }
+
+        var badgeEl=form.querySelector('.badge--sale, .sph__badge, [data-sale-badge]');
+        if(badgeEl){
+          if(match.compare_at_price && match.compare_at_price > match.price){
+            var pct=Math.round(((match.compare_at_price - match.price) / match.compare_at_price) * 100);
+            badgeEl.textContent='Save ' + pct + '%';
+            badgeEl.style.display='';
+          }else{
+            badgeEl.style.display='none';
+          }
+        }
 
         // Also update featured image if variant has one
         if(match.featured_image && match.featured_image.src){

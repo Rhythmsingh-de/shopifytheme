@@ -50,20 +50,6 @@
       {%- endif -%}
     </div>
 
-    {%- if settings.card_quick_add -%}
-      <div class="prod-card__quick-add">
-        {%- if card_product.variants.size == 1 -%}
-          <button class="btn btn--primary btn--sm btn--full atc-btn"
-                  data-variant="{{ card_product.variants.first.id }}"
-                  data-product-id="{{ card_product.id }}"
-                  aria-label="Add {{ card_product.title | escape }} to cart">
-            Add to Cart
-          </button>
-        {%- else -%}
-          <a href="{{ card_product.url }}" class="btn btn--primary btn--sm btn--full">Select Options</a>
-        {%- endif -%}
-      </div>
-    {%- endif -%}
   </div>
 
   <div class="prod-card__info">
@@ -94,12 +80,41 @@
       {%- endif -%}
     {%- endif -%}
 
-    <div class="prod-card__price">
-      <span class="prod-card__price--current">{{ card_product.price | money }}</span>
-      {%- if card_product.compare_at_price > card_product.price -%}
-        <span class="prod-card__price--compare">{{ card_product.compare_at_price | money }}</span>
-      {%- endif -%}
     </div>
+
+    {%- if settings.card_quick_add -%}
+      <div class="prod-card__quick-actions" data-product-detail data-variants="{{ card_product.variants | json | escape }}">
+        {%- if card_product.variants.size > 1 -%}
+          <div class="prod-card__select-wrapper">
+            <select class="prod-card__select" data-card-variant-selector aria-label="Select variant for {{ card_product.title | escape }}">
+              {%- for variant in card_product.variants -%}
+                <option value="{{ variant.id }}" {% unless variant.available %}disabled{% endunless %}>
+                  {{ variant.title }} &mdash; {{ variant.price | money }} {% unless variant.available %}(Sold Out){% endunless %}
+                </option>
+              {%- endfor -%}</select>
+          </div>
+        {%- endif -%}
+
+        <div class="prod-card__buttons">
+          <button class="btn btn--primary btn--sm prod-card__btn-atc atc-btn"
+                  data-add-to-cart
+                  data-variant-id="{{ card_product.variants.first.id }}"
+                  data-qty="1"
+                  aria-label="Add {{ card_product.title | escape }} to cart"
+                  {% unless card_product.variants.first.available %}disabled aria-disabled="true"{% endunless %}>
+            <span class="atc-btn-text">{% if card_product.variants.first.available %}Add to Cart{% else %}Sold Out{% endif %}</span>
+          </button>
+          {%- if card_product.variants.first.available -%}
+            <a href="/checkout?variant={{ card_product.variants.first.id }}&quantity=1"
+               class="btn btn--ghost btn--sm prod-card__btn-buy"
+               data-card-buy-now
+               aria-label="Buy {{ card_product.title | escape }} now">
+              Buy Now
+            </a>
+          {%- endif -%}
+        </div>
+      </div>
+    {%- endif -%}
   </div>
 </div>
 
@@ -152,15 +167,8 @@
   gap: var(--sp-1);
   pointer-events: none;
 }
-.prod-card__quick-add {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  padding: var(--sp-3);
-  transform: translateY(100%);
-  transition: transform 0.3s var(--ease-out);
-  background: linear-gradient(to top, rgba(0,0,0,0.45) 0%, transparent 100%);
-}
-.prod-card:hover .prod-card__quick-add { transform: translateY(0); }
+
+
 .prod-card__info {
   padding: var(--sp-3) var(--sp-4) var(--sp-4);
   display: flex;
@@ -209,5 +217,71 @@
   font-size: var(--text-sm);
   color: var(--color-text-muted);
   text-decoration: line-through;
+}
+.prod-card__quick-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2, 8px);
+  margin-top: var(--sp-3, 12px);
+}
+.prod-card__select-wrapper {
+  position: relative;
+  width: 100%;
+}
+.prod-card__select {
+  width: 100%;
+  padding: 8px 12px;
+  font-size: var(--text-xs, 12px);
+  font-weight: 600;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md, 8px);
+  background: var(--color-surface);
+  color: var(--color-text);
+  cursor: pointer;
+  outline: none;
+  font-family: inherit;
+  transition: border-color var(--trans-base);
+}
+.prod-card__select:hover {
+  border-color: var(--color-text);
+}
+.prod-card__buttons {
+  display: flex;
+  gap: var(--sp-2, 8px);
+  width: 100%;
+}
+.prod-card__btn-atc, .prod-card__btn-buy {
+  flex: 1;
+  padding: 10px 12px;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-radius: var(--radius-md, 8px);
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+.prod-card__btn-atc {
+  background: var(--color-primary);
+  color: var(--color-primary-text);
+  border: none;
+}
+.prod-card__btn-atc:hover:not(:disabled) {
+  background: var(--color-primary-hover);
+  transform: translateY(-1px);
+}
+.prod-card__btn-buy {
+  background: transparent;
+  color: var(--color-primary);
+  border: 2.5px solid var(--color-primary);
+  text-decoration: none;
+}
+.prod-card__btn-buy:hover {
+  background: var(--color-primary);
+  color: var(--color-primary-text);
+  transform: translateY(-1px);
 }
 </style>
