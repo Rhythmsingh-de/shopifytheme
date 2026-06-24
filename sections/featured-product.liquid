@@ -19,15 +19,43 @@
           {%- if on_sale and section.settings.show_sale_badge -%}
             <span class="fp__badge" aria-label="On sale">SALE</span>
           {%- endif -%}
-          {%- if product.featured_image -%}
-            <img
-              src="{{ product.featured_image | image_url: width: 900 }}"
-              alt="{{ product.featured_image.alt | escape }}"
-              width="900" height="900"
-              loading="eager"
-              class="fp__img"
-            >
-          {%- endif -%}
+
+          <div class="fp__media-slider" id="FpMediaSlider-{{ section.id }}">
+            <div class="fp__slider-track" id="FpSliderTrack-{{ section.id }}">
+              {%- if product.images.size > 0 -%}
+                {%- for image in product.images limit: 5 -%}
+                  <div class="fp__slide {% if forloop.first %}is-active{% endif %}" data-index="{{ forloop.index0 }}">
+                    <img
+                      src="{{ image | image_url: width: 900 }}"
+                      alt="{{ image.alt | default: product.title | escape }}"
+                      width="900" height="900"
+                      loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+                      class="fp__img"
+                    >
+                  </div>
+                {%- endfor -%}
+              {%- else -%}
+                <div class="fp__slide is-active">
+                  {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                </div>
+              {%- endif -%}
+            </div>
+            
+            {%- if product.images.size > 1 -%}
+              <button type="button" class="fp__slider-btn fp__slider-btn--prev" aria-label="Previous image" data-slider-prev>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+              </button>
+              <button type="button" class="fp__slider-btn fp__slider-btn--next" aria-label="Next image" data-slider-next>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+              
+              <div class="fp__slider-dots">
+                {%- for image in product.images limit: 5 -%}
+                  <button type="button" class="fp__slider-dot {% if forloop.first %}is-active{% endif %}" data-dot-index="{{ forloop.index0 }}" aria-label="View slide {{ forloop.index }}"></button>
+                {%- endfor -%}
+              </div>
+            {%- endif -%}
+          </div>
         </div>
       </div>
 
@@ -111,12 +139,89 @@
 
   /* Media */
   .fp__media-wrap { position: relative; }
-  .fp__img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: var(--border-radius); }
+  .fp__img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: var(--card-radius); }
   .fp__badge {
     position: absolute; top: 16px; left: 16px;
-    background: var(--accent-color); color: #fff;
+    background: var(--color-primary); color: #fff;
     font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em;
-    padding: 4px 10px; border-radius: 2px; z-index: 1;
+    padding: 4px 10px; border-radius: 2px; z-index: 12;
+  }
+
+  /* Slider styles */
+  .fp__media-slider {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1/1;
+    overflow: hidden;
+    border-radius: var(--card-radius, 12px);
+    background: var(--color-surface);
+    transform-style: preserve-3d;
+    perspective: 1000px;
+    transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+  }
+  .fp__slider-track {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+  .fp__slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s ease, visibility 0.4s ease;
+  }
+  .fp__slide.is-active {
+    opacity: 1;
+    visibility: visible;
+  }
+  .fp__slider-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.95);
+    color: var(--color-text);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    cursor: pointer;
+    z-index: 10;
+    transition: background var(--transition), transform var(--transition);
+  }
+  .fp__slider-btn:hover {
+    background: #ffffff;
+    transform: translateY(-50%) scale(1.05);
+  }
+  .fp__slider-btn--prev { left: 16px; }
+  .fp__slider-btn--next { right: 16px; }
+  
+  .fp__slider-dots {
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 10;
+  }
+  .fp__slider-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: background var(--transition), transform var(--transition);
+  }
+  .fp__slider-dot.is-active {
+    background: #ffffff;
+    transform: scale(1.2);
   }
 
   /* Reviews */
@@ -140,23 +245,25 @@
     border-radius: 3px; overflow: hidden; margin-bottom: 8px;
   }
   .fp__scarcity-fill {
-    height: 100%; background: var(--accent-color);
+    height: 100%; background: var(--color-primary);
     border-radius: 3px; transition: width 0.4s ease;
   }
   .fp__scarcity-text { font-size: 0.85rem; color: var(--text-muted); }
-  .fp__scarcity-text strong { color: var(--accent-color); }
+  .fp__scarcity-text strong { color: var(--color-primary); }
 
   /* CTA */
   .fp__form { margin-bottom: 24px; }
   .fp__cta {
     display: block; width: 100%;
-    background: var(--accent-color); color: #fff;
+    background: var(--color-primary); color: var(--color-primary-text);
     font-size: 1rem; font-weight: 700;
     letter-spacing: 0.04em; text-transform: uppercase;
-    padding: 18px 24px; border-radius: var(--border-radius);
+    padding: 18px 24px; border-radius: var(--btn-radius, var(--radius-md));
     transition: background var(--transition), transform var(--transition);
+    border: none;
+    cursor: pointer;
   }
-  .fp__cta:hover:not(:disabled) { background: var(--accent-hover); transform: translateY(-1px); }
+  .fp__cta:hover:not(:disabled) { background: var(--color-primary-hover); transform: translateY(-1px); }
   .fp__cta:active:not(:disabled) { transform: translateY(0); }
   .fp__cta:disabled { background: #ccc; cursor: not-allowed; }
 
@@ -170,46 +277,90 @@
 
 <script>
 (function () {
-  var form = document.getElementById('FeaturedProductForm');
-  if (!form) return;
+  var container = document.getElementById('featured-product-{{ section.id }}');
+  if (!container) return;
 
-  form.addEventListener('submit', async function (e) {
-    e.preventDefault();
-    var btn = document.getElementById('FeaturedProductCTA');
-    var variantId = form.querySelector('[name="id"]').value;
-    var originalText = btn.textContent.trim();
+  var form = container.querySelector('.fp__form');
+  if (form) {
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      var btn = container.querySelector('.fp__cta');
+      var variantId = form.querySelector('[name="id"]').value;
+      var originalText = btn.textContent.trim();
 
-    btn.textContent = 'Adding\u2026';
-    btn.disabled = true;
+      btn.textContent = 'Adding\u2026';
+      btn.disabled = true;
 
-    try {
-      var res = await fetch('/cart/add.js', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({ id: variantId, quantity: 1 })
-      });
-
-      if (!res.ok) throw new Error('add_failed');
-
-      var item = await res.json();
-
-      if (typeof window.trackEvent === 'function') {
-        window.trackEvent({
-          event: 'add_to_cart',
-          content_type: 'product',
-          content_ids: [item.variant_id],
-          value: (item.price / 100).toFixed(2),
-          currency: {{ shop.currency | json }}
+      try {
+        var res = await fetch('/cart/add.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({ id: variantId, quantity: 1 })
         });
+
+        if (!res.ok) throw new Error('add_failed');
+
+        var item = await res.json();
+
+        if (typeof window.trackEvent === 'function') {
+          window.trackEvent({
+            event: 'add_to_cart',
+            content_type: 'product',
+            content_ids: [item.variant_id],
+            value: (item.price / 100).toFixed(2),
+            currency: {{ shop.currency | json }}
+          });
+        }
+
+        window.location.href = '/checkout';
+
+      } catch (_) {
+        btn.textContent = originalText;
+        btn.disabled = false;
       }
+    });
+  }
 
-      window.location.href = '/checkout';
+  /* Image Slider */
+  var slider = container.querySelector('.fp__media-slider');
+  if (slider) {
+    var slides = Array.from(slider.querySelectorAll('.fp__slide'));
+    var dots = Array.from(slider.querySelectorAll('.fp__slider-dot'));
+    var currentIndex = 0;
 
-    } catch (_) {
-      btn.textContent = originalText;
-      btn.disabled = false;
+    function showSlide(index) {
+      slides[currentIndex].classList.remove('is-active');
+      if (dots.length) dots[currentIndex].classList.remove('is-active');
+      
+      currentIndex = (index + slides.length) % slides.length;
+      
+      slides[currentIndex].classList.add('is-active');
+      if (dots.length) dots[currentIndex].classList.add('is-active');
     }
-  });
+
+    var prevBtn = slider.querySelector('[data-slider-prev]');
+    var nextBtn = slider.querySelector('[data-slider-next]');
+
+    if (prevBtn) {
+      prevBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        showSlide(currentIndex - 1);
+      });
+    }
+    if (nextBtn) {
+      nextBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        showSlide(currentIndex + 1);
+      });
+    }
+
+    dots.forEach(function (dot) {
+      dot.addEventListener('click', function (e) {
+        e.stopPropagation();
+        showSlide(parseInt(dot.dataset.dotIndex));
+      });
+    });
+  }
 }());
 </script>
 

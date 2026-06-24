@@ -409,13 +409,17 @@
   /* ─────────── 3D TILT ─────────── */
   if(window.matchMedia('(hover:hover)').matches){
     document.addEventListener('mousemove',function(e){
-      var card=e.target.closest('.prod-card');if(!card)return;
+      var card=e.target.closest('.prod-card, .fp__media-slider');if(!card)return;
       var r=card.getBoundingClientRect();
       var x=(e.clientX-r.left)/r.width-0.5;var y=(e.clientY-r.top)/r.height-0.5;
-      card.style.transform='perspective(900px) rotateY('+(x*10)+'deg) rotateX('+(-y*8)+'deg) translateY(-6px)';
+      if (card.classList.contains('prod-card')) {
+        card.style.transform='perspective(900px) rotateY('+(x*10)+'deg) rotateX('+(-y*8)+'deg) translateY(-6px)';
+      } else {
+        card.style.transform='perspective(900px) rotateY('+(x*6)+'deg) rotateX('+(-y*5)+'deg)';
+      }
     });
     document.addEventListener('mouseleave',function(e){
-      var card=e.target.closest('.prod-card');
+      var card=e.target.closest('.prod-card, .fp__media-slider');
       if(card)card.style.transform='';
     },true);
   }
