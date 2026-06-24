@@ -18,27 +18,6 @@
         "text_color": "#ffffff"
       }
     },
-    "trust_bar": {
-      "type": "trust-bar",
-      "settings": {
-        "bg_color": "#ffffff"
-      }
-    },
-    "trust_badges": {
-      "type": "trust-badges",
-      "settings": {
-        "layout": "contained",
-        "bg_color": "#f7f7f7",
-        "icon_color": "#1a1a1a",
-        "text_color": "#1a1a1a",
-        "divider_color": "#cccccc",
-        "show_dividers": true,
-        "icon_size": 38,
-        "padding_top": 20,
-        "padding_bottom": 20,
-        "padding_sides": 20
-      }
-    },
     "single_product_home_4t7cKi": {
       "type": "single-product-home",
       "blocks": {
@@ -143,34 +122,20 @@
         "subtitle": "Join the BodyLuxCare family and be the first to hear about new arrivals, exclusive deals, and wellness tips.",
         "placeholder": "Enter your email address",
         "button_text": "Claim My 10% Off",
+        "success_message": "Thank you! Check your inbox for a discount code.",
         "disclaimer": "No spam ever. Unsubscribe anytime. By subscribing you agree to our Privacy Policy.",
+        "max_width": 700,
         "bg_color": "#1a1a1a",
         "text_color": "#ffffff",
+        "accent_color": "#ffeed2",
         "padding_top": 80,
         "padding_bottom": 80
-      }
-    },
-    "newsletter_bar": {
-      "type": "newsletter-bar",
-      "settings": {
-        "eyebrow": "Stay in the loop",
-        "heading": "Join the Community",
-        "subtext": "Be first to know about new arrivals, exclusive offers, and our latest campaigns.",
-        "placeholder": "Enter your email address",
-        "button": "Subscribe",
-        "success_msg": "You're in! Check your inbox for a welcome gift.",
-        "privacy_note": "No spam. Unsubscribe anytime. We respect your privacy.",
-        "bg_color": "#f5f3f0",
-        "text_color": "#111111"
       }
     }
   },
   "order": [
     "urgency_banner",
-    "trust_bar",
-    "trust_badges",
     "single_product_home_4t7cKi",
-    "email_capture",
-    "newsletter_bar"
+    "email_capture"
   ]
 }
