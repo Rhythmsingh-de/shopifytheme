@@ -12,6 +12,7 @@
     "card_hover_second_image": true,
     "card_show_rating": true,
     "gdpr_cookie_banner": false,
+    "tracking_mode": "always_on",
     "custom_css": "",
     "accent_color": "#ff3c00",
     "text_color": "#111111",
