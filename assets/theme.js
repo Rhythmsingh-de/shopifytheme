@@ -194,6 +194,8 @@
     btn._origText = btn._origText || btn.textContent || btn.value;
     btn.textContent = 'Processing…';
 
+    var isEditor = (window.Shopify && window.Shopify.designMode) || (window.self !== window.top);
+
     fetch('/cart/add.js', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
@@ -203,11 +205,19 @@
     .then(function(item) {
       if (item.status) throw new Error(item.description || 'Error');
       btn.textContent = 'Redirecting…';
-      window.location.href = '/checkout';
+      if (isEditor) {
+        window.location.href = '/cart';
+      } else {
+        window.location.href = '/checkout';
+      }
     })
     .catch(function(err) {
       console.error('[BLC Buy Now]', err);
-      window.location.href = href || '/checkout';
+      if (isEditor) {
+        window.location.href = '/cart';
+      } else {
+        window.location.href = href || '/checkout';
+      }
     });
   });
 
