@@ -98,17 +98,34 @@
                   {{ option.name }}:
                   <strong id="selected-{{ option.name | handleize }}">{{ option.selected_value }}</strong>
                 </p>
-                <div class="product-option__swatches" role="radiogroup" aria-label="{{ option.name }}">
-                  {%- for value in option.values -%}
-                    <button
-                      class="option-swatch{% if value == option.selected_value %} is-active{% endif %}"
-                      data-option-name="{{ option.name }}"
-                      data-option-value="{{ value | escape }}"
-                      aria-pressed="{% if value == option.selected_value %}true{% else %}false{% endif %}">
-                      {{ value }}
-                    </button>
-                  {%- endfor -%}
-                </div>
+
+                {%- if option.name == 'Color' or option.name == 'Colour' -%}
+                  <div class="product-option__swatches" role="radiogroup" aria-label="{{ option.name }}">
+                    {%- for value in option.values -%}
+                      <button
+                        class="option-swatch option-swatch--color{% if value == option.selected_value %} is-active{% endif %}"
+                        data-option-name="{{ option.name | escape }}"
+                        data-option-value="{{ value | escape }}"
+                        style="--swatch-color:{{ value | downcase | replace: ' ', '' }}"
+                        aria-pressed="{% if value == option.selected_value %}true{% else %}false{% endif %}"
+                        aria-label="{{ value | escape }}">
+                      </button>
+                    {%- endfor -%}
+                  </div>
+                {%- else -%}
+                  <div class="product-option__swatches product-option__swatches--pills" role="radiogroup" aria-label="{{ option.name }}">
+                    {%- for value in option.values -%}
+                      <button
+                        class="option-swatch option-swatch--pill{% if value == option.selected_value %} is-active{% endif %}"
+                        data-option-name="{{ option.name | escape }}"
+                        data-option-value="{{ value | escape }}"
+                        aria-pressed="{% if value == option.selected_value %}true{% else %}false{% endif %}"
+                        aria-label="{{ value | escape }}">
+                        {{ value }}
+                      </button>
+                    {%- endfor -%}
+                  </div>
+                {%- endif -%}
               </div>
             {%- endfor -%}
           </div>
@@ -375,6 +392,34 @@
   color: var(--color-bg);
 }
 .option-swatch:hover:not(.is-active) { border-color: var(--color-text-muted); }
+
+.option-swatch--color {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full, 9999px);
+  padding: 0;
+  border: 3px solid transparent;
+  background: var(--swatch-color, #ccc);
+  transition: border-color var(--transition), transform var(--transition);
+}
+.option-swatch--color[style*="teal"]    { background: #009688; }
+.option-swatch--color[style*="black"]   { background: #111111; }
+.option-swatch--color[style*="gray"],
+.option-swatch--color[style*="grey"]    { background: #9e9e9e; }
+.option-swatch--color[style*="red"]     { background: #e53935; }
+.option-swatch--color[style*="blue"]    { background: #1e88e5; }
+.option-swatch--color[style*="green"]   { background: #43a047; }
+.option-swatch--color[style*="white"]   { background: #f5f5f5; border: 3px solid #e5e5e5; }
+.option-swatch--color[style*="orange"]  { background: #fb8c00; }
+
+.option-swatch--color.is-active {
+  border-color: var(--color-text);
+  transform: scale(1.1);
+  background: var(--swatch-color, #ccc);
+}
+.option-swatch--color:hover:not(.is-active) {
+  border-color: var(--color-text-muted);
+}
 
 .product-qty-row {
   display: flex;
