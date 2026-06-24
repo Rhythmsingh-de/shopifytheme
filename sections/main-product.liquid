@@ -18,12 +18,8 @@
       <div class="product-media-stack">
         <div class="product-media-main" id="ProductMediaMain">
           {%- if product.featured_image != blank -%}
-            <img
-              id="ProductMainImage"
-              src="{{ product.featured_image | image_url: width: 900 }}"
-              alt="{{ product.featured_image.alt | default: product.title | escape }}"
-              width="900" height="900"
-              loading="eager" decoding="async">
+            {%- assign main_img_alt = product.featured_image.alt | default: product.title | escape -%}
+            {{ product.featured_image | image_url: width: 900 | image_tag: id: 'ProductMainImage', widths: '450,900,1200', loading: 'eager', decoding: 'async', width: 900, height: 900, alt: main_img_alt }}
           {%- else -%}
             <div class="product-media-placeholder" aria-label="{{ product.title | escape }}">
               {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
@@ -40,11 +36,8 @@
                 data-target="ProductMainImage"
                 aria-label="View image {{ forloop.index }} of {{ product.images.size }}"
                 role="listitem">
-                <img
-                  src="{{ image | image_url: width: 144 }}"
-                  alt="{{ image.alt | default: product.title | escape }}"
-                  width="72" height="72"
-                  loading="lazy" decoding="async">
+                {%- assign thumb_alt = image.alt | default: product.title | escape -%}
+                {{ image | image_url: width: 144 | image_tag: widths: '72,144', loading: 'lazy', decoding: 'async', width: 72, height: 72, alt: thumb_alt }}
               </button>
             {%- endfor -%}
           </div>
@@ -563,6 +556,36 @@
 </style>
 
 
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": {{ product.title | json }},
+  "description": {{ product.description | strip_html | truncate: 5000 | json }},
+  "url": {{ shop.url | append: product.url | json }},
+  "image": [{{ product.featured_image | image_url: width: 1200 | json }}],
+  "brand": {
+    "@type": "Brand",
+    "name": {{ product.vendor | json }}
+  },
+  "offers": {
+    "@type": "Offer",
+    "price": "{{ product.price | money_without_currency }}",
+    "priceCurrency": {{ cart.currency.iso_code | json }},
+    "availability": "{% if product.available %}https://schema.org/InStock{% else %}https://schema.org/OutOfStock{% endif %}",
+    "url": {{ shop.url | append: product.url | json }},
+    "priceValidUntil": "{{ 'now' | date: '%Y' | plus: 1 }}-12-31"
+  }
+  {%- if product.metafields.reviews.rating.value != blank -%}
+  ,"aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "{{ product.metafields.reviews.rating.value }}",
+    "reviewCount": "{{ product.metafields.reviews.rating_count.value | default: 1 }}"
+  }
+  {%- endif -%}
+}
+</script>
 
 {% schema %}
 {

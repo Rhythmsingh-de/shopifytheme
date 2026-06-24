@@ -19,21 +19,11 @@
     <div class="sph__media" id="SphMedia">
       <div class="sph__media-main">
         {%- if sp != blank and sp.featured_image != blank -%}
-          <img
-            id="SphMainImg"
-            src="{{ sp.featured_image | image_url: width: 900 }}"
-            alt="{{ sp.featured_image.alt | default: sp.title | escape }}"
-            width="900" height="900"
-            loading="eager" decoding="async"
-            class="sph__img">
+          {%- assign sph_main_alt = sp.featured_image.alt | default: sp.title | escape -%}
+          {{ sp.featured_image | image_url: width: 900 | image_tag: id: 'SphMainImg', class: 'sph__img', widths: '450,900,1200', loading: 'eager', decoding: 'async', width: 900, height: 900, alt: sph_main_alt }}
         {%- elsif section.settings.fallback_image != blank -%}
-          <img
-            id="SphMainImg"
-            src="{{ section.settings.fallback_image | image_url: width: 900 }}"
-            alt="{{ section.settings.heading | escape }}"
-            width="900" height="900"
-            loading="eager" decoding="async"
-            class="sph__img">
+          {%- assign sph_fallback_alt = section.settings.heading | escape -%}
+          {{ section.settings.fallback_image | image_url: width: 900 | image_tag: id: 'SphMainImg', class: 'sph__img', widths: '450,900,1200', loading: 'eager', decoding: 'async', width: 900, height: 900, alt: sph_fallback_alt }}
         {%- else -%}
           <div class="sph__img-placeholder">
             {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
@@ -50,11 +40,8 @@
               data-src="{{ img | image_url: width: 900 }}"
               aria-label="View image {{ forloop.index }}"
               role="listitem">
-              <img
-                src="{{ img | image_url: width: 120 }}"
-                alt="{{ img.alt | default: sp.title | escape }}"
-                width="60" height="60"
-                loading="lazy" decoding="async">
+              {%- assign sph_thumb_alt = img.alt | default: sp.title | escape -%}
+              {{ img | image_url: width: 120 | image_tag: widths: '60,120', loading: 'lazy', decoding: 'async', width: 60, height: 60, alt: sph_thumb_alt }}
             </button>
           {%- endfor -%}
         </div>
@@ -291,12 +278,8 @@
                 <div class="sph-review-card" {{ block.shopify_attributes }}>
                   <div class="sph-review-card__head">
                     {%- if block.settings.avatar != blank -%}
-                      <img
-                        src="{{ block.settings.avatar | image_url: width: 80 }}"
-                        alt="{{ block.settings.name | escape }}"
-                        width="40" height="40"
-                        loading="lazy" decoding="async"
-                        class="sph-review-card__avatar">
+                      {%- assign avatar_alt = block.settings.name | escape -%}
+                      {{ block.settings.avatar | image_url: width: 80 | image_tag: widths: '40,80', loading: 'lazy', decoding: 'async', width: 40, height: 40, class: 'sph-review-card__avatar', alt: avatar_alt }}
                     {%- else -%}
                       <div class="sph-review-card__avatar sph-review-card__avatar--initials">
                         {{ block.settings.name | slice: 0, 1 | upcase }}
@@ -318,9 +301,7 @@
                   </div>
                   {%- if block.settings.images != blank -%}
                     <div class="sph-review-card__imgs">
-                      <img src="{{ block.settings.images | image_url: width: 200 }}"
-                        alt="Review photo" width="60" height="60"
-                        loading="lazy" decoding="async">
+                      {{ block.settings.images | image_url: width: 200 | image_tag: widths: '60,120,200', loading: 'lazy', decoding: 'async', width: 60, height: 60, alt: 'Review photo' }}
                     </div>
                   {%- endif -%}
                   {%- if block.settings.body != blank -%}
@@ -790,6 +771,8 @@
   color: var(--color-text-muted, #666);
   line-height: 1.7;
   padding-bottom: 16px;
+}
+
 /* Description Accordion */
 .sph__description-accordion {
   margin-top: 20px;
