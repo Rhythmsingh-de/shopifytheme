@@ -13,7 +13,17 @@
   "sections": {
     "footer": {
       "type": "footer",
-      "settings": {}
+      "settings": {
+        "tagline": "Premium wellness products for you, your home & your pets.",
+        "bg_color": "#111111",
+        "text_color": "#ffffff",
+        "social_instagram": "",
+        "social_facebook": "",
+        "social_tiktok": "",
+        "social_pinterest": "",
+        "social_youtube": "",
+        "show_trust_bar": true
+      }
     }
   },
   "order": [
