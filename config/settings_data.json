@@ -9,10 +9,12 @@
  */
 {
   "current": {
+    "gdpr_cookie_banner": true,
+    "custom_css": "",
     "accent_color": "#ff3c00",
     "text_color": "#111111",
     "bg_color": "#ffffff",
-    "custom_css": ""
+    "content_for_index": []
   },
   "presets": {}
 }

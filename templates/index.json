@@ -18,22 +18,6 @@
         "text_color": "#ffffff"
       }
     },
-    "hero_bombas_LBrDFJ": {
-      "type": "hero-bombas",
-      "name": "Hero Banner",
-      "settings": {
-        "image": "shopify://shop_images/BB8CFADB6715ED145CC7F034A989E676.png",
-        "overlay_opacity": 0,
-        "text_dark": false,
-        "eyebrow": "New Collection · Summer 2025",
-        "heading": "",
-        "subheading": "",
-        "cta1_label": "",
-        "cta1_url": "",
-        "cta2_label": "",
-        "cta2_url": ""
-      }
-    },
     "single_product_home_4t7cKi": {
       "type": "single-product-home",
       "blocks": {
@@ -173,7 +157,6 @@
   },
   "order": [
     "urgency_banner",
-    "hero_bombas_LBrDFJ",
     "single_product_home_4t7cKi",
     "email_capture",
     "footer_wgR6gc",
