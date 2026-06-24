@@ -13,13 +13,9 @@
   endif
 -%}
 
-<!-- ─────────────────────────────────
-  HERO: sticky image left + info right
-──────────────────────────────── -->
-<section class="sph" id="SingleProductHome" data-product-detail data-variants="{{ sp.variants | json | escape }}" {{ section.shopify_attributes }}>
+<section class="sph" id="SingleProductHome" data-product-detail {% if sp != blank %}data-variants="{{ sp.variants | json | escape }}"{% endif %} {{ section.shopify_attributes }}>
   <div class="sph__inner container">
 
-    <!-- LEFT: sticky image stack -->
     <div class="sph__media" id="SphMedia">
       <div class="sph__media-main">
         {%- if sp != blank and sp.featured_image != blank -%}
@@ -65,7 +61,6 @@
       {%- endif -%}
     </div>
 
-    <!-- RIGHT: product info -->
     <div class="sph__info">
 
       {%- assign eyebrow = section.settings.eyebrow -%}
@@ -94,7 +89,6 @@
         <p class="sph__sub">{{ subtitle }}</p>
       {%- endif -%}
 
-      <!-- Price + rating -->
       <div class="sph__price-row">
         <span class="sph__price{% if is_sale %} is-sale{% endif %}">
           {%- if sp != blank -%}{{ price | money }}{%- else -%}$149.00{%- endif -%}
@@ -104,7 +98,6 @@
           <span class="sph__badge">Save {{ save_pct }}%</span>
         {%- endif -%}
 
-        <!-- Stars (real metafield or fallback display) -->
         {%- assign rating_val = sp.metafields.reviews.rating.value | plus: 0 -%}
         {%- assign rating_count = sp.metafields.reviews.rating_count.value | plus: 0 -%}
         {%- if rating_val > 0 or section.settings.show_demo_rating -%}
@@ -118,12 +111,11 @@
                 <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
               </svg>
             {%- endfor -%}
-            <span class="sph__rating-label">{{ rating_val }} | {{ rating_count | money_without_currency }}+ Reviews</span>
+            <span class="sph__rating-label">{{ rating_val }} | {{ rating_count }} + Reviews</span>
           </div>
         {%- endif -%}
       </div>
 
-      <!-- Buttons -->
       <div class="sph__btns">
         {%- if sp != blank and fv.available -%}
           <button
@@ -143,7 +135,6 @@
         {%- endif -%}
       </div>
 
-      <!-- Payment icons under buttons -->
       {%- if section.settings.show_payment_icons -%}
         <div class="sph__payment-icons">
           <span class="sph__payment-icons-label">We accept:</span>
@@ -153,9 +144,7 @@
         </div>
       {%- endif -%}
 
-      <!-- Qty + variant options -->
       <div class="sph__options-row">
-        <!-- Qty stepper -->
         <div class="sph__qty-wrap">
           <p class="sph__opt-label">Quantity</p>
           <div class="sph__qty" data-qty-stepper>
@@ -166,7 +155,6 @@
           </div>
         </div>
 
-        <!-- Product Variant Options -->
         {%- if sp != blank and sp.has_only_default_variant == false -%}
           {%- for opt in sp.options_with_values -%}
             <div class="product-option">
@@ -182,7 +170,7 @@
                       class="option-swatch sph__swatch{% if value == opt.selected_value %} is-active{% endif %}"
                       data-option-name="{{ opt.name | escape }}"
                       data-option-value="{{ value | escape }}"
-                      style="--swatch-color:{{ value | downcase | replace: ' ', '' }}"
+                      style="background-color: {{ value | downcase | replace: ' ', '' }};"
                       aria-pressed="{% if value == opt.selected_value %}true{% else %}false{% endif %}"
                       aria-label="{{ value | escape }}">
                     </button>
@@ -207,7 +195,6 @@
         {%- endif -%}
       </div>
 
-      <!-- Trust strip -->
       <div class="sph__trust" aria-label="Guarantees">
         <span>&#10003; {{ section.settings.trust_1 | default: 'Free Shipping' }}</span>
         <span class="sph__trust-sep">|</span>
@@ -220,9 +207,6 @@
   </div>
 </section>
 
-<!-- ─────────────────────────────────
-  FEATURES STRIP: 3 icons
-──────────────────────────────── -->
 {%- assign has_features = false -%}
 {%- for i in (1..3) -%}
   {%- assign fkey = 'feat_' | append: i | append: '_title' -%}
@@ -269,23 +253,17 @@
 </section>
 {%- endif -%}
 
-<!-- ─────────────────────────────────
-  REVIEWS + FAQ
-──────────────────────────────── -->
 <section class="sph-bottom section-spacing">
   <div class="container">
     <div class="sph-bottom__grid">
 
-      <!-- Reviews col -->
       <div class="sph-reviews">
         <h2 class="sph-section-title">{{ section.settings.reviews_title | default: 'Reviews' }}</h2>
 
         {%- if sp != blank -%}
-          <!-- Metafield-driven reviews if app present -->
           <div id="shopify-product-reviews" data-id="{{ sp.id }}"></div>
         {%- endif -%}
 
-        <!-- Fallback / demo review cards -->
         {%- if section.blocks.size > 0 -%}
           <div class="sph-review-cards">
             {%- for block in section.blocks -%}
@@ -335,7 +313,6 @@
         {%- endif -%}
       </div>
 
-      <!-- FAQ col -->
       <div class="sph-faq">
         <h2 class="sph-section-title">{{ section.settings.faq_title | default: 'FAQ' }}</h2>
         <div class="sph-faq__list">
@@ -360,7 +337,6 @@
   </div>
 </section>
 
-<!-- ────── STYLES ────── -->
 <style>
 /* ── Hero layout ── */
 .sph { background: var(--color-bg); padding-block: clamp(24px, 4vw, 48px) clamp(32px, 5vw, 64px); }
@@ -598,10 +574,6 @@
 .sph__qty-val::-webkit-inner-spin-button { -webkit-appearance: none; }
 
 /* Color swatches */
-.sph__swatches {
-  display: flex;
-  gap: 8px;
-}
 .sph__swatch {
   width: 36px; height: 36px;
   border-radius: var(--radius-full, 9999px);
@@ -609,17 +581,7 @@
   cursor: pointer;
   outline: none;
   transition: border-color 0.15s ease, transform 0.15s ease;
-  background: var(--swatch-color, #ccc);
 }
-.sph__swatch[style*="teal"]    { background: #009688; }
-.sph__swatch[style*="black"]   { background: #111111; }
-.sph__swatch[style*="gray"],
-.sph__swatch[style*="grey"]    { background: #9e9e9e; }
-.sph__swatch[style*="red"]     { background: #e53935; }
-.sph__swatch[style*="blue"]    { background: #1e88e5; }
-.sph__swatch[style*="green"]   { background: #43a047; }
-.sph__swatch[style*="white"]   { background: #f5f5f5; border: 3px solid #e5e5e5; }
-.sph__swatch[style*="orange"]  { background: #fb8c00; }
 .sph__swatch.is-active {
   border-color: var(--color-text, #111);
   transform: scale(1.1);
@@ -815,8 +777,6 @@
   .sph__media { position: static; }
 }
 </style>
-
-
 
 {% schema %}
 {
