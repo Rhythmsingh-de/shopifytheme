@@ -928,7 +928,17 @@
       }
 
       var cards = container.querySelectorAll('.sph-review-card');
-      if (cards.length <= 3) return;
+      if (cards.length === 0) return;
+
+      // Randomly shuffle reviews on page load / section reload
+      var cardsArray = Array.from(cards);
+      cardsArray.sort(function() { return 0.5 - Math.random(); });
+      cardsArray.forEach(function(card) {
+        container.appendChild(card);
+      });
+
+      var updatedCards = container.querySelectorAll('.sph-review-card');
+      if (updatedCards.length <= 3) return;
 
       // Cycle every 3.5 seconds
       var intervalId = setInterval(function() {
