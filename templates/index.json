@@ -26,7 +26,6 @@
           "settings": {
             "name": "Sarah M.",
             "rating": 5,
-            "images": "shopify://shop_images/6F8AAAC28278224F3545AFBD9E2F5DB0.jpg",
             "body": "Absolutely love this! Fits perfectly and looks amazing."
           }
         },
@@ -35,7 +34,6 @@
           "settings": {
             "name": "Mike L.",
             "rating": 5,
-            "images": "shopify://shop_images/D983222A318051C6B717E69E37DB4BE8.jpg",
             "body": "Best purchase I've made this year. Highly recommend."
           }
         },
@@ -44,7 +42,6 @@
           "settings": {
             "name": "Jania",
             "rating": 5,
-            "images": "shopify://shop_images/0AE1E913C8251F26D5575CFC22032065.jpg",
             "body": "Best purchase I've made this year. Highly recommend."
           }
         },
@@ -53,8 +50,6 @@
           "settings": {
             "name": "Mike L.",
             "rating": 3,
-            "avatar": "shopify://shop_images/7740EF82832D89E11E204E2E60CA87E9.png",
-            "images": "shopify://shop_images/1D4674B82B94C26DB6013CCEFDF05E5E.jpg",
             "body": "Best purchase I've made this year. Highly recommend."
           }
         },
@@ -90,7 +85,7 @@
         "faq_KQWRCn"
       ],
       "settings": {
-        "product": "outdoor-large-capacity-messenger-bag-men-chest-bag-simple-fashion-men-bag-shoulder-bag",
+        "product": "herren-brusttasche-sling-bag-wasserdicht",
         "eyebrow": "",
         "heading": "",
         "subheading": "Durable, waterproof, and ergonomic for your toughest hikes.",
