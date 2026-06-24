@@ -1,0 +1,8 @@
+MatchingTranslations:
+  enabled: false
+
+OrphanedSnippet:
+  enabled: false
+
+HardcodedRoutes:
+  enabled: false
