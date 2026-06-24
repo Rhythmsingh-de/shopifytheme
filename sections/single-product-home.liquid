@@ -20,6 +20,7 @@
   {{ section.settings.fallback_image | image_url: width: 900 | preload_tag: as: 'image' }}
 {%- endif -%}
 
+
 <section class="sph" id="SingleProductHome" data-product-detail {% if sp != blank %}data-variants="{{ sp.variants | json | escape }}"{% endif %} {{ section.shopify_attributes }}>
   <div class="sph__inner container">
 
@@ -37,6 +38,23 @@
         {%- else -%}
           <div class="sph__img-placeholder">
             {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+          </div>
+        {%- endif -%}
+
+        {%- if sp != blank -%}
+          <div class="sph__badges">
+            {%- if compare > price -%}
+              {%- assign savings = compare | minus: price | times: 100 | divided_by: compare -%}
+              {%- if settings.card_show_sale_badge -%}
+                <span class="badge badge--sale">-{{ savings }}%</span>
+              {%- endif -%}
+            {%- elsif settings.card_show_new_badge -%}
+              {%- if sp.tags contains 'new' -%}
+                <span class="badge badge--new">New</span>
+              {%- elsif sp.tags contains 'bestseller' -%}
+                <span class="badge badge--bestseller">Bestseller</span>
+              {%- endif -%}
+            {%- endif -%}
           </div>
         {%- endif -%}
       </div>
@@ -254,10 +272,12 @@
 </section>
 
 {%- assign has_features = false -%}
-{%- for i in (1..3) -%}
-  {%- assign fkey = 'feat_' | append: i | append: '_title' -%}
-  {%- if section.settings[fkey] != blank -%}{%- assign has_features = true -%}{%- endif -%}
-{%- endfor -%}
+{%- if section.settings.show_features -%}
+  {%- for i in (1..3) -%}
+    {%- assign fkey = 'feat_' | append: i | append: '_title' -%}
+    {%- if section.settings[fkey] != blank -%}{%- assign has_features = true -%}{%- endif -%}
+  {%- endfor -%}
+{%- endif -%}
 
 {%- if has_features -%}
 <section class="sph-features" aria-label="Key features">
@@ -407,6 +427,40 @@
   overflow: hidden;
   aspect-ratio: 1;
   background: var(--color-surface);
+}
+.sph__badges {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  pointer-events: none;
+  z-index: 10;
+}
+.sph__badges .badge {
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: var(--radius-sm, 4px);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+}
+.sph__badges .badge--sale {
+  background: var(--color-sale, #e8260d);
+  color: var(--color-text-inverse, #ffffff);
+}
+.sph__badges .badge--new {
+  background: var(--color-primary, #111111);
+  color: var(--color-primary-text, #ffffff);
+}
+.sph__badges .badge--bestseller {
+  background: var(--color-gold, #c8941a);
+  color: #ffffff;
 }
 .sph__img {
   width: 100%; height: 100%;
@@ -1027,6 +1081,7 @@
     { "type": "text", "id": "trust_2", "label": "Trust item 2", "default": "Secure Checkout" },
     { "type": "text", "id": "trust_3", "label": "Trust item 3", "default": "30-Day Guarantee" },
     { "type": "header", "content": "Features strip" },
+    { "type": "checkbox", "id": "show_features", "label": "Show features strip", "default": true },
     { "type": "text",   "id": "feat_1_title", "label": "Feature 1 title", "default": "Waterproof" },
     { "type": "text",   "id": "feat_1_sub",   "label": "Feature 1 subtitle", "default": "Durable Materials" },
     { "type": "select", "id": "feat_1_icon",  "label": "Feature 1 icon", "options": [
