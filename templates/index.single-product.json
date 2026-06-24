@@ -64,7 +64,60 @@
         "reviews_title": "Reviews",
         "faq_title": "FAQ"
       }
+    },
+    "promo_banner": {
+      "type": "promo-banner",
+      "settings": {
+        "eyebrow": "Explore More",
+        "heading": "Elevate Every Moment",
+        "text": "From self-care rituals to luxury home essentials — discover products that make every day feel special.",
+        "bg_color": "#0d2318",
+        "accent_color": "#7dc98f",
+        "overlay": 0.5,
+        "min_height": 480,
+        "text_align": "center",
+        "focal_point": "center",
+        "cta_1_label": "Shop Now"
+      }
+    },
+    "contact_form": {
+      "type": "contact-form",
+      "settings": {
+        "eyebrow": "Support",
+        "title": "Get In Touch",
+        "subtitle": "We're here to help. Send us a message and we'll respond within 24 hours.",
+        "button_text": "Send Message",
+        "rows": 5,
+        "name_placeholder": "Your full name",
+        "email_placeholder": "your@email.com",
+        "message_placeholder": "How can we help you today?",
+        "show_info": true,
+        "info_heading": "We'd Love to Hear From You",
+        "info_text": "Questions about your order, products, or anything else? Our customer happiness team is standing by.",
+        "email": "info@bodyluxcare.com",
+        "response_time": "Within 24 hours, Monday – Friday",
+        "show_trading_name": false
+      }
+    },
+    "newsletter_bar": {
+      "type": "newsletter-bar",
+      "settings": {
+        "eyebrow": "Stay in the loop",
+        "heading": "Join the Community",
+        "subtext": "Be first to know about new arrivals, exclusive offers, and our latest campaigns.",
+        "placeholder": "Enter your email address",
+        "button": "Subscribe",
+        "success_msg": "You're in! Check your inbox for a welcome gift.",
+        "privacy_note": "No spam. Unsubscribe anytime. We respect your privacy.",
+        "bg_color": "#f5f3f0",
+        "text_color": "#111111"
+      }
     }
   },
-  "order": ["single_product_home"]
+  "order": [
+    "single_product_home",
+    "promo_banner",
+    "contact_form",
+    "newsletter_bar"
+  ]
 }

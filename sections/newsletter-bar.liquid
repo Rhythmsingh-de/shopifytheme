@@ -1,5 +1,4 @@
-
-<section class="newsletter-bar">
+<section class="newsletter-bar" style="background:{{ section.settings.bg_color | default: 'var(--color-surface-2, #f5f3f0)' }};color:{{ section.settings.text_color | default: 'var(--color-text, #111111)' }};">
   <div class="page-w">
     {% if section.settings.eyebrow != blank %}
       <span class="label-eyebrow" style="display:block;margin-bottom:10px">{{ section.settings.eyebrow }}</span>
@@ -31,6 +30,73 @@
   </div>
 </section>
 
+<style>
+.newsletter-bar {
+  padding: clamp(48px, 6vw, 80px) 0;
+  text-align: center;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+.newsletter-bar h2 {
+  font-family: var(--font-display, inherit);
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: var(--sp-2, 8px);
+}
+.newsletter-bar p {
+  opacity: 0.85;
+  max-width: 55ch;
+  margin: 0 auto var(--sp-6, 24px);
+  font-size: var(--text-sm, 14px);
+  line-height: 1.6;
+}
+.newsletter-form {
+  display: flex;
+  gap: var(--sp-2, 8px);
+  max-width: 480px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.newsletter-input {
+  flex: 1;
+  min-width: 240px;
+  height: 48px;
+  padding: 0 var(--sp-4, 16px);
+  border: 1.5px solid var(--color-border, #ddd);
+  border-radius: var(--radius-btn, var(--radius-full, 9999px));
+  background: var(--color-surface, #fff);
+  color: var(--color-text, #111);
+  outline: none;
+  transition: border-color var(--transition, 180ms ease);
+}
+.newsletter-input:focus {
+  border-color: var(--color-primary, #111);
+}
+.newsletter-bar .btn {
+  height: 48px;
+  padding-inline: var(--sp-6, 24px);
+  font-weight: 700;
+  border-radius: var(--radius-btn, var(--radius-full, 9999px));
+  background: var(--color-primary, #111);
+  color: var(--color-text-inverse, #fff);
+  border: none;
+  cursor: pointer;
+  transition: background var(--transition, 180ms ease);
+}
+.newsletter-bar .btn:hover {
+  background: var(--color-primary-hover, #333);
+}
+.label-eyebrow {
+  font-size: var(--text-xs, 12px);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  opacity: 0.7;
+}
+</style>
+
 {% schema %}
 {
   "name": "Newsletter Bar",
@@ -41,7 +107,10 @@
     {"type":"text","id":"placeholder","label":"Input placeholder","default":"Enter your email address"},
     {"type":"text","id":"button","label":"Button text","default":"Subscribe"},
     {"type":"text","id":"success_msg","label":"Success message","default":"You're in! Check your inbox for a welcome gift."},
-    {"type":"text","id":"privacy_note","label":"Privacy note","default":"No spam. Unsubscribe anytime. We respect your privacy."}
+    {"type":"text","id":"privacy_note","label":"Privacy note","default":"No spam. Unsubscribe anytime. We respect your privacy."},
+    {"type":"header","content":"Design Customization"},
+    {"type":"color","id":"bg_color","label":"Background color","default":"#f5f3f0"},
+    {"type":"color","id":"text_color","label":"Text color","default":"#111111"}
   ],
   "presets":[{"name":"Newsletter Bar"}]
 }

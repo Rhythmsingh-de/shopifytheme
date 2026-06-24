@@ -1,0 +1,31 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "settings": {}
+    },
+    "contact_form": {
+      "type": "contact-form",
+      "settings": {
+        "eyebrow": "Support",
+        "title": "Get In Touch",
+        "subtitle": "We're here to help. Send us a message and we'll respond within 24 hours.",
+        "button_text": "Send Message",
+        "rows": 5,
+        "name_placeholder": "Your full name",
+        "email_placeholder": "your@email.com",
+        "message_placeholder": "How can we help you today?",
+        "show_info": true,
+        "info_heading": "We'd Love to Hear From You",
+        "info_text": "Questions about your order, products, or anything else? Our customer happiness team is standing by.",
+        "email": "info@bodyluxcare.com",
+        "response_time": "Within 24 hours, Monday – Friday",
+        "show_trading_name": false
+      }
+    }
+  },
+  "order": [
+    "main",
+    "contact_form"
+  ]
+}
