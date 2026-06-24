@@ -408,20 +408,28 @@
 
   /* ─────────── 3D TILT ─────────── */
   if(window.matchMedia('(hover:hover)').matches){
-    document.addEventListener('mousemove',function(e){
-      var card=e.target.closest('.prod-card, .fp__media-slider');if(!card)return;
-      var r=card.getBoundingClientRect();
-      var x=(e.clientX-r.left)/r.width-0.5;var y=(e.clientY-r.top)/r.height-0.5;
-      if (card.classList.contains('prod-card')) {
-        card.style.transform='perspective(900px) rotateY('+(x*10)+'deg) rotateX('+(-y*8)+'deg) translateY(-6px)';
-      } else {
-        card.style.transform='perspective(900px) rotateY('+(x*6)+'deg) rotateX('+(-y*5)+'deg)';
+    document.addEventListener('mouseover', function(e) {
+      var card = e.target.closest('.prod-card, .fp__media-slider');
+      if (!card) return;
+      if (!card.dataset.tiltInit) {
+        card.dataset.tiltInit = 'true';
+        card.addEventListener('mousemove', function(e) {
+          var r=card.getBoundingClientRect();
+          var x=(e.clientX-r.left)/r.width-0.5;
+          var y=(e.clientY-r.top)/r.height-0.5;
+          card.style.transition = 'none';
+          if (card.classList.contains('prod-card')) {
+            card.style.transform='perspective(900px) rotateY('+(x*10)+'deg) rotateX('+(-y*8)+'deg) translateY(-6px)';
+          } else {
+            card.style.transform='perspective(900px) rotateY('+(x*6)+'deg) rotateX('+(-y*5)+'deg)';
+          }
+        });
+        card.addEventListener('mouseleave', function() {
+          card.style.transition = 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)';
+          card.style.transform='';
+        });
       }
     });
-    document.addEventListener('mouseleave',function(e){
-      var card=e.target.closest('.prod-card, .fp__media-slider');
-      if(card)card.style.transform='';
-    },true);
   }
 
   /* ─────────── SCROLL REVEAL ─────────── */
@@ -466,7 +474,7 @@
   /* ─────────── INIT ─────────── */
   document.addEventListener('DOMContentLoaded',function(){
     _updateCartCount();
-    if(document.cookie.indexOf('blc_cookie=1')>-1)_activateTracking();
+    if(document.cookie.indexOf('blc_cookie_consent=accepted')>-1)_activateTracking();
   });
 
   /* ─────────── GLOBAL BLC NAMESPACE ─────────── */
@@ -478,16 +486,33 @@
     addToCart:addToCart,
     refreshCartDrawer:refreshCartDrawer,
     acceptCookies:function(){
-      document.cookie='blc_cookie=1;max-age=31536000;path=/;SameSite=Lax';
+      var expires=';max-age=31536000;path=/;SameSite=Lax';
+      document.cookie='blc_cookie=1'+expires;
+      document.cookie='blc_cookie_consent=accepted'+expires;
+      if (window.Shopify && window.Shopify.customerPrivacy) {
+        try { window.Shopify.customerPrivacy.setTrackingConsent(true, function() {}); } catch(_) {}
+      }
       var el=document.getElementById('cookie-consent');
-      if(el){el.classList.add('hidden');setTimeout(function(){el.remove();},400);}
-      if(window.dataLayer)window.dataLayer.push({event:'cookie_consent_accepted'});
+      if(el){
+        el.classList.add('is-hidden');
+        setTimeout(function(){el.setAttribute('hidden', '');},380);
+      }
+      if(window.dataLayer)window.dataLayer.push({event:'cookie_consent', consent_choice:'accepted'});
       _activateTracking();
     },
     declineCookies:function(){
-      document.cookie='blc_cookie=0;max-age=31536000;path=/;SameSite=Lax';
+      var expires=';max-age=31536000;path=/;SameSite=Lax';
+      document.cookie='blc_cookie=0'+expires;
+      document.cookie='blc_cookie_consent=declined'+expires;
+      if (window.Shopify && window.Shopify.customerPrivacy) {
+        try { window.Shopify.customerPrivacy.setTrackingConsent(false, function() {}); } catch(_) {}
+      }
       var el=document.getElementById('cookie-consent');
-      if(el){el.classList.add('hidden');setTimeout(function(){el.remove();},400);}
+      if(el){
+        el.classList.add('is-hidden');
+        setTimeout(function(){el.setAttribute('hidden', '');},380);
+      }
+      if(window.dataLayer)window.dataLayer.push({event:'cookie_consent', consent_choice:'declined'});
     }
   };
 })();

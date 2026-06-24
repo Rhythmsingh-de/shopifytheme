@@ -124,13 +124,13 @@
 
 <style>
 .site-footer {
-  background: var(--color-footer-bg, #111111);
-  color: var(--color-footer-text, #ffffff);
+  background: {{ section.settings.bg_color | default: 'var(--color-footer-bg, #111111)' }};
+  color: {{ section.settings.text_color | default: 'var(--color-footer-text, #ffffff)' }};
   padding-block: var(--sp-16) var(--sp-8);
-  margin-top: var(--sp-16);
+  margin-top: 0;
 }
 .site-footer a {
-  color: var(--color-footer-text, #ffffff);
+  color: {{ section.settings.text_color | default: 'var(--color-footer-text, #ffffff)' }};
   text-decoration: none;
   opacity: 0.75;
   transition: opacity var(--trans-base);
@@ -290,6 +290,9 @@
   "settings": [
     { "type": "image_picker", "id": "logo",    "label": "Footer logo (optional, overrides shop name text)" },
     { "type": "text",        "id": "tagline",  "label": "Brand tagline",   "default": "Premium wellness products for you, your home & your pets." },
+    { "type": "header", "content": "Design Settings" },
+    { "type": "color", "id": "bg_color",       "label": "Background color", "default": "#111111" },
+    { "type": "color", "id": "text_color",     "label": "Text color",       "default": "#ffffff" },
     { "type": "header", "content": "Social links" },
     { "type": "url", "id": "social_instagram", "label": "Instagram URL" },
     { "type": "url", "id": "social_facebook",  "label": "Facebook URL" },

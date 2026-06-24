@@ -1,4 +1,4 @@
-<section class="section email-capture-section" style="background:var(--color-text);color:var(--color-text-inverse)">
+<section class="section email-capture-section" style="background:{{ section.settings.bg_color | default: 'var(--color-text)' }};color:{{ section.settings.text_color | default: 'var(--color-text-inverse)' }};padding-top:{{ section.settings.padding_top | default: 80 }}px;padding-bottom:{{ section.settings.padding_bottom | default: 80 }}px;">
   <div class="container" style="max-width:680px;text-align:center">
     {%- if section.settings.eyebrow != blank -%}
       <p style="font-size:var(--text-xs);font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--color-accent-lite, #ffeed2);margin-bottom:var(--sp-3)" class="reveal">{{ section.settings.eyebrow }}</p>
@@ -53,7 +53,12 @@
     { "type": "textarea", "id": "subtitle",     "label": "Subtitle",         "default": "Join the BodyLuxCare family and be the first to hear about new arrivals, exclusive deals, and wellness tips." },
     { "type": "text",     "id": "placeholder",  "label": "Input placeholder","default": "Enter your email address" },
     { "type": "text",     "id": "button_text",  "label": "Button text",      "default": "Claim My 10% Off" },
-    { "type": "text",     "id": "disclaimer",   "label": "Disclaimer text",  "default": "No spam ever. Unsubscribe anytime. By subscribing you agree to our Privacy Policy." }
+    { "type": "text",     "id": "disclaimer",   "label": "Disclaimer text",  "default": "No spam ever. Unsubscribe anytime. By subscribing you agree to our Privacy Policy." },
+    { "type": "header",   "content": "Design Customization" },
+    { "type": "color",    "id": "bg_color",     "label": "Background color", "default": "#1a1a1a" },
+    { "type": "color",    "id": "text_color",   "label": "Text color",       "default": "#ffffff" },
+    { "type": "range",    "id": "padding_top",  "label": "Padding Top",      "min": 20, "max": 120, "step": 4, "default": 80, "unit": "px" },
+    { "type": "range",    "id": "padding_bottom","label": "Padding Bottom",   "min": 20, "max": 120, "step": 4, "default": 80, "unit": "px" }
   ],
   "presets": [{ "name": "Email Capture" }]
 }

@@ -22,8 +22,9 @@
 
           <div class="fp__media-slider" id="FpMediaSlider-{{ section.id }}">
             <div class="fp__slider-track" id="FpSliderTrack-{{ section.id }}">
-              {%- if product.images.size > 0 -%}
-                {%- for image in product.images limit: 5 -%}
+              {%- assign product_images = product.media | where: "media_type", "image" -%}
+              {%- if product_images.size > 0 -%}
+                {%- for image in product_images limit: 5 -%}
                   <div class="fp__slide {% if forloop.first %}is-active{% endif %}" data-index="{{ forloop.index0 }}">
                     <img
                       src="{{ image | image_url: width: 900 }}"
@@ -41,7 +42,7 @@
               {%- endif -%}
             </div>
             
-            {%- if product.images.size > 1 -%}
+            {%- if product_images.size > 1 -%}
               <button type="button" class="fp__slider-btn fp__slider-btn--prev" aria-label="Previous image" data-slider-prev>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
               </button>
@@ -50,7 +51,7 @@
               </button>
               
               <div class="fp__slider-dots">
-                {%- for image in product.images limit: 5 -%}
+                {%- for image in product_images limit: 5 -%}
                   <button type="button" class="fp__slider-dot {% if forloop.first %}is-active{% endif %}" data-dot-index="{{ forloop.index0 }}" aria-label="View slide {{ forloop.index }}"></button>
                 {%- endfor -%}
               </div>
@@ -139,7 +140,12 @@
 
   /* Media */
   .fp__media-wrap { position: relative; }
-  .fp__img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: var(--card-radius); }
+  .fp__img {
+    width: 100%;
+    height: 100%;
+    object-fit: {{ section.settings.image_fit | default: 'contain' }};
+    border-radius: var(--card-radius);
+  }
   .fp__badge {
     position: absolute; top: 16px; left: 16px;
     background: var(--color-primary); color: #fff;
@@ -255,7 +261,7 @@
   .fp__form { margin-bottom: 24px; }
   .fp__cta {
     display: block; width: 100%;
-    background: var(--color-primary); color: var(--color-primary-text);
+    background: var(--color-primary); color: var(--color-text-inverse, #ffffff);
     font-size: 1rem; font-weight: 700;
     letter-spacing: 0.04em; text-transform: uppercase;
     padding: 18px 24px; border-radius: var(--btn-radius, var(--radius-md));
@@ -263,7 +269,7 @@
     border: none;
     cursor: pointer;
   }
-  .fp__cta:hover:not(:disabled) { background: var(--color-primary-hover); transform: translateY(-1px); }
+  .fp__cta:hover:not(:disabled) { background: var(--color-primary-hover); color: var(--color-text-inverse, #ffffff); transform: translateY(-1px); }
   .fp__cta:active:not(:disabled) { transform: translateY(0); }
   .fp__cta:disabled { background: #ccc; cursor: not-allowed; }
 
@@ -329,6 +335,7 @@
     var currentIndex = 0;
 
     function showSlide(index) {
+      if (!slides.length) return;
       slides[currentIndex].classList.remove('is-active');
       if (dots.length) dots[currentIndex].classList.remove('is-active');
       
@@ -345,12 +352,14 @@
       prevBtn.addEventListener('click', function (e) {
         e.stopPropagation();
         showSlide(currentIndex - 1);
+        resetAutoplay();
       });
     }
     if (nextBtn) {
       nextBtn.addEventListener('click', function (e) {
         e.stopPropagation();
         showSlide(currentIndex + 1);
+        resetAutoplay();
       });
     }
 
@@ -358,8 +367,39 @@
       dot.addEventListener('click', function (e) {
         e.stopPropagation();
         showSlide(parseInt(dot.dataset.dotIndex));
+        resetAutoplay();
       });
     });
+
+    /* Autoplay logic */
+    var autoplayInterval = null;
+    var autoplayEnabled = {{ section.settings.enable_autoplay | default: true | json }};
+    var autoplaySpeed = {{ section.settings.autoplay_speed | default: 5 }} * 1000;
+
+    function startAutoplay() {
+      if (autoplayEnabled && slides.length > 1 && !autoplayInterval) {
+        autoplayInterval = setInterval(function () {
+          showSlide(currentIndex + 1);
+        }, autoplaySpeed);
+      }
+    }
+
+    function stopAutoplay() {
+      if (autoplayInterval) {
+        clearInterval(autoplayInterval);
+        autoplayInterval = null;
+      }
+    }
+
+    function resetAutoplay() {
+      stopAutoplay();
+      startAutoplay();
+    }
+
+    startAutoplay();
+
+    slider.addEventListener('mouseenter', stopAutoplay);
+    slider.addEventListener('mouseleave', startAutoplay);
   }
 }());
 </script>
@@ -374,6 +414,36 @@
       "type": "product",
       "id": "product",
       "label": "Product"
+    },
+    {
+      "type": "header",
+      "content": "Image Slider Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_autoplay",
+      "label": "Enable auto-slide",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "autoplay_speed",
+      "label": "Auto-slide interval (seconds)",
+      "min": 2,
+      "max": 10,
+      "step": 1,
+      "default": 5,
+      "unit": "s"
+    },
+    {
+      "type": "select",
+      "id": "image_fit",
+      "label": "Image fit mode",
+      "options": [
+        { "value": "cover", "label": "Cover (crop to fit)" },
+        { "value": "contain", "label": "Contain (show full image)" }
+      ],
+      "default": "contain"
     },
     {
       "type": "header",

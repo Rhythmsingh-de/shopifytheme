@@ -50,8 +50,6 @@
 
 <script>
 (function () {
-  var COOKIE_ACCEPT = 'blc_cookie_consent=accepted';
-  var COOKIE_DECLINE = 'blc_cookie_consent=declined';
   var EXPIRES = 365; /* days */
 
   function readConsent() {
@@ -66,8 +64,17 @@
   function writeConsent(value) {
     var d = new Date();
     d.setDate(d.getDate() + EXPIRES);
-    /* SameSite=Lax, no Secure flag needed for first-party */
-    document.cookie = 'blc_cookie_consent=' + value + '; expires=' + d.toUTCString() + '; path=/; SameSite=Lax';
+    var expires = '; expires=' + d.toUTCString() + '; path=/; SameSite=Lax';
+    document.cookie = 'blc_cookie_consent=' + value + expires;
+    document.cookie = 'blc_cookie=' + (value === 'accepted' ? '1' : '0') + expires;
+
+    if (window.Shopify && window.Shopify.customerPrivacy) {
+      try {
+        window.Shopify.customerPrivacy.setTrackingConsent(value === 'accepted', function() {});
+      } catch (e) {
+        console.warn('[BLC Cookie] Shopify Customer Privacy API error:', e);
+      }
+    }
   }
 
   function hideBanner(el) {
@@ -90,36 +97,44 @@
 
   var existing = readConsent();
   if (existing === 'accepted' || existing === 'declined') {
-    /* Already decided — never show again */
     el.remove();
     return;
   }
 
-  /* Show with a slight entrance delay so it doesn\'t flash on load */
   setTimeout(function () {
     el.removeAttribute('hidden');
-    /* Force reflow so the transition plays */
     void el.offsetWidth;
   }, 800);
 
   document.getElementById('cookie-accept').addEventListener('click', function () {
-    writeConsent('accepted');
-    pushConsentEvent('accepted');
-    hideBanner(el);
+    if (window.BLC && typeof window.BLC.acceptCookies === 'function') {
+      window.BLC.acceptCookies();
+    } else {
+      writeConsent('accepted');
+      pushConsentEvent('accepted');
+      hideBanner(el);
+    }
   });
 
   document.getElementById('cookie-decline').addEventListener('click', function () {
-    writeConsent('declined');
-    pushConsentEvent('declined');
-    hideBanner(el);
-  });
-
-  /* Keyboard: Escape closes (decline) */
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && !el.hasAttribute('hidden')) {
+    if (window.BLC && typeof window.BLC.declineCookies === 'function') {
+      window.BLC.declineCookies();
+    } else {
       writeConsent('declined');
       pushConsentEvent('declined');
       hideBanner(el);
+    }
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && !el.hasAttribute('hidden')) {
+      if (window.BLC && typeof window.BLC.declineCookies === 'function') {
+        window.BLC.declineCookies();
+      } else {
+        writeConsent('declined');
+        pushConsentEvent('declined');
+        hideBanner(el);
+      }
     }
   });
 })();
