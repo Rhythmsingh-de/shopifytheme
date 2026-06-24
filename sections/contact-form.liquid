@@ -1,4 +1,14 @@
-<section class="section contact-form-section" id="contact">
+{%- style -%}
+  #ContactSection-{{ section.id }} {
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+  #ContactSection-{{ section.id }} .contact-container {
+    max-width: {{ section.settings.max_width }}px;
+  }
+{%- endstyle -%}
+
+<section class="section contact-form-section" id="ContactSection-{{ section.id }}">
   <div class="container contact-container">
     
     <div class="section-head reveal">
@@ -8,6 +18,11 @@
       <h2 class="section-title">{{ section.settings.title | default: "Get In Touch" }}</h2>
       {%- if section.settings.subtitle != blank -%}
         <p class="section-subtitle">{{ section.settings.subtitle }}</p>
+      {%- endif -%}
+      {%- if page.content != blank -%}
+        <div class="contact-page-content rte">
+          {{ page.content }}
+        </div>
       {%- endif -%}
     </div>
 
@@ -273,6 +288,17 @@
   text-transform: uppercase;
   letter-spacing: 0.05em;
   border-radius: var(--radius-pill);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+.contact-form__submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+.contact-page-content {
+  margin-top: var(--sp-4);
+  line-height: 1.8;
+  color: var(--color-text-muted);
+  font-size: var(--text-base);
 }
 
 /* Success / Error Alerts */
@@ -362,3 +388,37 @@
   font-size: var(--text-sm);
 }
 </style>
+
+{% schema %}
+{
+  "name": "Contact Form",
+  "tag": "section",
+  "max_blocks": 10,
+  "settings": [
+    { "type": "text",     "id": "eyebrow",           "label": "Eyebrow",              "default": "Support" },
+    { "type": "text",     "id": "title",             "label": "Title",                "default": "Get In Touch" },
+    { "type": "textarea", "id": "subtitle",          "label": "Subtitle",             "default": "We're here to help. Send us a message and we'll respond within 24 hours." },
+    { "type": "text",     "id": "button_text",       "label": "Button text",          "default": "Send Message" },
+    { "type": "range",    "id": "rows",              "label": "Textarea rows",        "min": 3, "max": 10, "step": 1, "default": 5 },
+    { "type": "text",     "id": "name_placeholder",  "label": "Name placeholder",     "default": "Your full name" },
+    { "type": "text",     "id": "email_placeholder", "label": "Email placeholder",    "default": "your@email.com" },
+    { "type": "text",     "id": "message_placeholder","label": "Message placeholder", "default": "How can we help you today?" },
+    { "type": "header",   "content": "Contact Info Panel" },
+    { "type": "checkbox", "id": "show_info",         "label": "Show contact info",    "default": true },
+    { "type": "text",     "id": "info_heading",      "label": "Info heading",         "default": "We'd Love to Hear From You" },
+    { "type": "textarea", "id": "info_text",         "label": "Info body text",       "default": "Questions about your order, products, or anything else? Our customer happiness team is standing by." },
+    { "type": "text",     "id": "email",             "label": "Contact email",        "default": "info@bodyluxcare.com" },
+    { "type": "text",     "id": "response_time",     "label": "Response time text",   "default": "Within 24 hours, Monday – Friday" },
+    { "type": "checkbox", "id": "show_trading_name", "label": "Show trading/address details", "default": false },
+    { "type": "header",   "content": "Section Spacing & Styles" },
+    { "type": "range",    "id": "padding_top",       "label": "Padding Top",          "min": 0, "max": 120, "step": 4, "default": 60, "unit": "px" },
+    { "type": "range",    "id": "padding_bottom",    "label": "Padding Bottom",       "min": 0, "max": 120, "step": 4, "default": 60, "unit": "px" },
+    { "type": "range",    "id": "max_width",         "label": "Container Max Width",  "min": 600, "max": 1200, "step": 50, "default": 900, "unit": "px" }
+  ],
+  "blocks": [{ "type": "subject", "name": "Subject Option", "settings": [
+    { "type": "text", "id": "label", "label": "Option label", "default": "General Inquiry" },
+    { "type": "text", "id": "value", "label": "Option value", "default": "General Inquiry" }
+  ]}],
+  "presets": [{ "name": "Contact Form" }]
+}
+{% endschema %}
