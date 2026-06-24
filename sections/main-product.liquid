@@ -168,7 +168,7 @@
               <span class="atc-btn-text">{{ section.settings.atc_label | default: 'Add to Cart' }} &mdash; {{ price | money }}</span>
             </button>
             {%- if section.settings.show_buy_now -%}
-              <a href="/checkout?variant={{ first_variant.id }}&quantity=1"
+              <a href="/cart/{{ first_variant.id }}:1"
                 class="btn btn--ghost btn--full btn--lg"
                 data-buy-now>
                 {{ section.settings.buy_label | default: 'Buy It Now' }}

@@ -163,7 +163,7 @@
 
   /* ─────────── BUY NOW (DIRECT CHECKOUT) ─────────── */
   document.addEventListener('click', function(e) {
-    var btn = e.target.closest('[data-card-buy-now], .sph__btn-buy, [data-buy-now], .pf__buy, a[href*="/checkout?variant="]');
+    var btn = e.target.closest('[data-card-buy-now], .sph__btn-buy, [data-buy-now], .pf__buy');
     if (!btn) return;
 
     var href = btn.getAttribute('href') || '';
@@ -174,6 +174,13 @@
       var urlParams = new URLSearchParams(href.split('?')[1]);
       vid = urlParams.get('variant');
       qty = parseInt(urlParams.get('quantity')) || 1;
+    } else if (href.includes('/cart/')) {
+      var parts = href.split('/cart/')[1];
+      if (parts) {
+        var subparts = parts.split('?')[0].split(':');
+        vid = subparts[0];
+        qty = parseInt(subparts[1]) || 1;
+      }
     }
 
     var wrap = btn.closest('[data-product-detail]');
@@ -188,37 +195,16 @@
 
     if (!vid) return;
 
-    e.preventDefault();
-
-    btn.disabled = true;
-    btn._origText = btn._origText || btn.textContent || btn.value;
-    btn.textContent = 'Processing…';
-
     var isEditor = window.Shopify && window.Shopify.designMode;
-
-    fetch('/cart/add.js', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
-      body: JSON.stringify({ id: parseInt(vid, 10), quantity: qty })
-    })
-    .then(function(r) { return r.json(); })
-    .then(function(item) {
-      if (item.status) throw new Error(item.description || 'Error');
+    if (isEditor) {
+      e.preventDefault();
+      btn.disabled = true;
+      btn.textContent = 'Redirecting to Cart…';
+      window.location.href = '/cart';
+    } else {
       btn.textContent = 'Redirecting…';
-      if (isEditor) {
-        window.location.href = '/cart';
-      } else {
-        window.location.href = '/checkout';
-      }
-    })
-    .catch(function(err) {
-      console.error('[BLC Buy Now]', err);
-      if (isEditor) {
-        window.location.href = '/cart';
-      } else {
-        window.location.href = href || '/checkout';
-      }
-    });
+      btn.setAttribute('href', '/cart/' + vid + ':' + qty);
+    }
   });
 
   /* ─────────── CART REMOVE ─────────── */
@@ -330,10 +316,10 @@
     if(detail){
       var atc=detail.querySelector('[data-add-to-cart]');
       if(atc)atc.dataset.qty=val;
-      var buyBtn=detail.querySelector('a[href*="/checkout"]');
+      var buyBtn=detail.querySelector('[data-buy-now], [data-card-buy-now], .sph__btn-buy, .pf__buy');
       if(buyBtn){
         var vid=atc?atc.dataset.variantId:null;
-        if(vid)buyBtn.href='/checkout?variant='+vid+'&quantity='+val;
+        if(vid)buyBtn.href='/cart/'+vid+':'+val;
       }
     }
   });
@@ -382,7 +368,7 @@
     
     // Update Buy Now link href
     var buy=card.querySelector('[data-card-buy-now]');
-    if(buy)buy.href='/checkout?variant='+vid+'&quantity=1';
+    if(buy)buy.href='/cart/'+vid+':1';
   });
 
   function _syncVariant(form){
@@ -453,12 +439,12 @@
         }
 
         // Update Buy Now link href
-        var buyBtn=form.querySelector('a[href*="/checkout"]');
+        var buyBtn=form.querySelector('[data-buy-now], [data-card-buy-now], .sph__btn-buy, .pf__buy');
         if(buyBtn){
           var currentQty=1;
           var qtyInp=form.querySelector('[data-qty-input],.product-qty__val,.sph__qty-val');
           if(qtyInp)currentQty=parseInt(qtyInp.value)||1;
-          buyBtn.href='/checkout?variant='+match.id+'&quantity='+currentQty;
+          buyBtn.href='/cart/'+match.id+':'+currentQty;
         }
       }
     }catch(ex){console.error('[BLC variants]',ex);}

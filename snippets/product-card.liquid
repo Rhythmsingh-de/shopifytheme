@@ -112,7 +112,7 @@
             <span class="atc-btn-text">{% if card_product.variants.first.available %}Add to Cart{% else %}Sold Out{% endif %}</span>
           </button>
           {%- if card_product.variants.first.available -%}
-            <a href="/checkout?variant={{ card_product.variants.first.id }}&quantity=1"
+            <a href="/cart/{{ card_product.variants.first.id }}:1"
                class="btn btn--ghost btn--sm prod-card__btn-buy"
                data-card-buy-now
                aria-label="Buy {{ card_product.title | escape }} now">

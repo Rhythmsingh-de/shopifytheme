@@ -151,7 +151,7 @@
             aria-label="Add {{ sp.title | escape }} to cart">
             <span class="atc-btn-text">{{ section.settings.atc_label | default: 'Add to Cart — Order Now' }}</span>
           </button>
-          <a href="/checkout?variant={{ fv.id }}&quantity=1"
+          <a href="/cart/{{ fv.id }}:1"
             class="btn sph__btn-buy">
             {{ section.settings.buy_label | default: 'Buy Now' }}
           </a>

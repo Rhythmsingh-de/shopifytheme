@@ -107,7 +107,7 @@
       </button>
 
       {%- if pf_fv.available -%}
-        <a href="/checkout?variant={{ pf_fv.id }}&quantity=1"
+        <a href="/cart/{{ pf_fv.id }}:1"
           class="btn btn--secondary pf__buy"
           aria-label="{{ 'products.product.buy_now' | t }}">
           {{ 'products.product.buy_now' | t }}
