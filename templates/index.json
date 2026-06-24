@@ -18,23 +18,6 @@
         "text_color": "#ffffff"
       }
     },
-    "featured_product": {
-      "type": "featured-product",
-      "settings": {
-        "product": "outdoor-large-capacity-messenger-bag-men-chest-bag-simple-fashion-men-bag-shoulder-bag",
-        "show_reviews_summary": true,
-        "show_sale_badge": true,
-        "show_scarcity_bar": true,
-        "show_trust_badges": true,
-        "review_count": "4,812",
-        "cta_text": "Add to Cart — Order Now",
-        "delivery_text": "Free express shipping on all orders",
-        "returns_text": "30-day risk-free returns",
-        "privacy_text": "Secure & encrypted checkout",
-        "section_padding": 56,
-        "scarcity_max": 10
-      }
-    },
     "trust_bar": {
       "type": "trust-bar",
       "settings": {
@@ -56,10 +39,78 @@
         "padding_sides": 20
       }
     },
-    "faq": {
-      "type": "faq",
+    "single_product_home_4t7cKi": {
+      "type": "single-product-home",
+      "blocks": {
+        "review_i4mGUR": {
+          "type": "review",
+          "settings": {
+            "name": "Sarah M.",
+            "rating": 5,
+            "body": "Absolutely love this! Fits perfectly and looks amazing."
+          }
+        },
+        "review_9FqWhR": {
+          "type": "review",
+          "settings": {
+            "name": "Mike L.",
+            "rating": 5,
+            "body": "Best purchase I've made this year. Highly recommend."
+          }
+        },
+        "faq_R6gXkh": {
+          "type": "faq",
+          "settings": {
+            "question": "Key questions about this product?",
+            "answer": "<p>This product is designed for maximum comfort and performance.</p>"
+          }
+        },
+        "faq_RATjKb": {
+          "type": "faq",
+          "settings": {
+            "question": "How is the quality?",
+            "answer": "<p>We use only premium materials tested for durability and longevity.</p>"
+          }
+        },
+        "faq_KQWRCn": {
+          "type": "faq",
+          "settings": {
+            "question": "What are the shipping options?",
+            "answer": "<p>Free shipping on all orders over $75. Standard delivery 5–10 business days.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "review_i4mGUR",
+        "review_9FqWhR",
+        "faq_R6gXkh",
+        "faq_RATjKb",
+        "faq_KQWRCn"
+      ],
+      "name": "Single Product Home",
       "settings": {
-        "heading": "Frequently Asked Questions"
+        "product": "outdoor-large-capacity-messenger-bag-men-chest-bag-simple-fashion-men-bag-shoulder-bag",
+        "eyebrow": "APEX TRAILBLAZER BACKPACK:",
+        "heading": "Adventure Ready",
+        "subheading": "Durable, waterproof, and ergonomic for your toughest hikes.",
+        "atc_label": "Add to Cart — Order Now",
+        "buy_label": "Buy Now",
+        "show_demo_rating": true,
+        "show_payment_icons": true,
+        "trust_1": "Free Shipping",
+        "trust_2": "Secure Checkout",
+        "trust_3": "30-Day Guarantee",
+        "feat_1_title": "Waterproof",
+        "feat_1_sub": "Durable Materials",
+        "feat_1_icon": "water",
+        "feat_2_title": "Ultralight",
+        "feat_2_sub": "30L Capacity",
+        "feat_2_icon": "leaf",
+        "feat_3_title": "Ergonomic",
+        "feat_3_sub": "Comfort Straps",
+        "feat_3_icon": "bag",
+        "reviews_title": "Reviews",
+        "faq_title": "FAQ"
       }
     },
     "email_capture": {
@@ -70,16 +121,19 @@
         "subtitle": "Join the BodyLuxCare family and be the first to hear about new arrivals, exclusive deals, and wellness tips.",
         "placeholder": "Enter your email address",
         "button_text": "Claim My 10% Off",
-        "disclaimer": "No spam ever. Unsubscribe anytime. By subscribing you agree to our Privacy Policy."
+        "disclaimer": "No spam ever. Unsubscribe anytime. By subscribing you agree to our Privacy Policy.",
+        "bg_color": "#1a1a1a",
+        "text_color": "#ffffff",
+        "padding_top": 80,
+        "padding_bottom": 80
       }
     }
   },
   "order": [
     "urgency_banner",
-    "featured_product",
     "trust_bar",
     "trust_badges",
-    "faq",
+    "single_product_home_4t7cKi",
     "email_capture"
   ]
 }
