@@ -105,23 +105,21 @@
           {%- endif -%}
         {%- endif -%}
 
-        {%- if settings.card_show_rating -%}
-          {%- assign rating_val = sp.metafields.reviews.rating.value | plus: 0 -%}
-          {%- assign rating_count = sp.metafields.reviews.rating_count.value | plus: 0 -%}
-          {%- if rating_val > 0 or section.settings.show_demo_rating -%}
-            {%- unless rating_val > 0 -%}{%- assign rating_val = 4.8 -%}{%- assign rating_count = 1150 -%}{%- endunless -%}
-            <div class="sph__stars" aria-label="{{ rating_val }} out of 5 stars">
-              {%- assign full = rating_val | floor -%}
-              {%- for i in (1..5) -%}
-                <svg width="14" height="14" viewBox="0 0 24 24"
-                  fill="{% if i <= full %}#f5a623{% else %}none{% endif %}"
-                  stroke="#f5a623" stroke-width="1.5" aria-hidden="true">
-                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-                </svg>
-              {%- endfor -%}
-              <span class="sph__rating-label">{{ rating_val }} | {{ rating_count }} + Reviews</span>
-            </div>
-          {%- endif -%}
+        {%- assign rating_val = sp.metafields.reviews.rating.value | plus: 0 -%}
+        {%- assign rating_count = sp.metafields.reviews.rating_count.value | plus: 0 -%}
+        {%- if rating_val > 0 or section.settings.show_demo_rating -%}
+          {%- unless rating_val > 0 -%}{%- assign rating_val = 4.8 -%}{%- assign rating_count = 1150 -%}{%- endunless -%}
+          <div class="sph__stars" aria-label="{{ rating_val }} out of 5 stars">
+            {%- assign full = rating_val | floor -%}
+            {%- for i in (1..5) -%}
+              <svg width="14" height="14" viewBox="0 0 24 24"
+                fill="{% if i <= full %}#f5a623{% else %}none{% endif %}"
+                stroke="#f5a623" stroke-width="1.5" aria-hidden="true">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+              </svg>
+            {%- endfor -%}
+            <span class="sph__rating-label">{{ rating_val }} | {{ rating_count }} + Reviews</span>
+          </div>
         {%- endif -%}
       </div>
 
@@ -301,83 +299,89 @@
 </section>
 {%- endif -%}
 
-<section class="sph-bottom section-spacing">
+{%- if section.settings.show_reviews or section.settings.show_faq -%}
+<section class="sph-bottom section-spacing sph-bottom--align-{{ section.settings.bottom_alignment | default: 'left' }}">
   <div class="container">
-    <div class="sph-bottom__grid">
+    <div class="sph-bottom__grid {% if section.settings.show_reviews and section.settings.show_faq %}sph-bottom__grid--split{% else %}sph-bottom__grid--full{% endif %}">
 
-      <div class="sph-reviews">
-        <h2 class="sph-section-title">{{ section.settings.reviews_title | default: 'Reviews' }}</h2>
+      {%- if section.settings.show_reviews -%}
+        <div class="sph-reviews">
+          <h2 class="sph-section-title">{{ section.settings.reviews_title | default: 'Reviews' }}</h2>
 
-        {%- if sp != blank -%}
-          <div id="shopify-product-reviews" data-id="{{ sp.id }}"></div>
-        {%- endif -%}
+          {%- if sp != blank -%}
+            <div id="shopify-product-reviews" data-id="{{ sp.id }}"></div>
+          {%- endif -%}
 
-        {%- if section.blocks.size > 0 -%}
-          <div class="sph-review-cards">
-            {%- for block in section.blocks -%}
-              {%- if block.type == 'review' -%}
-                <div class="sph-review-card" {{ block.shopify_attributes }}>
-                  <div class="sph-review-card__head">
-                    {%- if block.settings.avatar != blank -%}
-                      {%- assign avatar_alt = block.settings.name | escape -%}
-                      {{ block.settings.avatar | image_url: width: 80 | image_tag: widths: '40,80', loading: 'lazy', decoding: 'async', width: 40, height: 40, class: 'sph-review-card__avatar', alt: avatar_alt }}
-                    {%- else -%}
-                      <div class="sph-review-card__avatar sph-review-card__avatar--initials">
-                        {{ block.settings.name | slice: 0, 1 | upcase }}
+          {%- if section.blocks.size > 0 -%}
+            <div class="sph-review-cards">
+              {%- for block in section.blocks -%}
+                {%- if block.type == 'review' -%}
+                  <div class="sph-review-card" {{ block.shopify_attributes }}>
+                    <div class="sph-review-card__head">
+                      {%- if block.settings.avatar != blank -%}
+                        {%- assign avatar_alt = block.settings.name | escape -%}
+                        {{ block.settings.avatar | image_url: width: 80 | image_tag: widths: '40,80', loading: 'lazy', decoding: 'async', width: 40, height: 40, class: 'sph-review-card__avatar', alt: avatar_alt }}
+                      {%- else -%}
+                        <div class="sph-review-card__avatar sph-review-card__avatar--initials">
+                          {{ block.settings.name | slice: 0, 1 | upcase }}
+                        </div>
+                      {%- endif -%}
+                      <div>
+                        <strong class="sph-review-card__name">{{ block.settings.name | default: 'Customer' }}</strong>
+                        <div class="sph-review-card__stars" aria-label="{{ block.settings.rating }} stars">
+                          {%- assign r = block.settings.rating | default: 5 | plus: 0 -%}
+                          {%- for i in (1..5) -%}
+                            <svg width="12" height="12" viewBox="0 0 24 24"
+                              fill="{% if i <= r %}#f5a623{% else %}none{% endif %}"
+                              stroke="#f5a623" stroke-width="1.5" aria-hidden="true">
+                              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                            </svg>
+                          {%- endfor -%}
+                        </div>
+                      </div>
+                    </div>
+                    {%- if block.settings.images != blank -%}
+                      <div class="sph-review-card__imgs">
+                        {{ block.settings.images | image_url: width: 200 | image_tag: widths: '60,120,200', loading: 'lazy', decoding: 'async', width: 60, height: 60, alt: 'Review photo' }}
                       </div>
                     {%- endif -%}
-                    <div>
-                      <strong class="sph-review-card__name">{{ block.settings.name | default: 'Customer' }}</strong>
-                      <div class="sph-review-card__stars" aria-label="{{ block.settings.rating }} stars">
-                        {%- assign r = block.settings.rating | default: 5 | plus: 0 -%}
-                        {%- for i in (1..5) -%}
-                          <svg width="12" height="12" viewBox="0 0 24 24"
-                            fill="{% if i <= r %}#f5a623{% else %}none{% endif %}"
-                            stroke="#f5a623" stroke-width="1.5" aria-hidden="true">
-                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-                          </svg>
-                        {%- endfor -%}
-                      </div>
-                    </div>
+                    {%- if block.settings.body != blank -%}
+                      <p class="sph-review-card__body">{{ block.settings.body }}</p>
+                    {%- endif -%}
                   </div>
-                  {%- if block.settings.images != blank -%}
-                    <div class="sph-review-card__imgs">
-                      {{ block.settings.images | image_url: width: 200 | image_tag: widths: '60,120,200', loading: 'lazy', decoding: 'async', width: 60, height: 60, alt: 'Review photo' }}
-                    </div>
-                  {%- endif -%}
-                  {%- if block.settings.body != blank -%}
-                    <p class="sph-review-card__body">{{ block.settings.body }}</p>
-                  {%- endif -%}
-                </div>
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      {%- if section.settings.show_faq -%}
+        <div class="sph-faq">
+          <h2 class="sph-section-title">{{ section.settings.faq_title | default: 'FAQ' }}</h2>
+          <div class="sph-faq__list">
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'faq' -%}
+                <details class="sph-faq__item" {{ block.shopify_attributes }}>
+                  <summary class="sph-faq__q">
+                    {{ block.settings.question }}
+                    <svg class="sph-faq__chevron" width="16" height="16" viewBox="0 0 24 24"
+                      fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                      <polyline points="6 9 12 15 18 9"/>
+                    </svg>
+                  </summary>
+                  <div class="sph-faq__a">{{ block.settings.answer }}</div>
+                </details>
               {%- endif -%}
             {%- endfor -%}
           </div>
-        {%- endif -%}
-      </div>
-
-      <div class="sph-faq">
-        <h2 class="sph-section-title">{{ section.settings.faq_title | default: 'FAQ' }}</h2>
-        <div class="sph-faq__list">
-          {%- for block in section.blocks -%}
-            {%- if block.type == 'faq' -%}
-              <details class="sph-faq__item" {{ block.shopify_attributes }}>
-                <summary class="sph-faq__q">
-                  {{ block.settings.question }}
-                  <svg class="sph-faq__chevron" width="16" height="16" viewBox="0 0 24 24"
-                    fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                    <polyline points="6 9 12 15 18 9"/>
-                  </svg>
-                </summary>
-                <div class="sph-faq__a">{{ block.settings.answer }}</div>
-              </details>
-            {%- endif -%}
-          {%- endfor -%}
         </div>
-      </div>
+      {%- endif -%}
 
     </div>
   </div>
 </section>
+{%- endif -%}
 
 <style>
 /* ── Hero layout ── */
@@ -740,8 +744,44 @@
   gap: clamp(32px, 4vw, 80px);
   align-items: start;
 }
+.sph-bottom__grid--split {
+  grid-template-columns: 1fr 1fr;
+}
+.sph-bottom__grid--full {
+  grid-template-columns: 1fr;
+  max-width: 680px;
+  margin: 0 auto;
+}
 @media (max-width: 768px) {
-  .sph-bottom__grid { grid-template-columns: 1fr; }
+  .sph-bottom__grid, .sph-bottom__grid--split { grid-template-columns: 1fr; }
+}
+
+/* Alignment options */
+.sph-bottom--align-center {
+  text-align: center;
+}
+.sph-bottom--align-center .sph-review-card__head {
+  justify-content: center;
+}
+.sph-bottom--align-center .sph-review-card__stars {
+  display: flex;
+  justify-content: center;
+}
+.sph-bottom--align-center .sph-faq__q {
+  justify-content: center;
+}
+.sph-bottom--align-right {
+  text-align: right;
+}
+.sph-bottom--align-right .sph-review-card__head {
+  justify-content: flex-end;
+}
+.sph-bottom--align-right .sph-review-card__stars {
+  display: flex;
+  justify-content: flex-end;
+}
+.sph-bottom--align-right .sph-faq__q {
+  justify-content: flex-end;
 }
 .sph-section-title {
   font-family: var(--font-display, Georgia, serif);
@@ -997,6 +1037,13 @@
     { "type": "checkbox", "id": "description_open_desktop",  "label": "Open by default on desktop",     "default": true },
     { "type": "checkbox", "id": "description_open_mobile",   "label": "Open by default on mobile",      "default": false },
     { "type": "header", "content": "Reviews & FAQ" },
+    { "type": "checkbox", "id": "show_reviews", "label": "Show reviews section", "default": true },
+    { "type": "checkbox", "id": "show_faq", "label": "Show FAQ section", "default": true },
+    { "type": "select", "id": "bottom_alignment", "label": "Reviews & FAQ text alignment", "options": [
+      { "value": "left", "label": "Left" },
+      { "value": "center", "label": "Center" },
+      { "value": "right", "label": "Right" }
+    ], "default": "left" },
     { "type": "text", "id": "reviews_title", "label": "Reviews section title", "default": "Reviews" },
     { "type": "text", "id": "faq_title",     "label": "FAQ section title",     "default": "FAQ" }
   ],
