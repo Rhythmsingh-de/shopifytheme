@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "urgency_banner": {
@@ -38,6 +47,7 @@
           "settings": {
             "name": "Sarah M.",
             "rating": 5,
+            "images": "shopify://shop_images/6F8AAAC28278224F3545AFBD9E2F5DB0.jpg",
             "body": "Absolutely love this! Fits perfectly and looks amazing."
           }
         },
@@ -46,6 +56,26 @@
           "settings": {
             "name": "Mike L.",
             "rating": 5,
+            "images": "shopify://shop_images/D983222A318051C6B717E69E37DB4BE8.jpg",
+            "body": "Best purchase I've made this year. Highly recommend."
+          }
+        },
+        "review_3jVgVU": {
+          "type": "review",
+          "settings": {
+            "name": "Jania",
+            "rating": 5,
+            "images": "shopify://shop_images/0AE1E913C8251F26D5575CFC22032065.jpg",
+            "body": "Best purchase I've made this year. Highly recommend."
+          }
+        },
+        "review_emkVge": {
+          "type": "review",
+          "settings": {
+            "name": "Mike L.",
+            "rating": 3,
+            "avatar": "shopify://shop_images/7740EF82832D89E11E204E2E60CA87E9.png",
+            "images": "shopify://shop_images/1D4674B82B94C26DB6013CCEFDF05E5E.jpg",
             "body": "Best purchase I've made this year. Highly recommend."
           }
         },
@@ -74,6 +104,8 @@
       "block_order": [
         "review_i4mGUR",
         "review_9FqWhR",
+        "review_3jVgVU",
+        "review_emkVge",
         "faq_R6gXkh",
         "faq_RATjKb",
         "faq_KQWRCn"
@@ -101,40 +133,6 @@
         "feat_3_icon": "bag",
         "reviews_title": "Reviews",
         "faq_title": "FAQ"
-      }
-    },
-    "promo_banner": {
-      "type": "promo-banner",
-      "settings": {
-        "eyebrow": "Explore More",
-        "heading": "Elevate Every Moment",
-        "text": "From self-care rituals to luxury home essentials — discover products that make every day feel special.",
-        "bg_color": "#0d2318",
-        "accent_color": "#7dc98f",
-        "overlay": 0.5,
-        "min_height": 480,
-        "text_align": "center",
-        "focal_point": "center",
-        "cta_1_label": "Shop Now"
-      }
-    },
-    "contact_form": {
-      "type": "contact-form",
-      "settings": {
-        "eyebrow": "Support",
-        "title": "Get In Touch",
-        "subtitle": "We're here to help. Send us a message and we'll respond within 24 hours.",
-        "button_text": "Send Message",
-        "rows": 5,
-        "name_placeholder": "Your full name",
-        "email_placeholder": "your@email.com",
-        "message_placeholder": "How can we help you today?",
-        "show_info": true,
-        "info_heading": "We'd Love to Hear From You",
-        "info_text": "Questions about your order, products, or anything else? Our customer happiness team is standing by.",
-        "email": "info@bodyluxcare.com",
-        "response_time": "Within 24 hours, Monday – Friday",
-        "show_trading_name": false
       }
     },
     "email_capture": {
@@ -172,8 +170,6 @@
     "trust_bar",
     "trust_badges",
     "single_product_home_4t7cKi",
-    "promo_banner",
-    "contact_form",
     "email_capture",
     "newsletter_bar"
   ]

@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "single_product_home": {
@@ -37,11 +46,17 @@
           "type": "faq",
           "settings": {
             "question": "What are the shipping options?",
-            "answer": "<p>Free shipping on all orders. Standard delivery 5\u201310 business days. Express available at checkout.</p>"
+            "answer": "<p>Free shipping on all orders. Standard delivery 5–10 business days. Express available at checkout.</p>"
           }
         }
       },
-      "block_order": ["review_1", "review_2", "faq_1", "faq_2", "faq_3"],
+      "block_order": [
+        "review_1",
+        "review_2",
+        "faq_1",
+        "faq_2",
+        "faq_3"
+      ],
       "settings": {
         "eyebrow": "APEX TRAILBLAZER BACKPACK:",
         "heading": "Adventure Ready",
@@ -108,9 +123,7 @@
         "placeholder": "Enter your email address",
         "button": "Subscribe",
         "success_msg": "You're in! Check your inbox for a welcome gift.",
-        "privacy_note": "No spam. Unsubscribe anytime. We respect your privacy.",
-        "bg_color": "#f5f3f0",
-        "text_color": "#111111"
+        "privacy_note": "No spam. Unsubscribe anytime. We respect your privacy."
       }
     }
   },
