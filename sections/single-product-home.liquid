@@ -13,6 +13,13 @@
   endif
 -%}
 
+{%- comment -%}LCP preload — hero image is always above fold{%- endcomment -%}
+{%- if sp != blank and sp.featured_image != blank -%}
+  {{ sp.featured_image | image_url: width: 900 | preload_tag: as: 'image' }}
+{%- elsif section.settings.fallback_image != blank -%}
+  {{ section.settings.fallback_image | image_url: width: 900 | preload_tag: as: 'image' }}
+{%- endif -%}
+
 <section class="sph" id="SingleProductHome" data-product-detail {% if sp != blank %}data-variants="{{ sp.variants | json | escape }}"{% endif %} {{ section.shopify_attributes }}>
   <div class="sph__inner container">
 

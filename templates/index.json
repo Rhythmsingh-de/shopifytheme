@@ -162,6 +162,12 @@
         "social_youtube": "",
         "show_trust_bar": true
       }
+    },
+    "sticky_atc": {
+      "type": "sp-sticky-atc",
+      "settings": {
+        "label": "Add to Cart — Order Now"
+      }
     }
   },
   "order": [
@@ -169,6 +175,7 @@
     "hero_bombas_LBrDFJ",
     "single_product_home_4t7cKi",
     "email_capture",
-    "footer_wgR6gc"
+    "footer_wgR6gc",
+    "sticky_atc"
   ]
 }

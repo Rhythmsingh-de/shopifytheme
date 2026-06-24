@@ -1,0 +1,238 @@
+{%- liquid
+  assign sp = section.settings.product
+  if sp == blank
+    assign sp = product
+  endif
+  assign fv = sp.selected_or_first_available_variant
+-%}
+
+{%- if sp != blank -%}
+<sp-sticky-atc
+  class="sticky-atc"
+  id="StickyAtc"
+  data-trigger="#ProductAddToCart, .sph__btn-atc"
+  aria-hidden="true"
+  aria-label="Sticky add to cart bar">
+
+  <div class="sticky-atc__inner container">
+
+    <div class="sticky-atc__product">
+      {%- if sp.featured_image != blank -%}
+        {%- assign sa_alt = sp.featured_image.alt | default: sp.title | escape -%}
+        {{ sp.featured_image | image_url: width: 80 | image_tag:
+          widths: '40,80',
+          width: 40, height: 40,
+          loading: 'lazy', decoding: 'async',
+          class: 'sticky-atc__img',
+          alt: sa_alt }}
+      {%- endif -%}
+      <div class="sticky-atc__meta">
+        <span class="sticky-atc__name">{{ sp.title }}</span>
+        <span class="sticky-atc__price" id="StickyPrice">
+          {{ fv.price | money }}
+          {%- if fv.compare_at_price > fv.price -%}
+            <s class="sticky-atc__was">{{ fv.compare_at_price | money }}</s>
+          {%- endif -%}
+        </span>
+      </div>
+    </div>
+
+    <div class="sticky-atc__actions">
+      {%- if fv.available -%}
+        <button
+          class="btn sticky-atc__btn"
+          id="StickyAtcBtn"
+          data-add-to-cart
+          data-variant-id="{{ fv.id }}"
+          data-qty="1"
+          aria-label="Add {{ sp.title | escape }} to cart">
+          {{ section.settings.label | default: 'Add to Cart' }}
+        </button>
+      {%- else -%}
+        <button class="btn sticky-atc__btn" disabled aria-disabled="true">Sold Out</button>
+      {%- endif -%}
+    </div>
+
+  </div>
+</sp-sticky-atc>
+{%- endif -%}
+
+<style>
+.sticky-atc {
+  position: fixed;
+  bottom: 0;
+  left: 0; right: 0;
+  z-index: 900;
+  background: var(--color-bg);
+  border-top: 1px solid var(--color-border);
+  box-shadow: 0 -4px 24px rgba(0,0,0,0.08);
+  transform: translateY(100%);
+  transition: transform 0.35s cubic-bezier(0.16,1,0.3,1);
+  will-change: transform;
+}
+.sticky-atc.is-visible {
+  transform: translateY(0);
+}
+.sticky-atc__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding-top: 12px;
+  padding-bottom: max(12px, env(safe-area-inset-bottom));
+}
+.sticky-atc__product {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+}
+.sticky-atc__img {
+  width: 40px; height: 40px;
+  border-radius: var(--radius-sm);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+.sticky-atc__meta {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.sticky-atc__name {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+.sticky-atc__price {
+  font-size: var(--text-sm);
+  font-weight: 800;
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.sticky-atc__was {
+  font-size: var(--text-xs);
+  font-weight: 400;
+  color: var(--color-text-muted);
+  text-decoration: line-through;
+}
+.sticky-atc__actions { flex-shrink: 0; }
+.sticky-atc__btn {
+  padding: 12px 28px;
+  min-height: 48px;
+  font-size: var(--text-sm);
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  background: var(--color-primary);
+  color: var(--color-primary-text);
+  border-radius: var(--btn-radius);
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+}
+.sticky-atc__btn:hover {
+  background: var(--color-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px color-mix(in oklab, var(--color-primary) 40%, transparent);
+}
+.sticky-atc__btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+@media (max-width: 480px) {
+  .sticky-atc__name { max-width: 120px; }
+  .sticky-atc__btn { padding: 12px 18px; font-size: 11px; }
+}
+</style>
+
+<script>
+class SpStickyAtc extends HTMLElement {
+  connectedCallback() {
+    this._visible = false;
+    this._triggers = [];
+    this._observer = null;
+    this._init();
+
+    /* Re-init on Shopify section load (theme editor) */
+    document.addEventListener('shopify:section:load', (e) => {
+      if (e.target.contains(this)) this._init();
+    });
+
+    /* Sync variant from main product form */
+    window.addEventListener('variant:changed', (e) => this._syncVariant(e.detail.variant));
+    window.addEventListener('sph:variant:changed', (e) => this._syncVariant(e.detail.variant));
+  }
+
+  disconnectedCallback() {
+    if (this._observer) this._observer.disconnect();
+  }
+
+  _init() {
+    if (this._observer) this._observer.disconnect();
+
+    const selectors = (this.dataset.trigger || '').split(',').map(s => s.trim()).filter(Boolean);
+    this._triggers = selectors.flatMap(s => Array.from(document.querySelectorAll(s)));
+
+    if (!this._triggers.length) return;
+
+    this._observer = new IntersectionObserver((entries) => {
+      const anyVisible = entries.some(e => e.isIntersecting);
+      this._setVisible(!anyVisible);
+    }, { threshold: 0.1 });
+
+    this._triggers.forEach(t => this._observer.observe(t));
+  }
+
+  _setVisible(show) {
+    if (this._visible === show) return;
+    this._visible = show;
+    this.classList.toggle('is-visible', show);
+    this.setAttribute('aria-hidden', String(!show));
+  }
+
+  _syncVariant(variant) {
+    if (!variant) return;
+    /* Update price */
+    const priceEl = this.querySelector('#StickyPrice');
+    if (priceEl) {
+      const price = new Intl.NumberFormat('en', { style: 'currency', currency: window.Shopify?.currency?.active || 'USD' }).format(variant.price / 100);
+      const wasHtml = variant.compare_at_price > variant.price
+        ? `<s class="sticky-atc__was">${new Intl.NumberFormat('en', { style: 'currency', currency: window.Shopify?.currency?.active || 'USD' }).format(variant.compare_at_price / 100)}</s>`
+        : '';
+      priceEl.innerHTML = price + (wasHtml ? ' ' + wasHtml : '');
+    }
+    /* Update ATC variant id */
+    const btn = this.querySelector('[data-add-to-cart]');
+    if (btn) {
+      btn.dataset.variantId = String(variant.id);
+      btn.disabled = !variant.available;
+      btn.setAttribute('aria-disabled', String(!variant.available));
+    }
+  }
+}
+customElements.define('sp-sticky-atc', SpStickyAtc);
+</script>
+
+{% schema %}
+{
+  "name": "Sticky Add to Cart",
+  "tag": "div",
+  "class": "shopify-section-sticky-atc",
+  "settings": [
+    { "type": "product", "id": "product", "label": "Product (leave blank to use page product)" },
+    { "type": "text",    "id": "label",   "label": "Button label", "default": "Add to Cart" }
+  ],
+  "presets": [
+    { "name": "Sticky Add to Cart" }
+  ]
+}
+{% endschema %}

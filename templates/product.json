@@ -3,9 +3,16 @@
     "main_product": {
       "type": "main-product",
       "settings": {}
+    },
+    "sticky_atc": {
+      "type": "sp-sticky-atc",
+      "settings": {
+        "label": "Add to Cart"
+      }
     }
   },
   "order": [
-    "main_product"
+    "main_product",
+    "sticky_atc"
   ]
 }
