@@ -16,7 +16,7 @@
 <!-- ─────────────────────────────────
   HERO: sticky image left + info right
 ──────────────────────────────── -->
-<section class="sph" id="SingleProductHome" {{ section.shopify_attributes }}>
+<section class="sph" id="SingleProductHome" data-product-detail data-variants="{{ sp.variants | json | escape }}" {{ section.shopify_attributes }}>
   <div class="sph__inner container">
 
     <!-- LEFT: sticky image stack -->
@@ -132,7 +132,7 @@
             data-variant-id="{{ fv.id }}"
             data-qty="1"
             aria-label="Add {{ sp.title | escape }} to cart">
-            {{ section.settings.atc_label | default: 'Add to Cart — Order Now' }}
+            <span class="atc-btn-text">{{ section.settings.atc_label | default: 'Add to Cart — Order Now' }}</span>
           </button>
           <a href="/checkout?variant={{ fv.id }}&quantity=1"
             class="btn sph__btn-buy">
@@ -156,26 +156,43 @@
           </div>
         </div>
 
-        <!-- Color swatches (if option named Color exists) -->
-        {%- if sp != blank -%}
+        <!-- Product Variant Options -->
+        {%- if sp != blank and sp.has_only_default_variant == false -%}
           {%- for opt in sp.options_with_values -%}
-            {%- if opt.name == 'Color' or opt.name == 'Colour' -%}
-              <div class="sph__swatches-wrap">
-                <p class="sph__opt-label">{{ opt.name }}</p>
-                <div class="sph__swatches" role="radiogroup" aria-label="{{ opt.name }}">
-                  {%- for val in opt.values -%}
+            <div class="product-option">
+              <p class="sph__opt-label">
+                {{ opt.name }}:
+                <strong id="selected-{{ opt.name | handleize }}">{{ opt.selected_value }}</strong>
+              </p>
+
+              {%- if opt.name == 'Color' or opt.name == 'Colour' -%}
+                <div class="product-option__swatches" role="radiogroup" aria-label="{{ opt.name }}">
+                  {%- for value in opt.values -%}
                     <button
-                      class="sph__swatch{% if val == opt.selected_value %} is-active{% endif %}"
-                      data-swatch-val="{{ val | escape }}"
-                      data-swatch-option="{{ opt.name | escape }}"
-                      style="--swatch-color:{{ val | downcase | replace: ' ', '' }}"
-                      aria-pressed="{% if val == opt.selected_value %}true{% else %}false{% endif %}"
-                      aria-label="{{ val }}">
+                      class="option-swatch sph__swatch{% if value == opt.selected_value %} is-active{% endif %}"
+                      data-option-name="{{ opt.name | escape }}"
+                      data-option-value="{{ value | escape }}"
+                      style="--swatch-color:{{ value | downcase | replace: ' ', '' }}"
+                      aria-pressed="{% if value == opt.selected_value %}true{% else %}false{% endif %}"
+                      aria-label="{{ value | escape }}">
                     </button>
                   {%- endfor -%}
                 </div>
-              </div>
-            {%- endif -%}
+              {%- else -%}
+                <div class="product-option__swatches product-option__swatches--pills" role="radiogroup" aria-label="{{ opt.name }}">
+                  {%- for value in opt.values -%}
+                    <button
+                      class="option-swatch sph__pill{% if value == opt.selected_value %} is-active{% endif %}"
+                      data-option-name="{{ opt.name | escape }}"
+                      data-option-value="{{ value | escape }}"
+                      aria-pressed="{% if value == opt.selected_value %}true{% else %}false{% endif %}"
+                      aria-label="{{ value | escape }}">
+                      {{ value }}
+                    </button>
+                  {%- endfor -%}
+                </div>
+              {%- endif -%}
+            </div>
           {%- endfor -%}
         {%- endif -%}
       </div>
@@ -598,6 +615,33 @@
 .sph__swatch:hover:not(.is-active) {
   border-color: var(--color-text-muted, #999);
 }
+.product-option {
+  margin-top: 12px;
+}
+.product-option__swatches--pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.sph__pill {
+  padding: 6px 14px;
+  border: 1.5px solid var(--color-border, #e5e5e5);
+  border-radius: var(--radius-md, 8px);
+  font-size: var(--text-sm, 13px);
+  font-weight: 600;
+  color: var(--color-text, #111);
+  cursor: pointer;
+  background: transparent;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+}
+.sph__pill:hover {
+  border-color: var(--color-text, #111);
+}
+.sph__pill.is-active {
+  background: var(--color-text, #111);
+  color: #fff;
+  border-color: var(--color-text, #111);
+}
 
 /* Trust strip */
 .sph__trust {
@@ -748,76 +792,7 @@
 }
 </style>
 
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-  /* Thumbnail switcher */
-  document.querySelectorAll('[data-sph-thumb]').forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      var img = document.getElementById('SphMainImg');
-      if (img) {
-        img.style.opacity = '0';
-        setTimeout(function () {
-          img.src = btn.dataset.src;
-          img.style.opacity = '1';
-        }, 150);
-      }
-      document.querySelectorAll('[data-sph-thumb]').forEach(function (b) { b.classList.remove('is-active'); });
-      btn.classList.add('is-active');
-    });
-  });
 
-  /* Qty stepper */
-  document.querySelectorAll('[data-qty-stepper]').forEach(function (wrap) {
-    var inp = wrap.querySelector('.sph__qty-val');
-    wrap.querySelector('[data-qty-minus]').addEventListener('click', function () {
-      if (parseInt(inp.value) > 1) inp.value = parseInt(inp.value) - 1;
-      syncQty(inp.value);
-    });
-    wrap.querySelector('[data-qty-plus]').addEventListener('click', function () {
-      inp.value = parseInt(inp.value) + 1;
-      syncQty(inp.value);
-    });
-  });
-  function syncQty(val) {
-    document.querySelectorAll('[data-add-to-cart]').forEach(function (b) { b.dataset.qty = val; });
-  }
-
-  /* Color swatches */
-  document.querySelectorAll('.sph__swatch').forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      document.querySelectorAll('.sph__swatch').forEach(function (b) {
-        b.classList.remove('is-active');
-        b.setAttribute('aria-pressed', 'false');
-      });
-      btn.classList.add('is-active');
-      btn.setAttribute('aria-pressed', 'true');
-    });
-  });
-
-  /* Add to cart */
-  document.querySelectorAll('[data-add-to-cart]').forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      var id  = btn.dataset.variantId;
-      var qty = parseInt(btn.dataset.qty) || 1;
-      var orig = btn.textContent;
-      btn.disabled = true;
-      btn.textContent = 'Adding...';
-      fetch('/cart/add.json', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: id, quantity: qty })
-      })
-      .then(function (r) { return r.json(); })
-      .then(function () {
-        btn.textContent = 'Added \u2713';
-        if (window.ShopEvents) window.ShopEvents.emit('cart:updated', {});
-        setTimeout(function () { btn.textContent = orig; btn.disabled = false; }, 2000);
-      })
-      .catch(function () { btn.textContent = orig; btn.disabled = false; });
-    });
-  });
-});
-</script>
 
 {% schema %}
 {

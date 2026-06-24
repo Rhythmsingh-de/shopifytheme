@@ -138,21 +138,50 @@
   /* ── begin_checkout ── */
   /* Targets .btn-checkout class OR #cart-checkout-btn OR any /checkout link */
   document.addEventListener('click', function (e) {
-    if (!e.target.closest('.btn-checkout, #cart-checkout-btn, [href*="/checkout"]')) return;
-    fetch('/cart.js')
-      .then(function (r) { return r.json(); })
-      .then(function (cart) {
-        push({ ecommerce: null });
-        push({
-          event: 'begin_checkout',
-          ecommerce: {
-            currency: cart.currency,
-            value:    money(cart.total_price),
-            items:    (cart.items || []).map(mapItem)
-          }
-        });
-      })
-      .catch(function () {});
+    var checkoutBtn = e.target.closest('.btn-checkout, #cart-checkout-btn, [href*="/checkout"]');
+    if (!checkoutBtn) return;
+    
+    var href = checkoutBtn.getAttribute('href') || '';
+    if (href.includes('/checkout') && href.includes('variant=')) {
+      var urlParams = new URLSearchParams(href.split('?')[1]);
+      var variantId = urlParams.get('variant');
+      var quantity = parseInt(urlParams.get('quantity')) || 1;
+      
+      var detail = checkoutBtn.closest('[data-product-detail]');
+      var priceEl = detail ? detail.querySelector('.product-info__price-sale, .product-info__price-now, .sph__price, [data-price-now]') : null;
+      var price = priceEl ? parseFloat(priceEl.textContent.replace(/[^0-9.]/g, '')) : 0;
+      var name = detail ? (detail.querySelector('h1').textContent.trim()) : document.title;
+      
+      push({ ecommerce: null });
+      push({
+        event: 'begin_checkout',
+        ecommerce: {
+          currency: (window.Shopify && window.Shopify.currency) ? window.Shopify.currency.active : 'USD',
+          value: parseFloat((price * quantity).toFixed(2)),
+          items: [{
+            item_id: String(variantId),
+            item_name: name,
+            price: price,
+            quantity: quantity
+          }]
+        }
+      });
+    } else {
+      fetch('/cart.js')
+        .then(function (r) { return r.json(); })
+        .then(function (cart) {
+          push({ ecommerce: null });
+          push({
+            event: 'begin_checkout',
+            ecommerce: {
+              currency: cart.currency,
+              value:    money(cart.total_price),
+              items:    (cart.items || []).map(mapItem)
+            }
+          });
+        })
+        .catch(function () {});
+    }
   });
 
   /* ── cart_update (qty +/-) ── */

@@ -150,8 +150,9 @@
     e.preventDefault();
     var vid=btn.dataset.variantId||btn.dataset.variant;
     var wrap=btn.closest('[data-product-detail]');
-    var qInput=wrap?wrap.querySelector('[data-qty-input]'):null;
-    addToCart(vid,qInput?(parseInt(qInput.value)||1):1,btn);
+    var qInput=wrap?wrap.querySelector('[data-qty-input],.product-qty__val,.sph__qty-val'):null;
+    var qty=qInput?(parseInt(qInput.value)||1):(parseInt(btn.dataset.qty)||1);
+    addToCart(vid,qty,btn);
   });
 
   /* Delegate — .atc-btn on cards */
@@ -218,7 +219,7 @@
           +(img?'<img src="'+img+'" alt="'+esc(item.product_title)+'" class="cart-item__img" width="80" height="100" loading="lazy">'
               :'<div class="cart-item__img cart-item__img--placeholder"></div>')
           +'<div class="cart-item__body">'
-            +'<div class="cart-item__title">'+esc(item.product_title)+'</div}'
+            +'<div class="cart-item__title">'+esc(item.product_title)+'</div>'
             +(item.variant_title&&item.variant_title!=='Default Title'?'<div class="cart-item__variant">'+esc(item.variant_title)+'</div>':'')
             +'<div class="cart-item__row">'
               +'<div class="qty-stepper">'
@@ -261,21 +262,32 @@
     var btn=e.target.closest('[data-qty-minus],[data-qty-plus]');
     if(!btn)return;
     var wrap=btn.closest('[data-qty-stepper]');if(!wrap)return;
-    var input=wrap.querySelector('[data-qty-input]');if(!input)return;
+    var input=wrap.querySelector('[data-qty-input],.product-qty__val,.sph__qty-val');if(!input)return;
     var val=parseInt(input.value)||1;
     if(btn.hasAttribute('data-qty-minus'))val=Math.max(1,val-1);
     else val=val+1;
     input.value=val;
+
+    var detail=btn.closest('[data-product-detail]');
+    if(detail){
+      var atc=detail.querySelector('[data-add-to-cart]');
+      if(atc)atc.dataset.qty=val;
+      var buyBtn=detail.querySelector('a[href*="/checkout"]');
+      if(buyBtn){
+        var vid=atc?atc.dataset.variantId:null;
+        if(vid)buyBtn.href='/checkout?variant='+vid+'&quantity='+val;
+      }
+    }
   });
 
   /* ─────────── PRODUCT THUMBNAILS ─────────── */
   document.addEventListener('click',function(e){
-    var thumb=e.target.closest('.product-media-thumb');if(!thumb)return;
-    var stack=thumb.closest('.product-media-stack');if(!stack)return;
-    var main=qs('#ProductMainImage',stack);if(!main)return;
+    var thumb=e.target.closest('.product-media-thumb, .sph__thumb');if(!thumb)return;
+    var stack=thumb.closest('.product-media-stack, .sph__media');if(!stack)return;
+    var main=qs('#ProductMainImage, #SphMainImg, .sph__img',stack);if(!main)return;
     var img=thumb.querySelector('img');if(!img)return;
     main.src=img.src.replace(/_\d+x\d+/,'_900x900').replace(/_\d+x\./,'_900x.');
-    qsa('.product-media-thumb',stack).forEach(function(t){t.classList.remove('is-active');});
+    qsa('.product-media-thumb, .sph__thumb',stack).forEach(function(t){t.classList.remove('is-active');});
     thumb.classList.add('is-active');
   });
 
@@ -298,17 +310,62 @@
     sw.classList.add('is-active');sw.setAttribute('aria-pressed','true');
     var lbl=grp.previousElementSibling;
     if(lbl){var sp=lbl.querySelector('[id^="selected-"]');if(sp)sp.textContent=sw.dataset.optionValue;}
-    _syncVariant();
+    _syncVariant(sw.closest('[data-product-detail]'));
   });
-  function _syncVariant(){
-    var form=qs('[data-product-detail]');if(!form)return;
+  function _syncVariant(form){
+    if(!form)return;
     var vals=qsa('.option-swatch.is-active',form).map(function(s){return s.dataset.optionValue;});
     try{
       var variants=JSON.parse(form.dataset.variants||'[]');
-      var match=variants.find(function(v){return vals.every(function(val,i){return v['option'+(i+1)]===val;});});
+      var match=variants.find(function(v){
+        return vals.every(function(val,i){
+          return v['option'+(i+1)]===val;
+        });
+      });
       if(match){
-        var btn=form.querySelector('[data-add-to-cart]');if(btn)btn.dataset.variantId=match.id;
-        var priceEl=form.querySelector('.product-info__price-sale');if(priceEl)priceEl.textContent=_fmt(match.price);
+        var btn=form.querySelector('[data-add-to-cart]');
+        if(btn){
+          btn.dataset.variantId=match.id;
+          btn.disabled=!match.available;
+          btn.setAttribute('aria-disabled',!match.available);
+          var atcText=btn.querySelector('.atc-btn-text')||btn;
+          if(match.available){
+            if(atcText===btn){
+              var prefix = btn.dataset.btnPrefix || btn.textContent.split('—')[0].split('&mdash;')[0].trim();
+              if(!btn.dataset.btnPrefix) btn.dataset.btnPrefix = prefix;
+              btn.textContent = prefix + ' — ' + _fmt(match.price);
+            }else{
+              var prefix = btn.dataset.btnPrefix || atcText.textContent.split('—')[0].split('&mdash;')[0].trim();
+              if(!btn.dataset.btnPrefix) btn.dataset.btnPrefix = prefix;
+              atcText.textContent = prefix + ' — ' + _fmt(match.price);
+            }
+          }else{
+            if(atcText===btn){
+              btn.textContent='Sold Out';
+            }else{
+              atcText.textContent='Sold Out';
+            }
+          }
+        }
+        var priceEl=form.querySelector('.product-info__price-sale, .product-info__price-now, .sph__price, [data-price-now]');
+        if(priceEl)priceEl.textContent=_fmt(match.price);
+
+        // Also update featured image if variant has one
+        if(match.featured_image && match.featured_image.src){
+          var mainImg=form.querySelector('#ProductMainImage, #SphMainImg, .sph__img, [data-main-image]');
+          if(mainImg){
+            mainImg.src=match.featured_image.src;
+          }
+        }
+
+        // Update Buy Now link href
+        var buyBtn=form.querySelector('a[href*="/checkout"]');
+        if(buyBtn){
+          var currentQty=1;
+          var qtyInp=form.querySelector('[data-qty-input],.product-qty__val,.sph__qty-val');
+          if(qtyInp)currentQty=parseInt(qtyInp.value)||1;
+          buyBtn.href='/checkout?variant='+match.id+'&quantity='+currentQty;
+        }
       }
     }catch(ex){console.error('[BLC variants]',ex);}
   }

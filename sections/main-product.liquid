@@ -10,7 +10,7 @@
   assign align = section.settings.info_align | default: 'left'
 -%}
 
-<section class="section-spacing product-page-section" {{ section.shopify_attributes }}>
+<section class="section-spacing product-page-section" data-product-detail data-variants="{{ product.variants | json | escape }}" {{ section.shopify_attributes }}>
   <div class="container">
     <div class="product-page-grid">
 
@@ -142,12 +142,14 @@
               data-variant-id="{{ first_variant.id }}"
               data-qty="1"
               aria-label="Add {{ product.title | escape }} to cart">
-              Add to Cart &mdash; {{ price | money }}
+              <span class="atc-btn-text">{{ section.settings.atc_label | default: 'Add to Cart' }} &mdash; {{ price | money }}</span>
             </button>
-            <a href="/checkout?variant={{ first_variant.id }}&quantity=1"
-              class="btn btn--ghost btn--full btn--lg">
-              Buy It Now
-            </a>
+            {%- if section.settings.show_buy_now -%}
+              <a href="/checkout?variant={{ first_variant.id }}&quantity=1"
+                class="btn btn--ghost btn--full btn--lg">
+                {{ section.settings.buy_label | default: 'Buy It Now' }}
+              </a>
+            {%- endif -%}
           {%- else -%}
             <button class="btn btn--primary btn--full btn--lg" disabled aria-disabled="true">Sold Out</button>
           {%- endif -%}
@@ -515,47 +517,7 @@
 }
 </style>
 
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    /* Thumbnail switcher */
-    document.querySelectorAll('.product-media-thumb').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        var img = document.getElementById(this.dataset.target);
-        if (img) img.src = this.dataset.src;
-        document.querySelectorAll('.product-media-thumb').forEach(function (b) { b.classList.remove('is-active'); });
-        this.classList.add('is-active');
-      });
-    });
 
-    /* Qty stepper */
-    document.querySelectorAll('[data-qty-stepper]').forEach(function (wrap) {
-      var inp = wrap.querySelector('[data-qty-input]');
-      wrap.querySelector('[data-qty-minus]').addEventListener('click', function () {
-        if (parseInt(inp.value) > 1) inp.value = parseInt(inp.value) - 1;
-        document.querySelector('[data-add-to-cart]') && (document.querySelector('[data-add-to-cart]').dataset.qty = inp.value);
-      });
-      wrap.querySelector('[data-qty-plus]').addEventListener('click', function () {
-        inp.value = parseInt(inp.value) + 1;
-        document.querySelector('[data-add-to-cart]') && (document.querySelector('[data-add-to-cart]').dataset.qty = inp.value);
-      });
-    });
-
-    /* Option swatch selection */
-    document.querySelectorAll('.option-swatch').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        var group = this.closest('[role="radiogroup"]');
-        group.querySelectorAll('.option-swatch').forEach(function (b) {
-          b.classList.remove('is-active');
-          b.setAttribute('aria-pressed', 'false');
-        });
-        this.classList.add('is-active');
-        this.setAttribute('aria-pressed', 'true');
-        var label = document.getElementById('selected-' + this.dataset.optionName.toLowerCase().replace(/[^a-z0-9]/g, '-'));
-        if (label) label.textContent = this.dataset.optionValue;
-      });
-    });
-  });
-</script>
 
 {% schema %}
 {
@@ -568,6 +530,10 @@
       { "value": "center", "label": "Center" },
       { "value": "right",  "label": "Right" }
     ], "default": "left" },
+    { "type": "header", "content": "Checkout Buttons" },
+    { "type": "text", "id": "atc_label", "label": "Add to Cart button text", "default": "Add to Cart" },
+    { "type": "text", "id": "buy_label", "label": "Buy It Now button text", "default": "Buy It Now" },
+    { "type": "checkbox", "id": "show_buy_now", "label": "Show Buy It Now button", "default": true },
     { "type": "header", "content": "Benefits checklist" },
     { "type": "text", "id": "benefit_1", "label": "Benefit 1", "default": "Premium quality, built to last" },
     { "type": "text", "id": "benefit_2", "label": "Benefit 2", "default": "Free shipping on orders over €75" },
