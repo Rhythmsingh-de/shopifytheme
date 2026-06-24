@@ -194,7 +194,7 @@
     btn._origText = btn._origText || btn.textContent || btn.value;
     btn.textContent = 'Processing…';
 
-    var isEditor = (window.Shopify && window.Shopify.designMode) || (window.self !== window.top);
+    var isEditor = window.Shopify && window.Shopify.designMode;
 
     fetch('/cart/add.js', {
       method: 'POST',

@@ -38,6 +38,7 @@
     }
   },
   "cart": {
+    "title": "Warenkorb",
     "general": {
       "title": "Warenkorb",
       "empty": "Ihr Warenkorb ist leer.",
