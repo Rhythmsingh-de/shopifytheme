@@ -1,64 +1,183 @@
-<section class="section email-capture-section" style="background:{{ section.settings.bg_color | default: 'var(--color-text)' }};color:{{ section.settings.text_color | default: 'var(--color-text-inverse)' }};padding-top:{{ section.settings.padding_top | default: 80 }}px;padding-bottom:{{ section.settings.padding_bottom | default: 80 }}px;">
-  <div class="container" style="max-width:680px;text-align:center">
+<section class="section email-capture-section" 
+  style="
+    background: {{ section.settings.bg_color | default: 'var(--color-surface)' }};
+    color: {{ section.settings.text_color | default: 'var(--color-text)' }};
+    padding-top: {{ section.settings.padding_top | default: 80 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | default: 80 }}px;
+  ">
+  <div class="container" style="max-width: {{ section.settings.max_width | default: 680 }}px; text-align: center;">
+    
     {%- if section.settings.eyebrow != blank -%}
-      <p style="font-size:var(--text-xs);font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--color-accent-lite, #ffeed2);margin-bottom:var(--sp-3)" class="reveal">{{ section.settings.eyebrow }}</p>
+      <p class="email-capture__eyebrow reveal" style="color: {{ section.settings.accent_color | default: 'var(--color-primary)' }}">
+        {{ section.settings.eyebrow }}
+      </p>
     {%- endif -%}
-    <h2 style="font-family:var(--font-display);font-size:clamp(1.6rem,4vw,2.5rem);font-weight:800;color:var(--color-text-inverse);line-height:1.2;margin-bottom:var(--sp-3)" class="reveal">{{ section.settings.title | default: "Get 10% Off Your First Order" }}</h2>
+
+    <h2 class="email-capture__heading reveal">
+      {{ section.settings.title | default: "Get 10% Off Your First Order" }}
+    </h2>
+
     {%- if section.settings.subtitle != blank -%}
-      <p style="color:rgba(255,255,255,0.82);margin-bottom:var(--sp-6);font-size:var(--text-base)" class="reveal">{{ section.settings.subtitle }}</p>
+      <p class="email-capture__subtitle reveal">
+        {{ section.settings.subtitle }}
+      </p>
     {%- endif -%}
-    <form class="email-form reveal" method="post" action="/contact#newsletter" accept-charset="UTF-8" novalidate>
-      <input type="hidden" name="form_type" value="customer">
-      <input type="hidden" name="utf8" value="✓">
+
+    {%- form 'customer', id: 'EmailCaptureForm', class: 'email-form reveal' -%}
+      <input type="hidden" name="contact[tags]" value="newsletter">
+      
       <div class="email-form__wrap">
-        <label for="email-capture-input" class="sr-only">Email address</label>
-        <input type="email" id="email-capture-input" name="contact[email]" placeholder="{{ section.settings.placeholder | default: 'Enter your email' }}" class="email-form__input" required autocomplete="email">
-        <button type="submit" class="btn btn--primary">
+        <label for="EmailCaptureInput" class="sr-only">Email address</label>
+        <input 
+          type="email" 
+          id="EmailCaptureInput" 
+          name="contact[email]" 
+          placeholder="{{ section.settings.placeholder | default: 'Enter your email' }}" 
+          class="email-form__input" 
+          value="{{ customer.email }}"
+          required 
+          autocomplete="email"
+          aria-required="true"
+        >
+        <button type="submit" class="btn btn--primary email-form__submit">
           {{ section.settings.button_text | default: "Get My Discount" }}
         </button>
       </div>
-      <p id="email-capture-msg" style="margin-top:var(--sp-3);font-size:var(--text-sm);min-height:1.5em;color:rgba(255,255,255,0.78)"></p>
-    </form>
+
+      {%- if form.posted_successfully? -%}
+        <div class="email-capture-msg success">
+          ✓ {{ section.settings.success_message | default: "Thank you! Check your inbox for a discount code." }}
+        </div>
+      {%- elsif form.errors -%}
+        <div class="email-capture-msg error">
+          {{ form.errors.translated_fields.email }} {{ form.errors.messages.email }}
+        </div>
+      {%- endif -%}
+    {%- endform -%}
+
     {%- if section.settings.disclaimer != blank -%}
-      <p style="font-size:var(--text-xs);color:rgba(255,255,255,0.55);margin-top:var(--sp-4)" class="reveal">{{ section.settings.disclaimer }}</p>
+      <p class="email-capture__disclaimer reveal">
+        {{ section.settings.disclaimer }}
+      </p>
     {%- endif -%}
+
   </div>
 </section>
+
 <style>
+.email-capture-section {
+  position: relative;
+  overflow: hidden;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+.email-capture__eyebrow {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: var(--sp-3);
+}
+.email-capture__heading {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 4vw, 2.75rem);
+  font-weight: 800;
+  line-height: 1.15;
+  margin-bottom: var(--sp-3);
+  color: inherit;
+}
+.email-capture__subtitle {
+  color: inherit;
+  opacity: 0.85;
+  margin-bottom: var(--sp-6);
+  font-size: var(--text-base);
+  max-width: 55ch;
+  margin-inline: auto;
+  line-height: 1.6;
+}
+.email-form {
+  margin-inline: auto;
+  max-width: 500px;
+}
 .email-form__wrap {
-  display:flex;gap:var(--sp-2);flex-wrap:wrap;justify-content:center;
+  display: flex;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+  justify-content: center;
 }
 .email-form__input {
-  flex:1;min-width:220px;max-width:340px;
-  height:52px;padding:0 var(--sp-4);
-  border:2px solid rgba(255,255,255,0.2);
-  border-radius:var(--radius-full);
-  background:rgba(255,255,255,0.08);
-  color:var(--color-text-inverse);font-size:var(--text-base);
-  transition:border-color var(--trans-fast),background var(--trans-fast);
+  flex: 1;
+  min-width: 240px;
+  height: 52px;
+  padding: 0 var(--sp-4);
+  border: 1.5px solid color-mix(in oklab, currentColor 15%, transparent);
+  border-radius: var(--radius-pill, var(--radius-full, 9999px));
+  background: color-mix(in oklab, currentColor 4%, transparent);
+  color: inherit;
+  font-size: var(--text-base);
+  outline: none;
+  transition: border-color var(--transition), box-shadow var(--transition);
 }
-.email-form__input::placeholder { color:rgba(255,255,255,0.6); }
+.email-form__input::placeholder {
+  color: color-mix(in oklab, currentColor 60%, transparent);
+}
 .email-form__input:focus {
-  outline:none;border-color:var(--color-accent, var(--color-primary));
-  background:rgba(255,255,255,0.16);
+  border-color: currentColor;
+  box-shadow: 0 0 0 3px color-mix(in oklab, currentColor 12%, transparent);
+}
+.email-form__submit {
+  height: 52px;
+  padding-inline: var(--sp-6);
+  font-weight: 700;
+  white-space: nowrap;
+}
+.email-capture-msg {
+  margin-top: var(--sp-4);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  padding: var(--sp-3) var(--sp-4);
+  text-align: center;
+}
+.email-capture-msg.success {
+  background: var(--color-success-bg, #e6f4ed);
+  color: var(--color-success, #1d6b44);
+  border: 1px solid color-mix(in oklab, var(--color-success) 20%, transparent);
+}
+.email-capture-msg.error {
+  background: #fde8e8;
+  color: var(--color-error, #e8260d);
+  border: 1px solid color-mix(in oklab, var(--color-error) 20%, transparent);
+}
+.email-capture__disclaimer {
+  font-size: var(--text-xs);
+  opacity: 0.6;
+  margin-top: var(--sp-4);
+  line-height: 1.5;
+  max-width: 60ch;
+  margin-inline: auto;
 }
 </style>
+
 {% schema %}
 {
   "name": "Email Capture",
   "tag": "section",
   "settings": [
-    { "type": "text",     "id": "eyebrow",      "label": "Eyebrow",          "default": "Exclusive Offer" },
-    { "type": "text",     "id": "title",        "label": "Heading",          "default": "Get 10% Off Your First Order" },
-    { "type": "textarea", "id": "subtitle",     "label": "Subtitle",         "default": "Join the BodyLuxCare family and be the first to hear about new arrivals, exclusive deals, and wellness tips." },
-    { "type": "text",     "id": "placeholder",  "label": "Input placeholder","default": "Enter your email address" },
-    { "type": "text",     "id": "button_text",  "label": "Button text",      "default": "Claim My 10% Off" },
-    { "type": "text",     "id": "disclaimer",   "label": "Disclaimer text",  "default": "No spam ever. Unsubscribe anytime. By subscribing you agree to our Privacy Policy." },
-    { "type": "header",   "content": "Design Customization" },
-    { "type": "color",    "id": "bg_color",     "label": "Background color", "default": "#1a1a1a" },
-    { "type": "color",    "id": "text_color",   "label": "Text color",       "default": "#ffffff" },
-    { "type": "range",    "id": "padding_top",  "label": "Padding Top",      "min": 20, "max": 120, "step": 4, "default": 80, "unit": "px" },
-    { "type": "range",    "id": "padding_bottom","label": "Padding Bottom",   "min": 20, "max": 120, "step": 4, "default": 80, "unit": "px" }
+    { "type": "text",     "id": "eyebrow",          "label": "Eyebrow",               "default": "Exclusive Offer" },
+    { "type": "text",     "id": "title",            "label": "Heading",               "default": "Get 10% Off Your First Order" },
+    { "type": "textarea", "id": "subtitle",         "label": "Subtitle",              "default": "Join the BodyLuxCare family and be the first to hear about new arrivals, exclusive deals, and wellness tips." },
+    { "type": "text",     "id": "placeholder",      "label": "Input placeholder",     "default": "Enter your email address" },
+    { "type": "text",     "id": "button_text",      "label": "Button text",           "default": "Claim My 10% Off" },
+    { "type": "text",     "id": "success_message",  "label": "Success Message",       "default": "Thank you! Check your inbox for a discount code." },
+    { "type": "text",     "id": "disclaimer",       "label": "Disclaimer text",       "default": "No spam ever. Unsubscribe anytime. By subscribing you agree to our Privacy Policy." },
+    { "type": "range",    "id": "max_width",        "label": "Section Content Max Width","min": 400, "max": 900, "step": 50, "default": 680, "unit": "px" },
+    { "type": "header",   "content": "Colors & Spacing" },
+    { "type": "color",    "id": "bg_color",         "label": "Background color",      "default": "#1a1a1a" },
+    { "type": "color",    "id": "text_color",       "label": "Text color",            "default": "#ffffff" },
+    { "type": "color",    "id": "accent_color",     "label": "Eyebrow Accent color",  "default": "#ffeed2" },
+    { "type": "range",    "id": "padding_top",      "label": "Padding Top",           "min": 20, "max": 120, "step": 4, "default": 80, "unit": "px" },
+    { "type": "range",    "id": "padding_bottom",   "label": "Padding Bottom",        "min": 20, "max": 120, "step": 4, "default": 80, "unit": "px" }
   ],
   "presets": [{ "name": "Email Capture" }]
 }
