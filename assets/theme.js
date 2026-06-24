@@ -161,6 +161,56 @@
     addToCart(btn.dataset.variant,1,btn);
   });
 
+  /* ─────────── BUY NOW (DIRECT CHECKOUT) ─────────── */
+  document.addEventListener('click', function(e) {
+    var btn = e.target.closest('[data-card-buy-now], .sph__btn-buy, [data-buy-now], .pf__buy, a[href*="/checkout?variant="]');
+    if (!btn) return;
+
+    var href = btn.getAttribute('href') || '';
+    var vid = null;
+    var qty = 1;
+
+    if (href.includes('variant=')) {
+      var urlParams = new URLSearchParams(href.split('?')[1]);
+      vid = urlParams.get('variant');
+      qty = parseInt(urlParams.get('quantity')) || 1;
+    }
+
+    var wrap = btn.closest('[data-product-detail]');
+    if (wrap) {
+      var atc = wrap.querySelector('[data-add-to-cart]');
+      if (atc) {
+        vid = atc.dataset.variantId || vid;
+        var qtyVal = wrap.querySelector('[data-qty-input],.product-qty__val,.sph__qty-val');
+        if (qtyVal) qty = parseInt(qtyVal.value) || qty;
+      }
+    }
+
+    if (!vid) return;
+
+    e.preventDefault();
+
+    btn.disabled = true;
+    btn._origText = btn._origText || btn.textContent || btn.value;
+    btn.textContent = 'Processing…';
+
+    fetch('/cart/add.js', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+      body: JSON.stringify({ id: parseInt(vid, 10), quantity: qty })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(item) {
+      if (item.status) throw new Error(item.description || 'Error');
+      btn.textContent = 'Redirecting…';
+      window.location.href = '/checkout';
+    })
+    .catch(function(err) {
+      console.error('[BLC Buy Now]', err);
+      window.location.href = href || '/checkout';
+    });
+  });
+
   /* ─────────── CART REMOVE ─────────── */
   document.addEventListener('click',function(e){
     var rb=e.target.closest('.cart-item__del,[data-remove]');

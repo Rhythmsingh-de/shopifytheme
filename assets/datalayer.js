@@ -162,8 +162,11 @@
       
       var detail = checkoutBtn.closest('[data-product-detail]');
       var priceEl = detail ? detail.querySelector('.product-info__price-sale, .product-info__price-now, .sph__price, [data-price-now]') : null;
-      var price = priceEl ? parseFloat(priceEl.textContent.replace(/[^0-9.]/g, '')) : 0;
-      var name = detail ? (detail.querySelector('h1').textContent.trim()) : document.title;
+      var priceVal = priceEl ? parseFloat(priceEl.textContent.replace(/[^0-9.]/g, '')) : 0;
+      var price = isNaN(priceVal) ? 0 : priceVal;
+      
+      var h1El = detail ? detail.querySelector('h1') : null;
+      var name = h1El ? h1El.textContent.trim() : document.title;
       
       push({ ecommerce: null });
       push({

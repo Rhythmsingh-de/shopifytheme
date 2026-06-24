@@ -169,7 +169,8 @@
             </button>
             {%- if section.settings.show_buy_now -%}
               <a href="/checkout?variant={{ first_variant.id }}&quantity=1"
-                class="btn btn--ghost btn--full btn--lg">
+                class="btn btn--ghost btn--full btn--lg"
+                data-buy-now>
                 {{ section.settings.buy_label | default: 'Buy It Now' }}
               </a>
             {%- endif -%}
