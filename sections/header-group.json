@@ -32,7 +32,7 @@
         "logo_position": "left",
         "logo_width": 200,
         "logo_width_mobile": 150,
-        "menu": "main-menu",
+        "menu": "customer-account-main-menu",
         "sticky": false,
         "show_account_icon": true
       }
