@@ -9,6 +9,8 @@
  */
 {
   "current": {
+    "card_hover_second_image": true,
+    "card_show_rating": true,
     "gdpr_cookie_banner": false,
     "custom_css": "",
     "accent_color": "#ff3c00",

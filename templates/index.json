@@ -110,6 +110,9 @@
         "feat_3_title": "Ergonomic",
         "feat_3_sub": "Comfort Straps",
         "feat_3_icon": "bag",
+        "description_label": "Description",
+        "description_open_desktop": false,
+        "description_open_mobile": true,
         "reviews_title": "Reviews",
         "faq_title": "FAQ"
       }
