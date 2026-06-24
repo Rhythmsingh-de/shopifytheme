@@ -33,7 +33,8 @@
         "logo_width": 200,
         "logo_width_mobile": 150,
         "menu": "main-menu",
-        "sticky": false
+        "sticky": false,
+        "show_account_icon": true
       }
     }
   },
