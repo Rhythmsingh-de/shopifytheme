@@ -203,6 +203,26 @@
         <span>&#10003; {{ section.settings.trust_3 | default: '30-Day Guarantee' }}</span>
       </div>
 
+      <!-- Collapsible Description (unfold to check description) -->
+      <div class="sph__description-accordion">
+        <details class="sph-description__item">
+          <summary class="sph-description__q">
+            <span>Description</span>
+            <svg class="sph-description__chevron" width="16" height="16" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </summary>
+          <div class="sph-description__a rte">
+            {%- if sp != blank and sp.description != blank -%}
+              {{ sp.description }}
+            {%- else -%}
+              <p>This premium product is crafted from high-quality materials to ensure durability and comfort. Designed for daily use, it offers a perfect blend of style, functionality, and performance.</p>
+            {%- endif -%}
+          </div>
+        </details>
+      </div>
+
     </div>
   </div>
 </section>
@@ -770,6 +790,49 @@
   color: var(--color-text-muted, #666);
   line-height: 1.7;
   padding-bottom: 16px;
+/* Description Accordion */
+.sph__description-accordion {
+  margin-top: 20px;
+  border-top: 1px solid var(--color-border, #e5e5e5);
+  border-bottom: 1px solid var(--color-border, #e5e5e5);
+}
+.sph-description__item {
+  list-style: none;
+}
+.sph-description__q {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 0;
+  font-size: var(--text-sm, 0.875rem);
+  font-weight: 600;
+  color: var(--color-text, #111);
+  cursor: pointer;
+  user-select: none;
+  gap: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.sph-description__q::-webkit-details-marker { display: none; }
+.sph-description__chevron { flex-shrink: 0; transition: transform 0.2s ease; }
+.sph-description__item[open] .sph-description__chevron { transform: rotate(180deg); }
+.sph-description__a {
+  font-size: var(--text-sm, 0.875rem);
+  color: var(--color-text-muted, #666);
+  line-height: 1.6;
+  padding-bottom: 14px;
+}
+.sph-description__a p {
+  margin-bottom: 8px;
+}
+.sph-description__a p:last-child {
+  margin-bottom: 0;
+}
+
+/* Review slider / limiting */
+.sph-review-cards > .sph-review-card:nth-child(n+4) {
+  display: none !important;
 }
 
 /* Mobile: unstick image on small screens */
@@ -778,6 +841,85 @@
 }
 </style>
 
+<script>
+  (function() {
+    function initReviewSlider() {
+      var container = document.querySelector('.sph-review-cards');
+      if (!container) return;
+      
+      // If already running an interval, don't create another
+      if (container.dataset.sliderIntervalId) {
+        clearInterval(parseInt(container.dataset.sliderIntervalId, 10));
+      }
+
+      var cards = container.querySelectorAll('.sph-review-card');
+      if (cards.length <= 3) return;
+
+      // Cycle every 3.5 seconds
+      var intervalId = setInterval(function() {
+        var first = container.querySelector('.sph-review-card');
+        if (!first) return;
+
+        var fourth = container.children[3];
+        if (fourth) {
+          fourth.style.display = 'flex';
+          fourth.style.opacity = '0';
+          fourth.style.transition = 'opacity 0.6s ease';
+          // Force reflow
+          fourth.offsetHeight;
+          fourth.style.opacity = '1';
+        }
+
+        first.style.transition = 'opacity 0.6s ease, transform 0.6s ease, max-height 0.6s ease, margin 0.6s ease, padding 0.6s ease, border-width 0.6s ease';
+        first.style.opacity = '0';
+        first.style.transform = 'translateY(-20px)';
+        first.style.maxHeight = '0';
+        first.style.paddingTop = '0';
+        first.style.paddingBottom = '0';
+        first.style.marginTop = '0';
+        first.style.marginBottom = '0';
+        first.style.borderWidth = '0';
+        first.style.overflow = 'hidden';
+
+        setTimeout(function() {
+          first.style.transition = '';
+          first.style.opacity = '';
+          first.style.transform = '';
+          first.style.maxHeight = '';
+          first.style.paddingTop = '';
+          first.style.paddingBottom = '';
+          first.style.marginTop = '';
+          first.style.marginBottom = '';
+          first.style.borderWidth = '';
+          first.style.overflow = '';
+
+          if (fourth) {
+            fourth.style.transition = '';
+            fourth.style.opacity = '';
+            fourth.style.display = '';
+          }
+
+          container.appendChild(first);
+        }, 600);
+      }, 3500);
+
+      container.dataset.sliderIntervalId = String(intervalId);
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initReviewSlider);
+    } else {
+      initReviewSlider();
+    }
+    
+    // Support Shopify Theme Editor reloads
+    document.addEventListener('shopify:section:load', function(e) {
+      if (e.target.classList.contains('shopify-section-single-product-home') || e.target.querySelector('.sph-review-cards')) {
+        initReviewSlider();
+      }
+    });
+  })();
+</script>
 {% schema %}
 {
   "name": "Single Product Home",
