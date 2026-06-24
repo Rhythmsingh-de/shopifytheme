@@ -96,7 +96,7 @@
         "subheading": "Durable, waterproof, and ergonomic for your toughest hikes.",
         "atc_label": "Add to Cart",
         "buy_label": "Buy Now",
-        "show_demo_rating": true,
+        "show_demo_rating": false,
         "show_payment_icons": true,
         "trust_1": "Free Shipping",
         "trust_2": "Secure Checkout",
@@ -115,6 +115,57 @@
         "description_open_mobile": true,
         "reviews_title": "Reviews",
         "faq_title": "FAQ"
+      }
+    },
+    "reviews_strip_QTwUCj": {
+      "type": "reviews-strip",
+      "blocks": {
+        "review_cDwrw7": {
+          "type": "review",
+          "settings": {
+            "stars": "★★★★★",
+            "text": "Absolutely love the quality. These are the most comfortable clothes I've ever worn — worth every penny!",
+            "author": "Emma L.",
+            "verified": true
+          }
+        },
+        "review_VWYQcK": {
+          "type": "review",
+          "settings": {
+            "stars": "★★★★★",
+            "text": "The jewellery is stunning. Packaged beautifully, arrived fast, and the craftsmanship is incredible. Already ordered again.",
+            "author": "Priya K.",
+            "verified": true
+          }
+        },
+        "review_X7fDVF": {
+          "type": "review",
+          "settings": {
+            "stars": "★★★★★",
+            "text": "My dog went crazy for the toys — built really tough too. Great brand, great mission. I'll be a customer for life.",
+            "author": "James T.",
+            "verified": true
+          }
+        }
+      },
+      "block_order": [
+        "review_cDwrw7",
+        "review_VWYQcK",
+        "review_X7fDVF"
+      ],
+      "name": "Reviews Strip",
+      "settings": {
+        "heading": "What Our Customers Say",
+        "subtext": "4.9 out of 5 stars · 12,000+ reviews",
+        "bg_color": "#ffffff",
+        "text_color": "#111111"
+      }
+    },
+    "faq_LPaarR": {
+      "type": "faq",
+      "name": "FAQ",
+      "settings": {
+        "heading": "Frequently Asked Questions"
       }
     },
     "email_capture": {
@@ -161,6 +212,8 @@
   "order": [
     "urgency_banner",
     "single_product_home_4t7cKi",
+    "reviews_strip_QTwUCj",
+    "faq_LPaarR",
     "email_capture",
     "footer_wgR6gc",
     "sticky_atc"
