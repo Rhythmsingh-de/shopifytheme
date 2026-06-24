@@ -20,7 +20,7 @@
         "text_1": "⚡ Free shipping on orders",
         "text_2": "🔒 30-Day Money-Back Guarantee",
         "text_3": "",
-        "link": "shopify://collections/all",
+        "link": "shopify://products/outdoor-large-capacity-messenger-bag-men-chest-bag-simple-fashion-men-bag-shoulder-bag",
         "auto_rotate": true,
         "speed": 4
       }
@@ -28,6 +28,9 @@
     "header": {
       "type": "header",
       "settings": {
+        "logo_position": "left",
+        "logo_width": 120,
+        "logo_width_mobile": 80,
         "menu": "main-menu",
         "sticky": true
       }
