@@ -260,28 +260,30 @@
           assign desc_open_desktop = section.settings.description_open_desktop
           assign desc_open_mobile  = section.settings.description_open_mobile
         -%}
-        <div class="sph__description-accordion"
-          data-desc-open-desktop="{{ desc_open_desktop }}"
-          data-desc-open-mobile="{{ desc_open_mobile }}">
-          <details
-            class="sph-description__item"
-            id="SphDescDetails">
-            <summary class="sph-description__q">
-              <span>{{ section.settings.description_label | default: 'Description' }}</span>
-              <svg class="sph-description__chevron" width="16" height="16" viewBox="0 0 24 24"
-                fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                <polyline points="6 9 12 15 18 9"/>
-              </svg>
-            </summary>
-            <div class="sph-description__a rte">
-              {%- if sp != blank and sp.description != blank -%}
-                {{ sp.description }}
-              {%- else -%}
-                <p>This premium product is crafted from high-quality materials to ensure durability and comfort. Designed for daily use, it offers a perfect blend of style, functionality, and performance.</p>
-              {%- endif -%}
-            </div>
-          </details>
-        </div>
+        <details-accordion>
+          <div class="sph__description-accordion"
+            data-desc-open-desktop="{{ desc_open_desktop }}"
+            data-desc-open-mobile="{{ desc_open_mobile }}">
+            <details
+              class="sph-description__item"
+              id="SphDescDetails">
+              <summary class="sph-description__q">
+                <span>{{ section.settings.description_label | default: 'Description' }}</span>
+                <svg class="sph-description__chevron" width="16" height="16" viewBox="0 0 24 24"
+                  fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <polyline points="6 9 12 15 18 9"/>
+                </svg>
+              </summary>
+              <div class="sph-description__a rte">
+                {%- if sp != blank and sp.description != blank -%}
+                  {{ sp.description }}
+                {%- else -%}
+                  <p>This premium product is crafted from high-quality materials to ensure durability and comfort. Designed for daily use, it offers a perfect blend of style, functionality, and performance.</p>
+                {%- endif -%}
+              </div>
+            </details>
+          </div>
+        </details-accordion>
         <script>
         (function() {
           var el = document.getElementById('SphDescDetails');
@@ -960,6 +962,10 @@
 }
 
 /* Description Accordion */
+details-accordion {
+  display: block;
+  width: 100%;
+}
 .sph__description-accordion {
   margin-top: 20px;
   border-top: 1px solid var(--color-border, #e5e5e5);
@@ -967,6 +973,7 @@
 }
 .sph-description__item {
   list-style: none;
+  overflow: hidden;
 }
 .sph-description__q {
   list-style: none;
@@ -984,8 +991,14 @@
   letter-spacing: 0.05em;
 }
 .sph-description__q::-webkit-details-marker { display: none; }
-.sph-description__chevron { flex-shrink: 0; transition: transform 0.2s ease; }
-.sph-description__item[open] .sph-description__chevron { transform: rotate(180deg); }
+.sph-description__chevron {
+  flex-shrink: 0;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+details-accordion[open] .sph-description__chevron,
+.sph-description__item[open] .sph-description__chevron {
+  transform: rotate(180deg);
+}
 .sph-description__a {
   font-size: var(--text-sm, 0.875rem);
   color: var(--color-text-muted, #666);
@@ -1106,6 +1119,91 @@
       }
     });
   })();
+
+  class DetailsAccordion extends HTMLElement {
+    connectedCallback() {
+      this.details = this.querySelector('details');
+      this.summary = this.querySelector('summary');
+      this.content = this.querySelector('.sph-description__a');
+      this.animation = null;
+      this.isClosing = false;
+      this.isExpanding = false;
+      this.summary.addEventListener('click', (e) => this.onClick(e));
+    }
+
+    onClick(e) {
+      e.preventDefault();
+      this.details.style.overflow = 'hidden';
+      if (this.isClosing || !this.details.open) {
+        this.open();
+      } else if (this.isExpanding || this.details.open) {
+        this.shrink();
+      }
+    }
+
+    shrink() {
+      this.isClosing = true;
+      const startHeight = `${this.details.offsetHeight}px`;
+      const endHeight = `${this.summary.offsetHeight}px`;
+
+      if (this.animation) {
+        this.animation.cancel();
+      }
+
+      this.animation = this.details.animate({
+        height: [startHeight, endHeight]
+      }, {
+        duration: 300,
+        easing: 'cubic-bezier(0.16, 1, 0.3, 1)'
+      });
+
+      this.animation.onfinish = () => this.onAnimationFinish(false);
+      this.animation.oncancel = () => this.isClosing = false;
+    }
+
+    open() {
+      this.details.style.height = `${this.details.offsetHeight}px`;
+      this.details.open = true;
+      window.requestAnimationFrame(() => this.expand());
+    }
+
+    expand() {
+      this.isExpanding = true;
+      const startHeight = `${this.details.offsetHeight}px`;
+      const endHeight = `${this.summary.offsetHeight + this.content.offsetHeight}px`;
+
+      if (this.animation) {
+        this.animation.cancel();
+      }
+
+      this.animation = this.details.animate({
+        height: [startHeight, endHeight]
+      }, {
+        duration: 350,
+        easing: 'cubic-bezier(0.16, 1, 0.3, 1)'
+      });
+
+      this.animation.onfinish = () => this.onAnimationFinish(true);
+      this.animation.oncancel = () => this.isExpanding = false;
+    }
+
+    onAnimationFinish(open) {
+      this.details.open = open;
+      this.animation = null;
+      this.isClosing = false;
+      this.isExpanding = false;
+      this.details.style.height = '';
+      this.details.style.overflow = '';
+      if (open) {
+        this.setAttribute('open', '');
+      } else {
+        this.removeAttribute('open');
+      }
+    }
+  }
+  if (!customElements.get('details-accordion')) {
+    customElements.define('details-accordion', DetailsAccordion);
+  }
 </script>
 {% schema %}
 {
