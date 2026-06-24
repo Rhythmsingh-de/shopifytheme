@@ -70,8 +70,8 @@
             <div class="product-stars" aria-label="{{ rating }} out of 5 stars">
               {%- for i in (1..5) -%}
                 <svg width="15" height="15" viewBox="0 0 24 24"
-                  fill="{% if i <= rating %}var(--color-sale){% else %}none{% endif %}"
-                  stroke="var(--color-sale)" stroke-width="1.5" aria-hidden="true">
+                  fill="{% if i <= rating %}var(--color-gold){% else %}none{% endif %}"
+                  stroke="var(--color-gold)" stroke-width="1.5" aria-hidden="true">
                   <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
                 </svg>
               {%- endfor -%}
@@ -165,7 +165,7 @@
               {%- if section.settings[key] != blank -%}
                 <li>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-                    stroke="var(--color-deco)" stroke-width="2.5" aria-hidden="true">
+                    stroke="var(--color-primary)" stroke-width="2.5" aria-hidden="true">
                     <polyline points="20 6 9 17 4 12"/>
                   </svg>
                   {{ section.settings[key] }}
@@ -252,14 +252,14 @@
 .product-page-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: var(--sp-12);
+  gap: var(--space-12);
   align-items: start;
 }
 @media (max-width: 768px) {
-  .product-page-grid { grid-template-columns: 1fr; gap: var(--sp-8); }
+  .product-page-grid { grid-template-columns: 1fr; gap: var(--space-8); }
 }
 .product-media-main {
-  border-radius: var(--card-radius);
+  border-radius: var(--card-radius, var(--radius-xl));
   overflow: hidden;
   background: var(--color-surface);
   aspect-ratio: 1;
@@ -279,8 +279,8 @@
 }
 .product-media-thumbs {
   display: flex;
-  gap: var(--sp-2);
-  margin-top: var(--sp-3);
+  gap: var(--space-2);
+  margin-top: var(--space-3);
   flex-wrap: wrap;
 }
 .product-media-thumb {
@@ -288,14 +288,14 @@
   border-radius: var(--radius-sm);
   overflow: hidden;
   border: 2px solid transparent;
-  transition: border-color var(--trans-base);
+  transition: border-color var(--transition);
   flex-shrink: 0;
 }
 .product-media-thumb.is-active,
 .product-media-thumb:hover { border-color: var(--color-text); }
 .product-media-thumb img { width: 100%; height: 100%; object-fit: cover; }
 
-.product-info { display: flex; flex-direction: column; gap: var(--sp-4); }
+.product-info { display: flex; flex-direction: column; gap: var(--space-4); }
 .product-info--center { align-items: center; text-align: center; }
 .product-info--right  { align-items: flex-end; text-align: right; }
 
@@ -320,7 +320,7 @@
 .product-info__rating {
   display: flex;
   align-items: center;
-  gap: var(--sp-2);
+  gap: var(--space-2);
 }
 .product-stars { display: flex; gap: 2px; }
 .product-info__rating-count {
@@ -330,7 +330,7 @@
 .product-info__price {
   display: flex;
   align-items: center;
-  gap: var(--sp-3);
+  gap: var(--space-3);
   flex-wrap: wrap;
 }
 .product-info__price-now {
@@ -344,17 +344,17 @@
   color: var(--color-text-muted);
   text-decoration: line-through;
 }
-.product-option { margin-bottom: var(--sp-4); }
+.product-option { margin-bottom: var(--space-4); }
 .product-option__label {
   font-size: var(--text-sm);
   font-weight: 600;
-  margin-bottom: var(--sp-2);
+  margin-bottom: var(--space-2);
   color: var(--color-text);
 }
 .product-option__swatches {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--sp-2);
+  gap: var(--space-2);
 }
 .option-swatch {
   padding: 8px 16px;
@@ -363,7 +363,7 @@
   font-size: var(--text-sm);
   font-weight: 500;
   cursor: pointer;
-  transition: border-color var(--trans-base), background var(--trans-base);
+  transition: border-color var(--transition), background var(--transition);
   color: var(--color-text);
   background: var(--color-bg);
 }
@@ -377,8 +377,8 @@
 .product-qty-row {
   display: flex;
   align-items: center;
-  gap: var(--sp-4);
-  margin-bottom: var(--sp-3);
+  gap: var(--space-4);
+  margin-bottom: var(--space-3);
 }
 .product-qty {
   display: flex;
@@ -394,7 +394,7 @@
   align-items: center;
   justify-content: center;
   color: var(--color-text);
-  transition: background var(--trans-base);
+  transition: background var(--transition);
 }
 .product-qty__btn:hover { background: var(--color-surface); }
 .product-qty__val {
@@ -421,29 +421,29 @@
   font-weight: 500;
 }
 
-.product-add-to-cart { display: flex; flex-direction: column; gap: var(--sp-2); }
+.product-add-to-cart { display: flex; flex-direction: column; gap: var(--space-2); }
 
 .product-benefits {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: var(--sp-2);
-  padding: var(--sp-4);
+  gap: var(--space-2);
+  padding: var(--space-4);
   background: var(--color-surface);
   border-radius: var(--radius-md);
 }
 .product-benefits li {
   display: flex;
   align-items: center;
-  gap: var(--sp-2);
+  gap: var(--space-2);
   font-size: var(--text-sm);
   color: var(--color-text);
 }
 
 .product-trust {
   display: flex;
-  gap: var(--sp-4);
-  padding-top: var(--sp-4);
+  gap: var(--space-4);
+  padding-top: var(--space-4);
   border-top: 1px solid var(--color-border);
 }
 .product-trust-item {
@@ -451,7 +451,7 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: var(--sp-1);
+  gap: var(--space-1);
   flex: 1;
   color: var(--color-text-muted);
 }
@@ -470,16 +470,16 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: var(--sp-2);
+  gap: var(--space-2);
 }
 .product-payment-icons__label {
   font-size: var(--text-xs);
   color: var(--color-text-muted);
-  margin-right: var(--sp-1);
+  margin-right: var(--space-1);
 }
 .payment-icon { height: 22px; width: auto; border-radius: 3px; }
 
-.product-accordions { border-top: 1px solid var(--color-border); margin-top: var(--sp-4); }
+.product-accordions { border-top: 1px solid var(--color-border); margin-top: var(--space-4); }
 .product-accordion {
   border-bottom: 1px solid var(--color-border);
 }
@@ -488,7 +488,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--sp-4) 0;
+  padding: var(--space-4) 0;
   font-size: var(--text-sm);
   font-weight: 600;
   color: var(--color-text);
@@ -498,11 +498,11 @@
 .product-accordion__summary::-webkit-details-marker { display: none; }
 .product-accordion__chevron {
   flex-shrink: 0;
-  transition: transform var(--trans-base);
+  transition: transform var(--transition);
 }
 .product-accordion[open] .product-accordion__chevron { transform: rotate(180deg); }
 .product-accordion__body {
-  padding-bottom: var(--sp-5);
+  padding-bottom: var(--space-5);
   font-size: var(--text-sm);
   color: var(--color-text-muted);
   line-height: 1.7;
@@ -570,7 +570,7 @@
     ], "default": "left" },
     { "type": "header", "content": "Benefits checklist" },
     { "type": "text", "id": "benefit_1", "label": "Benefit 1", "default": "Premium quality, built to last" },
-    { "type": "text", "id": "benefit_2", "label": "Benefit 2", "default": "Free shipping on orders over $75" },
+    { "type": "text", "id": "benefit_2", "label": "Benefit 2", "default": "Free shipping on orders over €75" },
     { "type": "text", "id": "benefit_3", "label": "Benefit 3", "default": "30-day hassle-free returns" },
     { "type": "text", "id": "benefit_4", "label": "Benefit 4", "default": "Secure checkout guaranteed" },
     { "type": "header", "content": "Trust icons (overrides global settings)" },

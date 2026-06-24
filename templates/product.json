@@ -2,6 +2,13 @@
   "sections": {
     "main_product": {
       "type": "main-product",
+      "blocks": {
+        "buy_buttons": {
+          "type": "buy_buttons",
+          "settings": {}
+        }
+      },
+      "block_order": ["buy_buttons"],
       "settings": {}
     }
   },
