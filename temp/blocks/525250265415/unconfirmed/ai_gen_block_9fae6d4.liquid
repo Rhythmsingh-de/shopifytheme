@@ -15,7 +15,7 @@
 {% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
 
 {% style %}
-  .ai-benefits-{{ ai_gen_id }} {
+  .ai-faq-{{ ai_gen_id }} {
     display: block;
     width: {{ block.settings.desktop_width_percent }}%;
     max-width: 100%;
@@ -24,140 +24,206 @@
     border-radius: {{ block.settings.border_radius }}px;
   }
 
-  .ai-benefits-header-{{ ai_gen_id }} {
+  .ai-faq-header-{{ ai_gen_id }} {
     text-align: center;
     margin-bottom: 48px;
   }
 
-  .ai-benefits-heading-{{ ai_gen_id }} {
+  .ai-faq-heading-{{ ai_gen_id }} {
     font-family: {{ block.settings.heading_font.family }}, {{ block.settings.heading_font.fallback_families }};
     font-weight: {{ block.settings.heading_font.weight }};
     font-size: {{ block.settings.heading_size }}px;
     color: {{ block.settings.text_color }};
-    margin: 0 0 12px;
-  }
-
-  .ai-benefits-subheading-{{ ai_gen_id }} {
-    font-size: {{ block.settings.subheading_size }}px;
-    color: {{ block.settings.subheading_color }};
     margin: 0;
   }
 
-  .ai-benefits-grid-{{ ai_gen_id }} {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 40px;
-    max-width: 1100px;
+  .ai-faq-accordion-{{ ai_gen_id }} {
+    max-width: 800px;
     margin: 0 auto;
-  }
-
-  .ai-benefit-card-{{ ai_gen_id }} {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    text-align: center;
     gap: 16px;
-    padding: 32px 24px;
-    background-color: {{ block.settings.card_bg_color }};
-    border-radius: {{ block.settings.card_border_radius }}px;
-    transition: transform 0.3s ease;
   }
 
-  .ai-benefit-card-{{ ai_gen_id }}:hover {
-    transform: translateY(-4px);
+  .ai-faq-item-{{ ai_gen_id }} {
+    background-color: {{ block.settings.item_bg_color }};
+    border-radius: {{ block.settings.item_border_radius }}px;
+    overflow: hidden;
   }
 
-  .ai-benefit-icon-{{ ai_gen_id }} {
-    width: {{ block.settings.icon_size }}px;
-    height: {{ block.settings.icon_size }}px;
+  .ai-faq-question-{{ ai_gen_id }} {
+    width: 100%;
+    padding: 20px 24px;
+    background: none;
+    border: none;
+    text-align: left;
+    cursor: pointer;
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    justify-content: center;
-    background-color: {{ block.settings.icon_bg_color }};
-    border-radius: 50%;
+    gap: 16px;
+    font-size: {{ block.settings.question_size }}px;
+    font-weight: 600;
+    color: {{ block.settings.text_color }};
+    transition: background-color 0.3s ease;
+  }
+
+  .ai-faq-question-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.item_hover_bg_color }};
+  }
+
+  .ai-faq-icon-{{ ai_gen_id }} {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
     color: {{ block.settings.icon_color }};
   }
 
-  .ai-benefit-icon-{{ ai_gen_id }} svg {
-    width: calc({{ block.settings.icon_size }}px * 0.5);
-    height: calc({{ block.settings.icon_size }}px * 0.5);
+  .ai-faq-item-{{ ai_gen_id }}.active .ai-faq-icon-{{ ai_gen_id }} {
+    transform: rotate(180deg);
   }
 
-  .ai-benefit-title-{{ ai_gen_id }} {
-    font-size: {{ block.settings.benefit_title_size }}px;
-    font-weight: 600;
-    color: {{ block.settings.text_color }};
-    margin: 0;
+  .ai-faq-answer-{{ ai_gen_id }} {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
   }
 
-  .ai-benefit-description-{{ ai_gen_id }} {
-    font-size: {{ block.settings.benefit_description_size }}px;
-    color: {{ block.settings.subheading_color }};
+  .ai-faq-answer-content-{{ ai_gen_id }} {
+    padding: 0 24px 20px;
+    font-size: {{ block.settings.answer_size }}px;
     line-height: 1.6;
-    margin: 0;
+    color: {{ block.settings.answer_color }};
+  }
+
+  .ai-faq-item-{{ ai_gen_id }}.active .ai-faq-answer-{{ ai_gen_id }} {
+    max-height: 500px;
   }
 
   @media screen and (max-width: 768px) {
-    .ai-benefits-grid-{{ ai_gen_id }} {
-      grid-template-columns: 1fr;
-      gap: 24px;
-    }
-
-    .ai-benefits-heading-{{ ai_gen_id }} {
+    .ai-faq-heading-{{ ai_gen_id }} {
       font-size: calc({{ block.settings.heading_size }}px * 0.75);
     }
   }
 {% endstyle %}
 
-<div class="ai-benefits-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
-  {% if block.settings.heading != blank or block.settings.subheading != blank %}
-    <div class="ai-benefits-header-{{ ai_gen_id }}">
-      {% if block.settings.heading != blank %}
-        <h2 class="ai-benefits-heading-{{ ai_gen_id }}">{{ block.settings.heading }}</h2>
-      {% endif %}
-      {% if block.settings.subheading != blank %}
-        <p class="ai-benefits-subheading-{{ ai_gen_id }}">{{ block.settings.subheading }}</p>
-      {% endif %}
+<faq-accordion-{{ ai_gen_id }} class="ai-faq-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  {% if block.settings.heading != blank %}
+    <div class="ai-faq-header-{{ ai_gen_id }}">
+      <h2 class="ai-faq-heading-{{ ai_gen_id }}">{{ block.settings.heading }}</h2>
     </div>
   {% endif %}
 
-  <div class="ai-benefits-grid-{{ ai_gen_id }}">
-    <div class="ai-benefit-card-{{ ai_gen_id }}">
-      <div class="ai-benefit-icon-{{ ai_gen_id }}">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-          <polyline points="22 4 12 14.01 9 11.01"></polyline>
+  <div class="ai-faq-accordion-{{ ai_gen_id }}">
+    <div class="ai-faq-item-{{ ai_gen_id }}" data-faq-item>
+      <button class="ai-faq-question-{{ ai_gen_id }}" aria-expanded="false">
+        <span>{{ block.settings.question_1 }}</span>
+        <svg class="ai-faq-icon-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 12 15 18 9"></polyline>
         </svg>
+      </button>
+      <div class="ai-faq-answer-{{ ai_gen_id }}">
+        <div class="ai-faq-answer-content-{{ ai_gen_id }}">{{ block.settings.answer_1 }}</div>
       </div>
-      <h3 class="ai-benefit-title-{{ ai_gen_id }}">{{ block.settings.benefit_1_title }}</h3>
-      <p class="ai-benefit-description-{{ ai_gen_id }}">{{ block.settings.benefit_1_description }}</p>
     </div>
 
-    <div class="ai-benefit-card-{{ ai_gen_id }}">
-      <div class="ai-benefit-icon-{{ ai_gen_id }}">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+    <div class="ai-faq-item-{{ ai_gen_id }}" data-faq-item>
+      <button class="ai-faq-question-{{ ai_gen_id }}" aria-expanded="false">
+        <span>{{ block.settings.question_2 }}</span>
+        <svg class="ai-faq-icon-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 12 15 18 9"></polyline>
         </svg>
+      </button>
+      <div class="ai-faq-answer-{{ ai_gen_id }}">
+        <div class="ai-faq-answer-content-{{ ai_gen_id }}">{{ block.settings.answer_2 }}</div>
       </div>
-      <h3 class="ai-benefit-title-{{ ai_gen_id }}">{{ block.settings.benefit_2_title }}</h3>
-      <p class="ai-benefit-description-{{ ai_gen_id }}">{{ block.settings.benefit_2_description }}</p>
     </div>
 
-    <div class="ai-benefit-card-{{ ai_gen_id }}">
-      <div class="ai-benefit-icon-{{ ai_gen_id }}">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+    <div class="ai-faq-item-{{ ai_gen_id }}" data-faq-item>
+      <button class="ai-faq-question-{{ ai_gen_id }}" aria-expanded="false">
+        <span>{{ block.settings.question_3 }}</span>
+        <svg class="ai-faq-icon-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 12 15 18 9"></polyline>
         </svg>
+      </button>
+      <div class="ai-faq-answer-{{ ai_gen_id }}">
+        <div class="ai-faq-answer-content-{{ ai_gen_id }}">{{ block.settings.answer_3 }}</div>
       </div>
-      <h3 class="ai-benefit-title-{{ ai_gen_id }}">{{ block.settings.benefit_3_title }}</h3>
-      <p class="ai-benefit-description-{{ ai_gen_id }}">{{ block.settings.benefit_3_description }}</p>
+    </div>
+
+    <div class="ai-faq-item-{{ ai_gen_id }}" data-faq-item>
+      <button class="ai-faq-question-{{ ai_gen_id }}" aria-expanded="false">
+        <span>{{ block.settings.question_4 }}</span>
+        <svg class="ai-faq-icon-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </button>
+      <div class="ai-faq-answer-{{ ai_gen_id }}">
+        <div class="ai-faq-answer-content-{{ ai_gen_id }}">{{ block.settings.answer_4 }}</div>
+      </div>
+    </div>
+
+    <div class="ai-faq-item-{{ ai_gen_id }}" data-faq-item>
+      <button class="ai-faq-question-{{ ai_gen_id }}" aria-expanded="false">
+        <span>{{ block.settings.question_5 }}</span>
+        <svg class="ai-faq-icon-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </button>
+      <div class="ai-faq-answer-{{ ai_gen_id }}">
+        <div class="ai-faq-answer-content-{{ ai_gen_id }}">{{ block.settings.answer_5 }}</div>
+      </div>
     </div>
   </div>
-</div>
+</faq-accordion-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class FaqAccordion{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+        this.items = this.querySelectorAll('[data-faq-item]');
+        this.setupEventListeners();
+      }
+
+      setupEventListeners() {
+        this.items.forEach((item) => {
+          const button = item.querySelector('.ai-faq-question-{{ ai_gen_id }}');
+          
+          button.addEventListener('click', () => {
+            const isActive = item.classList.contains('active');
+            
+            this.items.forEach((otherItem) => {
+              if (otherItem !== item) {
+                otherItem.classList.remove('active');
+                const otherButton = otherItem.querySelector('.ai-faq-question-{{ ai_gen_id }}');
+                otherButton.setAttribute('aria-expanded', 'false');
+              }
+            });
+            
+            if (isActive) {
+              item.classList.remove('active');
+              button.setAttribute('aria-expanded', 'false');
+            } else {
+              item.classList.add('active');
+              button.setAttribute('aria-expanded', 'true');
+            }
+          });
+        });
+      }
+    }
+
+    customElements.define('faq-accordion-{{ ai_gen_id }}', FaqAccordion{{ ai_gen_id }});
+  })();
+</script>
 
 {% schema %}
 {
-  "name": "Benefits grid",
+  "name": "FAQ accordion",
   "settings": [
     {
       "type": "header",
@@ -167,61 +233,87 @@
       "type": "text",
       "id": "heading",
       "label": "Heading",
-      "default": "Why Choose Us"
-    },
-    {
-      "type": "text",
-      "id": "subheading",
-      "label": "Subheading",
-      "default": "Premium quality meets exceptional care"
+      "default": "Frequently Asked Questions"
     },
     {
       "type": "header",
-      "content": "Benefit 1"
+      "content": "Question 1"
     },
     {
       "type": "text",
-      "id": "benefit_1_title",
-      "label": "Title",
-      "default": "Premium Quality"
+      "id": "question_1",
+      "label": "Question",
+      "default": "What is your return policy?"
     },
     {
       "type": "textarea",
-      "id": "benefit_1_description",
-      "label": "Description",
-      "default": "Crafted with the finest materials for lasting comfort and durability."
+      "id": "answer_1",
+      "label": "Answer",
+      "default": "We offer a 30-day money-back guarantee. If you're not completely satisfied with your purchase, you can return it for a full refund, no questions asked."
     },
     {
       "type": "header",
-      "content": "Benefit 2"
+      "content": "Question 2"
     },
     {
       "type": "text",
-      "id": "benefit_2_title",
-      "label": "Title",
-      "default": "Body Confidence"
+      "id": "question_2",
+      "label": "Question",
+      "default": "How long does shipping take?"
     },
     {
       "type": "textarea",
-      "id": "benefit_2_description",
-      "label": "Description",
-      "default": "Designed to enhance your natural shape and boost your confidence."
+      "id": "answer_2",
+      "label": "Answer",
+      "default": "International shipping typically takes 5-10 business days. You'll receive a tracking number once your order ships."
     },
     {
       "type": "header",
-      "content": "Benefit 3"
+      "content": "Question 3"
     },
     {
       "type": "text",
-      "id": "benefit_3_title",
-      "label": "Title",
-      "default": "Trusted by Thousands"
+      "id": "question_3",
+      "label": "Question",
+      "default": "What sizes do you offer?"
     },
     {
       "type": "textarea",
-      "id": "benefit_3_description",
-      "label": "Description",
-      "default": "Join thousands of satisfied customers who love our products."
+      "id": "answer_3",
+      "label": "Answer",
+      "default": "We offer sizes XS through XXL. Please refer to our size guide for detailed measurements to find your perfect fit."
+    },
+    {
+      "type": "header",
+      "content": "Question 4"
+    },
+    {
+      "type": "text",
+      "id": "question_4",
+      "label": "Question",
+      "default": "How do I care for my shapewear?"
+    },
+    {
+      "type": "textarea",
+      "id": "answer_4",
+      "label": "Answer",
+      "default": "Hand wash in cold water with mild detergent and lay flat to dry. Avoid using bleach or fabric softener to maintain the quality and elasticity."
+    },
+    {
+      "type": "header",
+      "content": "Question 5"
+    },
+    {
+      "type": "text",
+      "id": "question_5",
+      "label": "Question",
+      "default": "Is my payment information secure?"
+    },
+    {
+      "type": "textarea",
+      "id": "answer_5",
+      "label": "Answer",
+      "default": "Yes, we use SSL encryption to protect your payment information. All transactions are processed securely through trusted payment gateways."
     },
     {
       "type": "header",
@@ -245,9 +337,15 @@
     },
     {
       "type": "color",
-      "id": "card_bg_color",
-      "label": "Card background",
+      "id": "item_bg_color",
+      "label": "Item background",
       "default": "#faf9f7"
+    },
+    {
+      "type": "color",
+      "id": "item_hover_bg_color",
+      "label": "Item hover background",
+      "default": "#f5f3f0"
     },
     {
       "type": "color",
@@ -257,21 +355,15 @@
     },
     {
       "type": "color",
-      "id": "subheading_color",
-      "label": "Subheading",
+      "id": "answer_color",
+      "label": "Answer text",
       "default": "#6b7280"
-    },
-    {
-      "type": "color",
-      "id": "icon_bg_color",
-      "label": "Icon background",
-      "default": "#e6f4ed"
     },
     {
       "type": "color",
       "id": "icon_color",
       "label": "Icon",
-      "default": "#1d6b44"
+      "default": "#1a1a1a"
     },
     {
       "type": "range",
@@ -285,43 +377,23 @@
     },
     {
       "type": "range",
-      "id": "subheading_size",
-      "label": "Subheading size",
-      "min": 14,
-      "max": 20,
-      "step": 1,
-      "unit": "px",
-      "default": 16
-    },
-    {
-      "type": "range",
-      "id": "benefit_title_size",
-      "label": "Benefit title size",
+      "id": "question_size",
+      "label": "Question size",
       "min": 16,
-      "max": 24,
+      "max": 22,
       "step": 1,
       "unit": "px",
       "default": 18
     },
     {
       "type": "range",
-      "id": "benefit_description_size",
-      "label": "Benefit description size",
+      "id": "answer_size",
+      "label": "Answer size",
       "min": 14,
       "max": 18,
       "step": 1,
       "unit": "px",
       "default": 15
-    },
-    {
-      "type": "range",
-      "id": "icon_size",
-      "label": "Icon size",
-      "min": 48,
-      "max": 80,
-      "step": 4,
-      "unit": "px",
-      "default": 64
     },
     {
       "type": "range",
@@ -335,8 +407,8 @@
     },
     {
       "type": "range",
-      "id": "card_border_radius",
-      "label": "Card border radius",
+      "id": "item_border_radius",
+      "label": "Item border radius",
       "min": 0,
       "max": 24,
       "step": 2,
@@ -352,7 +424,7 @@
   ],
   "presets": [
     {
-      "name": "Benefits grid"
+      "name": "FAQ accordion"
     }
   ]
 }
