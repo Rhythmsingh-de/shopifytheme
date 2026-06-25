@@ -62,8 +62,8 @@
     "weekly_offer_end_datetime": "2026-07-31T23:59:59",
     "weekly_scarcity_text": "Only 14 left in stock — order soon",
     "cursor_enabled": true,
-    "cursor_style": "dot-ring",
-    "cursor_color": "#1a1a1a",
+    "cursor_style": "simple",
+    "cursor_color": "#FF0000",
     "reveal_animations": true,
     "header_transparent_hero": true,
     "content_for_index": []
