@@ -1,0 +1,72 @@
+{%- liquid
+  assign hp = product
+  assign hv = variant
+  if hv == blank and hp != blank
+    assign hv = hp.selected_or_first_available_variant
+  endif
+-%}
+
+{%- if hp != blank -%}
+  {%- if show_options and hp.has_only_default_variant == false -%}
+    <div class="blc-hero__options reveal" aria-label="Choose product options">
+      {%- for option in hp.options_with_values -%}
+        {%- assign option_handle = option.name | handleize -%}
+        <div class="blc-hero__option product-option">
+          <p class="blc-hero__option-label">
+            {{ option.name | escape }}:
+            <strong data-selected-option>{{ option.selected_value | escape }}</strong>
+          </p>
+
+          {%- if option_handle == 'color' or option_handle == 'colour' or option_handle == 'farbe' or option_handle == 'couleur' -%}
+            <div class="blc-hero__swatches product-option__swatches" role="radiogroup" aria-label="{{ option.name | escape }}">
+              {%- for value in option.values -%}
+                <button
+                  type="button"
+                  class="option-swatch option-swatch--color blc-hero__swatch{% if value == option.selected_value %} is-active{% endif %}"
+                  data-option-name="{{ option.name | escape }}"
+                  data-option-value="{{ value | escape }}"
+                  style="--swatch-color: {{ value | downcase | replace: ' ', '' }};"
+                  aria-pressed="{% if value == option.selected_value %}true{% else %}false{% endif %}"
+                  aria-label="{{ option.name | escape }}: {{ value | escape }}">
+                </button>
+              {%- endfor -%}
+            </div>
+          {%- else -%}
+            <div class="blc-hero__swatches blc-hero__pills product-option__swatches" role="radiogroup" aria-label="{{ option.name | escape }}">
+              {%- for value in option.values -%}
+                <button
+                  type="button"
+                  class="option-swatch option-swatch--pill blc-hero__pill{% if value == option.selected_value %} is-active{% endif %}"
+                  data-option-name="{{ option.name | escape }}"
+                  data-option-value="{{ value | escape }}"
+                  aria-pressed="{% if value == option.selected_value %}true{% else %}false{% endif %}"
+                  aria-label="{{ option.name | escape }}: {{ value | escape }}">
+                  {{ value | escape }}
+                </button>
+              {%- endfor -%}
+            </div>
+          {%- endif -%}
+        </div>
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+
+  {%- if show_quantity -%}
+    <div class="blc-hero__purchase-row reveal">
+      <div class="product-qty blc-hero__qty" data-qty-stepper>
+        <button class="product-qty__btn" type="button" data-qty-minus aria-label="Decrease quantity">&#8722;</button>
+        <input class="product-qty__val blc-hero__qty-val" type="number" data-qty-input value="1" min="1" max="99" readonly aria-label="Quantity">
+        <button class="product-qty__btn" type="button" data-qty-plus aria-label="Increase quantity">&#43;</button>
+      </div>
+      {%- if hv != blank -%}
+        <span class="blc-hero__stock" data-hero-stock>
+          {%- if hv.available -%}
+            In stock
+          {%- else -%}
+            Sold out
+          {%- endif -%}
+        </span>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+{%- endif -%}

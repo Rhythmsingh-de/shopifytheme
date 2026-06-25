@@ -84,6 +84,7 @@ window.BLC.trackingMode = {{ tracking_mode | json }};
   };
 
   function hideBanner(el) {
+    document.documentElement.classList.remove('cookie-consent-open');
     el.classList.add('is-hidden');
     setTimeout(function() { el.setAttribute('hidden', ''); }, 380);
   }
@@ -139,6 +140,18 @@ window.BLC.trackingMode = {{ tracking_mode | json }};
 }
 .cookie-consent[hidden] { display: none !important; }
 .cookie-consent.is-hidden { opacity: 0; transform: translateX(-50%) translateY(24px); pointer-events: none; }
+html.cursor-active.cookie-consent-open .cursor-dot,
+html.cursor-active.cookie-consent-open .cursor-ring {
+  opacity: 0 !important;
+}
+html.cursor-active .cookie-consent,
+html.cursor-active .cookie-consent * {
+  cursor: auto !important;
+}
+html.cursor-active .cookie-consent button,
+html.cursor-active .cookie-consent a {
+  cursor: pointer !important;
+}
 .cookie-consent__inner { display: flex; align-items: center; gap: var(--sp-5, 1.25rem); flex-wrap: wrap; }
 .cookie-consent__icon { flex-shrink: 0; color: var(--color-deco, #1d6b44); }
 .cookie-consent__text { display: flex; align-items: flex-start; gap: var(--sp-2, 0.5rem); flex: 1; font-size: var(--text-xs, 0.8125rem); color: var(--color-text-muted, #6b7280); }
@@ -160,6 +173,7 @@ window.BLC.trackingMode = {{ tracking_mode | json }};
   /* Already resolved via override or prior consent — remove banner */
   var existing = (document.cookie.split(';').map(function(c){return c.trim();}).filter(function(c){return c.indexOf('blc_cookie_consent=')===0;})[0] || '').split('=')[1];
   if (existing === 'accepted' || existing === 'declined') {
+    document.documentElement.classList.remove('cookie-consent-open');
     el.remove();
     return;
   }
@@ -167,6 +181,7 @@ window.BLC.trackingMode = {{ tracking_mode | json }};
   /* Show after short delay */
   setTimeout(function() {
     el.removeAttribute('hidden');
+    document.documentElement.classList.add('cookie-consent-open');
     void el.offsetWidth;
   }, 900);
 

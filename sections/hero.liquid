@@ -50,6 +50,7 @@
 <section
   id="HeroSection-{{ section.id }}"
   class="blc-hero blc-hero--{{ section.settings.layout | default: 'split' }} blc-hero--{{ section.settings.color_scheme | default: 'dark' }}"
+  {% if hero_product != blank %}data-product-detail data-variants="{{ hero_product.variants | json | escape }}"{% endif %}
   {{ section.shopify_attributes }}
 >
 
@@ -87,6 +88,19 @@
         {%- if section.settings.subheading != blank -%}
           <p class="blc-hero__sub">{{ section.settings.subheading }}</p>
         {%- endif -%}
+        {%- if hero_product != blank and section.settings.show_price -%}
+          <div class="blc-hero__price-row reveal">
+            <span class="blc-hero__price{% if hero_is_sale %} blc-hero__price--sale{% endif %}" data-price-now>{{ hero_price | money }}</span>
+            <span class="blc-hero__price-was" data-price-compare{% unless hero_is_sale %} style="display:none;"{% endunless %}>{{ hero_compare | money }}</span>
+            <span class="blc-hero__price-save" data-sale-badge{% unless hero_is_sale %} style="display:none;"{% endunless %}>Save {{ hero_save_pct }}%</span>
+          </div>
+        {%- endif -%}
+        {%- render 'hero-product-controls',
+          product: hero_product,
+          variant: hero_fv,
+          show_options: section.settings.show_variant_picker,
+          show_quantity: section.settings.show_quantity_selector
+        -%}
         {%- if section.settings.show_buttons -%}
           <div class="blc-hero__btns">
             {%- render 'hero-cta-buttons',
@@ -125,12 +139,17 @@
             class="blc-hero__split-img">
         {%- elsif hero_product != blank and hero_product.featured_image != blank -%}
           {%- assign prod_img_alt = hero_product.featured_image.alt | default: hero_product.title | escape -%}
-          {{ hero_product.featured_image | image_url: width: 900 | image_tag:
-            widths: '450,900,1200',
-            width: 900, height: 1100,
-            loading: 'eager', decoding: 'async',
-            class: 'blc-hero__split-img',
-            alt: prod_img_alt }}
+          <img
+            src="{{ hero_product.featured_image | image_url: width: 900 }}"
+            srcset="{{ hero_product.featured_image | image_url: width: 450 }} 450w, {{ hero_product.featured_image | image_url: width: 900 }} 900w, {{ hero_product.featured_image | image_url: width: 1200 }} 1200w"
+            sizes="(max-width: 768px) 100vw, 50vw"
+            width="900"
+            height="1100"
+            loading="eager"
+            decoding="async"
+            class="blc-hero__split-img"
+            alt="{{ prod_img_alt }}"
+            data-main-image>
         {%- else -%}
           <div class="blc-hero__split-placeholder">
             {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
@@ -217,13 +236,18 @@
 
           {%- if hero_product != blank and section.settings.show_price -%}
             <div class="blc-hero__price-row reveal">
-              <span class="blc-hero__price{% if hero_is_sale %} blc-hero__price--sale{% endif %}">{{ hero_price | money }}</span>
-              {%- if hero_is_sale -%}
-                <span class="blc-hero__price-was">{{ hero_compare | money }}</span>
-                <span class="blc-hero__price-save">Save {{ hero_save_pct }}%</span>
-              {%- endif -%}
+              <span class="blc-hero__price{% if hero_is_sale %} blc-hero__price--sale{% endif %}" data-price-now>{{ hero_price | money }}</span>
+              <span class="blc-hero__price-was" data-price-compare{% unless hero_is_sale %} style="display:none;"{% endunless %}>{{ hero_compare | money }}</span>
+              <span class="blc-hero__price-save" data-sale-badge{% unless hero_is_sale %} style="display:none;"{% endunless %}>Save {{ hero_save_pct }}%</span>
             </div>
           {%- endif -%}
+
+          {%- render 'hero-product-controls',
+            product: hero_product,
+            variant: hero_fv,
+            show_options: section.settings.show_variant_picker,
+            show_quantity: section.settings.show_quantity_selector
+          -%}
 
           {%- if section.settings.show_buttons -%}
             <div class="blc-hero__btns reveal">
@@ -515,6 +539,119 @@
   background: var(--color-sale-bg, #fff1f0); color: var(--color-sale, #e8260d);
   font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 9999px;
 }
+.blc-hero--full.blc-hero--dark .blc-hero__price-was { color: rgba(255,255,255,0.68); }
+
+.blc-hero__options {
+  display: grid;
+  gap: 12px;
+  max-width: 440px;
+}
+.blc-hero__content--center .blc-hero__options,
+.blc-hero__content--center .blc-hero__purchase-row {
+  margin-inline: auto;
+}
+.blc-hero__content--right .blc-hero__options,
+.blc-hero__content--right .blc-hero__purchase-row {
+  margin-left: auto;
+}
+.blc-hero__option { margin: 0; }
+.blc-hero__option-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+  font-size: var(--text-xs);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+.blc-hero__option-label strong {
+  color: var(--color-text);
+  font-weight: 800;
+}
+.blc-hero__swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.blc-hero__swatch {
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border-radius: 50%;
+  background: var(--swatch-color, #d1d5db);
+  border: 2px solid color-mix(in oklab, var(--color-border) 80%, #000 10%);
+}
+.blc-hero__swatch[style*="black"] { background: #111111; }
+.blc-hero__swatch[style*="white"] { background: #ffffff; }
+.blc-hero__swatch[style*="grey"],
+.blc-hero__swatch[style*="gray"] { background: #9ca3af; }
+.blc-hero__swatch[style*="red"] { background: #dc2626; }
+.blc-hero__swatch[style*="blue"] { background: #2563eb; }
+.blc-hero__swatch[style*="navy"] { background: #1f2a44; }
+.blc-hero__swatch[style*="green"] { background: #16a34a; }
+.blc-hero__swatch[style*="pink"] { background: #ec4899; }
+.blc-hero__swatch[style*="purple"] { background: #7c3aed; }
+.blc-hero__swatch[style*="orange"] { background: #f97316; }
+.blc-hero__swatch[style*="yellow"] { background: #facc15; }
+.blc-hero__swatch[style*="brown"] { background: #8b5e34; }
+.blc-hero__swatch[style*="beige"] { background: #d6c4a6; }
+.blc-hero__swatch.is-active {
+  box-shadow: 0 0 0 2px var(--color-bg), 0 0 0 4px var(--color-text);
+}
+.blc-hero__pill {
+  min-height: 38px;
+  padding: 8px 14px;
+  border-radius: var(--radius-pill);
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+.blc-hero__purchase-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.blc-hero__qty {
+  width: fit-content;
+  background: var(--color-bg);
+}
+.blc-hero__stock {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 6px 10px;
+  border-radius: 9999px;
+  background: var(--color-deco-light, #e6f4ed);
+  color: var(--color-deco, #1d6b44);
+  font-size: var(--text-xs);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.blc-hero__stock.is-sold-out {
+  background: var(--color-sale-bg, #fff1f0);
+  color: var(--color-sale, #e8260d);
+}
+.blc-hero--full .blc-hero__price-row,
+.blc-hero--full .blc-hero__options,
+.blc-hero--full .blc-hero__purchase-row {
+  margin-top: 16px;
+}
+.blc-hero--full.blc-hero--dark .blc-hero__option-label,
+.blc-hero--full.blc-hero--dark .blc-hero__option-label strong {
+  color: #fff;
+}
+.blc-hero--full.blc-hero--dark .blc-hero__pill {
+  background: rgba(255,255,255,0.12);
+  border-color: rgba(255,255,255,0.36);
+  color: #fff;
+}
+.blc-hero--full.blc-hero--dark .blc-hero__pill.is-active {
+  background: #fff;
+  color: #111;
+}
 
 .blc-hero__btns { display: flex; flex-wrap: wrap; gap: var(--sp-3); align-items: center; }
 
@@ -573,6 +710,8 @@
   }
   .blc-hero__split-content { padding: 28px 20px 36px; }
   .blc-hero__split-inner   { max-width: 100%; }
+  .blc-hero__options { max-width: 100%; }
+  .blc-hero__purchase-row { align-items: flex-start; }
   .blc-hero__btns { flex-direction: column; align-items: stretch; }
   .blc-hero__btns .btn--hero-primary,
   .blc-hero__btns .btn--hero-primary-dark,
@@ -607,9 +746,11 @@
     { "type": "textarea", "id": "heading",    "label": "Heading",       "default": "This Week's Drop" },
     { "type": "textarea", "id": "subheading", "label": "Subheading",    "default": "Premium products designed for comfort, beauty, and everyday luxury." },
     { "type": "text",     "id": "trust_text", "label": "Trust line (below buttons)", "default": "Free shipping $75+ \u00b7 30-day returns \u00b7 Secure checkout" },
-    { "type": "header", "content": "Product (Split mode)" },
+    { "type": "header", "content": "Product" },
     { "type": "product",  "id": "hero_product",    "label": "Featured product" },
     { "type": "checkbox", "id": "show_price",      "label": "Show product price",       "default": true },
+    { "type": "checkbox", "id": "show_variant_picker", "label": "Show color / size options", "default": true },
+    { "type": "checkbox", "id": "show_quantity_selector", "label": "Show quantity selector", "default": true },
     { "type": "checkbox", "id": "show_sale_ribbon","label": "Show sale ribbon on image", "default": true },
     { "type": "header", "content": "Countdown Timer" },
     { "type": "checkbox", "id": "show_countdown",   "label": "Show countdown timer",    "default": false,
