@@ -15,12 +15,12 @@
   "sections": {
     "header": {
       "settings": {
-        "logo": null,
         "logo_position": "left",
         "show_desktop_menu": false,
         "enable_mega_menu": false,
         "show_mobile_menu": false,
-        "cta_label": "BUY NOW"
+        "cta_label": "BUY NOW",
+        "show_cta_button": false
       },
       "blocks": {}
     }
