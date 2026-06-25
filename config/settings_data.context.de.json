@@ -14,6 +14,7 @@
   "current": {
     "primary_product": "herren-brusttasche-sling-bag-wasserdicht",
     "weekly_offer_enabled": true,
-    "weekly_offer_end_datetime": "2026-07-11T23:59:59"
+    "weekly_offer_end_datetime": "2026-07-11T23:59:59",
+    "weekly_offer_scope": "homepage_only"
   }
 }

@@ -16,6 +16,7 @@
     "hero_3zRf8U": {
       "disabled": true,
       "settings": {
+        "media_position": "left",
         "show_hover_image": false,
         "show_price": false,
         "show_variant_picker": false,
@@ -28,34 +29,10 @@
         "offer_badge_color": "#FFFFFF",
         "color_scheme": "dark",
         "show_overlay": false,
-        "content_align": "left",
-        "media_position": "left"
+        "content_align": "left"
       },
       "blocks": {},
       "block_order": []
-    },
-    "email_capture_MrGqT": {
-      "type": "email-capture",
-      "disabled": false,
-      "settings": {
-        "eyebrow": "Exclusive Offer",
-        "title": "Get 10% Off Your First Order",
-        "subtitle": "Join the BodyLuxCare family and be the first to hear about new arrivals, exclusive deals, and wellness tips.",
-        "placeholder": "Enter your email address",
-        "button_text": "Claim My 10% Off",
-        "success_message": "Thank you! Check your inbox for a discount code.",
-        "disclaimer": "No spam ever. Unsubscribe anytime. By subscribing you agree to our Privacy Policy.",
-        "max_width": 700,
-        "header-4c4d73c9e16f399b1b9bdec91e8dda34": null,
-        "bg_color": "#1a1a1a",
-        "text_color": "#ffffff",
-        "accent_color": "#ffeed2",
-        "padding_top": 80,
-        "padding_bottom": 80
-      },
-      "blocks": {},
-      "block_order": [],
-      "name": "Email Capture"
     },
     "single_product_home_mcEnM": {
       "type": "single-product-home",
@@ -224,23 +201,103 @@
         "mins_label": "Minutes",
         "secs_label": "Seconds",
         "header-291b8776dcdea5aef6fb44c0518162d3": null,
-        "show_product_card": true,
+        "show_product_card": false,
         "offer_product": "herren-brusttasche-sling-bag-wasserdicht",
         "offer_collection": "",
         "header-c9dcd505fa19906408d3cae150577d4c": null,
         "cta_label": "BUY NOW",
         "cta_link": "",
         "cta_behavior": "link",
-        "show_cart_icon": true,
+        "show_cart_icon": false,
         "header-e8f1b1b636099b56504009e884206e52": null,
         "bg_color": "#ff501a",
         "text_color": "#ffffff",
-        "cta_bg": "#ffffff",
-        "cta_text": "#ff501a"
+        "cta_bg": "#FFFFFF",
+        "cta_text": "#FF0000"
       },
       "blocks": {},
       "block_order": [],
       "name": "Urgency Promo Banner"
+    },
+    "newsletter_bar_fhtpi": {
+      "type": "newsletter-bar",
+      "disabled": false,
+      "settings": {
+        "eyebrow": "Stay in the loop",
+        "heading": "Join the Community",
+        "subtext": "Be first to know about new arrivals, exclusive offers, and our latest giving campaigns.",
+        "placeholder": "Enter your email address",
+        "button": "Subscribe",
+        "success_msg": "You're in! Check your inbox for a welcome gift.",
+        "privacy_note": "No spam. Unsubscribe anytime. We respect your privacy.",
+        "header-a64e3b5235c1dc57cac0973db06bd93d": null,
+        "bg_color": "#f5f3f0",
+        "text_color": "#111111"
+      },
+      "blocks": {},
+      "block_order": [],
+      "name": "Newsletter Bar"
+    },
+    "trust_badges_8B46T": {
+      "type": "trust-badges",
+      "disabled": false,
+      "settings": {
+        "layout": "contained",
+        "bg_color": "#f7f7f7",
+        "icon_color": "#1a1a1a",
+        "text_color": "#1a1a1a",
+        "divider_color": "#cccccc",
+        "show_dividers": true,
+        "icon_size": 38,
+        "padding_top": 20,
+        "padding_bottom": 20,
+        "padding_sides": 20
+      },
+      "blocks": {
+        "badge_wdcFR": {
+          "type": "badge",
+          "disabled": false,
+          "settings": {
+            "icon": "return",
+            "title": "",
+            "subtitle": ""
+          }
+        },
+        "badge_TMGaC": {
+          "type": "badge",
+          "disabled": false,
+          "settings": {
+            "icon": "shipping",
+            "title": "",
+            "subtitle": ""
+          }
+        },
+        "badge_JfHeK": {
+          "type": "badge",
+          "disabled": false,
+          "settings": {
+            "icon": "secure",
+            "title": "",
+            "subtitle": ""
+          }
+        },
+        "badge_FnkeJ": {
+          "type": "badge",
+          "disabled": false,
+          "settings": {
+            "icon": "support",
+            "title": "",
+            "subtitle": ""
+          }
+        }
+      },
+      "block_order": [
+        "badge_wdcFR",
+        "badge_TMGaC",
+        "badge_JfHeK",
+        "badge_FnkeJ"
+      ],
+      "name": "Trust Badges"
     }
   },
   "order": [
@@ -248,7 +305,8 @@
     "hero_3zRf8U",
     "urgency_banner_mctMg",
     "single_product_home_mcEnM",
+    "trust_badges_8B46T",
     "faq_FpJhq",
-    "email_capture_MrGqT"
+    "newsletter_bar_fhtpi"
   ]
 }

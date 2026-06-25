@@ -15,7 +15,8 @@
   "sections": {
     "footer_YVFfbB": {
       "settings": {
-        "layout_style": "compact"
+        "layout_style": "compact",
+        "show_trust_bar": false
       },
       "blocks": {}
     }
