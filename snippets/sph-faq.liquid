@@ -1,0 +1,19 @@
+<div class="sph-faq">
+  <h2 class="sph-section-title">{{ section.settings.faq_title | default: 'FAQ' }}</h2>
+  <div class="sph-faq__list">
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'faq' -%}
+        <details class="sph-faq__item" {{ block.shopify_attributes }}>
+          <summary class="sph-faq__q">
+            {{ block.settings.question }}
+            <svg class="sph-faq__chevron" width="16" height="16" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </summary>
+          <div class="sph-faq__a">{{ block.settings.answer }}</div>
+        </details>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+</div>

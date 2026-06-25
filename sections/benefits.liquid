@@ -1,0 +1,162 @@
+{%- liquid
+  assign bg_color = section.settings.bg_color | default: '#ffffff'
+  assign text_color = section.settings.text_color | default: '#111111'
+  assign icon_color = section.settings.icon_color | default: '#ff501a'
+-%}
+
+<section class="benefits-section reveal" style="background: {{ bg_color }}; color: {{ text_color }};">
+  <div class="container">
+    {%- if section.settings.heading != blank or section.settings.subtext != blank -%}
+      <div class="benefits-section__head">
+        {%- if section.settings.heading != blank -%}
+          <h2>{{ section.settings.heading }}</h2>
+        {%- endif -%}
+        {%- if section.settings.subtext != blank -%}
+          <p>{{ section.settings.subtext }}</p>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <div class="benefits-section__grid" style="grid-template-columns: repeat({{ section.blocks.size | at_most: 3 | default: 3 }}, 1fr);">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'benefit' -%}
+          <div class="benefits-section__item reveal" style="transition-delay: {{ forloop.index0 | times: 100 }}ms;" {{ block.shopify_attributes }}>
+            <div class="benefits-section__icon" style="color: {{ icon_color }};">
+              {%- case block.settings.icon -%}
+                {%- when 'water' -%}
+                  <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2C6 9 4 13 4 16a8 8 0 0 0 16 0c0-3-2-7-8-14z"/></svg>
+                {%- when 'chart' -%}
+                  <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+                {%- when 'battery' -%}
+                  <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="7" width="16" height="10" rx="2" ry="2"/><line x1="22" y1="11" x2="22" y2="13"/></svg>
+                {%- when 'leaf' -%}
+                  <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 8C8 10 5.9 16.17 3.82 19.31M15 8a6 6 0 0 0-6 6"/><path d="M3.82 19.31a10.32 10.32 0 0 0 9.4-8.19"/></svg>
+                {%- when 'bag' -%}
+                  <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                {%- when 'shield' -%}
+                  <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                {%- when 'truck' -%}
+                  <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 3h15v13H1zM16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                {%- when 'star' -%}
+                  <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                {%- else -%}
+                  <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 8 12 12 14 14"/></svg>
+              {%- endcase -%}
+            </div>
+            <h3 class="benefits-section__title">{{ block.settings.title }}</h3>
+            {%- if block.settings.text != blank -%}
+              <p class="benefits-section__text">{{ block.settings.text }}</p>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+<style>
+.benefits-section {
+  padding: clamp(48px, 8vw, 80px) 0;
+  border-bottom: 1px solid var(--color-border, #dddbd7);
+}
+.benefits-section__head {
+  text-align: center;
+  margin-bottom: clamp(32px, 6vw, 48px);
+}
+.benefits-section__head h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+.benefits-section__head p {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+.benefits-section__grid {
+  display: grid;
+  gap: var(--sp-8, 32px);
+}
+@media (min-width: 600px) {
+  .benefits-section__grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+.benefits-section__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+}
+.benefits-section__icon {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-full, 9999px);
+  background: var(--color-surface-2, #f5f3f0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.25s ease, background-color 0.25s ease;
+}
+.benefits-section__item:hover .benefits-section__icon {
+  transform: scale(1.08);
+  background-color: var(--color-deco-light, #e6f4ed);
+}
+.benefits-section__title {
+  font-family: var(--font-body);
+  font-size: var(--text-base, 1.125rem);
+  font-weight: 700;
+}
+.benefits-section__text {
+  font-size: var(--text-sm, 14px);
+  color: var(--color-text-muted, #666);
+  line-height: 1.6;
+  max-width: 32ch;
+}
+</style>
+
+{% schema %}
+{
+  "name": "Benefits",
+  "tag": "section",
+  "max_blocks": 6,
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Benefits" },
+    { "type": "text", "id": "subtext", "label": "Subheading" },
+    { "type": "color", "id": "bg_color", "label": "Background", "default": "#ffffff" },
+    { "type": "color", "id": "text_color", "label": "Text color", "default": "#111111" },
+    { "type": "color", "id": "icon_color", "label": "Icon color", "default": "#ff501a" }
+  ],
+  "blocks": [
+    {
+      "type": "benefit",
+      "name": "Benefit item",
+      "settings": [
+        { "type": "select", "id": "icon", "label": "Icon", "options": [
+          {"value":"water","label":"Water drops"},
+          {"value":"chart","label":"Chart"},
+          {"value":"battery","label":"Battery"},
+          {"value":"leaf","label":"Leaf / lightweight"},
+          {"value":"bag","label":"Bag"},
+          {"value":"shield","label":"Shield"},
+          {"value":"truck","label":"Truck"},
+          {"value":"star","label":"Star"}
+        ], "default": "water" },
+        { "type": "text", "id": "title", "label": "Title", "default": "Benefit Title" },
+        { "type": "textarea", "id": "text", "label": "Description", "default": "Benefit Description" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Benefits",
+      "blocks": [
+        { "type": "benefit", "settings": { "icon": "water", "title": "Stay Hydrated, Effortlessly", "text": "Smart reminders and real-time tracking help you hit your daily hydration goals." } },
+        { "type": "benefit", "settings": { "icon": "chart", "title": "See Progress, Stay Motivated", "text": "Track your streaks and hydration insights in the app to build better habits." } },
+        { "type": "benefit", "settings": { "icon": "battery", "title": "Built to Keep Up", "text": "Long-lasting battery, durable design, and leak-proof—ready for anything." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

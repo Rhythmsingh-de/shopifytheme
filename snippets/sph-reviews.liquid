@@ -1,0 +1,52 @@
+<div class="sph-reviews">
+  <h2 class="sph-section-title">{{ section.settings.reviews_title | default: 'Reviews' }}</h2>
+
+  {%- if sp != blank -%}
+    <div id="shopify-product-reviews" data-id="{{ sp.id }}"></div>
+  {%- endif -%}
+
+  {%- if section.blocks.size > 0 -%}
+    <div class="sph-review-cards"
+      data-cycling="{{ section.settings.enable_review_slider_cycling }}"
+      data-interval="{{ section.settings.review_slider_interval | times: 1000 }}"
+      data-visible="{{ section.settings.visible_reviews_count }}">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'review' -%}
+          <div class="sph-review-card" {{ block.shopify_attributes }}>
+            <div class="sph-review-card__head">
+              {%- if block.settings.avatar != blank -%}
+                {%- assign avatar_alt = block.settings.name | escape -%}
+                {{ block.settings.avatar | image_url: width: 80 | image_tag: widths: '40,80', loading: 'lazy', decoding: 'async', width: 40, height: 40, class: 'sph-review-card__avatar', alt: avatar_alt }}
+              {%- else -%}
+                <div class="sph-review-card__avatar sph-review-card__avatar--initials">
+                  {{ block.settings.name | slice: 0, 1 | upcase }}
+                </div>
+              {%- endif -%}
+              <div>
+                <strong class="sph-review-card__name">{{ block.settings.name | default: 'Customer' }}</strong>
+                <div class="sph-review-card__stars" aria-label="{{ block.settings.rating }} stars">
+                  {%- assign r = block.settings.rating | default: 5 | plus: 0 -%}
+                  {%- for i in (1..5) -%}
+                    <svg width="12" height="12" viewBox="0 0 24 24"
+                      fill="{% if i <= r %}#f5a623{% else %}none{% endif %}"
+                      stroke="#f5a623" stroke-width="1.5" aria-hidden="true">
+                      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                    </svg>
+                  {%- endfor -%}
+                </div>
+              </div>
+            </div>
+            {%- if block.settings.images != blank -%}
+              <div class="sph-review-card__imgs">
+                {{ block.settings.images | image_url: width: 200 | image_tag: widths: '60,120,200', loading: 'lazy', decoding: 'async', width: 60, height: 60, alt: 'Review photo' }}
+              </div>
+            {%- endif -%}
+            {%- if block.settings.body != blank -%}
+              <p class="sph-review-card__body">{{ block.settings.body }}</p>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+</div>

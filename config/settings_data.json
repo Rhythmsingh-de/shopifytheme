@@ -1,34 +1,61 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "current": {
-    "font_body": "poppins_n4",
-    "container_max_width": 1240,
+    "color_bg": "#faf9f7",
+    "color_surface": "#ffffff",
+    "color_surface_2": "#f5f3f0",
+    "color_border": "#dddbd7",
+    "color_text": "#1a1a1a",
+    "color_text_muted": "#6b7280",
+    "color_btn_primary_bg": "#1a1a1a",
+    "color_btn_primary_text": "#ffffff",
+    "color_secondary": "#e8260d",
+    "color_sale": "#e8260d",
+    "color_sale_bg": "#fff1f0",
+    "color_deco": "#1d6b44",
+    "color_deco_light": "#e6f4ed",
+    "color_header_bg": "#ffffff",
+    "color_header_text": "#1a1a1a",
+    "color_footer_bg": "#111111",
+    "color_footer_text": "#cccccc",
+    "font_display": "playfair_display_n4",
+    "font_body": "work_sans_n4",
+    "body_font_size": 16,
+    "container_max_width": 1280,
     "button_border_radius": "9999px",
-    "card_border_radius": 24,
+    "card_border_radius": 12,
     "card_hover_second_image": true,
-    "card_show_vendor": true,
+    "card_quick_add": true,
+    "card_show_vendor": false,
     "card_show_rating": true,
+    "card_show_sale_badge": true,
+    "card_show_new_badge": true,
     "show_free_shipping_bar": true,
-    "free_shipping_threshold": 50,
-    "cart_show_upsell": false,
-    "cart_show_note": true,
-    "gdpr_cookie_banner": false,
-    "tracking_mode": "always_on",
+    "free_shipping_threshold": 75,
+    "cart_show_upsell": true,
+    "cart_upsell_title": "You might also like",
+    "cart_show_note": false,
+    "trust_shipping_title": "International Shipping",
+    "trust_shipping_sub": "5–10 business days",
+    "trust_returns_title": "30-Day Money Back",
+    "trust_returns_sub": "No questions asked",
+    "trust_secure_title": "Secure Checkout",
+    "trust_secure_sub": "SSL encrypted",
+    "trust_support_title": "24/7 Support",
+    "trust_support_sub": "We reply within hours",
+    "show_urgency_banner": true,
+    "show_scarcity_bar": true,
+    "gdpr_cookie_banner": true,
+    "cookie_text": "We use cookies to enhance your browsing experience, serve personalised content and analyse traffic. By clicking Accept you consent to our use of cookies.",
+    "tracking_mode": "consent",
+    "weekly_offer_enabled": true,
+    "weekly_offer_label": "This Week's Drop",
+    "weekly_offer_headline": "Limited Weekly Drop",
+    "weekly_offer_end_datetime": "2026-12-31T23:59:59",
+    "weekly_scarcity_text": "Only 14 left in stock — order soon",
     "cursor_enabled": true,
-    "cursor_style": "simple",
-    "custom_css": "/* Image Hover Zoom Effect */\n.product-image img,\n.card-image img,\nimg[data-product-image] {\n  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.4s ease;\n}\n\n.product-image:hover img,\n.card-image:hover img,\n.product-card:hover img {\n  transform: scale(1.08);\n  filter: brightness(1.05);\n}\n\n/* Image Fade-in Animation */\n@keyframes fadeInImage {\n  from {\n    opacity: 0;\n    transform: translateY(10px);\n  }\n  to {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\nimg[data-product-image],\n.product-image img,\n.card-image img {\n  animation: fadeInImage 0.6s ease-out forwards;\n}\n\n/* Button Hover Transitions */\nbutton,\n.button,\na.button,\n[role=\"button\"] {\n  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);\n  position: relative;\n}\n\nbutton:hover,\n.button:hover,\na.button:hover,\n[role=\"button\"]:hover {\n  transform: translateY(-2px);\n  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);\n}\n\nbutton:active,\n.button:active,\na.button:active,\n[role=\"button\"]:active {\n  transform: translateY(0);\n  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);\n}\n\n/* Premium Button Styling */\n.button-primary,\nbutton[type=\"submit\"],\n.add-to-cart-button {\n  font-weight: 600;\n  letter-spacing: 0.5px;\n  text-transform: uppercase;\n  font-size: 0.95rem;\n}\n\n/* Smooth Color Transitions */\n.button-primary:hover {\n  filter: brightness(0.95);\n}\n\n/* Card Hover Effects */\n.product-card,\n.card {\n  transition: all 0.3s ease;\n}\n\n.product-card:hover,\n.card:hover {\n  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);\n  transform: translateY(-4px);\n}",
-    "accent_color": "#ff3c00",
-    "text_color": "#111111",
-    "bg_color": "#ffffff",
-    "content_for_index": []
-  },
-  "presets": {}
+    "cursor_style": "dot-ring",
+    "cursor_color": "#1a1a1a",
+    "reveal_animations": true,
+    "header_transparent_hero": true
+  }
 }

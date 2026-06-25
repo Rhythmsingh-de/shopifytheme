@@ -70,24 +70,24 @@
           "type": "badge",
           "settings": {
             "icon": "secure",
-            "title": "",
-            "subtitle": ""
+            "title": "Secure Checkout",
+            "subtitle": "SSL encrypted payments"
           }
         },
         "badge_2": {
           "type": "badge",
           "settings": {
             "icon": "shipping",
-            "title": "",
-            "subtitle": ""
+            "title": "Free Shipping",
+            "subtitle": "On all orders over $50"
           }
         },
         "badge_3": {
           "type": "badge",
           "settings": {
-            "icon": "quality",
-            "title": "",
-            "subtitle": ""
+            "icon": "return",
+            "title": "30-Day Guarantee",
+            "subtitle": "Love it or get your money back"
           }
         }
       },
@@ -95,6 +95,90 @@
         "badge_1",
         "badge_2",
         "badge_3"
+      ]
+    },
+    "benefits": {
+      "type": "benefits",
+      "settings": {
+        "heading": "",
+        "subtext": "",
+        "bg_color": "#ffffff",
+        "text_color": "#111111",
+        "icon_color": "#ff501a"
+      },
+      "blocks": {
+        "benefit_1": {
+          "type": "benefit",
+          "settings": {
+            "icon": "water",
+            "title": "Stay Hydrated, Effortlessly",
+            "text": "Smart reminders and real-time tracking help you hit your daily hydration goals."
+          }
+        },
+        "benefit_2": {
+          "type": "benefit",
+          "settings": {
+            "icon": "chart",
+            "title": "See Progress, Stay Motivated",
+            "text": "Track your streaks and hydration insights in the app to build better habits."
+          }
+        },
+        "benefit_3": {
+          "type": "benefit",
+          "settings": {
+            "icon": "battery",
+            "title": "Built to Keep Up",
+            "text": "Long-lasting battery, durable design, and leak-proof—ready for anything."
+          }
+        }
+      },
+      "block_order": [
+        "benefit_1",
+        "benefit_2",
+        "benefit_3"
+      ]
+    },
+    "reviews_strip": {
+      "type": "reviews-strip",
+      "settings": {
+        "heading": "Loved by Thousands",
+        "subtext": "Excellent  ★★★★★  4.8/5 from 2,500+ reviews",
+        "bg_color": "#ffffff",
+        "text_color": "#111111"
+      },
+      "blocks": {
+        "rev_1": {
+          "type": "review",
+          "settings": {
+            "stars": 5,
+            "text": "This bottle changed the way I hydrate. The reminders are super helpful and the battery lasts forever!",
+            "author": "James D.",
+            "verified": true
+          }
+        },
+        "rev_2": {
+          "type": "review",
+          "settings": {
+            "stars": 5,
+            "text": "Love the design and the app integration. It keeps me accountable every single day.",
+            "author": "Sarah M.",
+            "verified": true
+          }
+        },
+        "rev_3": {
+          "type": "review",
+          "settings": {
+            "stars": 5,
+            "text": "Perfect for the gym and work. Durable, stylish, and actually makes a difference.",
+            "author": "Michael T.",
+            "verified": true
+          }
+        }
+      },
+      "block_order": [
+        "rev_1",
+        "rev_2",
+        "rev_3"
       ]
     },
     "features_split": {
@@ -154,161 +238,46 @@
         "item_6"
       ]
     },
-    "single_product_home_f7zdV9": {
-      "type": "single-product-home",
+    "faq": {
+      "type": "faq",
+      "settings": {
+        "heading": "Frequently Asked Questions"
+      },
       "blocks": {
-        "feat_block_1": {
-          "type": "feature",
+        "faq_1": {
+          "type": "item",
           "settings": {
-            "title": "Stay Hydrated, Effortlessly",
-            "subtitle": "Smart reminders and real-time tracking help you hit your daily hydration goals.",
-            "icon": "water"
+            "question": "How does the hydration tracking work?",
+            "answer": "The built-in sensor measures your water intake and syncs it with the companion app to track your daily progress."
           }
         },
-        "feat_block_2": {
-          "type": "feature",
+        "faq_2": {
+          "type": "item",
           "settings": {
-            "title": "See Progress, Stay Motivated",
-            "subtitle": "Track your streaks and hydration insights in the app to build better habits.",
-            "icon": "leaf"
+            "question": "How long does the battery last?",
+            "answer": "The rechargeable battery lasts up to 16 days on a single charge. USB charging cable is included."
           }
         },
-        "feat_block_3": {
-          "type": "feature",
+        "faq_3": {
+          "type": "item",
           "settings": {
-            "title": "Built to Keep Up",
-            "subtitle": "Long-lasting battery, durable design, and leak-proof — ready for anything.",
-            "icon": "bag"
+            "question": "Is the bottle dishwasher safe?",
+            "answer": "The stainless steel bottle body is dishwasher safe (top rack), but the smart lid should be hand washed only to protect the electronic sensor."
           }
         },
-        "review_PQY4N7": {
-          "type": "review",
+        "faq_4": {
+          "type": "item",
           "settings": {
-            "name": "Sarah M.",
-            "rating": 5,
-            "body": "Absolutely love this! Fits perfectly and looks amazing."
-          }
-        },
-        "review_GhWHDx": {
-          "type": "review",
-          "settings": {
-            "name": "Mike L.",
-            "rating": 5,
-            "body": "Best purchase I've made this year. Highly recommend."
-          }
-        },
-        "faq_e43AA7": {
-          "type": "faq",
-          "settings": {
-            "question": "Key questions about this product?",
-            "answer": "<p>This product is designed for maximum comfort and performance.</p>"
-          }
-        },
-        "faq_CF6yK9": {
-          "type": "faq",
-          "settings": {
-            "question": "How is the quality?",
-            "answer": "<p>We use only premium materials tested for durability and longevity.</p>"
-          }
-        },
-        "faq_HL9wbw": {
-          "type": "faq",
-          "settings": {
-            "question": "What are the shipping options?",
-            "answer": "<p>Free shipping on all orders over $75. Standard delivery 5–10 business days.</p>"
+            "question": "What if I'm not satisfied with my purchase?",
+            "answer": "We offer a 30-day money-back guarantee. If you don't love it, return it for a full refund, no questions asked."
           }
         }
       },
       "block_order": [
-        "feat_block_1",
-        "feat_block_2",
-        "feat_block_3",
-        "review_PQY4N7",
-        "review_GhWHDx",
-        "faq_e43AA7",
-        "faq_CF6yK9",
-        "faq_HL9wbw"
-      ],
-      "name": "Single Product Home",
-      "settings": {
-        "product": "",
-        "show_hover_image": true,
-        "show_eyebrow": true,
-        "eyebrow": "BEST SELLER:",
-        "heading": "Stay Hydrated. Perform Better.",
-        "subheading": "The smart water bottle that tracks your hydration and helps you build better daily habits.",
-        "show_rating": true,
-        "show_demo_rating": true,
-        "show_sale_badge": true,
-        "show_qty_selector": true,
-        "atc_label": "Buy Now — $89",
-        "show_buy_now": true,
-        "buy_label": "Buy Now",
-        "show_payment_icons": true,
-        "show_trust_strip": true,
-        "trust_1": "",
-        "trust_2": "",
-        "trust_3": "",
-        "show_features": true,
-        "description_style": "plain",
-        "description_label": "Description",
-        "description_open_desktop": false,
-        "description_open_mobile": false,
-        "show_reviews": true,
-        "show_faq": true,
-        "bottom_alignment": "left",
-        "reviews_title": "Reviews",
-        "faq_title": "Frequently Asked Questions",
-        "enable_review_slider_cycling": true,
-        "review_slider_interval": 3.5,
-        "visible_reviews_count": 3,
-        "bg_color_override": "",
-        "text_color_override": "",
-        "padding_top": 36,
-        "padding_bottom": 48
-      }
-    },
-    "reviews_strip": {
-      "type": "reviews-strip",
-      "settings": {
-        "heading": "Loved by Thousands",
-        "subtext": "Excellent  ★★★★★  4.8/5 from 2,500+ reviews",
-        "bg_color": "#ffffff",
-        "text_color": "#111111"
-      },
-      "blocks": {
-        "rev_1": {
-          "type": "review",
-          "settings": {
-            "stars": 5,
-            "text": "This bottle changed the way I hydrate. The reminders are super helpful and the battery lasts forever!",
-            "author": "James D.",
-            "verified": true
-          }
-        },
-        "rev_2": {
-          "type": "review",
-          "settings": {
-            "stars": 5,
-            "text": "Love the design and the app integration. It keeps me accountable every single day.",
-            "author": "Sarah M.",
-            "verified": true
-          }
-        },
-        "rev_3": {
-          "type": "review",
-          "settings": {
-            "stars": 5,
-            "text": "Perfect for the gym and work. Durable, stylish, and actually makes a difference.",
-            "author": "Michael T.",
-            "verified": true
-          }
-        }
-      },
-      "block_order": [
-        "rev_1",
-        "rev_2",
-        "rev_3"
+        "faq_1",
+        "faq_2",
+        "faq_3",
+        "faq_4"
       ]
     },
     "urgency_banner": {
@@ -331,9 +300,10 @@
   "order": [
     "hero",
     "trust_badges",
-    "features_split",
-    "single_product_home_f7zdV9",
+    "benefits",
     "reviews_strip",
+    "features_split",
+    "faq",
     "urgency_banner"
   ]
 }
