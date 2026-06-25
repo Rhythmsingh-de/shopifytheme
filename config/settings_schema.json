@@ -51,7 +51,7 @@
           { "value": "light", "label": "Light" },
           { "value": "dark", "label": "Dark" }
         ],
-        "default": "system" },
+        "default": "light" },
       { "type": "range",  "id": "container_max_width",  "label": "Max page width",    "min": 960, "max": 1440, "step": 40, "default": 1280, "unit": "px" },
       { "type": "select", "id": "button_border_radius", "label": "Button shape",
         "options": [

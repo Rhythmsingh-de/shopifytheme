@@ -29,6 +29,7 @@
     "font_display": "playfair_display_n4",
     "font_body": "work_sans_n4",
     "body_font_size": 16,
+    "theme_mode": "light",
     "container_max_width": 1280,
     "button_border_radius": "9999px",
     "card_border_radius": 12,

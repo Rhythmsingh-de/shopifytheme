@@ -7,7 +7,7 @@
     assign text_direction = 'rtl'
   endif
 -%}
-<html lang="{{ request.locale.iso_code }}" dir="{{ text_direction }}" data-theme-mode="{{ settings.theme_mode | default: 'system' }}">
+<html lang="{{ request.locale.iso_code }}" dir="{{ text_direction }}" data-theme-mode="{{ settings.theme_mode | default: 'light' }}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
