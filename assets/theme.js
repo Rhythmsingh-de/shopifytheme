@@ -405,6 +405,7 @@
     var img=thumb.querySelector('img');
     var src=thumb.getAttribute('data-src') || (img && img.src.replace(/_\d+x\d+/,'_900x900').replace(/_\d+x\./,'_900x.'));if(!src)return;
     main.src=src;
+    main.removeAttribute('srcset');
     qsa('.product-media-thumb, .sph__thumb',stack).forEach(function(t){t.classList.remove('is-active');});
     thumb.classList.add('is-active');
   });
@@ -569,6 +570,7 @@
           var mainImg=form.querySelector('#ProductMainImage, #SphMainImg, .sph__img, [data-main-image]');
           if(mainImg){
             mainImg.src=match.featured_image.src;
+            mainImg.removeAttribute('srcset');
           }
         }
 
