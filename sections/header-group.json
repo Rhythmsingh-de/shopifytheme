@@ -19,6 +19,7 @@
         "logo_width": 200,
         "logo_width_mobile": 150,
         "show_desktop_menu": true,
+        "desktop_menu": "main-menu",
         "menu": "main-menu",
         "show_mobile_menu": true,
         "mobile_menu": "main-menu",

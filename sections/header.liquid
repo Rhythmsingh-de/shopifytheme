@@ -31,9 +31,13 @@
   if section.settings.show_mobile_account_links == false
     assign show_mobile_account_links = false
   endif
+  assign desktop_nav_menu = section.settings.desktop_menu
+  if desktop_nav_menu == blank
+    assign desktop_nav_menu = section.settings.menu
+  endif
   assign mobile_nav_menu = section.settings.mobile_menu
   if mobile_nav_menu == blank
-    assign mobile_nav_menu = section.settings.menu
+    assign mobile_nav_menu = desktop_nav_menu
   endif
   assign has_mobile_menu = false
   if show_mobile_menu and mobile_nav_menu != blank and mobile_nav_menu.links.size > 0
@@ -75,9 +79,9 @@
         {%- endif -%}
       </a>
 
-      {%- if show_desktop_menu and section.settings.menu != blank and section.settings.menu.links.size > 0 -%}
+      {%- if show_desktop_menu and desktop_nav_menu != blank and desktop_nav_menu.links.size > 0 -%}
         <nav class="header__nav" aria-label="Main navigation">
-          {%- for link in section.settings.menu.links -%}
+          {%- for link in desktop_nav_menu.links -%}
             <a href="{{ link.url }}" class="header__nav-link{% if link.active %} is-active{% endif %}">{{ link.title | escape }}</a>
           {%- endfor -%}
         </nav>
@@ -389,10 +393,11 @@
       "label": "Logo width (mobile)",
       "default": 80
     },
+    { "type": "header", "content": "Navigation menus" },
     { "type": "checkbox", "id": "show_desktop_menu", "label": "Show desktop menu", "default": true },
-    { "type": "link_list", "id": "menu", "label": "Desktop navigation menu", "default": "main-menu" },
+    { "type": "link_list", "id": "desktop_menu", "label": "Desktop navigation menu", "default": "main-menu" },
     { "type": "checkbox", "id": "show_mobile_menu", "label": "Show mobile menu", "default": true },
-    { "type": "link_list", "id": "mobile_menu", "label": "Mobile navigation menu", "default": "main-menu" },
+    { "type": "link_list", "id": "mobile_menu", "label": "Mobile navigation menu", "info": "Leave blank to use the desktop menu.", "default": "main-menu" },
     { "type": "checkbox", "id": "sticky", "label": "Sticky header", "default": true },
     { "type": "checkbox", "id": "show_account_icon", "label": "Show account icon", "default": true },
     { "type": "checkbox", "id": "show_mobile_account_links", "label": "Show account links in mobile menu", "default": true },
