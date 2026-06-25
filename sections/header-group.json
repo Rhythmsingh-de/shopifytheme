@@ -22,71 +22,9 @@
         "sticky": true,
         "show_account_icon": true
       }
-    },
-    "17823885145fce7519": {
-      "type": "_blocks",
-      "blocks": {
-        "ai_gen_block_0cfe232_JKdCy4": {
-          "type": "ai_gen_block_0cfe232",
-          "settings": {
-            "product": "bange-new-multifunction-crossbody-bag-shoulder-messenger-bags-male-waterproof-short-trip-chest-bag-pack-for-men",
-            "fallback_title": "Premium Shapewear Collection",
-            "fallback_price": "$79.99",
-            "fallback_description": "Experience ultimate comfort and confidence with our premium shapewear. Designed with innovative fabric technology for all-day wear.",
-            "show_badge": true,
-            "badge_text": "Best Seller",
-            "badge_bg_color": "#e8260d",
-            "badge_text_color": "#ffffff",
-            "show_rating": true,
-            "rating_text": "4.9 (2,847 reviews)",
-            "star_color": "#fbbf24",
-            "trust_1_title": "Free Shipping",
-            "trust_1_subtitle": "On orders over $50",
-            "trust_2_title": "30-Day Returns",
-            "trust_2_subtitle": "Money-back guarantee",
-            "trust_3_title": "Secure Checkout",
-            "trust_3_subtitle": "SSL encrypted",
-            "trust_4_title": "24/7 Support",
-            "trust_4_subtitle": "Always here to help",
-            "trust_bg_color": "#f5f3f0",
-            "trust_icon_bg_color": "#e6f4ed",
-            "trust_icon_color": "#1d6b44",
-            "show_features": true,
-            "feature_1": "Premium breathable fabric",
-            "feature_2": "Seamless design for invisible wear",
-            "feature_3": "All-day comfort technology",
-            "feature_4": "Machine washable",
-            "show_guarantee": true,
-            "guarantee_title": "100% Satisfaction Guarantee",
-            "guarantee_text": "We stand behind our products. If you're not completely satisfied within 30 days, return it for a full refund.",
-            "guarantee_bg_color": "#fff1f0",
-            "guarantee_accent_color": "#e8260d",
-            "button_text": "Add to Cart",
-            "button_bg_color": "#1a1a1a",
-            "button_text_color": "#ffffff",
-            "button_hover_bg_color": "#0d0d0d",
-            "desktop_width_percent": 100,
-            "title_size": 42,
-            "image_border_radius": 20,
-            "button_border_radius": 40,
-            "background_color": "#ffffff",
-            "text_color": "#1a1a1a",
-            "muted_text_color": "#6b7280",
-            "accent_color": "#ff3c00",
-            "border_color": "#dddbd7",
-            "sale_color": "#e8260d"
-          },
-          "blocks": {}
-        }
-      },
-      "block_order": [
-        "ai_gen_block_0cfe232_JKdCy4"
-      ],
-      "settings": {}
     }
   },
   "order": [
-    "header",
-    "17823885145fce7519"
+    "header"
   ]
 }

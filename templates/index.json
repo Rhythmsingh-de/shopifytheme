@@ -11,7 +11,6 @@
   "sections": {
     "announcement_bar": {
       "type": "announcement-bar",
-      "disabled": true,
       "settings": {
         "enabled": true,
         "bg_color": "#111111",
