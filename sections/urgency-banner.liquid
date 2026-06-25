@@ -7,9 +7,15 @@
   if offer_product == blank
     assign offer_product = settings.weekly_offer_product
   endif
+  if offer_product == blank and settings.primary_product != blank
+    assign offer_product = settings.primary_product
+  endif
   assign offer_collection = section.settings.offer_collection
   if offer_collection == blank
     assign offer_collection = settings.weekly_offer_collection
+  endif
+  if offer_collection == blank and settings.primary_collection != blank
+    assign offer_collection = settings.primary_collection
   endif
   assign offer_variant = offer_product.selected_or_first_available_variant
   assign cta_label = section.settings.cta_label

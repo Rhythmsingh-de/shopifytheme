@@ -57,6 +57,22 @@
     ]
   },
   {
+    "name": "Storefront Mode",
+    "settings": [
+      { "type": "header", "content": "Selling Mode" },
+      { "type": "select", "id": "storefront_mode", "label": "Default selling mode",
+        "info": "Controls global product and collection fallbacks used by hero, header, urgency, and featured product sections.",
+        "options": [
+          { "value": "single_product", "label": "Single product focused" },
+          { "value": "multi_product", "label": "Multiple products / collection focused" }
+        ],
+        "default": "single_product" },
+      { "type": "product", "id": "primary_product", "label": "Primary product" },
+      { "type": "collection", "id": "primary_collection", "label": "Primary collection" },
+      { "type": "checkbox", "id": "single_product_sections_follow_mode", "label": "Hide single-product sections when multiple-products mode is active", "default": false }
+    ]
+  },
+  {
     "name": "Product Cards",
     "settings": [
       { "type": "checkbox", "id": "card_hover_second_image", "label": "Show alternate image on hover", "default": true },

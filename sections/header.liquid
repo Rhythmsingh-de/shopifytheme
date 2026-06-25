@@ -1,3 +1,16 @@
+{%- liquid
+  assign header_cta_label = section.settings.cta_label | default: settings.conversion_buy_now_label | default: 'Shop now'
+  assign header_cta_link = section.settings.cta_link
+  if header_cta_link == blank and settings.storefront_mode == 'single_product' and settings.primary_product != blank
+    assign header_cta_link = settings.primary_product.url
+  elsif header_cta_link == blank and settings.primary_collection != blank
+    assign header_cta_link = settings.primary_collection.url
+  endif
+  if header_cta_link == blank
+    assign header_cta_link = routes.all_products_collection_url
+  endif
+-%}
+
 <header id="site-header" class="site-header{% if section.settings.sticky %} site-header--sticky{% endif %}"
   style="--logo-width: {{ section.settings.logo_width | default: 120 }}px; --logo-width-mobile: {{ section.settings.logo_width_mobile | default: 80 }}px;">
   <div class="container">
@@ -68,9 +81,9 @@
           </span>
         </button>
 
-        {%- if section.settings.cta_label != blank -%}
-          <a href="{{ section.settings.cta_link | default: '#SingleProductHome' }}" class="btn header__cta-btn">
-            {{ section.settings.cta_label }}
+        {%- if header_cta_label != blank -%}
+          <a href="{{ header_cta_link }}" class="btn header__cta-btn">
+            {{ header_cta_label | escape }}
           </a>
         {%- endif -%}
       </div>
@@ -337,7 +350,7 @@
     { "type": "checkbox", "id": "sticky", "label": "Sticky header", "default": true },
     { "type": "checkbox", "id": "show_account_icon", "label": "Show account icon", "default": true },
     { "type": "header", "content": "Header Button CTA" },
-    { "type": "text", "id": "cta_label", "label": "CTA button label", "default": "Buy Now — $89" },
+    { "type": "text", "id": "cta_label", "label": "CTA button label", "default": "Shop now" },
     { "type": "url", "id": "cta_link", "label": "CTA button link" }
   ]
 }

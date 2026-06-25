@@ -1,5 +1,7 @@
 {%- assign card_product = product -%}
 {%- assign card_index = index | default: 0 -%}
+{%- assign card_atc_label = settings.conversion_primary_cta_label | default: 'Add to Cart' -%}
+{%- assign card_buy_label = settings.conversion_fast_checkout_label | default: settings.conversion_buy_now_label | default: 'Buy Now' -%}
 
 <div class="prod-card reveal"
   style="transition-delay:{{ card_index | times: 60 }}ms"
@@ -87,8 +89,6 @@
       {%- endif -%}
     </div>
 
-    </div>
-
     {%- if settings.card_quick_add -%}
       <div class="prod-card__quick-actions" data-product-detail data-variants="{{ card_product.variants | json | escape }}">
         {%- if card_product.variants.size > 1 -%}
@@ -109,14 +109,14 @@
                   data-qty="1"
                   aria-label="Add {{ card_product.title | escape }} to cart"
                   {% unless card_product.variants.first.available %}disabled aria-disabled="true"{% endunless %}>
-            <span class="atc-btn-text">{% if card_product.variants.first.available %}Add to Cart{% else %}Sold Out{% endif %}</span>
+            <span class="atc-btn-text">{% if card_product.variants.first.available %}{{ card_atc_label | escape }}{% else %}Sold Out{% endif %}</span>
           </button>
           {%- if card_product.variants.first.available -%}
             <a href="/cart/{{ card_product.variants.first.id }}:1"
                class="btn btn--ghost btn--sm prod-card__btn-buy"
                data-card-buy-now
                aria-label="Buy {{ card_product.title | escape }} now">
-              Buy Now
+              {{ card_buy_label | escape }}
             </a>
           {%- endif -%}
         </div>
@@ -124,6 +124,7 @@
     {%- endif -%}
   </div>
 
+</div>
 
 <style>
 .prod-card {

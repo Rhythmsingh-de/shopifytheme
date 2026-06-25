@@ -1,0 +1,247 @@
+{%- liquid
+  assign storefront_mode = settings.storefront_mode | default: 'single_product'
+  assign visibility = section.settings.visibility | default: 'multi_only'
+  assign should_render = true
+  if visibility == 'multi_only' and storefront_mode != 'multi_product'
+    assign should_render = false
+  elsif visibility == 'single_only' and storefront_mode != 'single_product'
+    assign should_render = false
+  endif
+
+  assign product_limit = section.settings.product_limit | default: 8
+  assign desktop_columns = section.settings.columns_desktop | default: 4
+  assign mobile_columns = section.settings.columns_mobile | default: 2
+  assign source = section.settings.source | default: 'primary_collection'
+  assign source_collection = section.settings.collection
+  if source == 'primary_collection' and settings.primary_collection != blank
+    assign source_collection = settings.primary_collection
+  elsif source_collection == blank and settings.primary_collection != blank
+    assign source_collection = settings.primary_collection
+  endif
+
+  assign cta_link = section.settings.cta_link
+  if cta_link == blank and source_collection != blank
+    assign cta_link = source_collection.url
+  elsif cta_link == blank
+    assign cta_link = routes.all_products_collection_url
+  endif
+-%}
+
+{%- if should_render -%}
+  <section
+    id="FeaturedProducts-{{ section.id }}"
+    class="featured-products section-spacing"
+    style="
+      --fp-cols: {{ desktop_columns }};
+      --fp-mobile-cols: {{ mobile_columns }};
+      {%- if section.settings.bg_color != blank -%}--fp-bg: {{ section.settings.bg_color }};{%- endif -%}
+      {%- if section.settings.text_color != blank -%}--fp-text: {{ section.settings.text_color }};{%- endif -%}
+    "
+    {{ section.shopify_attributes }}
+  >
+    <div class="container">
+      <div class="featured-products__head">
+        <div>
+          {%- if section.settings.eyebrow != blank -%}
+            <p class="featured-products__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+          {%- endif -%}
+          {%- if section.settings.heading != blank -%}
+            <h2 class="featured-products__title">{{ section.settings.heading | escape }}</h2>
+          {%- endif -%}
+          {%- if section.settings.subtext != blank -%}
+            <p class="featured-products__text">{{ section.settings.subtext | escape }}</p>
+          {%- endif -%}
+        </div>
+
+        {%- if section.settings.show_top_cta and section.settings.cta_label != blank -%}
+          <a href="{{ cta_link }}" class="btn btn--ghost featured-products__top-cta" data-promo-link data-promo-name="{{ section.settings.heading | escape }}">
+            {{ section.settings.cta_label | escape }}
+          </a>
+        {%- endif -%}
+      </div>
+
+      {%- assign rendered_count = 0 -%}
+      <div class="featured-products__grid" role="list">
+        {%- if source == 'selected_products' -%}
+          {%- for product in section.settings.products limit: product_limit -%}
+            <div role="listitem">
+              {%- render 'product-card', product: product, index: forloop.index0 -%}
+            </div>
+            {%- assign rendered_count = rendered_count | plus: 1 -%}
+          {%- endfor -%}
+        {%- elsif source == 'all_products' -%}
+          {%- for product in collections.all.products limit: product_limit -%}
+            <div role="listitem">
+              {%- render 'product-card', product: product, index: forloop.index0 -%}
+            </div>
+            {%- assign rendered_count = rendered_count | plus: 1 -%}
+          {%- endfor -%}
+        {%- elsif source_collection != blank -%}
+          {%- for product in source_collection.products limit: product_limit -%}
+            <div role="listitem">
+              {%- render 'product-card', product: product, index: forloop.index0 -%}
+            </div>
+            {%- assign rendered_count = rendered_count | plus: 1 -%}
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+
+      {%- if rendered_count == 0 -%}
+        <div class="featured-products__empty">
+          <h3>{{ section.settings.empty_title | escape }}</h3>
+          <p>{{ section.settings.empty_text | escape }}</p>
+        </div>
+      {%- endif -%}
+
+      {%- if section.settings.show_bottom_cta and section.settings.cta_label != blank and rendered_count > 0 -%}
+        <div class="featured-products__footer">
+          <a href="{{ cta_link }}" class="btn btn--primary featured-products__bottom-cta" data-promo-link data-promo-name="{{ section.settings.heading | escape }}">
+            {{ section.settings.cta_label | escape }}
+          </a>
+        </div>
+      {%- endif -%}
+    </div>
+  </section>
+
+  <style>
+    #FeaturedProducts-{{ section.id }} {
+      background: var(--fp-bg, var(--color-bg));
+      color: var(--fp-text, var(--color-text));
+    }
+    #FeaturedProducts-{{ section.id }} .featured-products__head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: clamp(16px, 4vw, 40px);
+      margin-bottom: clamp(24px, 5vw, 44px);
+    }
+    #FeaturedProducts-{{ section.id }} .featured-products__eyebrow {
+      margin-bottom: 8px;
+      color: var(--color-secondary);
+      font-size: var(--text-xs);
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    #FeaturedProducts-{{ section.id }} .featured-products__title {
+      max-width: 760px;
+      color: inherit;
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 800;
+      line-height: 1.05;
+    }
+    #FeaturedProducts-{{ section.id }} .featured-products__text {
+      max-width: 620px;
+      margin-top: 10px;
+      color: var(--color-text-muted);
+      font-size: var(--text-base);
+      line-height: 1.65;
+    }
+    #FeaturedProducts-{{ section.id }} .featured-products__grid {
+      display: grid;
+      grid-template-columns: repeat(var(--fp-cols), minmax(0, 1fr));
+      gap: clamp(14px, 2vw, 24px);
+    }
+    #FeaturedProducts-{{ section.id }} .featured-products__empty {
+      display: grid;
+      gap: 8px;
+      padding: clamp(24px, 5vw, 48px);
+      border: 1px solid var(--color-border);
+      border-radius: var(--card-radius);
+      background: var(--color-surface);
+      text-align: center;
+    }
+    #FeaturedProducts-{{ section.id }} .featured-products__empty h3 {
+      color: var(--color-text);
+      font-size: var(--text-lg);
+    }
+    #FeaturedProducts-{{ section.id }} .featured-products__empty p {
+      color: var(--color-text-muted);
+    }
+    #FeaturedProducts-{{ section.id }} .featured-products__footer {
+      display: flex;
+      justify-content: center;
+      margin-top: clamp(24px, 5vw, 44px);
+    }
+    #FeaturedProducts-{{ section.id }} .featured-products__top-cta,
+    #FeaturedProducts-{{ section.id }} .featured-products__bottom-cta {
+      min-height: 48px;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 900px) {
+      #FeaturedProducts-{{ section.id }} .featured-products__head {
+        align-items: start;
+        flex-direction: column;
+      }
+    }
+    @media (max-width: 640px) {
+      #FeaturedProducts-{{ section.id }} .featured-products__grid {
+        grid-template-columns: repeat(var(--fp-mobile-cols), minmax(0, 1fr));
+      }
+      #FeaturedProducts-{{ section.id }} .featured-products__top-cta,
+      #FeaturedProducts-{{ section.id }} .featured-products__bottom-cta {
+        width: 100%;
+      }
+    }
+  </style>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Featured Products",
+  "tag": "section",
+  "class": "shopify-section-featured-products",
+  "settings": [
+    { "type": "header", "content": "Visibility" },
+    { "type": "select", "id": "visibility", "label": "Visibility by selling mode",
+      "options": [
+        { "value": "multi_only", "label": "Multiple-products mode only" },
+        { "value": "single_only", "label": "Single-product mode only" },
+        { "value": "always", "label": "Always show" }
+      ],
+      "default": "multi_only" },
+    { "type": "header", "content": "Product Source" },
+    { "type": "select", "id": "source", "label": "Products to show",
+      "options": [
+        { "value": "primary_collection", "label": "Theme Settings primary collection" },
+        { "value": "section_collection", "label": "Section collection" },
+        { "value": "selected_products", "label": "Selected products" },
+        { "value": "all_products", "label": "All products" }
+      ],
+      "default": "primary_collection" },
+    { "type": "collection", "id": "collection", "label": "Section collection" },
+    { "type": "product_list", "id": "products", "label": "Selected products", "limit": 12 },
+    { "type": "range", "id": "product_limit", "label": "Maximum products", "min": 2, "max": 12, "step": 1, "default": 8 },
+    { "type": "range", "id": "columns_desktop", "label": "Desktop columns", "min": 2, "max": 5, "step": 1, "default": 4 },
+    { "type": "range", "id": "columns_mobile", "label": "Mobile columns", "min": 1, "max": 2, "step": 1, "default": 2 },
+    { "type": "header", "content": "Copy" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Shop the range" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Choose your best fit" },
+    { "type": "textarea", "id": "subtext", "label": "Subtext", "default": "A focused product grid for stores selling more than one product." },
+    { "type": "header", "content": "CTA" },
+    { "type": "text", "id": "cta_label", "label": "CTA label", "default": "View all products" },
+    { "type": "url", "id": "cta_link", "label": "CTA link" },
+    { "type": "checkbox", "id": "show_top_cta", "label": "Show CTA beside heading", "default": true },
+    { "type": "checkbox", "id": "show_bottom_cta", "label": "Show CTA below grid", "default": false },
+    { "type": "header", "content": "Empty State" },
+    { "type": "text", "id": "empty_title", "label": "Empty title", "default": "Select products to show" },
+    { "type": "text", "id": "empty_text", "label": "Empty text", "default": "Choose a primary collection, section collection, or selected products in Theme Editor." },
+    { "type": "header", "content": "Style" },
+    { "type": "color", "id": "bg_color", "label": "Background color" },
+    { "type": "color", "id": "text_color", "label": "Text color" }
+  ],
+  "presets": [
+    {
+      "name": "Featured Products",
+      "settings": {
+        "visibility": "multi_only",
+        "source": "primary_collection",
+        "heading": "Choose your best fit",
+        "subtext": "A focused product grid for stores selling more than one product."
+      }
+    }
+  ]
+}
+{% endschema %}

@@ -123,6 +123,18 @@
         "padding_sides": 20
       }
     },
+    "featured_products": {
+      "type": "featured-products",
+      "settings": {
+        "visibility": "multi_only",
+        "source": "primary_collection",
+        "heading": "Choose your best fit",
+        "subtext": "A focused product grid for stores selling more than one product.",
+        "cta_label": "View all products",
+        "show_top_cta": true,
+        "show_bottom_cta": false
+      }
+    },
     "benefits": {
       "type": "benefits",
       "blocks": {
@@ -326,7 +338,7 @@
         "show_product_card": true,
         "offer_product": "bange-new-multifunction-crossbody-bag-shoulder-messenger-bags-male-waterproof-short-trip-chest-bag-pack-for-men",
         "offer_collection": "",
-        "cta_label": "Buy Now",
+        "cta_label": "Shop the offer",
         "cta_link": "",
         "cta_behavior": "link",
         "show_cart_icon": true,
@@ -355,6 +367,7 @@
   "order": [
     "hero",
     "trust_badges",
+    "featured_products",
     "benefits",
     "reviews_strip",
     "features_split",

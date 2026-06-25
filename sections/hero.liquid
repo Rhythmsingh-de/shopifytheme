@@ -1,6 +1,12 @@
 {%- liquid
   assign align = section.settings.content_align | default: 'left'
+  assign storefront_mode = settings.storefront_mode | default: 'single_product'
+  assign primary_product = settings.primary_product
+  assign primary_collection = settings.primary_collection
   assign hero_product = section.settings.hero_product
+  if hero_product == blank and primary_product != blank
+    assign hero_product = primary_product
+  endif
   if hero_product == blank
     assign hero_product = product
   endif
@@ -11,6 +17,21 @@
   if hero_compare > hero_price
     assign hero_is_sale = true
     assign hero_save_pct = hero_compare | minus: hero_price | times: 100 | divided_by: hero_compare
+  endif
+  assign hero_cta_primary = section.settings.cta1_link
+  if hero_cta_primary == blank and hero_product != blank
+    assign hero_cta_primary = hero_product.url
+  elsif hero_cta_primary == blank and primary_collection != blank
+    assign hero_cta_primary = primary_collection.url
+  endif
+  if hero_cta_primary == blank
+    assign hero_cta_primary = routes.all_products_collection_url
+  endif
+  assign hero_cta_secondary = section.settings.cta2_link
+  if hero_cta_secondary == blank and storefront_mode == 'multi_product' and primary_collection != blank
+    assign hero_cta_secondary = primary_collection.url
+  elsif hero_cta_secondary == blank
+    assign hero_cta_secondary = routes.all_products_collection_url
   endif
 -%}
 
@@ -63,10 +84,10 @@
         {%- if section.settings.show_buttons -%}
           <div class="blc-hero__btns">
             {%- if section.settings.cta1_label != blank -%}
-              <a href="{{ section.settings.cta1_link | default: '/collections/all' }}" class="btn btn--hero-primary">{{ section.settings.cta1_label }}</a>
+              <a href="{{ hero_cta_primary }}" class="btn btn--hero-primary">{{ section.settings.cta1_label }}</a>
             {%- endif -%}
             {%- if section.settings.cta2_label != blank -%}
-              <a href="{{ section.settings.cta2_link | default: '/collections/all' }}" class="btn btn--hero-ghost">{{ section.settings.cta2_label }}</a>
+              <a href="{{ hero_cta_secondary }}" class="btn btn--hero-ghost">{{ section.settings.cta2_label }}</a>
             {%- endif -%}
           </div>
         {%- endif -%}
@@ -191,7 +212,7 @@
           {%- if section.settings.show_buttons -%}
             <div class="blc-hero__btns reveal">
               {%- if section.settings.cta1_label != blank -%}
-                <a href="{{ section.settings.cta1_link | default: hero_product.url | default: '/collections/all' }}"
+                <a href="{{ hero_cta_primary }}"
                   class="btn btn--hero-primary-dark"
                   style="background:{{ section.settings.cta1_bg | default: '#1a1a1a' }};color:{{ section.settings.cta1_color | default: '#ffffff' }}">
                   {%- if section.settings.cta1_icon -%}
@@ -201,7 +222,7 @@
                 </a>
               {%- endif -%}
               {%- if section.settings.cta2_label != blank -%}
-                <a href="{{ section.settings.cta2_link | default: '/collections/all' }}"
+                <a href="{{ hero_cta_secondary }}"
                   class="btn btn--hero-ghost-dark">
                   {{ section.settings.cta2_label }}
                 </a>

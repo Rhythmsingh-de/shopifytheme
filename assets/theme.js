@@ -1,6 +1,4 @@
-/* BodyLuxCare — theme.js v3.1.0 — June 2026
-   CHANGE: Wrap all inline header onclick BLC calls with window.BLC? to avoid
-           runtime errors before theme.js initializes.
+/* BodyLuxCare theme.js v3.1.0
    IDs unified across files:
    Nav drawer:  #nav-drawer, #nav-overlay, #mobileNavTrigger, #mobileNavClose
    Cart drawer: #cartDrawer, #cartOverlay, #cartDrawerClose, #cartItemsList, #cartSubtotal, #cartItemCount, #cartDrawerFoot
