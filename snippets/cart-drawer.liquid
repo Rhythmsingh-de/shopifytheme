@@ -40,8 +40,10 @@
     </a>
     <a href="/cart" class="btn btn--ghost btn--full">View Full Cart</a>
     {%- if settings.trust_show_payment_icons -%}
-      <div style="display:flex;align-items:center;justify-content:center;gap:var(--sp-2);margin-top:var(--sp-3)">
-        {%- render 'payment-icons' -%}
+      <div class="payment-icons" style="display:flex;align-items:center;justify-content:center;gap:var(--sp-2);margin-top:var(--sp-3);flex-wrap:wrap;">
+        {%- for type in shop.enabled_payment_types -%}
+          {{ type | payment_type_svg_tag: class: 'payment-icon' }}
+        {%- endfor -%}
       </div>
     {%- endif -%}
   </div>
