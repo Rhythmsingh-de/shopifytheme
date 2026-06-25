@@ -1,26 +1,16 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "hero": {
       "type": "hero",
-      "settings": {
-        "layout": "split",
-        "media_position": "right",
-        "best_seller_text": "BEST SELLER",
-        "best_seller_stars": true,
-        "heading": "Stay Hydrated. Perform Better.",
-        "subheading": "The smart water bottle that tracks your hydration and helps you build better daily habits.",
-        "cta1_label": "Buy Now — $89",
-        "cta1_icon": true,
-        "cta1_bg": "#ff501a",
-        "cta1_color": "#ffffff",
-        "cta2_label": "",
-        "trust_text": "",
-        "show_price": false,
-        "show_sale_ribbon": false,
-        "show_countdown": false,
-        "split_media_bg": "#f0f2f5",
-        "split_content_bg": "#ffffff"
-      },
       "blocks": {
         "highlight_1": {
           "type": "highlight",
@@ -51,20 +41,44 @@
         "highlight_1",
         "highlight_2",
         "highlight_3"
-      ]
+      ],
+      "settings": {
+        "layout": "split",
+        "media_position": "right",
+        "best_seller_text": "BEST SELLER",
+        "best_seller_stars": true,
+        "eyebrow": "New Weekly Drop",
+        "heading": "Stay Hydrated. Perform Better.",
+        "subheading": "The smart water bottle that tracks your hydration and helps you build better daily habits.",
+        "trust_text": "",
+        "hero_product": "",
+        "show_price": false,
+        "show_sale_ribbon": false,
+        "show_countdown": false,
+        "countdown_label": "Offer ends in",
+        "show_buttons": true,
+        "cta1_label": "Buy Now — $89",
+        "cta1_link": "",
+        "cta1_icon": true,
+        "cta1_bg": "#ff501a",
+        "cta1_color": "#ffffff",
+        "cta2_label": "",
+        "cta2_link": "",
+        "split_media_bg": "#f0f2f5",
+        "split_content_bg": "#ffffff",
+        "heading_color": "#111111",
+        "subheading_color": "#555555",
+        "accent_color": "#1d6b44",
+        "color_scheme": "dark",
+        "bg_color": "#0d2318",
+        "show_overlay": true,
+        "overlay_opacity": 5,
+        "min_height": 600,
+        "content_align": "left"
+      }
     },
     "trust_badges": {
       "type": "trust-badges",
-      "settings": {
-        "layout": "contained",
-        "bg_color": "#ffffff",
-        "icon_color": "#ff501a",
-        "text_color": "#111111",
-        "show_dividers": true,
-        "icon_size": 38,
-        "padding_top": 24,
-        "padding_bottom": 24
-      },
       "blocks": {
         "badge_1": {
           "type": "badge",
@@ -95,17 +109,22 @@
         "badge_1",
         "badge_2",
         "badge_3"
-      ]
+      ],
+      "settings": {
+        "layout": "contained",
+        "bg_color": "#ffffff",
+        "icon_color": "#ff501a",
+        "text_color": "#111111",
+        "divider_color": "#cccccc",
+        "show_dividers": true,
+        "icon_size": 38,
+        "padding_top": 24,
+        "padding_bottom": 24,
+        "padding_sides": 20
+      }
     },
     "benefits": {
       "type": "benefits",
-      "settings": {
-        "heading": "",
-        "subtext": "",
-        "bg_color": "#ffffff",
-        "text_color": "#111111",
-        "icon_color": "#ff501a"
-      },
       "blocks": {
         "benefit_1": {
           "type": "benefit",
@@ -136,16 +155,17 @@
         "benefit_1",
         "benefit_2",
         "benefit_3"
-      ]
+      ],
+      "settings": {
+        "heading": "",
+        "subtext": "",
+        "bg_color": "#ffffff",
+        "text_color": "#111111",
+        "icon_color": "#ff501a"
+      }
     },
     "reviews_strip": {
       "type": "reviews-strip",
-      "settings": {
-        "heading": "Loved by Thousands",
-        "subtext": "Excellent  ★★★★★  4.8/5 from 2,500+ reviews",
-        "bg_color": "#ffffff",
-        "text_color": "#111111"
-      },
       "blocks": {
         "rev_1": {
           "type": "review",
@@ -179,18 +199,21 @@
         "rev_1",
         "rev_2",
         "rev_3"
-      ]
+      ],
+      "settings": {
+        "heading": "Loved by Thousands",
+        "subtext": "Excellent  ★★★★★  4.8/5 from 2,500+ reviews",
+        "use_global_review_settings": true,
+        "visible_count": 3,
+        "autoplay": true,
+        "autoplay_interval": 4,
+        "show_verified_badge": true,
+        "bg_color": "#ffffff",
+        "text_color": "#111111"
+      }
     },
     "features_split": {
       "type": "features-split",
-      "settings": {
-        "image_position": "left",
-        "heading": "Smart Features. Better Habits.",
-        "subheading": "",
-        "bg_color": "#ffffff",
-        "text_color": "#111111",
-        "icon_color": "#ff501a"
-      },
       "blocks": {
         "item_1": {
           "type": "item",
@@ -236,13 +259,18 @@
         "item_4",
         "item_5",
         "item_6"
-      ]
+      ],
+      "settings": {
+        "image_position": "left",
+        "heading": "Smart Features. Better Habits.",
+        "subheading": "",
+        "bg_color": "#ffffff",
+        "text_color": "#111111",
+        "icon_color": "#ff501a"
+      }
     },
     "faq": {
       "type": "faq",
-      "settings": {
-        "heading": "Frequently Asked Questions"
-      },
       "blocks": {
         "faq_1": {
           "type": "item",
@@ -278,7 +306,10 @@
         "faq_2",
         "faq_3",
         "faq_4"
-      ]
+      ],
+      "settings": {
+        "heading": "Frequently Asked Questions"
+      }
     },
     "urgency_banner": {
       "type": "urgency-banner",
@@ -288,7 +319,15 @@
         "subheading": "Don't miss out on our best deal of the year.",
         "show_countdown": true,
         "countdown_end": "",
-        "cta_label": "Buy Now — $89",
+        "hours_label": "Hours",
+        "mins_label": "Minutes",
+        "secs_label": "Seconds",
+        "show_product_card": true,
+        "offer_product": "bange-new-multifunction-crossbody-bag-shoulder-messenger-bags-male-waterproof-short-trip-chest-bag-pack-for-men",
+        "offer_collection": "",
+        "cta_label": "Buy Now",
+        "cta_link": "",
+        "cta_behavior": "link",
         "show_cart_icon": true,
         "bg_color": "#ff501a",
         "text_color": "#ffffff",

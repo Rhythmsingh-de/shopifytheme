@@ -106,46 +106,7 @@
       { "type": "text", "id": "trust_support_sub",    "label": "Support badge subtitle",       "default": "We reply within hours" },
       { "type": "header", "content": "Urgency / Scarcity" },
       { "type": "checkbox", "id": "show_urgency_banner", "label": "Show announcement urgency banner",       "default": true },
-      { "type": "checkbox", "id": "show_scarcity_bar",   "label": "Show stock scarcity bar on product",    "default": true },
-      { "type": "header", "content": "Global CTA Defaults" },
-      { "type": "text", "id": "conversion_primary_cta_label", "label": "Primary add-to-cart label", "default": "Add to Cart" },
-      { "type": "text", "id": "conversion_buy_now_label", "label": "Buy now label", "default": "Buy Now" },
-      { "type": "text", "id": "conversion_fast_checkout_label", "label": "Fast checkout label", "default": "Fast Checkout" },
-      { "type": "checkbox", "id": "conversion_show_fast_checkout", "label": "Show fast checkout where available", "default": true },
-      { "type": "text", "id": "conversion_microcopy", "label": "Checkout trust microcopy", "default": "Secure checkout - free shipping available - 30-day returns" },
-      { "type": "checkbox", "id": "product_sticky_atc_enabled", "label": "Show sticky add-to-cart on product pages", "default": true },
-      { "type": "header", "content": "Product Page Benefit Defaults" },
-      { "type": "text", "id": "product_benefit_1", "label": "Product benefit 1", "default": "Premium quality, built to last" },
-      { "type": "text", "id": "product_benefit_2", "label": "Product benefit 2", "default": "Free shipping threshold shown at checkout" },
-      { "type": "text", "id": "product_benefit_3", "label": "Product benefit 3", "default": "30-day hassle-free returns" },
-      { "type": "text", "id": "product_benefit_4", "label": "Product benefit 4", "default": "Secure checkout guaranteed" },
-      { "type": "header", "content": "Support Links" },
-      { "type": "checkbox", "id": "show_order_tracking_link", "label": "Show order tracking link", "default": true },
-      { "type": "text", "id": "order_tracking_label", "label": "Order tracking link label", "default": "Track Order" },
-      { "type": "url", "id": "order_tracking_url", "label": "Order tracking page or app URL" }
-    ]
-  },
-  {
-    "name": "Reviews & Social Proof",
-    "settings": [
-      { "type": "checkbox", "id": "reviews_autoplay", "label": "Auto-rotate review cards", "default": true },
-      { "type": "range", "id": "reviews_visible_count", "label": "Visible review cards", "min": 1, "max": 3, "step": 1, "default": 3 },
-      { "type": "range", "id": "reviews_autoplay_interval", "label": "Review rotation interval", "min": 2, "max": 10, "step": 1, "default": 4, "unit": "s" },
-      { "type": "checkbox", "id": "reviews_show_verified_badge", "label": "Show verified customer badge", "default": true },
-      { "type": "text", "id": "reviews_summary_text", "label": "Default review summary", "default": "Excellent - 4.8/5 from 2,500+ reviews" }
-    ]
-  },
-  {
-    "name": "Collection Pages",
-    "settings": [
-      { "type": "range", "id": "collection_products_per_page", "label": "Products per page", "min": 8, "max": 48, "step": 4, "default": 24 },
-      { "type": "range", "id": "collection_columns_desktop", "label": "Desktop columns", "min": 2, "max": 5, "step": 1, "default": 4 },
-      { "type": "range", "id": "collection_columns_mobile", "label": "Mobile columns", "min": 1, "max": 2, "step": 1, "default": 2 },
-      { "type": "checkbox", "id": "collection_show_sort", "label": "Show sort selector", "default": true },
-      { "type": "checkbox", "id": "collection_show_filters", "label": "Show storefront filters", "default": true },
-      { "type": "checkbox", "id": "collection_show_trust_bar", "label": "Show trust bar above product grid", "default": true },
-      { "type": "text", "id": "collection_trust_text", "label": "Collection trust line", "default": "Secure checkout - easy returns - fast support" },
-      { "type": "checkbox", "id": "collection_show_empty_state_cta", "label": "Show CTA in empty collections", "default": true }
+      { "type": "checkbox", "id": "show_scarcity_bar",   "label": "Show stock scarcity bar on product",    "default": true }
     ]
   },
   {
@@ -176,22 +137,7 @@
         "info": "Used for back-in-stock subscriptions." },
       { "type": "text", "id": "gtm_container_id", "label": "Google Tag Manager container ID",
         "info": "Example: GTM-XXXXXXX" },
-      { "type": "text", "id": "google_site_verification", "label": "Google Search Console verification code" },
-      { "type": "header", "content": "DataLayer Event Controls" },
-      { "type": "checkbox", "id": "data_layer_enabled", "label": "Enable theme dataLayer events", "default": true },
-      { "type": "checkbox", "id": "gtm_noscript_enabled", "label": "Render GTM noscript iframe", "default": true },
-      { "type": "checkbox", "id": "track_page_views", "label": "Track page views", "default": true },
-      { "type": "checkbox", "id": "track_ecommerce_events", "label": "Track ecommerce events", "default": true },
-      { "type": "checkbox", "id": "track_lead_events", "label": "Track email/contact leads", "default": true },
-      { "type": "checkbox", "id": "track_engagement_events", "label": "Track engagement events", "default": true },
-      { "type": "select", "id": "tracking_blocked_event_mode",
-        "label": "When consent is declined",
-        "info": "Compliant default records only that a non-essential event was blocked, without ecommerce or personal data.",
-        "options": [
-          { "value": "status_only", "label": "Record blocked-event status only" },
-          { "value": "none", "label": "Record nothing after decline" }
-        ],
-        "default": "status_only" }
+      { "type": "text", "id": "google_site_verification", "label": "Google Search Console verification code" }
     ]
   },
   {
@@ -207,22 +153,7 @@
         "info": "Example: 2026-12-31T23:59:59. Used for countdown timers." },
       { "type": "text", "id": "weekly_scarcity_text", "label": "Scarcity text (near ATC button)",
         "default": "Only 14 left in stock — order soon",
-        "info": "Leave blank to hide. Example: 'Only 12 left in stock!'" },
-      { "type": "header", "content": "Offer Targeting" },
-      { "type": "select", "id": "weekly_offer_scope", "label": "Where the offer applies",
-        "options": [
-          { "value": "all", "label": "All pages" },
-          { "value": "homepage_only", "label": "Homepage only" },
-          { "value": "all_products", "label": "All products" },
-          { "value": "all_collections", "label": "All collections" },
-          { "value": "selected_products", "label": "Selected products" },
-          { "value": "selected_collection", "label": "Selected collection" }
-        ],
-        "default": "all" },
-      { "type": "product", "id": "weekly_offer_product", "label": "Featured offer product" },
-      { "type": "product_list", "id": "weekly_offer_products", "label": "Selected offer products", "limit": 12 },
-      { "type": "collection", "id": "weekly_offer_collection", "label": "Selected offer collection" },
-      { "type": "text", "id": "weekly_offer_cta_label", "label": "Offer CTA label", "default": "Shop the offer" }
+        "info": "Leave blank to hide. Example: 'Only 12 left in stock!'" }
     ]
   },
   {
