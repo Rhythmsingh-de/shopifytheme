@@ -9,9 +9,10 @@
  */
 {
   "current": {
+    "font_body": "poppins_n4",
     "container_max_width": 1240,
-    "button_border_radius": "12px",
-    "card_border_radius": 18,
+    "button_border_radius": "9999px",
+    "card_border_radius": 24,
     "card_hover_second_image": true,
     "card_show_vendor": true,
     "card_show_rating": true,
@@ -21,7 +22,7 @@
     "cart_show_note": true,
     "gdpr_cookie_banner": false,
     "tracking_mode": "always_on",
-    "custom_css": "",
+    "custom_css": "/* Image Hover Zoom Effect */\n.product-image img,\n.card-image img,\nimg[data-product-image] {\n  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.4s ease;\n}\n\n.product-image:hover img,\n.card-image:hover img,\n.product-card:hover img {\n  transform: scale(1.08);\n  filter: brightness(1.05);\n}\n\n/* Image Fade-in Animation */\n@keyframes fadeInImage {\n  from {\n    opacity: 0;\n    transform: translateY(10px);\n  }\n  to {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\nimg[data-product-image],\n.product-image img,\n.card-image img {\n  animation: fadeInImage 0.6s ease-out forwards;\n}\n\n/* Button Hover Transitions */\nbutton,\n.button,\na.button,\n[role=\"button\"] {\n  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);\n  position: relative;\n}\n\nbutton:hover,\n.button:hover,\na.button:hover,\n[role=\"button\"]:hover {\n  transform: translateY(-2px);\n  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);\n}\n\nbutton:active,\n.button:active,\na.button:active,\n[role=\"button\"]:active {\n  transform: translateY(0);\n  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);\n}\n\n/* Premium Button Styling */\n.button-primary,\nbutton[type=\"submit\"],\n.add-to-cart-button {\n  font-weight: 600;\n  letter-spacing: 0.5px;\n  text-transform: uppercase;\n  font-size: 0.95rem;\n}\n\n/* Smooth Color Transitions */\n.button-primary:hover {\n  filter: brightness(0.95);\n}\n\n/* Card Hover Effects */\n.product-card,\n.card {\n  transition: all 0.3s ease;\n}\n\n.product-card:hover,\n.card:hover {\n  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);\n  transform: translateY(-4px);\n}",
     "accent_color": "#ff3c00",
     "text_color": "#111111",
     "bg_color": "#ffffff",
