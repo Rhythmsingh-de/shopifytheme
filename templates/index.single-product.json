@@ -56,6 +56,8 @@
         "buy_label": "Buy Now",
         "show_demo_rating": true,
         "show_sale_strip": true,
+        "sale_stripe_design": "rolling_strip",
+        "sale_stripe_orientation": "left",
         "show_qty_selector": true,
         "show_buy_now": true,
         "show_payment_icons": true,

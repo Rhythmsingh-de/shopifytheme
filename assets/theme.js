@@ -187,6 +187,8 @@
       return;
     }
 
+    e.preventDefault();
+
     var href = btn.getAttribute('href') || '';
     var vid = null;
     var qty = 1;
@@ -216,16 +218,66 @@
 
     if (!vid) return;
 
+    var destination = btn.dataset.checkoutDestination || 'checkout';
+    if (!destination && window.blcSettings) destination = window.blcSettings.fastCheckoutDestination || 'checkout';
+
     var isEditor = window.Shopify && window.Shopify.designMode;
     if (isEditor) {
-      e.preventDefault();
       btn.disabled = true;
       btn.textContent = 'Redirecting to Cart…';
-      window.location.href = '/cart';
-    } else {
-      btn.textContent = 'Redirecting…';
-      btn.setAttribute('href', checkoutHref(vid, qty, btn));
+      window.location.href = window.routes ? window.routes.cart_url : '/cart';
+      return;
     }
+
+    btn.textContent = 'Redirecting…';
+    btn.disabled = true;
+
+    fetch(window.routes ? window.routes.cart_add_url : '/cart/add.js', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest'
+      },
+      body: JSON.stringify({
+        id: parseInt(vid, 10),
+        quantity: qty
+      })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(item) {
+      if (item.status) {
+        throw new Error(item.description || 'Error adding to cart');
+      }
+      if (window.BLC && typeof window.BLC.pushDataLayerEvent === 'function') {
+        window.BLC.pushDataLayerEvent({ ecommerce: null });
+        window.BLC.pushDataLayerEvent({
+          event: 'add_to_cart',
+          ecommerce: {
+            currency: (window.Shopify && window.Shopify.currency && window.Shopify.currency.active) || 'USD',
+            value: parseFloat((item.price / 100).toFixed(2)),
+            items: [{
+              item_id: String(item.variant_id || item.id),
+              item_name: item.product_title || item.title || '',
+              price: parseFloat((item.price / 100).toFixed(2)),
+              quantity: item.quantity || 1
+            }]
+          }
+        });
+      }
+      
+      if (typeof _updateCartCount === 'function') _updateCartCount();
+      if (typeof refreshCartDrawer === 'function') refreshCartDrawer();
+
+      if (destination === 'cart') {
+        window.location.href = window.routes ? window.routes.cart_url : '/cart';
+      } else {
+        window.location.href = '/checkout';
+      }
+    })
+    .catch(function(err) {
+      console.error('[Buy Now Error]', err);
+      window.location.href = checkoutHref(vid, qty, btn);
+    });
   });
 
   /* ─────────── CART REMOVE ─────────── */

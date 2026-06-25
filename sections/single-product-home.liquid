@@ -130,7 +130,12 @@
         {%- endif -%}
 
         {%- if sph_show_sale_strip -%}
-          {%- render 'sale-strip', is_sale: is_sale, savings: save_pct -%}
+          {%- render 'sale-strip', 
+            is_sale: is_sale, 
+            savings: save_pct, 
+            style: section.settings.sale_stripe_design, 
+            position: section.settings.sale_stripe_orientation 
+          -%}
         {%- endif -%}
       </div>
 
@@ -846,7 +851,7 @@
   height: 44px;
 }
 .sph__qty-btn {
-  width: 40px; height: 100%;
+  width: 44px; height: 100%;
   font-size: 1.2rem;
   display: flex;
   align-items: center;
@@ -882,6 +887,14 @@
   cursor: pointer;
   outline: none;
   transition: border-color 0.15s ease, transform 0.15s ease;
+  position: relative;
+}
+.sph__swatch::after {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 44px; height: 44px;
+  transform: translate(-50%, -50%);
 }
 .sph__swatch.is-active {
   border-color: var(--color-text, #111);
@@ -899,7 +912,11 @@
   gap: 8px;
 }
 .sph__pill {
-  padding: 6px 14px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
   border: 1.5px solid var(--color-border, #e5e5e5);
   border-radius: var(--radius-md, 8px);
   font-size: var(--text-sm, 13px);
@@ -1381,6 +1398,20 @@ details-accordion[open] .sph-description__chevron,
     { "type": "checkbox", "id": "show_demo_rating", "label": "Show demo star rating (if no reviews app)", "default": true },
     { "type": "checkbox", "id": "show_sale_badge", "label": "Show sale badge", "default": true },
     { "type": "checkbox", "id": "show_sale_strip", "label": "Show sale stripe on product media", "default": true },
+    { "type": "select", "id": "sale_stripe_design", "label": "Stripe style",
+      "options": [
+        { "value": "rolling_strip", "label": "Rolling Marquee" },
+        { "value": "classic_ribbon", "label": "Static Ribbon" }
+      ],
+      "default": "rolling_strip" },
+    { "type": "select", "id": "sale_stripe_orientation", "label": "Orientation & Position",
+      "options": [
+        { "value": "left", "label": "Vertical Left" },
+        { "value": "right", "label": "Vertical Right" },
+        { "value": "top", "label": "Horizontal Top" },
+        { "value": "bottom", "label": "Horizontal Bottom" }
+      ],
+      "default": "left" },
     { "type": "header", "content": "Checkout & Payments" },
     { "type": "checkbox", "id": "show_qty_selector", "label": "Show quantity selector", "default": true },
     { "type": "text",    "id": "atc_label",  "label": "Add to Cart label", "info": "Leave blank to use Theme Settings > Trust & Conversion." },
