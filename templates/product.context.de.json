@@ -39,6 +39,11 @@
         "buy_label": "Kaufen"
       },
       "blocks": {}
+    },
+    "main_product": {
+      "disabled": false,
+      "settings": {},
+      "blocks": {}
     }
   }
 }
