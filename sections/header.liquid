@@ -1,4 +1,8 @@
 {%- liquid
+  assign show_header_cta = true
+  if section.settings.show_cta_button == false
+    assign show_header_cta = false
+  endif
   assign header_cta_label = section.settings.cta_label | default: settings.conversion_buy_now_label | default: 'Shop now'
   assign header_cta_action = section.settings.cta_action | default: 'checkout_permalink'
   assign header_cta_product = settings.primary_product
@@ -15,6 +19,9 @@
     assign header_cta_link = settings.primary_product.url
   elsif header_cta_link == blank and settings.primary_collection != blank
     assign header_cta_link = settings.primary_collection.url
+  endif
+  if show_header_cta == false
+    assign header_cta_label = blank
   endif
   if header_cta_link == blank
     assign header_cta_link = routes.all_products_collection_url
@@ -468,6 +475,7 @@
     { "type": "checkbox", "id": "show_account_icon", "label": "Show account icon", "default": true },
     { "type": "checkbox", "id": "show_mobile_account_links", "label": "Show account links in mobile menu", "default": true },
     { "type": "header", "content": "Header Button CTA" },
+    { "type": "checkbox", "id": "show_cta_button", "label": "Show CTA button", "default": true },
     { "type": "text", "id": "cta_label", "label": "CTA button label", "default": "Shop now" },
     { "type": "select", "id": "cta_action", "label": "CTA action", "options": [
       { "value": "checkout_permalink", "label": "Direct checkout primary product" },
