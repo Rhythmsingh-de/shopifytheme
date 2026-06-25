@@ -1,12 +1,3 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
     "hero": {
@@ -62,6 +53,107 @@
         "highlight_3"
       ]
     },
+    "trust_badges": {
+      "type": "trust-badges",
+      "settings": {
+        "layout": "contained",
+        "bg_color": "#ffffff",
+        "icon_color": "#ff501a",
+        "text_color": "#111111",
+        "show_dividers": true,
+        "icon_size": 38,
+        "padding_top": 24,
+        "padding_bottom": 24
+      },
+      "blocks": {
+        "badge_1": {
+          "type": "badge",
+          "settings": {
+            "icon": "secure",
+            "title": "Secure Checkout",
+            "subtitle": "SSL encrypted payments"
+          }
+        },
+        "badge_2": {
+          "type": "badge",
+          "settings": {
+            "icon": "shipping",
+            "title": "Free Shipping",
+            "subtitle": "On all orders over $50"
+          }
+        },
+        "badge_3": {
+          "type": "badge",
+          "settings": {
+            "icon": "quality",
+            "title": "30-Day Guarantee",
+            "subtitle": "Love it or get your money back"
+          }
+        }
+      },
+      "block_order": [
+        "badge_1",
+        "badge_2",
+        "badge_3"
+      ]
+    },
+    "features_split": {
+      "type": "features-split",
+      "settings": {
+        "image_position": "left",
+        "heading": "Smart Features. Better Habits.",
+        "subheading": "",
+        "bg_color": "#ffffff",
+        "text_color": "#111111",
+        "icon_color": "#ff501a"
+      },
+      "blocks": {
+        "item_1": {
+          "type": "item",
+          "settings": {
+            "text": "Real-time hydration tracking and smart reminders"
+          }
+        },
+        "item_2": {
+          "type": "item",
+          "settings": {
+            "text": "LED display shows your progress at a glance"
+          }
+        },
+        "item_3": {
+          "type": "item",
+          "settings": {
+            "text": "Syncs with iOS & Android app"
+          }
+        },
+        "item_4": {
+          "type": "item",
+          "settings": {
+            "text": "Up to 14 days battery life on a single charge"
+          }
+        },
+        "item_5": {
+          "type": "item",
+          "settings": {
+            "text": "BPA-free, leak-proof, and built to last"
+          }
+        },
+        "item_6": {
+          "type": "item",
+          "settings": {
+            "text": "24oz (710ml) capacity – perfect size for daily use"
+          }
+        }
+      },
+      "block_order": [
+        "item_1",
+        "item_2",
+        "item_3",
+        "item_4",
+        "item_5",
+        "item_6"
+      ]
+    },
     "single_product_home_f7zdV9": {
       "type": "single-product-home",
       "blocks": {
@@ -112,33 +204,33 @@
       ],
       "name": "Single Product Home",
       "settings": {
-        "product": "outdoor-large-capacity-messenger-bag-men-chest-bag-simple-fashion-men-bag-shoulder-bag",
+        "product": "",
         "show_hover_image": true,
         "show_eyebrow": true,
-        "eyebrow": "APEX TRAILBLAZER BACKPACK:",
-        "heading": "Adventure Ready",
-        "subheading": "Durable, waterproof, and ergonomic for your toughest hikes.",
+        "eyebrow": "BEST SELLER:",
+        "heading": "Stay Hydrated. Perform Better.",
+        "subheading": "The smart water bottle that tracks your hydration and helps you build better daily habits.",
         "show_rating": true,
         "show_demo_rating": true,
         "show_sale_badge": true,
         "show_qty_selector": true,
-        "atc_label": "Add to Cart",
+        "atc_label": "Buy Now — $89",
         "show_buy_now": true,
         "buy_label": "Buy Now",
         "show_payment_icons": true,
         "show_trust_strip": true,
-        "trust_1": "Free Shipping",
-        "trust_2": "Secure Checkout",
-        "trust_3": "30-Day Guarantee",
+        "trust_1": "30-Day Money Back Guarantee",
+        "trust_2": "1-Year Warranty",
+        "trust_3": "Secure checkout",
         "show_features": true,
-        "feat_1_title": "Waterproof",
-        "feat_1_sub": "Durable Materials",
+        "feat_1_title": "Stay Hydrated, Effortlessly",
+        "feat_1_sub": "Smart reminders and real-time tracking help you hit your daily hydration goals.",
         "feat_1_icon": "water",
-        "feat_2_title": "Ultralight",
-        "feat_2_sub": "30L Capacity",
+        "feat_2_title": "See Progress, Stay Motivated",
+        "feat_2_sub": "Track your streaks and hydration insights in the app to build better habits.",
         "feat_2_icon": "leaf",
-        "feat_3_title": "Ergonomic",
-        "feat_3_sub": "Comfort Straps",
+        "feat_3_title": "Built to Keep Up",
+        "feat_3_sub": "Long-lasting battery, durable design, and leak-proof — ready for anything.",
         "feat_3_icon": "bag",
         "description_style": "plain",
         "description_label": "Description",
@@ -148,7 +240,7 @@
         "show_faq": true,
         "bottom_alignment": "left",
         "reviews_title": "Reviews",
-        "faq_title": "FAQ",
+        "faq_title": "Frequently Asked Questions",
         "enable_review_slider_cycling": true,
         "review_slider_interval": 3.5,
         "visible_reviews_count": 3,
@@ -157,10 +249,73 @@
         "padding_top": 36,
         "padding_bottom": 48
       }
+    },
+    "reviews_strip": {
+      "type": "reviews-strip",
+      "settings": {
+        "heading": "Loved by Thousands",
+        "subtext": "Excellent  ★★★★★  4.8/5 from 2,500+ reviews",
+        "bg_color": "#ffffff",
+        "text_color": "#111111"
+      },
+      "blocks": {
+        "rev_1": {
+          "type": "review",
+          "settings": {
+            "stars": "★★★★★",
+            "text": "This bottle changed the way I hydrate. The reminders are super helpful and the battery lasts forever!",
+            "author": "James D.",
+            "verified": true
+          }
+        },
+        "rev_2": {
+          "type": "review",
+          "settings": {
+            "stars": "★★★★★",
+            "text": "Love the design and the app integration. It keeps me accountable every single day.",
+            "author": "Sarah M.",
+            "verified": true
+          }
+        },
+        "rev_3": {
+          "type": "review",
+          "settings": {
+            "stars": "★★★★★",
+            "text": "Perfect for the gym and work. Durable, stylish, and actually makes a difference.",
+            "author": "Michael T.",
+            "verified": true
+          }
+        }
+      },
+      "block_order": [
+        "rev_1",
+        "rev_2",
+        "rev_3"
+      ]
+    },
+    "urgency_banner": {
+      "type": "urgency-banner",
+      "settings": {
+        "eyebrow": "Limited Time Offer!",
+        "heading": "Get 31% Off Today Only",
+        "subheading": "Don't miss out on our best deal of the year.",
+        "show_countdown": true,
+        "countdown_end": "",
+        "cta_label": "Buy Now — $89",
+        "show_cart_icon": true,
+        "bg_color": "#ff501a",
+        "text_color": "#ffffff",
+        "cta_bg": "#ffffff",
+        "cta_text": "#ff501a"
+      }
     }
   },
   "order": [
     "hero",
-    "single_product_home_f7zdV9"
+    "trust_badges",
+    "features_split",
+    "single_product_home_f7zdV9",
+    "reviews_strip",
+    "urgency_banner"
   ]
 }

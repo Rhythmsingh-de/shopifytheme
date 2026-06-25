@@ -1,0 +1,192 @@
+{%- liquid
+  assign bg_color = section.settings.bg_color | default: '#ffffff'
+  assign text_color = section.settings.text_color | default: '#111111'
+  assign list_icon_color = section.settings.icon_color | default: '#ff501a'
+  assign align = section.settings.image_position | default: 'left'
+-%}
+
+<section
+  id="FeaturesSplit-{{ section.id }}"
+  class="features-split reveal"
+  style="background: {{ bg_color }}; color: {{ text_color }}; padding: clamp(40px, 8vw, 80px) 0;"
+  {{ section.shopify_attributes }}
+>
+  <div class="container">
+    <div class="features-split__grid features-split__grid--{{ align }}">
+      
+      <div class="features-split__media">
+        {%- if section.settings.image != blank -%}
+          {%- assign img_alt = section.settings.image.alt | default: section.settings.heading | escape -%}
+          {{ section.settings.image | image_url: width: 800 | image_tag:
+            widths: '400,800,1200',
+            width: 600, height: 600,
+            loading: 'lazy', decoding: 'async',
+            class: 'features-split__img',
+            alt: img_alt }}
+        {%- else -%}
+          <div class="features-split__placeholder">
+            {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+          </div>
+        {%- endif -%}
+      </div>
+
+      <div class="features-split__content">
+        {%- if section.settings.heading != blank -%}
+          <h2 class="features-split__heading">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+        
+        {%- if section.settings.subheading != blank -%}
+          <p class="features-split__sub">{{ section.settings.subheading }}</p>
+        {%- endif -%}
+
+        {%- if section.blocks.size > 0 -%}
+          <ul class="features-split__list" role="list">
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'item' -%}
+                <li class="features-split__item reveal" style="transition-delay: {{ forloop.index0 | times: 60 }}ms;" {{ block.shopify_attributes }}>
+                  <span class="features-split__icon" style="color: {{ list_icon_color }};">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <circle cx="12" cy="12" r="10" fill="currentColor" opacity="0.15"/>
+                      <polyline points="20 6 9 17 4 12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </span>
+                  <span class="features-split__text">{{ block.settings.text }}</span>
+                </li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<style>
+.features-split__grid {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: clamp(32px, 6vw, 80px);
+  align-items: center;
+}
+.features-split__media {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-lg, 16px);
+}
+.features-split__img {
+  width: 100%; height: auto;
+  object-fit: cover;
+  display: block;
+}
+.features-split__placeholder {
+  width: 100%; height: 100%; min-height: 350px;
+  background: var(--color-surface-2, #f5f3f0);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--color-text-muted);
+}
+.features-split__heading {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: var(--sp-4, 16px);
+}
+.features-split__sub {
+  font-size: var(--text-base, 16px);
+  color: var(--color-text-muted);
+  line-height: 1.6;
+  margin-bottom: var(--sp-6, 24px);
+}
+.features-split__list {
+  list-style: none;
+  padding: 0; margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.features-split__item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.features-split__icon {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2px;
+}
+.features-split__text {
+  font-size: var(--text-sm, 14px);
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+@media (min-width: 769px) {
+  .features-split__grid--right .features-split__media {
+    order: 2;
+  }
+  .features-split__grid--right .features-split__content {
+    order: 1;
+  }
+}
+@media (max-width: 768px) {
+  .features-split__grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .features-split__heading {
+    font-size: 1.6rem;
+  }
+}
+</style>
+
+{% schema %}
+{
+  "name": "Features Split Checklist",
+  "tag": "section",
+  "settings": [
+    { "type": "header", "content": "Layout" },
+    { "type": "select", "id": "image_position", "label": "Image position",
+      "options": [
+        { "value": "left",  "label": "Left" },
+        { "value": "right", "label": "Right" }
+      ], "default": "left" },
+    { "type": "image_picker", "id": "image", "label": "Features Image" },
+    { "type": "header", "content": "Content" },
+    { "type": "textarea", "id": "heading", "label": "Section Heading", "default": "Smart Features. Better Habits." },
+    { "type": "textarea", "id": "subheading", "label": "Section Subheading" },
+    { "type": "header", "content": "Colors & Styling" },
+    { "type": "color", "id": "bg_color", "label": "Section background color", "default": "#ffffff" },
+    { "type": "color", "id": "text_color", "label": "Section text color", "default": "#111111" },
+    { "type": "color", "id": "icon_color", "label": "Checkmark icon color", "default": "#ff501a" }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Checklist Item",
+      "settings": [
+        { "type": "text", "id": "text", "label": "Item text", "default": "Real-time hydration tracking and smart reminders" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Features Split Checklist",
+      "settings": {
+        "image_position": "left",
+        "heading": "Smart Features. Better Habits."
+      },
+      "blocks": [
+        { "type": "item", "settings": { "text": "Real-time hydration tracking and smart reminders" } },
+        { "type": "item", "settings": { "text": "LED display shows your progress at a glance" } },
+        { "type": "item", "settings": { "text": "Syncs with iOS & Android app" } },
+        { "type": "item", "settings": { "text": "Up to 14 days battery life on a single charge" } },
+        { "type": "item", "settings": { "text": "BPA-free, leak-proof, and built to last" } },
+        { "type": "item", "settings": { "text": "24oz (710ml) capacity – perfect size for daily use" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

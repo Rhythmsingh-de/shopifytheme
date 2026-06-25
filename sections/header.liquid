@@ -69,6 +69,12 @@
             {{ cart.item_count }}
           </span>
         </button>
+
+        {%- if section.settings.cta_label != blank -%}
+          <a href="{{ section.settings.cta_link | default: '#SingleProductHome' }}" class="btn header__cta-btn">
+            {{ section.settings.cta_label }}
+          </a>
+        {%- endif -%}
       </div>
 
     </div>
@@ -76,6 +82,30 @@
 </header>
 
 <style>
+.header__cta-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 20px;
+  min-height: 40px;
+  font-size: var(--text-xs, 12px);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: var(--color-secondary, #ff501a);
+  color: #ffffff !important;
+  border-radius: var(--btn-radius, 9999px);
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  margin-left: 8px;
+  white-space: nowrap;
+}
+.header__cta-btn:hover {
+  transform: translateY(-1px);
+  opacity: 0.95;
+}
+@media (max-width: 640px) {
+  .header__cta-btn { display: none; }
+}
 .site-header {
   background: var(--color-header-bg);
   padding: var(--sp-4) 0;
@@ -307,7 +337,10 @@
     },
     { "type": "link_list", "id": "menu", "label": "Navigation menu", "default": "main-menu" },
     { "type": "checkbox", "id": "sticky", "label": "Sticky header", "default": true },
-    { "type": "checkbox", "id": "show_account_icon", "label": "Show account icon", "default": true }
+    { "type": "checkbox", "id": "show_account_icon", "label": "Show account icon", "default": true },
+    { "type": "header", "content": "Header Button CTA" },
+    { "type": "text", "id": "cta_label", "label": "CTA button label", "default": "Buy Now — $89" },
+    { "type": "url", "id": "cta_link", "label": "CTA button link" }
   ]
 }
 {% endschema %}
