@@ -335,6 +335,21 @@
         "cta_bg": "#ffffff",
         "cta_text": "#ff501a"
       }
+    },
+    "newsletter_bar_r6KAXY": {
+      "type": "newsletter-bar",
+      "name": "Newsletter Bar",
+      "settings": {
+        "eyebrow": "Stay in the loop",
+        "heading": "Join the Community",
+        "subtext": "Be first to know about new arrivals, exclusive offers, and our latest giving campaigns.",
+        "placeholder": "Enter your email address",
+        "button": "Subscribe",
+        "success_msg": "You're in! Check your inbox for a welcome gift.",
+        "privacy_note": "No spam. Unsubscribe anytime. We respect your privacy.",
+        "bg_color": "#f5f3f0",
+        "text_color": "#111111"
+      }
     }
   },
   "order": [
@@ -344,6 +359,7 @@
     "reviews_strip",
     "features_split",
     "faq",
-    "urgency_banner"
+    "urgency_banner",
+    "newsletter_bar_r6KAXY"
   ]
 }
