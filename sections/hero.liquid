@@ -198,7 +198,7 @@
         {%- endif -%}
 
         {%- if hero_offer_enabled and hero_offer_label != blank -%}
-          <div class="blc-hero__offer-badge">
+          <div class="blc-hero__offer-badge" style="background:{{ section.settings.offer_badge_bg | default: 'rgba(255,255,255,0.12)' }}; color:{{ section.settings.offer_badge_color | default: '#ffffff' }}; border-color:color-mix(in oklab, {{ section.settings.offer_badge_color | default: '#ffffff' }} 25%, transparent);">
             <span class="blc-hero__offer-dot"></span>
             {{ hero_offer_label | escape }}
           </div>
@@ -1047,6 +1047,8 @@
     { "type": "color", "id": "heading_color",    "label": "Heading color",             "default": "#111111" },
     { "type": "color", "id": "subheading_color", "label": "Subheading color",          "default": "#555555" },
     { "type": "color", "id": "accent_color",     "label": "Eyebrow / accent color",    "default": "#1d6b44" },
+    { "type": "color", "id": "offer_badge_bg",    "label": "Offer badge background",    "default": "rgba(255,255,255,0.12)" },
+    { "type": "color", "id": "offer_badge_color", "label": "Offer badge text color",    "default": "#ffffff" },
     { "type": "header", "content": "Background / Full-bleed Mode" },
     { "type": "image_picker", "id": "bg_image",        "label": "Background / product image" },
     { "type": "image_picker", "id": "mobile_bg_image", "label": "Mobile background (optional)" },

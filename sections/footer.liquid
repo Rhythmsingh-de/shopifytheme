@@ -183,6 +183,49 @@
 .site-footer--compact .footer-trust {
   padding-block: var(--sp-5);
 }
+
+.site-footer--minimalist .footer-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: var(--sp-8);
+  padding-bottom: var(--sp-10);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.site-footer--minimalist .footer-brand {
+  order: 2;
+  text-align: right;
+  max-width: 320px;
+}
+.site-footer--minimalist .footer-social {
+  justify-content: flex-end;
+}
+.site-footer--minimalist .footer-nav-col {
+  order: 1;
+  flex: 1 1 180px;
+  max-width: 240px;
+}
+.site-footer--minimalist .footer-bottom {
+  padding-top: var(--sp-8);
+}
+@media (max-width: 768px) {
+  .site-footer--minimalist .footer-top {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .site-footer--minimalist .footer-brand {
+    order: 1;
+    text-align: left;
+  }
+  .site-footer--minimalist .footer-social {
+    justify-content: flex-start;
+  }
+  .site-footer--minimalist .footer-nav-col {
+    order: 2;
+  }
+}
+
 @media (max-width: 900px) {
   .footer-top { grid-template-columns: 1fr 1fr; row-gap: var(--sp-8); }
 }
@@ -326,9 +369,10 @@
     { "type": "text",        "id": "tagline",  "label": "Brand tagline",   "default": "Premium wellness products for you, your home & your pets." },
     { "type": "header", "content": "Design Settings" },
     { "type": "select", "id": "layout_style", "label": "Footer style", "options": [
-      { "value": "columns", "label": "Columns" },
-      { "value": "centered", "label": "Centered" },
-      { "value": "compact", "label": "Compact" }
+      { "value": "columns", "label": "Footer Style 1 (Columns)" },
+      { "value": "centered", "label": "Footer Style 2 (Centered)" },
+      { "value": "compact", "label": "Footer Style 3 (Compact)" },
+      { "value": "minimalist", "label": "Footer Style 4 (Minimal Grid)" }
     ], "default": "columns" },
     { "type": "color", "id": "bg_color",       "label": "Background color", "default": "#111111" },
     { "type": "color", "id": "text_color",     "label": "Text color",       "default": "#ffffff" },
