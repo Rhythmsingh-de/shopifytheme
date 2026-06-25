@@ -128,7 +128,7 @@
 .site-header--sticky { position: sticky; top: 0; }
 .header--scrolled { box-shadow: var(--shadow-sm); }
 
-/* ── Transparent hero mode ── */
+/* Transparent hero mode */
 .site-header--transparent {
   background: transparent !important;
   border-bottom-color: transparent !important;
@@ -137,9 +137,9 @@
 .site-header--transparent .header__logo-text,
 .site-header--transparent .header__nav-link,
 .site-header--transparent .header__icon-btn {
-  color: #ffffff;
+  color: var(--color-header-text);
 }
-.site-header--transparent .header__nav-link:hover { color: rgba(255,255,255,0.75); }
+.site-header--transparent .header__nav-link:hover { color: var(--color-text); }
 .site-header--solid {
   background: rgba(var(--color-header-bg-rgb, 255,255,255), 0.92) !important;
   backdrop-filter: blur(12px) !important;
