@@ -119,7 +119,7 @@
     "sale_stripe_always_show": false,
     "sale_stripe_show_savings": false,
     "sale_stripe_animate": true,
-    "cursor_enabled": true,
+    "cursor_enabled": false,
     "cursor_style": "simple",
     "cursor_color": "#e8260d",
     "reveal_animations": true,

@@ -19,6 +19,30 @@
   if header_cta_link == blank
     assign header_cta_link = routes.all_products_collection_url
   endif
+  assign show_desktop_menu = true
+  if section.settings.show_desktop_menu == false
+    assign show_desktop_menu = false
+  endif
+  assign show_mobile_menu = true
+  if section.settings.show_mobile_menu == false
+    assign show_mobile_menu = false
+  endif
+  assign show_mobile_account_links = true
+  if section.settings.show_mobile_account_links == false
+    assign show_mobile_account_links = false
+  endif
+  assign desktop_nav_menu = section.settings.desktop_menu
+  if desktop_nav_menu == blank
+    assign desktop_nav_menu = section.settings.menu
+  endif
+  assign mobile_nav_menu = section.settings.mobile_menu
+  if mobile_nav_menu == blank
+    assign mobile_nav_menu = desktop_nav_menu
+  endif
+  assign has_mobile_menu = false
+  if show_mobile_menu and mobile_nav_menu != blank and mobile_nav_menu.links.size > 0
+    assign has_mobile_menu = true
+  endif
 -%}
 
 <header id="site-header" class="site-header{% if section.settings.sticky %} site-header--sticky{% endif %}"
@@ -26,14 +50,16 @@
   <div class="container">
     <div class="header__inner" data-logo-pos="{{ section.settings.logo_position | default: 'left' }}">
 
-      <button class="header__icon-btn header__hamburger" id="mobileNavTrigger"
-        aria-label="Open navigation" aria-expanded="false" aria-controls="nav-drawer">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-          <line x1="3" y1="6" x2="21" y2="6"/>
-          <line x1="3" y1="12" x2="21" y2="12"/>
-          <line x1="3" y1="18" x2="21" y2="18"/>
-        </svg>
-      </button>
+      {%- if has_mobile_menu -%}
+        <button class="header__icon-btn header__hamburger" id="mobileNavTrigger"
+          aria-label="Open navigation" aria-expanded="false" aria-controls="nav-drawer">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+        </button>
+      {%- endif -%}
 
       <a href="/" class="header__logo" aria-label="{{ shop.name }} home">
         {%- if section.settings.logo != blank -%}
@@ -53,11 +79,13 @@
         {%- endif -%}
       </a>
 
-      <nav class="header__nav" aria-label="Main navigation">
-        {%- for link in section.settings.menu.links -%}
-          <a href="{{ link.url }}" class="header__nav-link{% if link.active %} is-active{% endif %}">{{ link.title }}</a>
-        {%- endfor -%}
-      </nav>
+      {%- if show_desktop_menu and desktop_nav_menu != blank and desktop_nav_menu.links.size > 0 -%}
+        <nav class="header__nav" aria-label="Main navigation">
+          {%- for link in desktop_nav_menu.links -%}
+            <a href="{{ link.url }}" class="header__nav-link{% if link.active %} is-active{% endif %}">{{ link.title | escape }}</a>
+          {%- endfor -%}
+        </nav>
+      {%- endif -%}
 
       <div class="header__actions">
         <button class="header__icon-btn search-toggle" aria-label="Search" data-search-toggle>
@@ -106,6 +134,10 @@
     </div>
   </div>
 </header>
+
+{%- if has_mobile_menu -%}
+  {% render 'nav-drawer', mobile_menu: mobile_nav_menu, show_account_links: show_mobile_account_links %}
+{%- endif -%}
 
 <style>
 .header__cta-btn {
@@ -361,9 +393,14 @@
       "label": "Logo width (mobile)",
       "default": 80
     },
-    { "type": "link_list", "id": "menu", "label": "Navigation menu", "default": "main-menu" },
+    { "type": "header", "content": "Navigation menus" },
+    { "type": "checkbox", "id": "show_desktop_menu", "label": "Show desktop menu", "default": true },
+    { "type": "link_list", "id": "desktop_menu", "label": "Desktop navigation menu", "default": "main-menu" },
+    { "type": "checkbox", "id": "show_mobile_menu", "label": "Show mobile menu", "default": true },
+    { "type": "link_list", "id": "mobile_menu", "label": "Mobile navigation menu", "info": "Leave blank to use the desktop menu.", "default": "main-menu" },
     { "type": "checkbox", "id": "sticky", "label": "Sticky header", "default": true },
     { "type": "checkbox", "id": "show_account_icon", "label": "Show account icon", "default": true },
+    { "type": "checkbox", "id": "show_mobile_account_links", "label": "Show account links in mobile menu", "default": true },
     { "type": "header", "content": "Header Button CTA" },
     { "type": "text", "id": "cta_label", "label": "CTA button label", "default": "Shop now" },
     { "type": "select", "id": "cta_action", "label": "CTA action", "options": [
