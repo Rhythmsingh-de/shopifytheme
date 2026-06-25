@@ -1,0 +1,36 @@
+{%- liquid
+  assign sale_text = text | default: settings.sale_stripe_text | default: 'SALE'
+  assign sale_label = sale_text | strip
+  assign savings_value = savings
+  if is_sale and settings.sale_stripe_show_savings and savings_value != blank
+    assign sale_label = sale_label | append: ' - Save ' | append: savings_value | append: '%'
+  endif
+  assign stripe_style = settings.sale_stripe_style | default: 'rolling_strip'
+  assign stripe_position = settings.sale_stripe_position | default: 'left'
+  assign stripe_speed = settings.sale_stripe_speed | default: 12
+-%}
+
+{%- if sale_label != blank -%}
+  {%- if stripe_style == 'classic_ribbon' -%}
+    <div
+      class="sale-ribbon sale-ribbon--{{ stripe_position }}{% if settings.sale_stripe_animate %} sale-ribbon--animate{% endif %}"
+      style="--sale-strip-speed: {{ stripe_speed }}s;"
+      aria-label="{{ sale_label | escape }}">
+      <span>{{ sale_label | escape }}</span>
+    </div>
+  {%- else -%}
+    <div
+      class="sale-strip sale-strip--{{ stripe_position }}{% if settings.sale_stripe_animate %} sale-strip--animate{% endif %}"
+      style="--sale-strip-speed: {{ stripe_speed }}s;"
+      aria-label="{{ sale_label | escape }}">
+      <div class="sale-strip__track" aria-hidden="true">
+        {%- for i in (1..6) -%}
+          <span>{{ sale_label | escape }}</span>
+        {%- endfor -%}
+        {%- for i in (1..6) -%}
+          <span>{{ sale_label | escape }}</span>
+        {%- endfor -%}
+      </div>
+    </div>
+  {%- endif -%}
+{%- endif -%}

@@ -39,6 +39,12 @@
     assign hero_offer_enabled = true
     assign hero_offer_label = settings.upcoming_sale_label
   endif
+  assign hero_show_sale_strip = false
+  if section.settings.show_sale_ribbon and settings.sale_stripe_enabled
+    if hero_is_sale or settings.sale_stripe_always_show
+      assign hero_show_sale_strip = true
+    endif
+  endif
 -%}
 
 {%- if section.settings.bg_image != blank -%}
@@ -78,6 +84,10 @@
         <div class="blc-hero__overlay" style="--overlay-opacity:{{ section.settings.overlay_opacity | default: 0.5 }}"></div>
       {%- endif -%}
     </div>
+
+    {%- if hero_show_sale_strip -%}
+      {%- render 'sale-strip', is_sale: hero_is_sale, savings: hero_save_pct -%}
+    {%- endif -%}
 
     <div class="container">
       <div class="blc-hero__content blc-hero__content--{{ align }}">
@@ -172,10 +182,8 @@
           </div>
         {%- endif -%}
 
-        {%- if hero_is_sale and section.settings.show_sale_ribbon and settings.sale_stripe_enabled -%}
-          <div class="blc-hero__ribbon{% if settings.sale_stripe_animate %} blc-hero__ribbon--animate{% endif %}">
-            <span>{{ settings.sale_stripe_text | default: 'Sale' | escape }}{% if settings.sale_stripe_show_savings %} - Save {{ hero_save_pct }}%{% endif %}</span>
-          </div>
+        {%- if hero_show_sale_strip -%}
+          {%- render 'sale-strip', is_sale: hero_is_sale, savings: hero_save_pct -%}
         {%- endif -%}
 
         {%- comment -%}Floating highlight cards overlay (PeakFlow layout) {%- endcomment -%}
@@ -464,44 +472,6 @@
   0%,100% { box-shadow: 0 0 0 3px rgba(74,222,128,0.35); }
   50%      { box-shadow: 0 0 0 7px rgba(74,222,128,0.1); }
 }
-.blc-hero__ribbon {
-  position: absolute; bottom: 18px; left: 0;
-  background: var(--color-sale, #e8260d); color: #fff;
-  font-size: 12px; font-weight: 800;
-  letter-spacing: 0.08em; text-transform: uppercase;
-  padding: 9px 26px 9px 18px;
-  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 50%, calc(100% - 14px) 100%, 0 100%);
-  transform: skewY(-4deg);
-  transform-origin: left center;
-  box-shadow: 0 12px 28px rgba(0,0,0,0.16);
-  overflow: hidden;
-}
-.blc-hero__ribbon span {
-  display: inline-block;
-  transform: skewY(4deg);
-}
-.blc-hero__ribbon::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(100deg, transparent 0%, rgba(255,255,255,0.3) 45%, transparent 70%);
-  transform: translateX(-130%);
-}
-.blc-hero__ribbon--animate {
-  animation: sale-stripe-bend 3.8s ease-in-out infinite;
-}
-.blc-hero__ribbon--animate::after {
-  animation: sale-stripe-shine 3.8s ease-in-out infinite;
-}
-@keyframes sale-stripe-bend {
-  0%,100% { transform: skewY(-4deg) translateX(0); }
-  50% { transform: skewY(3deg) translateX(5px); }
-}
-@keyframes sale-stripe-shine {
-  0%,40% { transform: translateX(-130%); }
-  72%,100% { transform: translateX(130%); }
-}
-
 .blc-hero__split-content {
   display: flex; align-items: center;
   padding: clamp(32px, 5vw, 80px);
@@ -833,7 +803,7 @@
     { "type": "checkbox", "id": "show_price",      "label": "Show product price",       "default": true },
     { "type": "checkbox", "id": "show_variant_picker", "label": "Show color / size options", "default": true },
     { "type": "checkbox", "id": "show_quantity_selector", "label": "Show quantity selector", "default": true },
-    { "type": "checkbox", "id": "show_sale_ribbon","label": "Show sale ribbon on image", "default": true },
+    { "type": "checkbox", "id": "show_sale_ribbon","label": "Show sale stripe on hero media", "default": true },
     { "type": "header", "content": "Countdown Timer" },
     { "type": "checkbox", "id": "show_countdown",   "label": "Show countdown timer",    "default": false,
       "info": "Reads offer end date from Theme Settings > Weekly Offer." },

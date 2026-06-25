@@ -291,9 +291,25 @@
       { "type": "text", "id": "upcoming_sale_cta_label", "label": "Upcoming sale CTA label", "default": "Preview the sale" },
       { "type": "header", "content": "Sale Stripe" },
       { "type": "checkbox", "id": "sale_stripe_enabled", "label": "Show sale stripe", "default": true },
-      { "type": "text", "id": "sale_stripe_text", "label": "Sale stripe text", "default": "Sale" },
-      { "type": "checkbox", "id": "sale_stripe_show_savings", "label": "Append savings percentage", "default": true },
-      { "type": "checkbox", "id": "sale_stripe_animate", "label": "Animate sale stripe bend", "default": true }
+      { "type": "text", "id": "sale_stripe_text", "label": "Sale stripe text", "default": "SALE" },
+      { "type": "select", "id": "sale_stripe_style", "label": "Sale stripe style",
+        "options": [
+          { "value": "rolling_strip", "label": "Rolling sale strip" },
+          { "value": "classic_ribbon", "label": "Classic angled ribbon" }
+        ],
+        "default": "rolling_strip" },
+      { "type": "select", "id": "sale_stripe_position", "label": "Sale stripe position",
+        "options": [
+          { "value": "left", "label": "Left vertical" },
+          { "value": "right", "label": "Right vertical" },
+          { "value": "top", "label": "Top horizontal" },
+          { "value": "bottom", "label": "Bottom horizontal" }
+        ],
+        "default": "left" },
+      { "type": "range", "id": "sale_stripe_speed", "label": "Sale stripe animation speed", "min": 6, "max": 24, "step": 2, "default": 12, "unit": "s" },
+      { "type": "checkbox", "id": "sale_stripe_always_show", "label": "Show stripe even when product is not discounted", "default": true },
+      { "type": "checkbox", "id": "sale_stripe_show_savings", "label": "Append savings percentage", "default": false },
+      { "type": "checkbox", "id": "sale_stripe_animate", "label": "Animate sale stripe", "default": true }
     ]
   },
   {
@@ -313,7 +329,7 @@
       { "type": "header", "content": "Scroll & Reveal Animations" },
       { "type": "checkbox", "id": "reveal_animations", "label": "Enable scroll-reveal animations", "default": true },
       { "type": "header", "content": "Header" },
-      { "type": "checkbox", "id": "header_transparent_hero", "label": "Transparent header over hero", "default": true,
+      { "type": "checkbox", "id": "header_transparent_hero", "label": "Transparent header over hero", "default": false,
         "info": "Header starts transparent when a hero section is first on page, becomes solid on scroll." }
     ]
   },

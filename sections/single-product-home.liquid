@@ -49,6 +49,12 @@
     assign sph_offer_enabled = true
     assign sph_offer_label = settings.upcoming_sale_label
   endif
+  assign sph_show_sale_strip = false
+  if section.settings.show_sale_strip and settings.sale_stripe_enabled
+    if is_sale or settings.sale_stripe_always_show
+      assign sph_show_sale_strip = true
+    endif
+  endif
   assign visible_reviews_count = section.settings.visible_reviews_count
   assign review_slider_cycling = section.settings.enable_review_slider_cycling
   assign review_slider_interval = section.settings.review_slider_interval
@@ -121,6 +127,10 @@
               {%- endif -%}
             {%- endif -%}
           </div>
+        {%- endif -%}
+
+        {%- if sph_show_sale_strip -%}
+          {%- render 'sale-strip', is_sale: is_sale, savings: save_pct -%}
         {%- endif -%}
       </div>
 
@@ -1370,6 +1380,7 @@ details-accordion[open] .sph-description__chevron,
     { "type": "checkbox", "id": "show_rating", "label": "Show rating / reviews count", "default": true },
     { "type": "checkbox", "id": "show_demo_rating", "label": "Show demo star rating (if no reviews app)", "default": true },
     { "type": "checkbox", "id": "show_sale_badge", "label": "Show sale badge", "default": true },
+    { "type": "checkbox", "id": "show_sale_strip", "label": "Show sale stripe on product media", "default": true },
     { "type": "header", "content": "Checkout & Payments" },
     { "type": "checkbox", "id": "show_qty_selector", "label": "Show quantity selector", "default": true },
     { "type": "text",    "id": "atc_label",  "label": "Add to Cart label", "info": "Leave blank to use Theme Settings > Trust & Conversion." },
