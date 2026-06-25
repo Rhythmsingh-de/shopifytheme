@@ -2,7 +2,7 @@
   {
     "name": "theme_info",
     "theme_name": "BodyLuxCare",
-    "theme_version": "2.2.0",
+    "theme_version": "3.0.0",
     "theme_author": "Rhythmsingh",
     "theme_documentation_url": "https://github.com/Rhythmsingh-de/shopifytheme",
     "theme_support_url": "https://github.com/Rhythmsingh-de/shopifytheme"
@@ -138,6 +138,43 @@
       { "type": "text", "id": "gtm_container_id", "label": "Google Tag Manager container ID",
         "info": "Example: GTM-XXXXXXX" },
       { "type": "text", "id": "google_site_verification", "label": "Google Search Console verification code" }
+    ]
+  },
+  {
+    "name": "Weekly Offer",
+    "settings": [
+      { "type": "header", "content": "Weekly Drop Offer" },
+      { "type": "checkbox", "id": "weekly_offer_enabled", "label": "Enable weekly offer mode", "default": true,
+        "info": "Shows 'This Week's Drop' badge on hero and product section." },
+      { "type": "text", "id": "weekly_offer_label", "label": "Offer badge label", "default": "This Week's Drop" },
+      { "type": "text", "id": "weekly_offer_headline", "label": "Offer headline (hero overlay)", "default": "Limited Weekly Drop" },
+      { "type": "text", "id": "weekly_offer_end_datetime", "label": "Offer end date/time (ISO 8601)",
+        "default": "2026-12-31T23:59:59",
+        "info": "Example: 2026-12-31T23:59:59. Used for countdown timers." },
+      { "type": "text", "id": "weekly_scarcity_text", "label": "Scarcity text (near ATC button)",
+        "default": "Only 14 left in stock — order soon",
+        "info": "Leave blank to hide. Example: 'Only 12 left in stock!'" }
+    ]
+  },
+  {
+    "name": "Cursor & Effects",
+    "settings": [
+      { "type": "header", "content": "Custom Cursor (Desktop only)" },
+      { "type": "checkbox", "id": "cursor_enabled", "label": "Enable custom cursor", "default": true,
+        "info": "Replaces default cursor with a magnetic dot + trailing ring on desktop. Auto-disabled on touch devices." },
+      { "type": "select", "id": "cursor_style", "label": "Cursor style",
+        "options": [
+          { "value": "dot-ring", "label": "Magnetic dot + trailing ring" },
+          { "value": "spotlight", "label": "Spotlight glow" },
+          { "value": "simple", "label": "Simple custom dot" }
+        ],
+        "default": "dot-ring" },
+      { "type": "color", "id": "cursor_color", "label": "Cursor accent color", "default": "#1a1a1a" },
+      { "type": "header", "content": "Scroll & Reveal Animations" },
+      { "type": "checkbox", "id": "reveal_animations", "label": "Enable scroll-reveal animations", "default": true },
+      { "type": "header", "content": "Header" },
+      { "type": "checkbox", "id": "header_transparent_hero", "label": "Transparent header over hero", "default": true,
+        "info": "Header starts transparent when a hero section is first on page, becomes solid on scroll." }
     ]
   },
   {

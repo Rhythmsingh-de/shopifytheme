@@ -1,21 +1,42 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
-    "urgency_banner": {
-      "type": "urgency-banner",
+    "announcement_bar": {
+      "type": "announcement-bar",
       "settings": {
-        "text": "⚡ LIMITED OFFER — Free Express Shipping Ends Tonight at Midnight",
-        "show_timer": true,
-        "bg_color": "#ff3c00",
-        "text_color": "#ffffff"
+        "enabled": true,
+        "bg_color": "#111111",
+        "text_color": "#ffffff",
+        "text_1": "\u26a1 Free shipping on orders over $75",
+        "text_2": "\ud83d\udd12 30-Day Money-Back Guarantee",
+        "text_3": "\ud83d\ude80 Limited Weekly Drop \u2014 Order Today",
+        "auto_rotate": true,
+        "speed": 4,
+        "offer_mode": true,
+        "countdown_prefix": "Offer ends in"
+      }
+    },
+    "hero": {
+      "type": "hero",
+      "settings": {
+        "layout": "split",
+        "eyebrow": "New Weekly Drop",
+        "heading": "This Week's Drop",
+        "subheading": "Premium products designed for comfort, beauty, recovery, and everyday luxury.",
+        "cta1_label": "Shop Now",
+        "cta2_label": "Learn More",
+        "trust_text": "Free shipping $75+ \u00b7 30-day returns \u00b7 Secure checkout",
+        "show_price": true,
+        "show_buttons": true,
+        "show_countdown": true,
+        "countdown_label": "Offer ends in",
+        "show_sale_ribbon": true,
+        "split_media_bg": "#0d2318",
+        "split_content_bg": "#faf9f7",
+        "heading_color": "#111111",
+        "subheading_color": "#555555",
+        "accent_color": "#1d6b44",
+        "cta1_bg": "#1a1a1a",
+        "cta1_color": "#ffffff"
       }
     },
     "single_product_home_4t7cKi": {
@@ -50,7 +71,7 @@
           "settings": {
             "name": "Mike L.",
             "rating": 3,
-            "body": "Best purchase I've made this year. Highly recommend."
+            "body": "Great quality, delivered on time."
           }
         },
         "faq_R6gXkh": {
@@ -71,7 +92,7 @@
           "type": "faq",
           "settings": {
             "question": "What are the shipping options?",
-            "answer": "<p>Free shipping on all orders over $75. Standard delivery 5–10 business days.</p>"
+            "answer": "<p>Free shipping on all orders over $75. Standard delivery 5-10 business days.</p>"
           }
         }
       },
@@ -90,8 +111,9 @@
         "show_eyebrow": true,
         "eyebrow": "",
         "heading": "",
-        "subheading": "Durable, waterproof, and ergonomic for your toughest hikes.",
         "show_rating": true,
+        "atc_label": "Add to Cart — Order Now",
+        "buy_label": "Buy Now",
         "show_demo_rating": true,
         "show_sale_badge": true,
         "show_qty_selector": true,
@@ -137,8 +159,8 @@
         "review_cDwrw7": {
           "type": "review",
           "settings": {
-            "stars": "★★★★★",
-            "text": "Absolutely love the quality. These are the most comfortable clothes I've ever worn — worth every penny!",
+            "stars": "\u2605\u2605\u2605\u2605\u2605",
+            "text": "Absolutely love the quality. These are the most comfortable clothes I've ever worn \u2014 worth every penny!",
             "author": "Emma L.",
             "verified": true
           }
@@ -146,7 +168,7 @@
         "review_VWYQcK": {
           "type": "review",
           "settings": {
-            "stars": "★★★★★",
+            "stars": "\u2605\u2605\u2605\u2605\u2605",
             "text": "The jewellery is stunning. Packaged beautifully, arrived fast, and the craftsmanship is incredible. Already ordered again.",
             "author": "Priya K.",
             "verified": true
@@ -155,8 +177,8 @@
         "review_X7fDVF": {
           "type": "review",
           "settings": {
-            "stars": "★★★★★",
-            "text": "My dog went crazy for the toys — built really tough too. Great brand, great mission. I'll be a customer for life.",
+            "stars": "\u2605\u2605\u2605\u2605\u2605",
+            "text": "My dog went crazy for the toys \u2014 built really tough too. Great brand, great mission. I'll be a customer for life.",
             "author": "James T.",
             "verified": true
           }
@@ -170,7 +192,7 @@
       "name": "Reviews Strip",
       "settings": {
         "heading": "What Our Customers Say",
-        "subtext": "4.8 out of 5 stars · 1150+ reviews",
+        "subtext": "4.8 out of 5 stars \u00b7 1150+ reviews",
         "bg_color": "#ffffff",
         "text_color": "#111111"
       }
@@ -197,12 +219,13 @@
       "type": "sp-sticky-atc",
       "settings": {
         "product": "",
-        "label": "Add to Cart — Order Now"
+        "label": "Add to Cart \u2014 Order Now"
       }
     }
   },
   "order": [
-    "urgency_banner",
+    "announcement_bar",
+    "hero",
     "single_product_home_4t7cKi",
     "reviews_strip_QTwUCj",
     "email_capture",

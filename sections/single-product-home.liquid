@@ -91,6 +91,14 @@
           {%- endfor -%}
         </div>
       {%- endif -%}
+
+      {%- comment -%}Weekly offer badge on image{%- endcomment -%}
+      {%- if settings.weekly_offer_enabled and settings.weekly_offer_label != blank -%}
+        <div class="sph__weekly-badge">
+          <span class="sph__weekly-badge-dot"></span>
+          {{ settings.weekly_offer_label }}
+        </div>
+      {%- endif -%}
     </div>
 
     <div class="sph__info">
@@ -163,9 +171,17 @@
       </div>
 
       <div class="sph__btns">
+        {%- comment -%}Scarcity text from global settings{%- endcomment -%}
+        {%- if settings.weekly_scarcity_text != blank -%}
+          <p class="sph__scarcity" role="status">
+            <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><circle cx="5" cy="5" r="5" fill="#e8260d"/></svg>
+            {{ settings.weekly_scarcity_text }}
+          </p>
+        {%- endif -%}
+
         {%- if sp != blank and fv.available -%}
           <button
-            class="btn sph__btn-atc"
+            class="btn sph__btn-atc sph__btn-atc--pulse"
             data-add-to-cart
             data-variant-id="{{ fv.id }}"
             data-qty="1"
@@ -645,6 +661,67 @@
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
+}
+
+/* ATC pulse ring — attention animation on page load */
+.sph__btn-atc--pulse {
+  position: relative;
+}
+.sph__btn-atc--pulse::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: inherit;
+  border: 2px solid var(--color-primary);
+  opacity: 0;
+  animation: atc-pulse-ring 3s ease-out 1.5s infinite;
+}
+@keyframes atc-pulse-ring {
+  0%   { transform: scale(1);    opacity: 0.7; }
+  60%  { transform: scale(1.06); opacity: 0; }
+  100% { transform: scale(1.06); opacity: 0; }
+}
+
+/* Scarcity text */
+.sph__scarcity {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-sale, #e8260d);
+  animation: sph-scarcity-pulse 2.5s ease-in-out infinite;
+}
+@keyframes sph-scarcity-pulse {
+  0%,100% { opacity: 1; }
+  50%      { opacity: 0.7; }
+}
+
+/* Weekly badge below thumbnail strip */
+.sph__weekly-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 12px;
+  padding: 6px 14px;
+  background: var(--color-deco-light, #e6f4ed);
+  color: var(--color-deco, #1d6b44);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-radius: 9999px;
+  border: 1px solid color-mix(in oklab, var(--color-deco, #1d6b44) 25%, transparent);
+}
+.sph__weekly-badge-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--color-deco, #1d6b44);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-deco, #1d6b44) 25%, transparent);
+  animation: sph-badge-pulse 2s ease-in-out infinite;
+}
+@keyframes sph-badge-pulse {
+  0%,100% { box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-deco, #1d6b44) 25%, transparent); }
+  50%      { box-shadow: 0 0 0 6px color-mix(in oklab, var(--color-deco, #1d6b44) 8%, transparent); }
 }
 .sph__btn-buy {
   flex: 1;

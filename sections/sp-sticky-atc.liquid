@@ -39,15 +39,36 @@
 
     <div class="sticky-atc__actions">
       {%- if fv.available -%}
-        <button
-          class="btn sticky-atc__btn"
-          id="StickyAtcBtn"
-          data-add-to-cart
-          data-variant-id="{{ fv.id }}"
-          data-qty="1"
-          aria-label="Add {{ sp.title | escape }} to cart">
-          {{ section.settings.label | default: 'Add to Cart' }}
-        </button>
+        <div class="sticky-atc__btn-wrap">
+          <button
+            class="btn sticky-atc__btn"
+            id="StickyAtcBtn"
+            data-add-to-cart
+            data-variant-id="{{ fv.id }}"
+            data-qty="1"
+            aria-label="Add {{ sp.title | escape }} to cart">
+            {{ section.settings.label | default: 'Add to Cart' }}
+          </button>
+          <p class="sticky-atc__trust">
+            {%- if settings.trust_secure_title != blank -%}
+              &#128274; {{ settings.trust_secure_title }}
+            {%- else -%}
+              &#128274; Secure
+            {%- endif -%}
+            &nbsp;&middot;&nbsp;
+            {%- if settings.trust_shipping_title != blank -%}
+              &#128666; {{ settings.trust_shipping_title }}
+            {%- else -%}
+              &#128666; Free Ship
+            {%- endif -%}
+            &nbsp;&middot;&nbsp;
+            {%- if settings.trust_returns_title != blank -%}
+              &#10003; {{ settings.trust_returns_title }}
+            {%- else -%}
+              &#10003; 30-Day Returns
+            {%- endif -%}
+          </p>
+        </div>
       {%- else -%}
         <button class="btn sticky-atc__btn" disabled aria-disabled="true">Sold Out</button>
       {%- endif -%}
@@ -72,6 +93,11 @@
 }
 .sticky-atc.is-visible {
   transform: translateY(0);
+  animation: sticky-atc-arrive 0.35s cubic-bezier(0.16,1,0.3,1) both;
+}
+@keyframes sticky-atc-arrive {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
 }
 .sticky-atc__inner {
   display: flex;
@@ -122,6 +148,19 @@
   text-decoration: line-through;
 }
 .sticky-atc__actions { flex-shrink: 0; }
+.sticky-atc__btn-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.sticky-atc__trust {
+  font-size: 10px;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  text-align: center;
+  letter-spacing: 0.02em;
+}
 .sticky-atc__btn {
   padding: 12px 28px;
   min-height: 48px;
@@ -135,22 +174,33 @@
   border: none;
   cursor: pointer;
   white-space: nowrap;
+  position: relative;
+  overflow: hidden;
   transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
 }
+.sticky-atc__btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.15);
+  transform: translateX(-100%);
+  transition: transform 0.4s ease;
+}
+.sticky-atc__btn:hover::before { transform: translateX(0); }
 .sticky-atc__btn:hover {
   background: var(--color-primary-hover);
   transform: translateY(-1px);
   box-shadow: 0 4px 16px color-mix(in oklab, var(--color-primary) 40%, transparent);
 }
 .sticky-atc__btn:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
+  opacity: 0.55; cursor: not-allowed; transform: none; box-shadow: none;
 }
 @media (max-width: 480px) {
-  .sticky-atc__name { max-width: 120px; }
-  .sticky-atc__btn { padding: 12px 18px; font-size: 11px; }
+  .sticky-atc__name  { max-width: 120px; }
+  .sticky-atc__img   { display: none; }
+  .sticky-atc__trust { display: none; }
+  .sticky-atc__btn   { padding: 14px 20px; font-size: 12px; min-height: 50px; }
+  .sticky-atc__inner { gap: var(--space-3); }
 }
 </style>
 

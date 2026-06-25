@@ -1,0 +1,139 @@
+/*
+ * cursor-effects.css  — BodyLuxCare v3.0.0
+ * Three cursor styles: dot-ring | spotlight | simple
+ * Touch devices: cursor elements hidden via media query + JS
+ */
+
+/* ── Hide default cursor when custom is active ── */
+html.cursor-active,
+html.cursor-active * {
+  cursor: none !important;
+}
+
+/* ── Shared element base ── */
+.cursor-dot,
+.cursor-ring {
+  position: fixed;
+  top: 0; left: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 99999;
+  will-change: transform;
+  transform: translate(-50%, -50%);
+  transition-property: width, height, opacity, background, border-color, box-shadow;
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  transition-duration: 150ms;
+}
+
+/* ═══════════════════════════════════════════
+   STYLE 1: dot-ring (magnetic dot + trailing ring)
+═══════════════════════════════════════════ */
+html[data-cursor="dot-ring"] .cursor-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--cursor-color, #1a1a1a);
+  transition-duration: 0ms; /* instant — follows mouse exactly */
+}
+
+html[data-cursor="dot-ring"] .cursor-ring {
+  width: 36px;
+  height: 36px;
+  border: 1.5px solid var(--cursor-color, #1a1a1a);
+  background: transparent;
+  opacity: 0.4;
+  transition-duration: 80ms; /* slight lag = trailing effect */
+}
+
+/* Hover states — dot-ring */
+html[data-cursor="dot-ring"].cursor-hovering .cursor-dot {
+  width: 12px;
+  height: 12px;
+}
+html[data-cursor="dot-ring"].cursor-hovering .cursor-ring {
+  width: 52px;
+  height: 52px;
+  opacity: 0.22;
+}
+
+/* CTA button hover — magnetic expand */
+html[data-cursor="dot-ring"].cursor-cta .cursor-dot {
+  width: 6px;
+  height: 6px;
+  opacity: 0.5;
+}
+html[data-cursor="dot-ring"].cursor-cta .cursor-ring {
+  width: 64px;
+  height: 64px;
+  border-width: 2px;
+  opacity: 0.28;
+}
+
+/* Click pulse */
+html[data-cursor="dot-ring"].cursor-clicking .cursor-dot {
+  width: 4px;
+  height: 4px;
+  transition-duration: 60ms;
+}
+html[data-cursor="dot-ring"].cursor-clicking .cursor-ring {
+  width: 24px;
+  height: 24px;
+  opacity: 0.7;
+  transition-duration: 60ms;
+}
+
+/* ═══════════════════════════════════════════
+   STYLE 2: spotlight (radial glow follows mouse)
+═══════════════════════════════════════════ */
+html[data-cursor="spotlight"] .cursor-dot {
+  display: none;
+}
+html[data-cursor="spotlight"] .cursor-ring {
+  width: 340px;
+  height: 340px;
+  border: none;
+  background: radial-gradient(
+    circle,
+    color-mix(in oklab, var(--cursor-color, #1a1a1a) 10%, transparent) 0%,
+    transparent 68%
+  );
+  opacity: 0.65;
+  transition-duration: 55ms;
+  mix-blend-mode: multiply;
+}
+html[data-cursor="spotlight"].cursor-hovering .cursor-ring {
+  width: 440px;
+  height: 440px;
+  opacity: 0.85;
+}
+
+/* ═══════════════════════════════════════════
+   STYLE 3: simple (clean custom dot)
+═══════════════════════════════════════════ */
+html[data-cursor="simple"] .cursor-dot {
+  width: 14px;
+  height: 14px;
+  background: var(--cursor-color, #1a1a1a);
+  transition-duration: 0ms;
+}
+html[data-cursor="simple"] .cursor-ring {
+  display: none;
+}
+html[data-cursor="simple"].cursor-hovering .cursor-dot {
+  width: 22px;
+  height: 22px;
+  opacity: 0.7;
+}
+
+/* ── Hidden state (cursor left window) ── */
+.cursor-dot.is-hidden,
+.cursor-ring.is-hidden {
+  opacity: 0 !important;
+}
+
+/* ── Mobile / touch: never show ── */
+@media (hover: none) and (pointer: coarse) {
+  .cursor-dot,
+  .cursor-ring {
+    display: none !important;
+  }
+}

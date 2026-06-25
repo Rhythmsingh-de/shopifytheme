@@ -22,6 +22,10 @@
 
   {{ 'theme.css' | asset_url | stylesheet_tag }}
 
+  {%- if settings.cursor_enabled -%}
+    {{ 'cursor-effects.css' | asset_url | stylesheet_tag }}
+  {%- endif -%}
+
   <style>
     :root {
       /* Surfaces */
@@ -214,11 +218,22 @@
     <script>window.KLAVIYO_COMPANY_ID = {{ settings.klaviyo_company_id | json }};</script>
   {%- endif -%}
 
+  {%- comment -%}Weekly offer end date for countdown timers{%- endcomment -%}
+  {%- if settings.weekly_offer_enabled and settings.weekly_offer_end_datetime != blank -%}
+    <meta name="weekly-offer-end" content="{{ settings.weekly_offer_end_datetime }}">
+  {%- endif -%}
+
   {% render 'datalayer' %}
 </head>
 
 <body>
   <a href="#MainContent" class="visually-hidden">{{ 'accessibility.skip_to_content' | t }}</a>
+
+  {%- comment -%}Custom cursor elements — hidden on touch via CSS/JS{%- endcomment -%}
+  {%- if settings.cursor_enabled -%}
+    <div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+    <div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
+  {%- endif -%}
 
   {%- sections 'header-group' -%}
 
@@ -253,6 +268,133 @@
   <script src="{{ 'theme.js' | asset_url }}" defer></script>
 
   {{ content_for_footer }}
+
+  {%- comment -%}Cursor effects JS — runs only on non-touch devices{%- endcomment -%}
+  {%- if settings.cursor_enabled -%}
+  <script>
+  (function() {
+    /* Skip on touch-primary devices */
+    if ('ontouchstart' in window || navigator.maxTouchPoints > 1) return;
+    if (window.matchMedia('(hover: none)').matches) return;
+
+    var dot  = document.getElementById('cursorDot');
+    var ring = document.getElementById('cursorRing');
+    if (!dot || !ring) return;
+
+    var html     = document.documentElement;
+    var style    = {{ settings.cursor_style | default: 'dot-ring' | json }};
+    var color    = {{ settings.cursor_color | default: '#1a1a1a' | json }};
+
+    html.classList.add('cursor-active');
+    html.setAttribute('data-cursor', style);
+    html.style.setProperty('--cursor-color', color);
+
+    var mouseX = 0, mouseY = 0;
+    var ringX  = 0, ringY  = 0;
+    var raf    = null;
+    var dotX   = 0, dotY = 0;
+
+    document.addEventListener('mousemove', function(e) {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      dot.classList.remove('is-hidden');
+      ring.classList.remove('is-hidden');
+    });
+
+    document.addEventListener('mouseleave', function() {
+      dot.classList.add('is-hidden');
+      ring.classList.add('is-hidden');
+    });
+
+    document.addEventListener('mouseenter', function() {
+      dot.classList.remove('is-hidden');
+      ring.classList.remove('is-hidden');
+    });
+
+    /* Click state */
+    document.addEventListener('mousedown', function() { html.classList.add('cursor-clicking'); });
+    document.addEventListener('mouseup',   function() { html.classList.remove('cursor-clicking'); });
+
+    /* Hover state detection */
+    document.addEventListener('mouseover', function(e) {
+      var t = e.target.closest('a, button, [data-cursor-hover], .btn, label, select, input[type="checkbox"], input[type="radio"], summary');
+      var cta = e.target.closest('.btn--primary, .sph__btn-atc, .sticky-atc__btn, .btn--hero-primary');
+      if (cta) {
+        html.classList.add('cursor-hovering', 'cursor-cta');
+      } else if (t) {
+        html.classList.add('cursor-hovering');
+        html.classList.remove('cursor-cta');
+      } else {
+        html.classList.remove('cursor-hovering', 'cursor-cta');
+      }
+    });
+
+    /* rAF loop — smooth trailing ring */
+    function animate() {
+      /* Dot: instant */
+      dotX = mouseX; dotY = mouseY;
+      dot.style.transform = 'translate(' + (dotX - (dot.offsetWidth / 2)) + 'px, ' + (dotY - (dot.offsetHeight / 2)) + 'px)';
+
+      /* Ring: lerp for trailing */
+      ringX += (mouseX - ringX) * 0.18;
+      ringY += (mouseY - ringY) * 0.18;
+      ring.style.transform = 'translate(' + (ringX - (ring.offsetWidth / 2)) + 'px, ' + (ringY - (ring.offsetHeight / 2)) + 'px)';
+
+      raf = requestAnimationFrame(animate);
+    }
+    animate();
+  })();
+  </script>
+  {%- endif -%}
+
+  {%- comment -%}Transparent header JS — watches for hero section at top of page{%- endcomment -%}
+  {%- if settings.header_transparent_hero -%}
+  <script>
+  (function() {
+    var header = document.getElementById('site-header');
+    if (!header) return;
+    var hero = document.querySelector('.blc-hero, .shopify-section-hero');
+    if (!hero) return;
+    header.classList.add('site-header--transparent');
+    var obs = new IntersectionObserver(function(entries) {
+      var heroVisible = entries[0].isIntersecting;
+      header.classList.toggle('site-header--transparent', heroVisible);
+      header.classList.toggle('site-header--solid', !heroVisible);
+    }, { threshold: 0.1 });
+    obs.observe(hero);
+  })();
+  </script>
+  {%- endif -%}
+
+  {%- comment -%}Scroll-reveal observer{%- endcomment -%}
+  {%- if settings.reveal_animations -%}
+  <script>
+  (function() {
+    if (!window.IntersectionObserver) return;
+    var revealObs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          revealObs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.reveal').forEach(function(el) { revealObs.observe(el); });
+    /* Also observe any added later (for SPH section re-renders in editor) */
+    if (window.MutationObserver) {
+      new MutationObserver(function(muts) {
+        muts.forEach(function(m) {
+          m.addedNodes.forEach(function(n) {
+            if (n.nodeType !== 1) return;
+            if (n.classList && n.classList.contains('reveal')) revealObs.observe(n);
+            n.querySelectorAll && n.querySelectorAll('.reveal').forEach(function(el) { revealObs.observe(el); });
+          });
+        });
+      }).observe(document.body, { childList: true, subtree: true });
+    }
+  })();
+  </script>
+  {%- endif -%}
 
   <div id="searchOverlay" class="search-overlay" aria-hidden="true"></div>
   <div id="searchModal" class="search-modal" role="dialog" aria-modal="true" aria-label="Search" hidden>

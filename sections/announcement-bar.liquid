@@ -27,6 +27,15 @@
     <button class="ann-nav-btn" id="ann-next-{{ section.id }}" aria-label="Next announcement">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
     </button>
+
+    {%- if section.settings.offer_mode and settings.weekly_offer_enabled -%}
+      <div class="ann-countdown" id="ann-countdown-{{ section.id }}" aria-label="Offer countdown">
+        <span class="ann-countdown__dot"></span>
+        <span class="ann-countdown__label">{{ section.settings.countdown_prefix | default: 'Ends in' }}</span>
+        <span class="ann-countdown__time" id="ann-time-{{ section.id }}">--:--:--</span>
+      </div>
+    {%- endif -%}
+
     <button class="ann-close" id="ann-close-{{ section.id }}" aria-label="Dismiss">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>
@@ -69,10 +78,38 @@
 }
 .ann-nav-btn:hover, .ann-close:hover { background: rgba(255,255,255,0.32); }
 .ann-close { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); }
+
+/* Countdown */
+.ann-countdown {
+  display: flex; align-items: center; gap: 6px;
+  flex-shrink: 0;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  background: rgba(255,255,255,0.15);
+  border-radius: 9999px;
+  padding: 4px 12px;
+  white-space: nowrap;
+}
+.ann-countdown__dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: #4ade80;
+  box-shadow: 0 0 0 2px rgba(74,222,128,0.4);
+  animation: ann-dot-pulse 2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+@keyframes ann-dot-pulse {
+  0%,100% { box-shadow: 0 0 0 2px rgba(74,222,128,0.4); }
+  50%      { box-shadow: 0 0 0 5px rgba(74,222,128,0.1); }
+}
+.ann-countdown__label { opacity: 0.8; }
+.ann-countdown__time  { font-variant-numeric: tabular-nums; }
+
 @media (max-width: 480px) {
   .ann-msg { white-space: normal; font-size: 11px; }
   .ann-nav-btn { display: none; }
   .ann-inner { padding: 0 44px 0 16px; }
+  .ann-countdown { display: none; }
 }
 </style>
 
@@ -135,6 +172,30 @@
   playNext();
 })();
 </script>
+
+{%- if section.settings.offer_mode -%}
+<script>
+(function() {
+  var timeEl = document.getElementById('ann-time-{{ section.id }}');
+  if (!timeEl) return;
+  var endMeta = document.querySelector('meta[name="weekly-offer-end"]');
+  if (!endMeta) return;
+  var endTime = new Date(endMeta.content).getTime();
+  function pad(n) { return n < 10 ? '0' + n : '' + n; }
+  function tick() {
+    var diff = endTime - Date.now();
+    if (diff <= 0) { timeEl.textContent = '00:00:00'; return; }
+    var h = Math.floor(diff / 3600000);
+    var m = Math.floor((diff % 3600000) / 60000);
+    var s = Math.floor((diff % 60000) / 1000);
+    timeEl.textContent = pad(h) + ':' + pad(m) + ':' + pad(s);
+    setTimeout(tick, 1000);
+  }
+  tick();
+})();
+</script>
+{%- endif -%}
+
 {% endif %}
 
 {% schema %}
@@ -142,15 +203,19 @@
   "name": "Announcement Bar",
   "tag": "div",
   "settings": [
-    { "type": "checkbox", "id": "enabled", "label": "Show announcement bar", "default": true },
-    { "type": "color", "id": "bg_color", "label": "Background color", "default": "#111111" },
-    { "type": "color", "id": "text_color", "label": "Text color", "default": "#ffffff" },
-    { "type": "text", "id": "text_1", "label": "Message 1", "default": "⚡ Free shipping on orders over €50" },
-    { "type": "text", "id": "text_2", "label": "Message 2", "default": "🔒 60-Day Money-Back Guarantee" },
-    { "type": "text", "id": "text_3", "label": "Message 3" },
-    { "type": "url",  "id": "link",   "label": "Link (optional)" },
-    { "type": "checkbox", "id": "auto_rotate", "label": "Auto-rotate messages", "default": true },
-    { "type": "range", "id": "speed", "label": "Rotation speed (seconds)", "min": 2, "max": 10, "step": 1, "default": 4 }
+    { "type": "checkbox", "id": "enabled",    "label": "Show announcement bar",  "default": true },
+    { "type": "color",    "id": "bg_color",   "label": "Background color",        "default": "#111111" },
+    { "type": "color",    "id": "text_color", "label": "Text color",              "default": "#ffffff" },
+    { "type": "text",     "id": "text_1",     "label": "Message 1",              "default": "\u26a1 Free shipping on orders over $75" },
+    { "type": "text",     "id": "text_2",     "label": "Message 2",              "default": "\ud83d\udd12 60-Day Money-Back Guarantee" },
+    { "type": "text",     "id": "text_3",     "label": "Message 3" },
+    { "type": "url",      "id": "link",       "label": "Link (optional)" },
+    { "type": "checkbox", "id": "auto_rotate","label": "Auto-rotate messages",   "default": true },
+    { "type": "range",    "id": "speed",      "label": "Rotation speed (seconds)", "min": 2, "max": 10, "step": 1, "default": 4 },
+    { "type": "header",   "content": "Weekly Offer Countdown" },
+    { "type": "checkbox", "id": "offer_mode", "label": "Show live countdown timer", "default": false,
+      "info": "Reads offer end date from Theme Settings > Weekly Offer. Enable 'Weekly Offer' there first." },
+    { "type": "text",     "id": "countdown_prefix", "label": "Countdown label text", "default": "Ends in" }
   ],
   "presets": [
     { "name": "Announcement Bar" }
