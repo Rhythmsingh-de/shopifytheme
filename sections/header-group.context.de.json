@@ -11,13 +11,6 @@
   "context": {
     "market": "de"
   },
-  "parent": "footer-group.json",
-  "sections": {
-    "footer_YVFfbB": {
-      "settings": {
-        "layout_style": "minimalist"
-      },
-      "blocks": {}
-    }
-  }
+  "parent": "header-group.json",
+  "sections": {}
 }

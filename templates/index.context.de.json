@@ -12,5 +12,25 @@
     "market": "de"
   },
   "parent": "index.json",
-  "sections": {}
+  "sections": {
+    "hero_3zRf8U": {
+      "settings": {
+        "show_hover_image": false,
+        "show_price": false,
+        "show_variant_picker": false,
+        "show_quantity_selector": false,
+        "show_sale_ribbon": false,
+        "sale_stripe_design": "rolling_strip",
+        "show_buttons": false,
+        "show_overlay": false,
+        "split_media_bg": "#FAF9F7",
+        "offer_badge_color": "#FFFFFF",
+        "offer_badge_bg": "#EF0000",
+        "color_scheme": "dark",
+        "content_align": "left"
+      },
+      "blocks": {},
+      "block_order": []
+    }
+  }
 }

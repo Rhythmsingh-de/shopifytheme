@@ -11,5 +11,8 @@
   "context": {
     "market": "de"
   },
-  "current": {}
+  "current": {
+    "weekly_offer_enabled": true,
+    "weekly_offer_end_datetime": "2026-07-11T23:59:59"
+  }
 }

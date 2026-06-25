@@ -25,9 +25,65 @@
         "offer_mode": false,
         "countdown_prefix": "Ends in"
       }
+    },
+    "hero_3zRf8U": {
+      "type": "hero",
+      "name": "Hero Banner",
+      "settings": {
+        "layout": "split",
+        "media_position": "right",
+        "best_seller_text": "BEST SELLER",
+        "best_seller_stars": true,
+        "eyebrow": "New Weekly Drop",
+        "heading": "This Week's Drop",
+        "subheading": "Premium products designed for comfort, beauty, recovery, and everyday luxury.",
+        "show_product_description": false,
+        "product_description_words": 28,
+        "trust_text": "Free shipping $75+ · 30-day returns",
+        "show_secure_payment_badge": true,
+        "secure_payment_label": "Secure Payment",
+        "secure_payment_text": "SSL encrypted checkout",
+        "hero_product": "herren-brusttasche-sling-bag-wasserdicht",
+        "show_hover_image": true,
+        "show_price": true,
+        "show_variant_picker": true,
+        "show_quantity_selector": true,
+        "show_sale_ribbon": true,
+        "sale_stripe_design": "rolling_strip",
+        "sale_stripe_orientation": "left",
+        "show_countdown": true,
+        "countdown_label": "Offer ends in",
+        "countdown_end": "",
+        "show_buttons": true,
+        "cta_position": "below",
+        "cta_button_mode": "checkout_permalink",
+        "hero_checkout_label": "Buy Now",
+        "hero_cart_label": "Add to Cart",
+        "cta1_label": "Buy Now",
+        "cta1_link": "",
+        "cta1_icon": true,
+        "cta1_bg": "#1a1a1a",
+        "cta1_color": "#ffffff",
+        "cta2_label": "Learn More",
+        "cta2_link": "",
+        "split_media_bg": "#0d2318",
+        "split_content_bg": "#faf9f7",
+        "heading_color": "#111111",
+        "subheading_color": "#555555",
+        "accent_color": "#1d6b44",
+        "offer_badge_bg": "rgba(255,255,255,0.12)",
+        "offer_badge_color": "#ffffff",
+        "color_scheme": "dark",
+        "bg_color": "#0d2318",
+        "show_overlay": true,
+        "overlay_opacity": 5,
+        "min_height": 600,
+        "content_align": "left"
+      }
     }
   },
   "order": [
-    "announcement_bar_Lm4kTf"
+    "announcement_bar_Lm4kTf",
+    "hero_3zRf8U"
   ]
 }
