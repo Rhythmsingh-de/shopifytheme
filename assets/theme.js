@@ -436,7 +436,20 @@
     if(e.target.closest('[data-sph-nav], .product-media-thumb, .sph__thumb'))return;
     var stack=mainImg.closest('.product-media-stack, .sph__media, .blc-hero__split-media');if(!stack)return;
     var nextBtn=stack.querySelector('[data-sph-nav="next"]');
-    if(nextBtn)nextBtn.click();
+    if(nextBtn){
+      nextBtn.click();
+    }else{
+      var thumbs=stack.querySelectorAll('.product-media-thumb, .sph__thumb');
+      if(thumbs.length>1){
+        var activeIdx=-1;
+        for(var i=0;i<thumbs.length;i++){
+          if(thumbs[i].classList.contains('is-active')){activeIdx=i;break;}
+        }
+        if(activeIdx===-1)activeIdx=0;
+        var nextThumb=thumbs[(activeIdx+1)%thumbs.length];
+        if(nextThumb)nextThumb.click();
+      }
+    }
   });
 
   /* ─────────── ACCORDION ─────────── */
