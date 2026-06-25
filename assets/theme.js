@@ -430,6 +430,15 @@
     if(targetThumb)targetThumb.click();
   });
 
+  /* ─────────── CLICK MAIN IMAGE TO CYCLE ─────────── */
+  document.addEventListener('click',function(e){
+    var mainImg=e.target.closest('#ProductMainImage, #SphMainImg, [data-main-image]');if(!mainImg)return;
+    if(e.target.closest('[data-sph-nav], .product-media-thumb, .sph__thumb'))return;
+    var stack=mainImg.closest('.product-media-stack, .sph__media, .blc-hero__split-media');if(!stack)return;
+    var nextBtn=stack.querySelector('[data-sph-nav="next"]');
+    if(nextBtn)nextBtn.click();
+  });
+
   /* ─────────── ACCORDION ─────────── */
   document.addEventListener('click',function(e){
     var t=e.target.closest('.accordion-trigger');if(!t)return;

@@ -950,6 +950,21 @@
   .blc-hero__btns .btn--hero-primary-dark,
   .blc-hero__btns .btn--hero-ghost,
   .blc-hero__btns .btn--hero-ghost-dark { width: 100%; justify-content: center; }
+  .blc-hero__split-media .sph__thumbs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    justify-content: flex-start;
+    padding-bottom: 6px;
+    margin: 8px 16px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .blc-hero__split-media .sph__thumbs::-webkit-scrollbar {
+    display: none;
+  }
+  .blc-hero__split-media .sph__media-main img {
+    cursor: pointer;
+  }
   .blc-hero--full { min-height: 480px; }
 }
 </style>

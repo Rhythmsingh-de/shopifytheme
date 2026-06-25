@@ -605,6 +605,20 @@
 }
 @media (max-width: 768px) {
   .sph__inner { grid-template-columns: 1fr; }
+  .sph__thumbs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    justify-content: flex-start;
+    padding-bottom: 6px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .sph__thumbs::-webkit-scrollbar {
+    display: none;
+  }
+  .sph__media-main img {
+    cursor: pointer;
+  }
 }
 
 /* ── Gallery Nav Arrows ── */
