@@ -6,8 +6,150 @@
 {% comment %} DataLayer — Server-side GTM/GA4 event tracking {% endcomment %}
 <script>
 window.dataLayer = window.dataLayer || [];
+window.BLC = window.BLC || {};
+(function() {
+  var cfg = window.BLC.trackingSettings || {};
+  var platforms = cfg.platforms || {};
+  var metaEvents = {
+    page_view: 'PageView',
+    view_item: 'ViewContent',
+    view_item_list: 'ViewContent',
+    add_to_cart: 'AddToCart',
+    begin_checkout: 'InitiateCheckout',
+    purchase: 'Purchase',
+    search: 'Search',
+    generate_lead: 'Lead',
+    contact_submit: 'Lead'
+  };
+  var tiktokEvents = {
+    view_item: 'ViewContent',
+    view_item_list: 'ViewContent',
+    add_to_cart: 'AddToCart',
+    begin_checkout: 'InitiateCheckout',
+    purchase: 'Purchase',
+    search: 'Search',
+    generate_lead: 'SubmitForm',
+    contact_submit: 'Contact'
+  };
+  function trackingAllowed() {
+    if (window.BLC.trackingMode === 'always_on') return true;
+    if (window.BLC.trackingMode === 'always_off') return false;
+    return document.cookie.indexOf('blc_cookie_consent=accepted') !== -1;
+  }
+  function eventId(name) {
+    return 'blc_' + (name || 'event') + '_' + Date.now() + '_' + Math.random().toString(36).slice(2, 10);
+  }
+  function platformEnabled(name) {
+    return !platforms[name] || platforms[name].enabled !== false;
+  }
+  function pixelId(name) {
+    return platforms[name] && platforms[name].pixelId ? platforms[name].pixelId : '';
+  }
+  function numeric(value, fallback) {
+    var n = Number(value);
+    return Number.isFinite(n) ? n : (fallback || 0);
+  }
+  function itemsFrom(obj) {
+    var raw = obj && obj.ecommerce && Array.isArray(obj.ecommerce.items) ? obj.ecommerce.items : [];
+    return raw.map(function(item) {
+      item = item || {};
+      return {
+        id: String(item.item_id || item.id || item.variant_id || ''),
+        name: item.item_name || item.name || item.title || '',
+        category: item.item_category || item.category || '',
+        quantity: numeric(item.quantity, 1) || 1,
+        price: numeric(item.price, 0)
+      };
+    }).filter(function(item) { return item.id || item.name; });
+  }
+  function currencyFor(obj) {
+    return (obj && obj.ecommerce && obj.ecommerce.currency) || obj.currency || {{ cart.currency.iso_code | json }};
+  }
+  function valueFor(obj, items) {
+    if (obj && obj.ecommerce && obj.ecommerce.value !== undefined) return numeric(obj.ecommerce.value, 0);
+    return items.reduce(function(sum, item) { return sum + (item.price * item.quantity); }, 0);
+  }
+  function quantityFor(items) {
+    return items.reduce(function(sum, item) { return sum + item.quantity; }, 0);
+  }
+  function decorate(obj) {
+    if (!obj || !obj.event || obj.ecommerce === null) return obj;
+    var metaName = metaEvents[obj.event];
+    var tiktokName = tiktokEvents[obj.event];
+    if (!metaName && !tiktokName) return obj;
+    var items = itemsFrom(obj);
+    var id = obj.event_id || eventId(obj.event);
+    var value = valueFor(obj, items);
+    var currency = currencyFor(obj);
+    var contentIds = items.map(function(item) { return item.id; }).filter(Boolean);
+    var contents = items.map(function(item) {
+      return { id: item.id, quantity: item.quantity, item_price: item.price };
+    });
+    obj.event_id = id;
+    obj.blc_event_id = id;
+    obj.content_type = obj.content_type || 'product';
+    obj.content_ids = obj.content_ids || contentIds;
+    obj.contents = obj.contents || contents;
+    obj.currency = obj.currency || currency;
+    if (obj.value === undefined) obj.value = value;
+    obj.num_items = obj.num_items || quantityFor(items);
+    if (metaName && platformEnabled('meta')) {
+      obj.meta_event_name = metaName;
+      obj.meta_pixel_id = pixelId('meta');
+      obj.meta = {
+        pixel_id: obj.meta_pixel_id,
+        event_name: metaName,
+        event_id: id,
+        custom_data: {
+          content_type: 'product',
+          content_ids: contentIds,
+          contents: contents,
+          currency: currency,
+          value: value,
+          num_items: quantityFor(items),
+          search_string: obj.search_term || undefined
+        }
+      };
+    }
+    if (tiktokName && platformEnabled('tiktok')) {
+      obj.tiktok_event_name = tiktokName;
+      obj.tiktok_pixel_id = pixelId('tiktok');
+      obj.tiktok = {
+        pixel_id: obj.tiktok_pixel_id,
+        event_name: tiktokName,
+        event_id: id,
+        properties: {
+          content_type: 'product',
+          content_ids: contentIds,
+          contents: items.map(function(item) {
+            return { content_id: item.id, content_name: item.name, content_category: item.category, quantity: item.quantity, price: item.price };
+          }),
+          currency: currency,
+          value: value,
+          quantity: quantityFor(items),
+          search_string: obj.search_term || undefined
+        }
+      };
+    }
+    return obj;
+  }
+  window.BLC.decorateTrackingEvent = window.BLC.decorateTrackingEvent || decorate;
+  window.BLC.initialDataLayerPush = function(obj) {
+    if (!trackingAllowed()) {
+      if (obj && obj.event && cfg.blockedEventMode === 'status_only') {
+        window.dataLayer.push({
+          event: 'blc_tracking_blocked',
+          blocked_event: obj.event,
+          consent_state: window.BLC.consentResolved || 'pending'
+        });
+      }
+      return;
+    }
+    window.dataLayer.push((window.BLC.decorateTrackingEvent || decorate)(obj));
+  };
+})();
 {% if request.page_type == 'index' and track_page_views %}
-dataLayer.push({
+window.BLC.initialDataLayerPush({
   event: 'page_view',
   page_type: 'home',
   page_title: {{ page_title | json }},
@@ -15,8 +157,8 @@ dataLayer.push({
   currency: {{ cart.currency.iso_code | json }}
 });
 {% elsif request.page_type == 'product' and track_ecommerce %}
-dataLayer.push({ ecommerce: null });
-dataLayer.push({
+window.BLC.initialDataLayerPush({ ecommerce: null });
+window.BLC.initialDataLayerPush({
   event: 'view_item',
   page_type: 'product',
   ecommerce: {
@@ -36,11 +178,12 @@ dataLayer.push({
   }
 });
 {% elsif request.page_type == 'collection' and track_ecommerce %}
-dataLayer.push({ ecommerce: null });
-dataLayer.push({
+window.BLC.initialDataLayerPush({ ecommerce: null });
+window.BLC.initialDataLayerPush({
   event: 'view_item_list',
   page_type: 'collection',
   ecommerce: {
+    currency: {{ cart.currency.iso_code | json }},
     item_list_name: {{ collection.title | json }},
     item_list_id: {{ collection.handle | json }},
     items: [
@@ -57,8 +200,8 @@ dataLayer.push({
   }
 });
 {% elsif request.page_type == 'cart' and track_ecommerce %}
-dataLayer.push({ ecommerce: null });
-dataLayer.push({
+window.BLC.initialDataLayerPush({ ecommerce: null });
+window.BLC.initialDataLayerPush({
   event: 'view_cart',
   page_type: 'cart',
   ecommerce: {
@@ -78,14 +221,14 @@ dataLayer.push({
   }
 });
 {% elsif request.page_type == 'search' and track_engagement %}
-dataLayer.push({
+window.BLC.initialDataLayerPush({
   event: 'search',
   page_type: 'search',
   search_term: {{ search.terms | json }}
 });
 {% elsif request.page_type == 'customers/order' and track_ecommerce %}
-dataLayer.push({ ecommerce: null });
-dataLayer.push({
+window.BLC.initialDataLayerPush({ ecommerce: null });
+window.BLC.initialDataLayerPush({
   event: 'purchase',
   page_type: 'order',
   ecommerce: {
@@ -108,7 +251,7 @@ dataLayer.push({
   }
 });
 {% elsif track_page_views %}
-dataLayer.push({
+window.BLC.initialDataLayerPush({
   event: 'page_view',
   page_type: {{ request.page_type | json }},
   page_title: {{ page_title | json }},
@@ -117,7 +260,7 @@ dataLayer.push({
 {% endif %}
 
 {% if customer and settings.tracking_mode == 'always_on' %}
-dataLayer.push({
+window.BLC.initialDataLayerPush({
   user_id: {{ customer.id | json }},
   user_email_hash: {{ customer.email | sha256 | json }},
   customer_tags: {{ customer.tags | json }},

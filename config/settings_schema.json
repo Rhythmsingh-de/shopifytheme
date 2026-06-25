@@ -84,6 +84,37 @@
     ]
   },
   {
+    "name": "Collection Pages",
+    "settings": [
+      { "type": "header", "content": "Collection Layout Defaults" },
+      { "type": "range", "id": "collection_products_per_page", "label": "Products per page", "min": 8, "max": 48, "step": 4, "default": 24 },
+      { "type": "range", "id": "collection_columns_desktop", "label": "Desktop columns", "min": 2, "max": 5, "step": 1, "default": 4 },
+      { "type": "select", "id": "collection_columns_mobile", "label": "Mobile columns",
+        "options": [
+          { "value": "1", "label": "1 column" },
+          { "value": "2", "label": "2 columns" }
+        ],
+        "default": "2" },
+      { "type": "checkbox", "id": "collection_show_sort", "label": "Show sort selector", "default": true },
+      { "type": "checkbox", "id": "collection_show_filters", "label": "Show filters", "default": true },
+      { "type": "checkbox", "id": "collection_show_empty_state_cta", "label": "Show empty-state CTA", "default": true },
+      { "type": "header", "content": "Collection Trust Row" },
+      { "type": "checkbox", "id": "collection_show_trust_bar", "label": "Show trust row on collection pages", "default": true },
+      { "type": "text", "id": "collection_trust_text", "label": "Collection trust text", "default": "Free shipping available - 30-day returns - Secure checkout" }
+    ]
+  },
+  {
+    "name": "Reviews & Social Proof",
+    "settings": [
+      { "type": "header", "content": "Review Display Defaults" },
+      { "type": "text", "id": "reviews_summary_text", "label": "Review summary text", "default": "Excellent 4.8/5 from verified customers" },
+      { "type": "range", "id": "reviews_visible_count", "label": "Visible review cards", "min": 1, "max": 3, "step": 1, "default": 3 },
+      { "type": "checkbox", "id": "reviews_autoplay", "label": "Auto-rotate extra reviews", "default": true },
+      { "type": "range", "id": "reviews_autoplay_interval", "label": "Rotation interval", "min": 2, "max": 10, "step": 1, "default": 4, "unit": "s" },
+      { "type": "checkbox", "id": "reviews_show_verified_badge", "label": "Show verified badges", "default": true }
+    ]
+  },
+  {
     "name": "Cart",
     "settings": [
       { "type": "header", "content": "Free Shipping Progress Bar" },
@@ -105,7 +136,11 @@
       { "type": "header", "content": "Cart Note" },
       { "type": "checkbox", "id": "cart_show_note",
         "label": "Allow customers to add a note to their order",
-        "default": false }
+        "default": false },
+      { "type": "header", "content": "Cart Trust" },
+      { "type": "checkbox", "id": "trust_show_payment_icons",
+        "label": "Show payment icons in cart drawer",
+        "default": true }
     ]
   },
   {
@@ -164,16 +199,20 @@
         "label": "Tracking mode",
         "info": "Controls whether analytics/pixels fire regardless of cookie consent. 'Respect user choice' is GDPR-safe default.",
         "options": [
-          { "value": "consent", "label": "Respect user choice (GDPR safe — recommended)" },
-          { "value": "always_on", "label": "Always ON — fire tracking regardless of consent" },
-          { "value": "always_off", "label": "Always OFF — block all tracking (development/testing)" }
+          { "value": "consent", "label": "Respect user choice (GDPR safe - recommended)" },
+          { "value": "always_on", "label": "Always ON - fire tracking regardless of consent" },
+          { "value": "always_off", "label": "Always OFF - block all tracking (development/testing)" }
         ],
         "default": "consent" },
-      { "type": "paragraph", "content": "⚠️ 'Always ON' may violate GDPR/CCPA if no explicit consent is collected. Only use if you have a separate consent solution or operate outside these jurisdictions." },
+      { "type": "paragraph", "content": "'Always ON' may violate GDPR/CCPA if no explicit consent is collected. Only use if you have a separate consent solution or operate outside these jurisdictions." },
       { "type": "header", "content": "Analytics & Pixels" },
-      { "type": "text", "id": "facebook_pixel_id", "label": "Facebook Pixel ID",
+      { "type": "text", "id": "facebook_pixel_id", "label": "Meta / Facebook Pixel ID",
         "info": "Paste your Pixel ID. The theme writes it to dataLayer; activate via GTM." },
       { "type": "text", "id": "tiktok_pixel_id", "label": "TikTok Pixel ID" },
+      { "type": "checkbox", "id": "meta_data_layer_enabled", "label": "Send Meta-ready dataLayer payloads", "default": true,
+        "info": "Adds Meta standard event names and custom_data fields to theme dataLayer events for GTM." },
+      { "type": "checkbox", "id": "tiktok_data_layer_enabled", "label": "Send TikTok-ready dataLayer payloads", "default": true,
+        "info": "Adds TikTok standard event names and properties to theme dataLayer events for GTM." },
       { "type": "text", "id": "klaviyo_company_id", "label": "Klaviyo Company ID",
         "info": "Used for back-in-stock subscriptions." },
       { "type": "text", "id": "gtm_container_id", "label": "Google Tag Manager container ID",
@@ -206,7 +245,7 @@
         "default": "2026-12-31T23:59:59",
         "info": "Example: 2026-12-31T23:59:59. Used for countdown timers." },
       { "type": "text", "id": "weekly_scarcity_text", "label": "Scarcity text (near ATC button)",
-        "default": "Only 14 left in stock — order soon",
+        "default": "Only 14 left in stock - order soon",
         "info": "Leave blank to hide. Example: 'Only 12 left in stock!'" },
       { "type": "select", "id": "offer_countdown_mode", "label": "Default countdown source",
         "options": [
@@ -276,6 +315,17 @@
       { "type": "header", "content": "Header" },
       { "type": "checkbox", "id": "header_transparent_hero", "label": "Transparent header over hero", "default": true,
         "info": "Header starts transparent when a hero section is first on page, becomes solid on scroll." }
+    ]
+  },
+  {
+    "name": "Footer & SEO",
+    "settings": [
+      { "type": "header", "content": "Footer Utility Links" },
+      { "type": "checkbox", "id": "show_order_tracking_link", "label": "Show order tracking link in footer", "default": false },
+      { "type": "text", "id": "order_tracking_label", "label": "Order tracking link label", "default": "Track Order" },
+      { "type": "url", "id": "order_tracking_url", "label": "Order tracking URL" },
+      { "type": "header", "content": "Social Sharing" },
+      { "type": "image_picker", "id": "og_default_image", "label": "Default social sharing image" }
     ]
   },
   {

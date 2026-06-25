@@ -3,13 +3,8 @@
 <nav id="nav-drawer" class="nav-drawer" role="dialog" aria-modal="true" aria-label="Main navigation" aria-hidden="true">
   <div class="nav-drawer__header">
     <a href="/" onclick="BLC.closeNav()" aria-label="{{ shop.name }} home">
-      {%- if settings.logo != blank -%}
-        <img src="{{ settings.logo | image_url: width: 240 }}" alt="{{ shop.name }}" width="120" height="40" loading="lazy" style="object-fit:contain;height:36px;width:auto">
-      {%- else -%}
-        <span style="font-family:var(--font-display);font-weight:700;font-size:var(--text-lg)">{{ settings.brand_name | default: shop.name }}</span>
-      {%- endif -%}
+      <span style="font-family:var(--font-display);font-weight:700;font-size:var(--text-lg)">{{ shop.name }}</span>
     </a>
-    <!-- FIX: both IDs present so both mobileClose AND mobileNavClose listeners work -->
     <button
       id="mobileNavClose"
       data-also-id="mobileClose"
@@ -37,7 +32,7 @@
         <a href="/collections/womens-tops" class="nav-drawer__sub-link" onclick="BLC.closeNav()">Tops</a>
         <a href="/collections/jewelry" class="nav-drawer__sub-link" onclick="BLC.closeNav()">Jewelry</a>
         <a href="/collections/womens-accessories" class="nav-drawer__sub-link" onclick="BLC.closeNav()">Accessories</a>
-        <a href="/collections/womens-all" class="nav-drawer__sub-link nav-drawer__sub-link--all" onclick="BLC.closeNav()">Shop All Women →</a>
+        <a href="/collections/womens-all" class="nav-drawer__sub-link nav-drawer__sub-link--all" onclick="BLC.closeNav()">Shop All Women &rarr;</a>
       </div>
     </div>
 
@@ -51,7 +46,7 @@
         <a href="/collections/mens-shirts" class="nav-drawer__sub-link" onclick="BLC.closeNav()">Shirts</a>
         <a href="/collections/mens-pants" class="nav-drawer__sub-link" onclick="BLC.closeNav()">Pants</a>
         <a href="/collections/mens-accessories" class="nav-drawer__sub-link" onclick="BLC.closeNav()">Accessories</a>
-        <a href="/collections/mens-all" class="nav-drawer__sub-link nav-drawer__sub-link--all" onclick="BLC.closeNav()">Shop All Men →</a>
+        <a href="/collections/mens-all" class="nav-drawer__sub-link nav-drawer__sub-link--all" onclick="BLC.closeNav()">Shop All Men &rarr;</a>
       </div>
     </div>
 
@@ -65,7 +60,7 @@
         <a href="/collections/rings" class="nav-drawer__sub-link" onclick="BLC.closeNav()">Rings</a>
         <a href="/collections/bracelets" class="nav-drawer__sub-link" onclick="BLC.closeNav()">Bracelets</a>
         <a href="/collections/earrings" class="nav-drawer__sub-link" onclick="BLC.closeNav()">Earrings</a>
-        <a href="/collections/jewelry" class="nav-drawer__sub-link nav-drawer__sub-link--all" onclick="BLC.closeNav()">Shop All Jewelry →</a>
+        <a href="/collections/jewelry" class="nav-drawer__sub-link nav-drawer__sub-link--all" onclick="BLC.closeNav()">Shop All Jewelry &rarr;</a>
       </div>
     </div>
 
@@ -78,7 +73,7 @@
         <a href="/collections/dog-toys" class="nav-drawer__sub-link" onclick="BLC.closeNav()">Dog Toys</a>
         <a href="/collections/cat-toys" class="nav-drawer__sub-link" onclick="BLC.closeNav()">Cat Toys</a>
         <a href="/collections/pet-accessories" class="nav-drawer__sub-link" onclick="BLC.closeNav()">Pet Accessories</a>
-        <a href="/collections/pets-all" class="nav-drawer__sub-link nav-drawer__sub-link--all" onclick="BLC.closeNav()">Shop All Pets →</a>
+        <a href="/collections/pets-all" class="nav-drawer__sub-link nav-drawer__sub-link--all" onclick="BLC.closeNav()">Shop All Pets &rarr;</a>
       </div>
     </div>
 
@@ -91,7 +86,7 @@
         <a href="/collections/living-room" class="nav-drawer__sub-link" onclick="BLC.closeNav()">Living Room</a>
         <a href="/collections/bedroom" class="nav-drawer__sub-link" onclick="BLC.closeNav()">Bedroom</a>
         <a href="/collections/aromatherapy" class="nav-drawer__sub-link" onclick="BLC.closeNav()">Aromatherapy</a>
-        <a href="/collections/home-decor" class="nav-drawer__sub-link nav-drawer__sub-link--all" onclick="BLC.closeNav()">Shop All Home →</a>
+        <a href="/collections/home-decor" class="nav-drawer__sub-link nav-drawer__sub-link--all" onclick="BLC.closeNav()">Shop All Home &rarr;</a>
       </div>
     </div>
 
@@ -188,7 +183,7 @@
 }
 .nav-drawer__toggle[aria-expanded="true"] .nav-chevron { transform: rotate(180deg); }
 
-/* Accordion sub-menu — max-height animation */
+/* Accordion sub-menu */
 .nav-drawer__sub {
   max-height: 0; overflow: hidden;
   transition: max-height 0.35s var(--ease-out);
@@ -220,18 +215,12 @@
 </style>
 
 <script>
-// Ensure BOTH IDs resolve to closeNav — fixes mobileClose vs mobileNavClose bug
 document.addEventListener('DOMContentLoaded', function() {
-  // Primary ID on element: mobileNavClose (set via id attribute)
-  // Secondary alias: register mobileClose as synthetic reference
   const closeBtn = document.getElementById('mobileNavClose');
   if (closeBtn && !document.getElementById('mobileClose')) {
-    // Mirror the element so getElementById('mobileClose') also works
     closeBtn.setAttribute('id', 'mobileNavClose');
-    // Register both via event listeners directly (no DOM id conflict)
     closeBtn.addEventListener('click', BLC.closeNav);
   }
-  // Also attach listener to any element with data-also-id="mobileClose"
   document.querySelectorAll('[data-also-id="mobileClose"]').forEach(el => {
     el.addEventListener('click', BLC.closeNav);
   });

@@ -35,7 +35,11 @@ window.BLC.trackingMode = {{ tracking_mode | json }};
   function setShopifyConsent(granted) {
     if (window.Shopify && window.Shopify.customerPrivacy) {
       try {
-        window.Shopify.customerPrivacy.setTrackingConsent(granted, function() {});
+        window.Shopify.customerPrivacy.setTrackingConsent({
+          analytics: !!granted,
+          marketing: !!granted,
+          preferences: !!granted
+        }, function() {});
       } catch (e) {}
     }
   }

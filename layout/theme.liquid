@@ -21,6 +21,16 @@
         ecommerce: {{ settings.track_ecommerce_events | default: true | json }},
         leads: {{ settings.track_lead_events | default: true | json }},
         engagement: {{ settings.track_engagement_events | default: true | json }}
+      },
+      platforms: {
+        meta: {
+          enabled: {{ settings.meta_data_layer_enabled | default: true | json }},
+          pixelId: {{ settings.facebook_pixel_id | json }}
+        },
+        tiktok: {
+          enabled: {{ settings.tiktok_data_layer_enabled | default: true | json }},
+          pixelId: {{ settings.tiktok_pixel_id | json }}
+        }
       }
     };
     function gtag(){ window.dataLayer.push(arguments); }

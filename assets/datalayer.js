@@ -12,6 +12,30 @@
 
   var cfg = window.BLC.trackingSettings || {};
   var eventCfg = cfg.events || {};
+  var platformCfg = cfg.platforms || {};
+  var META_EVENTS = {
+    page_view: 'PageView',
+    view_item: 'ViewContent',
+    view_item_list: 'ViewContent',
+    select_item: 'ViewContent',
+    add_to_cart: 'AddToCart',
+    begin_checkout: 'InitiateCheckout',
+    purchase: 'Purchase',
+    search: 'Search',
+    generate_lead: 'Lead',
+    contact_submit: 'Lead'
+  };
+  var TIKTOK_EVENTS = {
+    view_item: 'ViewContent',
+    view_item_list: 'ViewContent',
+    select_item: 'ViewContent',
+    add_to_cart: 'AddToCart',
+    begin_checkout: 'InitiateCheckout',
+    purchase: 'Purchase',
+    search: 'Search',
+    generate_lead: 'SubmitForm',
+    contact_submit: 'Contact'
+  };
 
   /* Tracking gate — respects theme setting: Compliance > Tracking mode */
   function trackingAllowed() {
@@ -20,9 +44,16 @@
     if (window.BLC && typeof window.BLC.isTrackingAllowed === 'function') {
       return window.BLC.isTrackingAllowed();
     }
-    if (window.Shopify && window.Shopify.customerPrivacy && typeof window.Shopify.customerPrivacy.userCanBeTracked === 'function') {
+    if (window.Shopify && window.Shopify.customerPrivacy) {
       try {
-        if (!window.Shopify.customerPrivacy.userCanBeTracked()) return false;
+        var privacy = window.Shopify.customerPrivacy;
+        if (typeof privacy.analyticsProcessingAllowed === 'function' || typeof privacy.marketingAllowed === 'function') {
+          var analyticsAllowed = typeof privacy.analyticsProcessingAllowed === 'function' ? privacy.analyticsProcessingAllowed() : true;
+          var marketingAllowed = typeof privacy.marketingAllowed === 'function' ? privacy.marketingAllowed() : true;
+          if (!analyticsAllowed || !marketingAllowed) return false;
+        } else if (typeof privacy.userCanBeTracked === 'function' && !privacy.userCanBeTracked()) {
+          return false;
+        }
       } catch (e) {}
     }
     /* Fallback: check cookie directly if BLC not yet loaded */
@@ -38,6 +69,176 @@
     return true;
   }
 
+  function platformEnabled(name) {
+    var platform = platformCfg[name] || {};
+    return platform.enabled !== false;
+  }
+
+  function platformPixelId(name) {
+    var platform = platformCfg[name] || {};
+    return platform.pixelId || '';
+  }
+
+  function eventId(eventName) {
+    return 'blc_' + (eventName || 'event') + '_' + Date.now() + '_' + Math.random().toString(36).slice(2, 10);
+  }
+
+  function activeCurrency(obj) {
+    if (obj && obj.ecommerce && obj.ecommerce.currency) return obj.ecommerce.currency;
+    if (obj && obj.currency) return obj.currency;
+    if (window.Shopify && window.Shopify.currency && window.Shopify.currency.active) return window.Shopify.currency.active;
+    return 'USD';
+  }
+
+  function numberValue(value, fallback) {
+    var n = Number(value);
+    return Number.isFinite(n) ? n : (fallback || 0);
+  }
+
+  function normalizeItem(item) {
+    item = item || {};
+    var id = item.item_id || item.id || item.variant_id || item.sku || '';
+    var quantity = numberValue(item.quantity, 1) || 1;
+    var price = numberValue(item.price, 0);
+    return {
+      id: String(id),
+      name: item.item_name || item.name || item.product_title || item.title || '',
+      category: item.item_category || item.category || item.product_type || '',
+      variant: item.item_variant || item.variant || item.variant_title || '',
+      brand: item.item_brand || item.brand || item.vendor || '',
+      quantity: quantity,
+      price: price
+    };
+  }
+
+  function normalizedItems(obj) {
+    var ecommerce = obj && obj.ecommerce;
+    var rawItems = ecommerce && Array.isArray(ecommerce.items) ? ecommerce.items : [];
+    return rawItems.map(normalizeItem).filter(function(item) { return item.id || item.name; });
+  }
+
+  function eventValue(obj, items) {
+    if (obj && obj.ecommerce && obj.ecommerce.value !== undefined) return numberValue(obj.ecommerce.value, 0);
+    if (obj && obj.value !== undefined) return numberValue(obj.value, 0);
+    return items.reduce(function(sum, item) {
+      return sum + (numberValue(item.price, 0) * (numberValue(item.quantity, 1) || 1));
+    }, 0);
+  }
+
+  function itemQuantity(items) {
+    return items.reduce(function(sum, item) {
+      return sum + (numberValue(item.quantity, 1) || 1);
+    }, 0);
+  }
+
+  function firstFilled(items, key) {
+    for (var i = 0; i < items.length; i++) {
+      if (items[i][key]) return items[i][key];
+    }
+    return '';
+  }
+
+  function metaCustomData(obj, items) {
+    var value = eventValue(obj, items);
+    var data = {
+      content_type: 'product',
+      content_ids: items.map(function(item) { return item.id; }).filter(Boolean),
+      contents: items.map(function(item) {
+        return {
+          id: item.id,
+          quantity: item.quantity,
+          item_price: item.price
+        };
+      }),
+      currency: activeCurrency(obj),
+      value: value,
+      num_items: itemQuantity(items)
+    };
+    var name = firstFilled(items, 'name');
+    var category = firstFilled(items, 'category');
+    if (name) data.content_name = name;
+    if (category) data.content_category = category;
+    if (obj && obj.search_term) data.search_string = obj.search_term;
+    if (obj && obj.lead_type) data.content_name = obj.lead_type;
+    return data;
+  }
+
+  function tiktokProperties(obj, items) {
+    var value = eventValue(obj, items);
+    var props = {
+      content_type: 'product',
+      content_ids: items.map(function(item) { return item.id; }).filter(Boolean),
+      contents: items.map(function(item) {
+        return {
+          content_id: item.id,
+          content_name: item.name,
+          content_category: item.category,
+          quantity: item.quantity,
+          price: item.price
+        };
+      }),
+      currency: activeCurrency(obj),
+      value: value,
+      quantity: itemQuantity(items)
+    };
+    var description = firstFilled(items, 'name');
+    if (description) props.description = description;
+    if (obj && obj.search_term) props.search_string = obj.search_term;
+    if (obj && obj.lead_type) props.description = obj.lead_type;
+    return props;
+  }
+
+  function decorateTrackingEvent(obj) {
+    if (!obj || !obj.event || obj.ecommerce === null) return obj;
+    var metaName = META_EVENTS[obj.event];
+    var tiktokName = TIKTOK_EVENTS[obj.event];
+    if (!metaName && !tiktokName) return obj;
+
+    var items = normalizedItems(obj);
+    var id = obj.event_id || obj.blc_event_id || eventId(obj.event);
+    var value = eventValue(obj, items);
+    var contentIds = items.map(function(item) { return item.id; }).filter(Boolean);
+    var contents = items.map(function(item) {
+      return {
+        id: item.id,
+        quantity: item.quantity,
+        item_price: item.price
+      };
+    });
+    obj.event_id = id;
+    obj.blc_event_id = id;
+    obj.content_type = obj.content_type || 'product';
+    obj.content_ids = obj.content_ids || contentIds;
+    obj.contents = obj.contents || contents;
+    obj.currency = obj.currency || activeCurrency(obj);
+    if (obj.value === undefined) obj.value = value;
+    obj.num_items = obj.num_items || itemQuantity(items);
+
+    if (metaName && platformEnabled('meta')) {
+      obj.meta_event_name = metaName;
+      obj.meta_pixel_id = platformPixelId('meta');
+      obj.meta = {
+        pixel_id: obj.meta_pixel_id,
+        event_name: metaName,
+        event_id: id,
+        custom_data: metaCustomData(obj, items)
+      };
+    }
+
+    if (tiktokName && platformEnabled('tiktok')) {
+      obj.tiktok_event_name = tiktokName;
+      obj.tiktok_pixel_id = platformPixelId('tiktok');
+      obj.tiktok = {
+        pixel_id: obj.tiktok_pixel_id,
+        event_name: tiktokName,
+        event_id: id,
+        properties: tiktokProperties(obj, items)
+      };
+    }
+    return obj;
+  }
+  window.BLC.decorateTrackingEvent = decorateTrackingEvent;
+
   function push(obj) {
     obj = obj || {};
     if (!eventAllowed(obj.event)) return;
@@ -51,7 +252,7 @@
       }
       return;
     }
-    window.dataLayer.push(obj);
+    window.dataLayer.push(decorateTrackingEvent(obj));
   }
   window.BLC.pushDataLayerEvent = push;
 

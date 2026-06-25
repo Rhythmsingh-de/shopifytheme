@@ -657,7 +657,13 @@
       document.cookie='blc_cookie=1'+expires;
       document.cookie='blc_cookie_consent=accepted'+expires;
       if (window.Shopify && window.Shopify.customerPrivacy) {
-        try { window.Shopify.customerPrivacy.setTrackingConsent(true, function() {}); } catch(_) {}
+        try {
+          window.Shopify.customerPrivacy.setTrackingConsent({
+            analytics: true,
+            marketing: true,
+            preferences: true
+          }, function() {});
+        } catch(_) {}
       }
       var el=document.getElementById('cookie-consent');
       if(el){
@@ -673,7 +679,13 @@
       document.cookie='blc_cookie=0'+expires;
       document.cookie='blc_cookie_consent=declined'+expires;
       if (window.Shopify && window.Shopify.customerPrivacy) {
-        try { window.Shopify.customerPrivacy.setTrackingConsent(false, function() {}); } catch(_) {}
+        try {
+          window.Shopify.customerPrivacy.setTrackingConsent({
+            analytics: false,
+            marketing: false,
+            preferences: false
+          }, function() {});
+        } catch(_) {}
       }
       if(typeof gtag==='function'){
         gtag('consent','update',{ad_storage:'denied',analytics_storage:'denied',ad_user_data:'denied',ad_personalization:'denied'});
