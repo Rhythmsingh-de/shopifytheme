@@ -6,3 +6,6 @@ OrphanedSnippet:
 
 HardcodedRoutes:
   enabled: false
+
+ignore:
+  - 'temp/**/*'
