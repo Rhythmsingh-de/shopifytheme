@@ -18,9 +18,13 @@
         "logo_position": "left",
         "logo_width": 200,
         "logo_width_mobile": 150,
+        "show_desktop_menu": true,
         "menu": "main-menu",
+        "show_mobile_menu": true,
+        "mobile_menu": "main-menu",
         "sticky": true,
         "show_account_icon": true,
+        "show_mobile_account_links": true,
         "cta_label": "Buy Now",
         "cta_link": "shopify://products/bange-new-multifunction-crossbody-bag-shoulder-messenger-bags-male-waterproof-short-trip-chest-bag-pack-for-men"
       }

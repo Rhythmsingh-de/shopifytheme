@@ -3,11 +3,10 @@
 <nav id="nav-drawer" class="nav-drawer" role="dialog" aria-modal="true" aria-label="Main navigation" aria-hidden="true">
   <div class="nav-drawer__header">
     <a href="/" onclick="BLC.closeNav()" aria-label="{{ shop.name }} home">
-      <span style="font-family:var(--font-display);font-weight:700;font-size:var(--text-lg)">{{ shop.name }}</span>
+      <span style="font-family:var(--font-display);font-weight:700;font-size:var(--text-lg)">{{ shop.name | escape }}</span>
     </a>
     <button
       id="mobileNavClose"
-      data-also-id="mobileClose"
       onclick="BLC.closeNav()"
       aria-label="Close menu"
       class="nav-drawer__close-btn">
@@ -19,94 +18,40 @@
   </div>
 
   <div class="nav-drawer__links">
-    <a href="/" class="nav-drawer__link" onclick="BLC.closeNav()">Home</a>
-
-    <div class="nav-drawer__group">
-      <button class="nav-drawer__link nav-drawer__toggle" aria-expanded="false" onclick="BLC.toggleNavGroup(this)">
-        <span>Women</span>
-        <svg class="nav-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
-      </button>
-      <div class="nav-drawer__sub">
-        <a href="/collections/womens-clothing" class="nav-drawer__sub-link" onclick="BLC.closeNav()">Women's Clothing</a>
-        <a href="/collections/womens-dresses" class="nav-drawer__sub-link" onclick="BLC.closeNav()">Dresses</a>
-        <a href="/collections/womens-tops" class="nav-drawer__sub-link" onclick="BLC.closeNav()">Tops</a>
-        <a href="/collections/jewelry" class="nav-drawer__sub-link" onclick="BLC.closeNav()">Jewelry</a>
-        <a href="/collections/womens-accessories" class="nav-drawer__sub-link" onclick="BLC.closeNav()">Accessories</a>
-        <a href="/collections/womens-all" class="nav-drawer__sub-link nav-drawer__sub-link--all" onclick="BLC.closeNav()">Shop All Women &rarr;</a>
-      </div>
-    </div>
-
-    <div class="nav-drawer__group">
-      <button class="nav-drawer__link nav-drawer__toggle" aria-expanded="false" onclick="BLC.toggleNavGroup(this)">
-        <span>Men</span>
-        <svg class="nav-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
-      </button>
-      <div class="nav-drawer__sub">
-        <a href="/collections/mens-clothing" class="nav-drawer__sub-link" onclick="BLC.closeNav()">Men's Clothing</a>
-        <a href="/collections/mens-shirts" class="nav-drawer__sub-link" onclick="BLC.closeNav()">Shirts</a>
-        <a href="/collections/mens-pants" class="nav-drawer__sub-link" onclick="BLC.closeNav()">Pants</a>
-        <a href="/collections/mens-accessories" class="nav-drawer__sub-link" onclick="BLC.closeNav()">Accessories</a>
-        <a href="/collections/mens-all" class="nav-drawer__sub-link nav-drawer__sub-link--all" onclick="BLC.closeNav()">Shop All Men &rarr;</a>
-      </div>
-    </div>
-
-    <div class="nav-drawer__group">
-      <button class="nav-drawer__link nav-drawer__toggle" aria-expanded="false" onclick="BLC.toggleNavGroup(this)">
-        <span>Jewelry</span>
-        <svg class="nav-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
-      </button>
-      <div class="nav-drawer__sub">
-        <a href="/collections/necklaces" class="nav-drawer__sub-link" onclick="BLC.closeNav()">Necklaces</a>
-        <a href="/collections/rings" class="nav-drawer__sub-link" onclick="BLC.closeNav()">Rings</a>
-        <a href="/collections/bracelets" class="nav-drawer__sub-link" onclick="BLC.closeNav()">Bracelets</a>
-        <a href="/collections/earrings" class="nav-drawer__sub-link" onclick="BLC.closeNav()">Earrings</a>
-        <a href="/collections/jewelry" class="nav-drawer__sub-link nav-drawer__sub-link--all" onclick="BLC.closeNav()">Shop All Jewelry &rarr;</a>
-      </div>
-    </div>
-
-    <div class="nav-drawer__group">
-      <button class="nav-drawer__link nav-drawer__toggle" aria-expanded="false" onclick="BLC.toggleNavGroup(this)">
-        <span>Pets</span>
-        <svg class="nav-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
-      </button>
-      <div class="nav-drawer__sub">
-        <a href="/collections/dog-toys" class="nav-drawer__sub-link" onclick="BLC.closeNav()">Dog Toys</a>
-        <a href="/collections/cat-toys" class="nav-drawer__sub-link" onclick="BLC.closeNav()">Cat Toys</a>
-        <a href="/collections/pet-accessories" class="nav-drawer__sub-link" onclick="BLC.closeNav()">Pet Accessories</a>
-        <a href="/collections/pets-all" class="nav-drawer__sub-link nav-drawer__sub-link--all" onclick="BLC.closeNav()">Shop All Pets &rarr;</a>
-      </div>
-    </div>
-
-    <div class="nav-drawer__group">
-      <button class="nav-drawer__link nav-drawer__toggle" aria-expanded="false" onclick="BLC.toggleNavGroup(this)">
-        <span>Home Decor</span>
-        <svg class="nav-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
-      </button>
-      <div class="nav-drawer__sub">
-        <a href="/collections/living-room" class="nav-drawer__sub-link" onclick="BLC.closeNav()">Living Room</a>
-        <a href="/collections/bedroom" class="nav-drawer__sub-link" onclick="BLC.closeNav()">Bedroom</a>
-        <a href="/collections/aromatherapy" class="nav-drawer__sub-link" onclick="BLC.closeNav()">Aromatherapy</a>
-        <a href="/collections/home-decor" class="nav-drawer__sub-link nav-drawer__sub-link--all" onclick="BLC.closeNav()">Shop All Home &rarr;</a>
-      </div>
-    </div>
-
-    <a href="/collections/sale" class="nav-drawer__link nav-drawer__link--sale" onclick="BLC.closeNav()">
-      <span>Sale</span>
-      <span class="badge badge--sale" style="font-size:10px;padding:2px 6px">HOT</span>
-    </a>
-    <a href="/pages/about" class="nav-drawer__link" onclick="BLC.closeNav()">About</a>
-    <a href="/pages/contact" class="nav-drawer__link" onclick="BLC.closeNav()">Contact</a>
+    {%- for link in mobile_menu.links -%}
+      {%- if link.links != blank -%}
+        <div class="nav-drawer__group">
+          <button
+            class="nav-drawer__link nav-drawer__toggle"
+            aria-expanded="false"
+            aria-controls="NavDrawerSubmenu-{{ forloop.index }}"
+            onclick="BLC.toggleNavGroup(this)">
+            <span>{{ link.title | escape }}</span>
+            <svg class="nav-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="nav-drawer__sub" id="NavDrawerSubmenu-{{ forloop.index }}">
+            {%- for child_link in link.links -%}
+              <a href="{{ child_link.url }}" class="nav-drawer__sub-link{% if child_link.active %} is-active{% endif %}" onclick="BLC.closeNav()">{{ child_link.title | escape }}</a>
+            {%- endfor -%}
+          </div>
+        </div>
+      {%- else -%}
+        <a href="{{ link.url }}" class="nav-drawer__link{% if link.active %} is-active{% endif %}" onclick="BLC.closeNav()">{{ link.title | escape }}</a>
+      {%- endif -%}
+    {%- endfor -%}
   </div>
 
-  <div class="nav-drawer__footer">
-    {%- if customer -%}
-      <a href="/account" class="btn btn--outline btn--full" onclick="BLC.closeNav()">My Account</a>
-      <a href="/account/logout" class="btn btn--ghost btn--full" style="margin-top:8px" onclick="BLC.closeNav()">Sign Out</a>
-    {%- else -%}
-      <a href="/account/login" class="btn btn--outline btn--full" onclick="BLC.closeNav()">Sign In</a>
-      <a href="/account/register" class="btn btn--primary btn--full" style="margin-top:8px" onclick="BLC.closeNav()">Create Account</a>
-    {%- endif -%}
-  </div>
+  {%- if show_account_links -%}
+    <div class="nav-drawer__footer">
+      {%- if customer -%}
+        <a href="{{ routes.account_url }}" class="btn btn--outline btn--full" onclick="BLC.closeNav()">My Account</a>
+        <a href="{{ routes.account_logout_url }}" class="btn btn--ghost btn--full" style="margin-top:8px" onclick="BLC.closeNav()">Sign Out</a>
+      {%- else -%}
+        <a href="{{ routes.account_login_url }}" class="btn btn--outline btn--full" onclick="BLC.closeNav()">Sign In</a>
+        <a href="{{ routes.account_register_url }}" class="btn btn--primary btn--full" style="margin-top:8px" onclick="BLC.closeNav()">Create Account</a>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
 </nav>
 
 <style>
@@ -213,16 +158,3 @@
   flex-shrink: 0;
 }
 </style>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  const closeBtn = document.getElementById('mobileNavClose');
-  if (closeBtn && !document.getElementById('mobileClose')) {
-    closeBtn.setAttribute('id', 'mobileNavClose');
-    closeBtn.addEventListener('click', BLC.closeNav);
-  }
-  document.querySelectorAll('[data-also-id="mobileClose"]').forEach(el => {
-    el.addEventListener('click', BLC.closeNav);
-  });
-});
-</script>
