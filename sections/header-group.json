@@ -17,7 +17,7 @@
         "logo_position": "left",
         "logo_width": 200,
         "logo_width_mobile": 150,
-        "menu": "",
+        "menu": "main-menu",
         "sticky": true,
         "show_account_icon": true,
         "cta_label": "Buy Now",
