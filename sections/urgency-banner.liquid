@@ -28,8 +28,42 @@
   if cta_link == blank
     assign cta_link = '#MainContent'
   endif
+  assign show_offer = settings.weekly_offer_enabled
+  assign offer_scope = settings.weekly_offer_scope | default: 'all'
+  if offer_scope == 'homepage_only' and request.page_type != 'index'
+    assign show_offer = false
+  elsif offer_scope == 'all_products' and request.page_type != 'product'
+    assign show_offer = false
+  elsif offer_scope == 'all_collections' and request.page_type != 'collection'
+    assign show_offer = false
+  elsif offer_scope == 'selected_products'
+    assign show_offer = false
+    if request.page_type == 'product' and product != blank
+      for scoped_product in settings.weekly_offer_products
+        if scoped_product.id == product.id
+          assign show_offer = true
+        endif
+      endfor
+    elsif offer_product != blank
+      assign show_offer = true
+    endif
+  elsif offer_scope == 'selected_collection'
+    assign show_offer = false
+    if settings.weekly_offer_collection != blank
+      if request.page_type == 'collection' and collection.handle == settings.weekly_offer_collection.handle
+        assign show_offer = true
+      elsif request.page_type == 'product' and product != blank
+        for product_collection in product.collections
+          if product_collection.handle == settings.weekly_offer_collection.handle
+            assign show_offer = true
+          endif
+        endfor
+      endif
+    endif
+  endif
 -%}
 
+{%- if show_offer -%}
 <section
   id="UrgencyBanner-{{ section.id }}"
   class="urgency-banner reveal"
@@ -185,6 +219,7 @@
     </div>
   </div>
 </section>
+{%- endif -%}
 
 <style>
 .urgency-banner {
