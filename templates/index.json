@@ -24,9 +24,69 @@
         "offer_mode": false,
         "countdown_prefix": "Ends in"
       }
+    },
+    "17823892542ac25e30": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_24339c9_aDUhfJ": {
+          "type": "ai_gen_block_24339c9",
+          "settings": {
+            "product": "outdoor-large-capacity-messenger-bag-men-chest-bag-simple-fashion-men-bag-shoulder-bag",
+            "fallback_title": "Product Name",
+            "fallback_price": "$29.99",
+            "container_width": 1200,
+            "background_color": "#ffffff",
+            "text_color": "#1a1a1a",
+            "title_size": 36,
+            "image_border_radius": 12,
+            "show_delivery_box": true,
+            "delivery_text": "Order within",
+            "delivery_countdown_hours": 5,
+            "delivery_date_text": "for delivery by",
+            "estimated_delivery_days": 5,
+            "delivery_bg": "#fff8f0",
+            "delivery_border": "#ffd699",
+            "delivery_accent": "#ff6b00",
+            "trust_bg": "#f8f9fa",
+            "trust_border": "#e5e7eb",
+            "trust_icon_color": "#1d6b44",
+            "show_shipping_trust": true,
+            "shipping_trust_title": "Free Shipping",
+            "shipping_trust_subtitle": "On all orders",
+            "free_shipping_threshold": 50,
+            "show_return_trust": true,
+            "return_days": 30,
+            "return_trust_subtitle": "Money back guarantee",
+            "show_payment_trust": true,
+            "add_to_cart_text": "Add to Cart",
+            "button_bg": "#000000",
+            "button_text": "#ffffff",
+            "button_hover_bg": "#1a1a1a",
+            "button_radius": 8,
+            "show_ask_question": true,
+            "ask_question_text": "Ask a Question",
+            "contact_page": "",
+            "show_product_details": true,
+            "description_intro": "<p>This is a premium product designed for quality and style.</p>",
+            "show_features": true,
+            "feature_1": "Premium quality materials",
+            "feature_2": "Durable and long-lasting",
+            "feature_3": "Easy to use and maintain",
+            "feature_4": "Stylish modern design",
+            "feature_5": "",
+            "feature_6": ""
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_24339c9_aDUhfJ"
+      ],
+      "settings": {}
     }
   },
   "order": [
-    "announcement_bar"
+    "announcement_bar",
+    "17823892542ac25e30"
   ]
 }
