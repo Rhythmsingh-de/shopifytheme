@@ -8,20 +8,53 @@
 (function () {
   'use strict';
   window.dataLayer = window.dataLayer || [];
+  window.BLC = window.BLC || {};
+
+  var cfg = window.BLC.trackingSettings || {};
+  var eventCfg = cfg.events || {};
 
   /* Tracking gate — respects theme setting: Compliance > Tracking mode */
   function trackingAllowed() {
+    if (window.BLC && window.BLC.trackingMode === 'always_on') return true;
+    if (window.BLC && window.BLC.trackingMode === 'always_off') return false;
     if (window.BLC && typeof window.BLC.isTrackingAllowed === 'function') {
       return window.BLC.isTrackingAllowed();
+    }
+    if (window.Shopify && window.Shopify.customerPrivacy && typeof window.Shopify.customerPrivacy.userCanBeTracked === 'function') {
+      try {
+        if (!window.Shopify.customerPrivacy.userCanBeTracked()) return false;
+      } catch (e) {}
     }
     /* Fallback: check cookie directly if BLC not yet loaded */
     return document.cookie.indexOf('blc_cookie_consent=accepted') !== -1;
   }
 
+  function eventAllowed(eventName) {
+    if (cfg.dataLayerEnabled === false) return false;
+    if ((eventName === 'page_view' || eventName === 'scroll_depth') && eventCfg.pageViews === false) return false;
+    if ((eventName || '').match(/^(view_item|view_item_list|select_item|add_to_cart|remove_from_cart|begin_checkout|view_cart|purchase|view_promotion|select_promotion|cart_update)$/) && eventCfg.ecommerce === false) return false;
+    if ((eventName === 'generate_lead' || eventName === 'contact_submit') && eventCfg.leads === false) return false;
+    if ((eventName === 'search' || eventName === 'scroll_depth') && eventCfg.engagement === false) return false;
+    return true;
+  }
+
   function push(obj) {
-    if (!trackingAllowed()) return;
+    obj = obj || {};
+    if (!eventAllowed(obj.event)) return;
+    if (!trackingAllowed()) {
+      if (cfg.blockedEventMode === 'status_only' && obj.event) {
+        window.dataLayer.push({
+          event: 'blc_tracking_blocked',
+          blocked_event: obj.event,
+          consent_state: window.BLC.consentResolved || 'declined'
+        });
+      }
+      return;
+    }
     window.dataLayer.push(obj);
   }
+  window.BLC.pushDataLayerEvent = push;
+
   function money(cents) { return parseFloat((Number(cents) / 100).toFixed(2)); }
 
   function mapItem(p, idx) {
@@ -105,7 +138,7 @@
 
   /* ── add_to_cart ── */
   document.addEventListener('click', function (e) {
-    var btn = e.target.closest('.atc-btn, .prod-atc');
+    var btn = e.target.closest('.prod-atc');
     if (!btn) return;
     var variantId = safeData(btn, 'variant', '');
     if (!variantId) return;
@@ -226,6 +259,58 @@
     });
   }
 
+  /* generate_lead — newsletter and contact forms, no personal data */
+  document.addEventListener('submit', function(e) {
+    var form = e.target;
+    if (!form || !form.matches) return;
+    var isNewsletter = form.querySelector('input[name="contact[tags]"][value*="newsletter"]');
+    var isContact = form.getAttribute('action') && form.getAttribute('action').indexOf('/contact') !== -1;
+    if (!isNewsletter && !isContact) return;
+    push({
+      event: 'generate_lead',
+      lead_type: isNewsletter ? 'newsletter' : 'contact',
+      form_id: form.id || ''
+    });
+  });
+
+  /* Promotion impressions and clicks */
+  function promoPayload(el) {
+    return {
+      promotion_id: safeData(el, 'promoId', '') || el.id || '',
+      promotion_name: safeData(el, 'promoName', '') || (el.textContent || '').trim().slice(0, 80),
+      creative_name: el.className || '',
+      creative_slot: safeData(el, 'promoSlot', '')
+    };
+  }
+  function firePromotions() {
+    var promos = document.querySelectorAll('[data-promo-link], [data-promo-card]');
+    if (!promos.length) return;
+    var seen = {};
+    var items = [];
+    promos.forEach(function(el) {
+      var p = promoPayload(el);
+      var key = p.promotion_id + '|' + p.promotion_name;
+      if (seen[key]) return;
+      seen[key] = true;
+      items.push(p);
+    });
+    if (!items.length) return;
+    push({ ecommerce: null });
+    push({
+      event: 'view_promotion',
+      ecommerce: { items: items }
+    });
+  }
+  document.addEventListener('click', function(e) {
+    var promo = e.target.closest('[data-promo-link], [data-promo-card]');
+    if (!promo) return;
+    push({ ecommerce: null });
+    push({
+      event: 'select_promotion',
+      ecommerce: { items: [promoPayload(promo)] }
+    });
+  });
+
   /* ── user_data for server-side enrichment ── */
   try {
     var meta = window.ShopifyAnalytics && window.ShopifyAnalytics.meta;
@@ -255,9 +340,13 @@
 
   /* ── DOM ready: fire view_item_list ── */
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', fireViewItemList);
+    document.addEventListener('DOMContentLoaded', function() {
+      fireViewItemList();
+      firePromotions();
+    });
   } else {
     fireViewItemList();
+    firePromotions();
   }
 
 })();

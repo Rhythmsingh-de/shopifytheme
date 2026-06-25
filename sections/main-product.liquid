@@ -8,6 +8,12 @@
     assign saving_pct = compare_price | minus: price | times: 100 | divided_by: compare_price
   endif
   assign align = section.settings.info_align | default: 'left'
+  assign atc_label = section.settings.atc_label | default: settings.conversion_primary_cta_label | default: 'Add to Cart'
+  assign buy_label = section.settings.buy_label | default: settings.conversion_fast_checkout_label | default: settings.conversion_buy_now_label | default: 'Buy Now'
+  assign show_buy_now = section.settings.show_buy_now
+  if settings.conversion_show_fast_checkout == false
+    assign show_buy_now = false
+  endif
 -%}
 
 <section class="section-spacing product-page-section" data-product-detail data-variants="{{ product.variants | json | escape }}" {{ section.shopify_attributes }}>
@@ -165,14 +171,17 @@
               data-variant-id="{{ first_variant.id }}"
               data-qty="1"
               aria-label="Add {{ product.title | escape }} to cart">
-              <span class="atc-btn-text">{{ section.settings.atc_label | default: 'Add to Cart' }} &mdash; {{ price | money }}</span>
+              <span class="atc-btn-text">{{ atc_label | escape }} &mdash; {{ price | money }}</span>
             </button>
-            {%- if section.settings.show_buy_now -%}
+            {%- if show_buy_now -%}
               <a href="/cart/{{ first_variant.id }}:1"
                 class="btn btn--ghost btn--full btn--lg"
                 data-buy-now>
-                {{ section.settings.buy_label | default: 'Buy It Now' }}
+                {{ buy_label | escape }}
               </a>
+            {%- endif -%}
+            {%- if settings.conversion_microcopy != blank -%}
+              <p class="product-cta-microcopy">{{ settings.conversion_microcopy | escape }}</p>
             {%- endif -%}
           {%- else -%}
             <button class="btn btn--primary btn--full btn--lg" disabled aria-disabled="true">Sold Out</button>
@@ -180,21 +189,39 @@
         </div>
 
         <!-- Benefits checklist -->
-        {%- assign has_benefits = false -%}
-        {%- if section.settings.benefit_1 != blank or section.settings.benefit_2 != blank or section.settings.benefit_3 != blank or section.settings.benefit_4 != blank -%}
+        {%- liquid
+          assign benefit_1 = section.settings.benefit_1 | default: settings.product_benefit_1
+          assign benefit_2 = section.settings.benefit_2 | default: settings.product_benefit_2
+          assign benefit_3 = section.settings.benefit_3 | default: settings.product_benefit_3
+          assign benefit_4 = section.settings.benefit_4 | default: settings.product_benefit_4
+          assign has_benefits = false
+        -%}
+        {%- if benefit_1 != blank or benefit_2 != blank or benefit_3 != blank or benefit_4 != blank -%}
           {%- assign has_benefits = true -%}
         {%- endif -%}
         {%- if section.settings.show_benefits and has_benefits -%}
           <ul class="product-benefits" aria-label="Product benefits">
             {%- for i in (1..4) -%}
-              {%- assign key = 'benefit_' | append: i -%}
-              {%- if section.settings[key] != blank -%}
+              {%- liquid
+                assign benefit_text = blank
+                case i
+                  when 1
+                    assign benefit_text = benefit_1
+                  when 2
+                    assign benefit_text = benefit_2
+                  when 3
+                    assign benefit_text = benefit_3
+                  when 4
+                    assign benefit_text = benefit_4
+                endcase
+              -%}
+              {%- if benefit_text != blank -%}
                 <li>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
                     stroke="var(--color-primary)" stroke-width="2.5" aria-hidden="true">
                     <polyline points="20 6 9 17 4 12"/>
                   </svg>
-                  {{ section.settings[key] }}
+                  {{ benefit_text | escape }}
                 </li>
               {%- endif -%}
             {%- endfor -%}
@@ -478,6 +505,14 @@
 }
 
 .product-add-to-cart { display: flex; flex-direction: column; gap: var(--space-2); }
+.product-cta-microcopy {
+  margin: 2px 0 0;
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  line-height: 1.45;
+  text-align: center;
+}
 
 .product-benefits {
   list-style: none;
@@ -618,14 +653,14 @@
     { "type": "checkbox", "id": "show_benefits", "label": "Show benefits checklist", "default": true },
     { "type": "checkbox", "id": "show_trust", "label": "Show trust badges", "default": true },
     { "type": "header", "content": "Checkout Buttons" },
-    { "type": "text", "id": "atc_label", "label": "Add to Cart button text", "default": "Add to Cart" },
-    { "type": "text", "id": "buy_label", "label": "Buy It Now button text", "default": "Buy It Now" },
+    { "type": "text", "id": "atc_label", "label": "Add to Cart button text", "info": "Leave blank to use Theme Settings > Trust & Conversion." },
+    { "type": "text", "id": "buy_label", "label": "Buy It Now button text", "info": "Leave blank to use Theme Settings > Trust & Conversion." },
     { "type": "checkbox", "id": "show_buy_now", "label": "Show Buy It Now button", "default": true },
     { "type": "header", "content": "Benefits checklist" },
-    { "type": "text", "id": "benefit_1", "label": "Benefit 1", "default": "Premium quality, built to last" },
-    { "type": "text", "id": "benefit_2", "label": "Benefit 2", "default": "Free shipping on orders over €75" },
-    { "type": "text", "id": "benefit_3", "label": "Benefit 3", "default": "30-day hassle-free returns" },
-    { "type": "text", "id": "benefit_4", "label": "Benefit 4", "default": "Secure checkout guaranteed" },
+    { "type": "text", "id": "benefit_1", "label": "Benefit 1", "info": "Leave blank to use Theme Settings default." },
+    { "type": "text", "id": "benefit_2", "label": "Benefit 2", "info": "Leave blank to use Theme Settings default." },
+    { "type": "text", "id": "benefit_3", "label": "Benefit 3", "info": "Leave blank to use Theme Settings default." },
+    { "type": "text", "id": "benefit_4", "label": "Benefit 4", "info": "Leave blank to use Theme Settings default." },
     { "type": "header", "content": "Trust icons (overrides global settings)" },
     { "type": "text", "id": "trust_1_title", "label": "Trust 1 title" },
     { "type": "text", "id": "trust_1_sub",   "label": "Trust 1 subtitle" },

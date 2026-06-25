@@ -9,6 +9,15 @@ html.cursor-active,
 html.cursor-active * {
   cursor: none !important;
 }
+html.cursor-active input,
+html.cursor-active textarea,
+html.cursor-active [contenteditable="true"] {
+  cursor: text !important;
+}
+html.cursor-active select,
+html.cursor-active label {
+  cursor: pointer !important;
+}
 
 /* ── Shared element base ── */
 .cursor-dot,

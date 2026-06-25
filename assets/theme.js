@@ -123,9 +123,9 @@
       if(item.status)throw new Error(item.description||'Error');
       if(btn){btn.textContent='✓ Added!';setTimeout(function(){btn.disabled=false;btn.textContent=btn._orig;},1800);}
       _updateCartCount();refreshCartDrawer();openCartDrawer();
-      if(window.dataLayer){
-        window.dataLayer.push({ecommerce:null});
-        window.dataLayer.push({
+      if(window.BLC && typeof window.BLC.pushDataLayerEvent === 'function'){
+        window.BLC.pushDataLayerEvent({ecommerce:null});
+        window.BLC.pushDataLayerEvent({
           event:'add_to_cart',
           ecommerce:{
             currency:(window.Shopify&&window.Shopify.currency&&window.Shopify.currency.active)||'USD',
@@ -532,7 +532,18 @@
   });
 
   /* ─────────── GLOBAL BLC NAMESPACE ─────────── */
-  window.BLC={
+  var existingBLC = window.BLC || {};
+  window.BLC=Object.assign(existingBLC,{
+    trackingMode: existingBLC.trackingMode || 'consent',
+    trackingSettings: existingBLC.trackingSettings || {},
+    isTrackingAllowed: existingBLC.isTrackingAllowed || function(){
+      if (window.BLC && window.BLC.trackingMode === 'always_on') return true;
+      if (window.BLC && window.BLC.trackingMode === 'always_off') return false;
+      return document.cookie.indexOf('blc_cookie_consent=accepted') > -1;
+    },
+    pushDataLayerEvent: existingBLC.pushDataLayerEvent || function(obj){
+      if(window.dataLayer) window.dataLayer.push(obj);
+    },
     openNav:openNav,closeNav:closeNav,toggleNavGroup:toggleNavGroup,
     openSearch:openSearch,closeSearch:closeSearch,
     openCartDrawer:openCartDrawer,closeCartDrawer:closeCartDrawer,
@@ -561,6 +572,9 @@
       if (window.Shopify && window.Shopify.customerPrivacy) {
         try { window.Shopify.customerPrivacy.setTrackingConsent(false, function() {}); } catch(_) {}
       }
+      if(typeof gtag==='function'){
+        gtag('consent','update',{ad_storage:'denied',analytics_storage:'denied',ad_user_data:'denied',ad_personalization:'denied'});
+      }
       var el=document.getElementById('cookie-consent');
       if(el){
         el.classList.add('is-hidden');
@@ -568,5 +582,5 @@
       }
       if(window.dataLayer)window.dataLayer.push({event:'cookie_consent', consent_choice:'declined'});
     }
-  };
+  });
 })();

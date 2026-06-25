@@ -5,6 +5,40 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="{{ settings.color_bg | default: '#ffffff' }}">
 
+  {%- if settings.google_site_verification != blank -%}
+    <meta name="google-site-verification" content="{{ settings.google_site_verification | escape }}">
+  {%- endif -%}
+
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    window.BLC = window.BLC || {};
+    window.BLC.trackingMode = {{ settings.tracking_mode | default: 'consent' | json }};
+    window.BLC.trackingSettings = {
+      dataLayerEnabled: {{ settings.data_layer_enabled | default: true | json }},
+      blockedEventMode: {{ settings.tracking_blocked_event_mode | default: 'status_only' | json }},
+      events: {
+        pageViews: {{ settings.track_page_views | default: true | json }},
+        ecommerce: {{ settings.track_ecommerce_events | default: true | json }},
+        leads: {{ settings.track_lead_events | default: true | json }},
+        engagement: {{ settings.track_engagement_events | default: true | json }}
+      }
+    };
+    function gtag(){ window.dataLayer.push(arguments); }
+    gtag('consent', 'default', {
+      ad_storage: {% if settings.tracking_mode == 'always_on' %}'granted'{% else %}'denied'{% endif %},
+      analytics_storage: {% if settings.tracking_mode == 'always_on' %}'granted'{% else %}'denied'{% endif %},
+      ad_user_data: {% if settings.tracking_mode == 'always_on' %}'granted'{% else %}'denied'{% endif %},
+      ad_personalization: {% if settings.tracking_mode == 'always_on' %}'granted'{% else %}'denied'{% endif %},
+      wait_for_update: 500
+    });
+  </script>
+
+  {%- if settings.gtm_container_id != blank and settings.tracking_mode != 'always_off' -%}
+    <script>
+      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer',{{ settings.gtm_container_id | json }});
+    </script>
+  {%- endif -%}
+
   {{ content_for_header }}
 
   {% render 'meta-tags' %}
@@ -223,10 +257,16 @@
     <meta name="weekly-offer-end" content="{{ settings.weekly_offer_end_datetime }}">
   {%- endif -%}
 
-  {% render 'datalayer' %}
+  {%- if settings.data_layer_enabled -%}
+    {% render 'datalayer' %}
+  {%- endif -%}
 </head>
 
 <body>
+  {%- if settings.gtm_container_id != blank and settings.gtm_noscript_enabled and settings.tracking_mode != 'always_off' -%}
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ settings.gtm_container_id | escape }}" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  {%- endif -%}
+
   <a href="#MainContent" class="visually-hidden">{{ 'accessibility.skip_to_content' | t }}</a>
 
   {%- comment -%}Custom cursor elements — hidden on touch via CSS/JS{%- endcomment -%}
@@ -264,7 +304,9 @@
     };
   </script>
 
-  <script src="{{ 'datalayer.js' | asset_url }}" defer></script>
+  {%- if settings.data_layer_enabled -%}
+    <script src="{{ 'datalayer.js' | asset_url }}" defer></script>
+  {%- endif -%}
   <script src="{{ 'theme.js' | asset_url }}" defer></script>
 
 

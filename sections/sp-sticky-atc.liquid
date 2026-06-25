@@ -4,9 +4,10 @@
     assign sp = product
   endif
   assign fv = sp.selected_or_first_available_variant
+  assign sticky_label = section.settings.label | default: settings.conversion_primary_cta_label | default: 'Add to Cart'
 -%}
 
-{%- if sp != blank -%}
+{%- if sp != blank and settings.product_sticky_atc_enabled -%}
 <sp-sticky-atc
   class="sticky-atc"
   id="StickyAtc"
@@ -47,25 +48,25 @@
             data-variant-id="{{ fv.id }}"
             data-qty="1"
             aria-label="Add {{ sp.title | escape }} to cart">
-            {{ section.settings.label | default: 'Add to Cart' }}
+            {{ sticky_label | escape }}
           </button>
           <p class="sticky-atc__trust">
             {%- if settings.trust_secure_title != blank -%}
-              &#128274; {{ settings.trust_secure_title }}
+              {{ settings.trust_secure_title | escape }}
             {%- else -%}
-              &#128274; Secure
+              Secure
             {%- endif -%}
             &nbsp;&middot;&nbsp;
             {%- if settings.trust_shipping_title != blank -%}
-              &#128666; {{ settings.trust_shipping_title }}
+              {{ settings.trust_shipping_title | escape }}
             {%- else -%}
-              &#128666; Free Ship
+              Fast Ship
             {%- endif -%}
             &nbsp;&middot;&nbsp;
             {%- if settings.trust_returns_title != blank -%}
-              &#10003; {{ settings.trust_returns_title }}
+              {{ settings.trust_returns_title | escape }}
             {%- else -%}
-              &#10003; 30-Day Returns
+              30-Day Returns
             {%- endif -%}
           </p>
         </div>
@@ -281,7 +282,7 @@ customElements.define('sp-sticky-atc', SpStickyAtc);
   "class": "shopify-section-sticky-atc",
   "settings": [
     { "type": "product", "id": "product", "label": "Product (leave blank to use page product)" },
-    { "type": "text",    "id": "label",   "label": "Button label", "default": "Add to Cart" }
+    { "type": "text",    "id": "label",   "label": "Button label", "info": "Leave blank to use Theme Settings > Trust & Conversion." }
   ],
   "presets": [
     { "name": "Sticky Add to Cart" }

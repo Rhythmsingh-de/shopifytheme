@@ -1,4 +1,4 @@
-<footer class="site-footer" role="contentinfo" {{ section.shopify_attributes }}>
+<footer class="site-footer site-footer--{{ section.settings.layout_style | default: 'columns' }}" role="contentinfo" {{ section.shopify_attributes }}>
   <div class="container">
 
     <!-- Top row: brand + 3 nav columns -->
@@ -111,6 +111,9 @@
         {%- if shop.refund_policy.url -%}
           <a href="{{ shop.refund_policy.url }}">Refund Policy</a>
         {%- endif -%}
+        {%- if settings.show_order_tracking_link and settings.order_tracking_url != blank -%}
+          <a href="{{ settings.order_tracking_url }}">{{ settings.order_tracking_label | default: 'Track Order' | escape }}</a>
+        {%- endif -%}
       </nav>
       <div class="footer-bottom__payments" aria-label="Accepted payment methods">
         {%- for type in shop.enabled_payment_types -%}
@@ -148,6 +151,37 @@
   gap: var(--sp-10);
   padding-bottom: var(--sp-10);
   border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.site-footer--centered .footer-top {
+  grid-template-columns: 1fr;
+  text-align: center;
+  justify-items: center;
+}
+.site-footer--centered .footer-brand__tagline {
+  margin-inline: auto;
+}
+.site-footer--centered .footer-social,
+.site-footer--centered .footer-nav-col__list {
+  justify-content: center;
+  align-items: center;
+}
+.site-footer--centered .footer-bottom {
+  justify-content: center;
+  text-align: center;
+}
+.site-footer--compact {
+  padding-block: var(--sp-8) var(--sp-5);
+}
+.site-footer--compact .footer-top {
+  grid-template-columns: 1fr;
+  gap: var(--sp-5);
+  padding-bottom: var(--sp-5);
+}
+.site-footer--compact .footer-nav-col {
+  display: none;
+}
+.site-footer--compact .footer-trust {
+  padding-block: var(--sp-5);
 }
 @media (max-width: 900px) {
   .footer-top { grid-template-columns: 1fr 1fr; row-gap: var(--sp-8); }
@@ -291,6 +325,11 @@
     { "type": "image_picker", "id": "logo",    "label": "Footer logo (optional, overrides shop name text)" },
     { "type": "text",        "id": "tagline",  "label": "Brand tagline",   "default": "Premium wellness products for you, your home & your pets." },
     { "type": "header", "content": "Design Settings" },
+    { "type": "select", "id": "layout_style", "label": "Footer style", "options": [
+      { "value": "columns", "label": "Columns" },
+      { "value": "centered", "label": "Centered" },
+      { "value": "compact", "label": "Compact" }
+    ], "default": "columns" },
     { "type": "color", "id": "bg_color",       "label": "Background color", "default": "#111111" },
     { "type": "color", "id": "text_color",     "label": "Text color",       "default": "#ffffff" },
     { "type": "header", "content": "Social links" },

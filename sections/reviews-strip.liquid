@@ -1,14 +1,34 @@
-<section class="reviews-strip reveal" style="background:{{ section.settings.bg_color | default: '#ffffff' }};color:{{ section.settings.text_color | default: '#111111' }};">
+{%- liquid
+  assign visible_count = section.settings.visible_count
+  assign autoplay = section.settings.autoplay
+  assign autoplay_interval = section.settings.autoplay_interval
+  assign show_verified = section.settings.show_verified_badge
+  if section.settings.use_global_review_settings
+    assign visible_count = settings.reviews_visible_count | default: 3
+    assign autoplay = settings.reviews_autoplay
+    assign autoplay_interval = settings.reviews_autoplay_interval | default: 4
+    assign show_verified = settings.reviews_show_verified_badge
+  endif
+  assign interval_ms = autoplay_interval | times: 1000
+-%}
+
+<section class="reviews-strip reveal" id="ReviewsStrip-{{ section.id }}" style="background:{{ section.settings.bg_color | default: '#ffffff' }};color:{{ section.settings.text_color | default: '#111111' }};" {{ section.shopify_attributes }}>
   <div class="container">
     
     <div class="reviews-strip__head">
       <h2>{{ section.settings.heading }}</h2>
       {% if section.settings.subtext != blank %}
         <p class="reviews-strip__subtext">{{ section.settings.subtext }}</p>
+      {% elsif settings.reviews_summary_text != blank %}
+        <p class="reviews-strip__subtext">{{ settings.reviews_summary_text | escape }}</p>
       {% endif %}
     </div>
 
-    <div class="reviews-strip__grid">
+    <div class="reviews-strip__grid"
+      data-review-rotator
+      data-visible="{{ visible_count }}"
+      data-autoplay="{{ autoplay }}"
+      data-interval="{{ interval_ms }}">
       {% for block in section.blocks %}
         {% if block.type == 'review' %}
           <div class="review-card reveal" style="transition-delay: {{ forloop.index0 | times: 80 }}ms;" {{ block.shopify_attributes }}>
@@ -30,7 +50,7 @@
               <div class="review-card__author-info">
                 <div class="review-card__author-row">
                   <span class="review-card__author">{{ block.settings.author }}</span>
-                  {% if block.settings.verified %}
+                  {% if block.settings.verified and show_verified %}
                     <svg class="review-card__verified" width="14" height="14" viewBox="0 0 24 24" fill="#0066cc" aria-hidden="true" title="Verified Customer">
                       <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
                     </svg>
@@ -85,6 +105,9 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: var(--sp-6, 24px);
+}
+#ReviewsStrip-{{ section.id }} .reviews-strip__grid > .review-card:nth-child(n+{{ visible_count | plus: 1 }}) {
+  display: none;
 }
 .review-card {
   background: var(--color-surface, #ffffff);
@@ -156,7 +179,42 @@
   margin: 0;
   flex: 1;
 }
+@media (max-width: 640px) {
+  #ReviewsStrip-{{ section.id }} .reviews-strip__grid {
+    grid-template-columns: 1fr;
+  }
+}
 </style>
+
+<script>
+(function() {
+  var root = document.getElementById('ReviewsStrip-{{ section.id }}');
+  if (!root) return;
+  var grid = root.querySelector('[data-review-rotator]');
+  if (!grid) return;
+  var visible = parseInt(grid.dataset.visible, 10) || 3;
+  var autoplay = grid.dataset.autoplay === 'true';
+  var interval = parseInt(grid.dataset.interval, 10) || 4000;
+  var cards = Array.from(grid.querySelectorAll('.review-card'));
+  if (!autoplay || cards.length <= visible) return;
+  if (grid.dataset.intervalId) window.clearInterval(parseInt(grid.dataset.intervalId, 10));
+  var id = window.setInterval(function() {
+    var first = grid.querySelector('.review-card');
+    if (!first) return;
+    first.style.opacity = '0';
+    first.style.transform = 'translateY(10px)';
+    window.setTimeout(function() {
+      first.style.opacity = '';
+      first.style.transform = '';
+      grid.appendChild(first);
+    }, 240);
+  }, interval);
+  grid.dataset.intervalId = String(id);
+  document.addEventListener('shopify:section:unload', function(event) {
+    if (event.target && event.target.contains(root)) window.clearInterval(id);
+  });
+})();
+</script>
 
 {% schema %}
 {
@@ -164,6 +222,11 @@
   "settings": [
     {"type":"text","id":"heading","label":"Heading","default":"Loved by Thousands"},
     {"type":"text","id":"subtext","label":"Subtext","default":"Excellent  ★★★★★  4.8/5 from 2,500+ reviews"},
+    {"type":"checkbox","id":"use_global_review_settings","label":"Use global review settings","default":true},
+    {"type":"range","id":"visible_count","label":"Visible review cards","min":1,"max":3,"step":1,"default":3},
+    {"type":"checkbox","id":"autoplay","label":"Auto-rotate extra reviews","default":true},
+    {"type":"range","id":"autoplay_interval","label":"Rotation interval","min":2,"max":10,"step":1,"default":4,"unit":"s"},
+    {"type":"checkbox","id":"show_verified_badge","label":"Show verified badges","default":true},
     {"type":"header","content":"Design Customization"},
     {"type":"color","id":"bg_color","label":"Background color","default":"#ffffff"},
     {"type":"color","id":"text_color","label":"Text color","default":"#111111"}

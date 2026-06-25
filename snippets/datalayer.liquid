@@ -1,7 +1,12 @@
+{%- liquid
+  assign track_page_views = settings.track_page_views | default: true
+  assign track_ecommerce = settings.track_ecommerce_events | default: true
+  assign track_engagement = settings.track_engagement_events | default: true
+-%}
 {% comment %} DataLayer — Server-side GTM/GA4 event tracking {% endcomment %}
 <script>
 window.dataLayer = window.dataLayer || [];
-{% if request.page_type == 'index' %}
+{% if request.page_type == 'index' and track_page_views %}
 dataLayer.push({
   event: 'page_view',
   page_type: 'home',
@@ -9,7 +14,8 @@ dataLayer.push({
   page_url: '{{ canonical_url }}',
   currency: {{ cart.currency.iso_code | json }}
 });
-{% elsif request.page_type == 'product' %}
+{% elsif request.page_type == 'product' and track_ecommerce %}
+dataLayer.push({ ecommerce: null });
 dataLayer.push({
   event: 'view_item',
   page_type: 'product',
@@ -29,7 +35,8 @@ dataLayer.push({
     }]
   }
 });
-{% elsif request.page_type == 'collection' %}
+{% elsif request.page_type == 'collection' and track_ecommerce %}
+dataLayer.push({ ecommerce: null });
 dataLayer.push({
   event: 'view_item_list',
   page_type: 'collection',
@@ -49,7 +56,8 @@ dataLayer.push({
     ]
   }
 });
-{% elsif request.page_type == 'cart' %}
+{% elsif request.page_type == 'cart' and track_ecommerce %}
+dataLayer.push({ ecommerce: null });
 dataLayer.push({
   event: 'view_cart',
   page_type: 'cart',
@@ -69,13 +77,14 @@ dataLayer.push({
     ]
   }
 });
-{% elsif request.page_type == 'search' %}
+{% elsif request.page_type == 'search' and track_engagement %}
 dataLayer.push({
   event: 'search',
   page_type: 'search',
   search_term: {{ search.terms | json }}
 });
-{% elsif request.page_type == 'customers/order' %}
+{% elsif request.page_type == 'customers/order' and track_ecommerce %}
+dataLayer.push({ ecommerce: null });
 dataLayer.push({
   event: 'purchase',
   page_type: 'order',
@@ -98,7 +107,7 @@ dataLayer.push({
     ]
   }
 });
-{% else %}
+{% elsif track_page_views %}
 dataLayer.push({
   event: 'page_view',
   page_type: {{ request.page_type | json }},
@@ -107,7 +116,7 @@ dataLayer.push({
 });
 {% endif %}
 
-{% if customer %}
+{% if customer and settings.tracking_mode == 'always_on' %}
 dataLayer.push({
   user_id: {{ customer.id | json }},
   user_email_hash: {{ customer.email | sha256 | json }},

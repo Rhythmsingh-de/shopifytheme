@@ -11,6 +11,20 @@
     assign is_sale = true
     assign save_pct = compare | minus: price | times: 100 | divided_by: compare
   endif
+  assign atc_label = section.settings.atc_label | default: settings.conversion_primary_cta_label | default: 'Add to Cart'
+  assign buy_label = section.settings.buy_label | default: settings.conversion_fast_checkout_label | default: settings.conversion_buy_now_label | default: 'Buy Now'
+  assign show_buy_now = section.settings.show_buy_now
+  if settings.conversion_show_fast_checkout == false
+    assign show_buy_now = false
+  endif
+  assign visible_reviews_count = section.settings.visible_reviews_count
+  assign review_slider_cycling = section.settings.enable_review_slider_cycling
+  assign review_slider_interval = section.settings.review_slider_interval
+  if section.settings.use_global_review_settings
+    assign visible_reviews_count = settings.reviews_visible_count | default: 3
+    assign review_slider_cycling = settings.reviews_autoplay
+    assign review_slider_interval = settings.reviews_autoplay_interval | default: 4
+  endif
 -%}
 
 {%- comment -%}LCP preload — hero image is always above fold{%- endcomment -%}
@@ -32,7 +46,7 @@
     {%- endif -%}
   }
 
-  #SingleProductHome-{{ section.id }} .sph-review-cards > .sph-review-card:nth-child(n+{{ section.settings.visible_reviews_count | plus: 1 }}) {
+  #SingleProductHome-{{ section.id }} .sph-review-cards > .sph-review-card:nth-child(n+{{ visible_reviews_count | plus: 1 }}) {
     display: none !important;
   }
 {%- endstyle -%}
@@ -186,13 +200,16 @@
             data-variant-id="{{ fv.id }}"
             data-qty="1"
             aria-label="Add {{ sp.title | escape }} to cart">
-            <span class="atc-btn-text">{{ section.settings.atc_label | default: 'Add to Cart — Order Now' }}</span>
+            <span class="atc-btn-text">{{ atc_label | escape }}</span>
           </button>
-          {%- if section.settings.show_buy_now -%}
+          {%- if show_buy_now -%}
             <a href="/cart/{{ fv.id }}:1"
               class="btn sph__btn-buy">
-              {{ section.settings.buy_label | default: 'Buy Now' }}
+              {{ buy_label | escape }}
             </a>
+          {%- endif -%}
+          {%- if settings.conversion_microcopy != blank -%}
+            <p class="sph__cta-microcopy">{{ settings.conversion_microcopy | escape }}</p>
           {%- endif -%}
         {%- else -%}
           <button class="btn sph__btn-atc" disabled aria-disabled="true">Sold Out</button>
@@ -387,9 +404,9 @@
 
           {%- if section.blocks.size > 0 -%}
             <div class="sph-review-cards"
-              data-cycling="{{ section.settings.enable_review_slider_cycling }}"
-              data-interval="{{ section.settings.review_slider_interval | times: 1000 }}"
-              data-visible="{{ section.settings.visible_reviews_count }}">
+              data-cycling="{{ review_slider_cycling }}"
+              data-interval="{{ review_slider_interval | times: 1000 }}"
+              data-visible="{{ visible_reviews_count }}">
               {%- for block in section.blocks -%}
                 {%- if block.type == 'review' -%}
                   <div class="sph-review-card" {{ block.shopify_attributes }}>
@@ -631,6 +648,14 @@
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
+}
+.sph__cta-microcopy {
+  width: 100%;
+  margin: -2px 0 0;
+  color: var(--color-text-muted, #666);
+  font-size: var(--text-xs, 12px);
+  font-weight: 700;
+  line-height: 1.45;
 }
 .sph__btn-atc {
   flex: 1;
@@ -1300,9 +1325,9 @@ details-accordion[open] .sph-description__chevron,
     { "type": "checkbox", "id": "show_sale_badge", "label": "Show sale badge", "default": true },
     { "type": "header", "content": "Checkout & Payments" },
     { "type": "checkbox", "id": "show_qty_selector", "label": "Show quantity selector", "default": true },
-    { "type": "text",    "id": "atc_label",  "label": "Add to Cart label", "default": "Add to Cart \u2014 Order Now" },
+    { "type": "text",    "id": "atc_label",  "label": "Add to Cart label", "info": "Leave blank to use Theme Settings > Trust & Conversion." },
     { "type": "checkbox", "id": "show_buy_now", "label": "Show Buy Now button", "default": true },
-    { "type": "text",    "id": "buy_label",  "label": "Buy Now label",     "default": "Buy Now" },
+    { "type": "text",    "id": "buy_label",  "label": "Buy Now label",     "info": "Leave blank to use Theme Settings > Trust & Conversion." },
     { "type": "checkbox", "id": "show_payment_icons", "label": "Show accepted payment icons", "default": true },
     { "type": "header", "content": "Trust strip" },
     { "type": "checkbox", "id": "show_trust_strip", "label": "Show trust strip", "default": true },
@@ -1346,9 +1371,10 @@ details-accordion[open] .sph-description__chevron,
     { "type": "text", "id": "reviews_title", "label": "Reviews section title", "default": "Reviews" },
     { "type": "text", "id": "faq_title",     "label": "FAQ section title",     "default": "FAQ" },
     { "type": "header", "content": "Reviews Slider Settings" },
+    { "type": "checkbox", "id": "use_global_review_settings", "label": "Use global review settings", "default": true },
     { "type": "checkbox", "id": "enable_review_slider_cycling", "label": "Enable review slider cycling", "default": true },
-    { "type": "range", "id": "review_slider_interval", "label": "Review slider interval (seconds)", "min": 2, "max": 10, "step": 0.5, "default": 3.5 },
-    { "type": "range", "id": "visible_reviews_count", "label": "Visible reviews count", "min": 1, "max": 6, "step": 1, "default": 3 },
+    { "type": "range", "id": "review_slider_interval", "label": "Review slider interval (seconds)", "min": 2, "max": 10, "step": 1, "default": 4 },
+    { "type": "range", "id": "visible_reviews_count", "label": "Visible reviews count", "min": 1, "max": 3, "step": 1, "default": 3 },
     { "type": "header", "content": "Section Spacing & Styles" },
     { "type": "color", "id": "bg_color_override", "label": "Section background override" },
     { "type": "color", "id": "text_color_override", "label": "Section text color override" },

@@ -54,6 +54,14 @@ window.BLC.trackingMode = {{ tracking_mode | json }};
   window.BLC.acceptCookies = function() {
     writeConsent('accepted');
     setShopifyConsent(true);
+    if (typeof gtag === 'function') {
+      gtag('consent', 'update', {
+        ad_storage: 'granted',
+        analytics_storage: 'granted',
+        ad_user_data: 'granted',
+        ad_personalization: 'granted'
+      });
+    }
     if (window.dataLayer) window.dataLayer.push({ event: 'cookie_consent', consent_choice: 'accepted', consent_timestamp: new Date().toISOString() });
     var el = document.getElementById('cookie-consent');
     if (el) hideBanner(el);
@@ -62,6 +70,14 @@ window.BLC.trackingMode = {{ tracking_mode | json }};
   window.BLC.declineCookies = function() {
     writeConsent('declined');
     setShopifyConsent(false);
+    if (typeof gtag === 'function') {
+      gtag('consent', 'update', {
+        ad_storage: 'denied',
+        analytics_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied'
+      });
+    }
     if (window.dataLayer) window.dataLayer.push({ event: 'cookie_consent', consent_choice: 'declined', consent_timestamp: new Date().toISOString() });
     var el = document.getElementById('cookie-consent');
     if (el) hideBanner(el);
