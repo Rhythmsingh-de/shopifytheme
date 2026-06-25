@@ -25,13 +25,64 @@
         "text_color": "#111111"
       }
     },
-    "1782411734bfdb7bd3": {
-      "type": "_blocks",
-      "settings": {}
+    "hero_4TB6Ft": {
+      "type": "hero",
+      "name": "Hero Banner",
+      "settings": {
+        "layout": "split",
+        "media_position": "left",
+        "best_seller_text": "BEST SELLER",
+        "best_seller_stars": true,
+        "eyebrow": "New Weekly Drop",
+        "heading": "This Week's Drop",
+        "subheading": "Premium products designed for comfort, beauty, recovery, and everyday luxury.",
+        "show_product_description": false,
+        "product_description_words": 28,
+        "trust_text": "Free shipping $75+ · 30-day returns",
+        "show_secure_payment_badge": false,
+        "secure_payment_label": "Secure Payment",
+        "secure_payment_text": "SSL encrypted checkout",
+        "hero_product": "outdoor-large-capacity-messenger-bag-men-chest-bag-simple-fashion-men-bag-shoulder-bag",
+        "show_hover_image": false,
+        "show_price": false,
+        "show_variant_picker": false,
+        "show_quantity_selector": false,
+        "show_sale_ribbon": false,
+        "sale_stripe_design": "rolling_strip",
+        "sale_stripe_orientation": "left",
+        "show_countdown": true,
+        "countdown_label": "Offer ends in",
+        "countdown_end": "",
+        "show_buttons": false,
+        "cta_position": "below",
+        "cta_button_mode": "checkout_permalink",
+        "hero_checkout_label": "Buy Now",
+        "hero_cart_label": "Add to Cart",
+        "cta1_label": "Buy Now",
+        "cta1_link": "",
+        "cta1_icon": true,
+        "cta1_bg": "#1a1a1a",
+        "cta1_color": "#ffffff",
+        "cta2_label": "Learn More",
+        "cta2_link": "",
+        "split_media_bg": "#FFFFFF",
+        "split_content_bg": "#faf9f7",
+        "heading_color": "#111111",
+        "subheading_color": "#555555",
+        "accent_color": "#1d6b44",
+        "offer_badge_bg": "rgba(255,255,255,0.12)",
+        "offer_badge_color": "#ffffff",
+        "color_scheme": "dark",
+        "bg_color": "#0d2318",
+        "show_overlay": true,
+        "overlay_opacity": 5,
+        "min_height": 600,
+        "content_align": "left"
+      }
     }
   },
   "order": [
     "newsletter_bar_r6KAXY",
-    "1782411734bfdb7bd3"
+    "hero_4TB6Ft"
   ]
 }
