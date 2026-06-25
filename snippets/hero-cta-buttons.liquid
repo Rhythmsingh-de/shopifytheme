@@ -14,7 +14,7 @@
   assign cart_url = blank
 
   if cta_variant != blank
-    assign checkout_url = '/cart/' | append: cta_variant.id | append: ':1'
+    assign checkout_url = routes.cart_url | append: '/' | append: cta_variant.id | append: ':1'
     assign cart_url = checkout_url | append: '?storefront=true'
   endif
 -%}

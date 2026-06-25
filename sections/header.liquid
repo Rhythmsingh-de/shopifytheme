@@ -6,10 +6,10 @@
   assign header_cta_link = section.settings.cta_link
   assign header_cta_destination = blank
   if header_cta_action == 'checkout_permalink' and header_cta_variant != blank and header_cta_variant.available
-    assign header_cta_link = '/cart/' | append: header_cta_variant.id | append: ':1'
+    assign header_cta_link = routes.cart_url | append: '/' | append: header_cta_variant.id | append: ':1'
     assign header_cta_destination = 'checkout'
   elsif header_cta_action == 'cart_permalink' and header_cta_variant != blank and header_cta_variant.available
-    assign header_cta_link = '/cart/' | append: header_cta_variant.id | append: ':1?storefront=true'
+    assign header_cta_link = routes.cart_url | append: '/' | append: header_cta_variant.id | append: ':1?storefront=true'
     assign header_cta_destination = 'cart'
   elsif header_cta_link == blank and settings.storefront_mode == 'single_product' and settings.primary_product != blank
     assign header_cta_link = settings.primary_product.url

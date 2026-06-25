@@ -189,7 +189,7 @@
               </button>
             {%- endif -%}
             {%- if show_buy_now -%}
-              <a href="/cart/{{ first_variant.id }}:1{{ fast_checkout_suffix }}"
+              <a href="{{ routes.cart_url }}/{{ first_variant.id }}:1{{ fast_checkout_suffix }}"
                 class="btn btn--ghost btn--full btn--lg product-fast-checkout"
                 data-buy-now
                 data-checkout-destination="{{ fast_checkout_destination }}"

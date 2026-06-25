@@ -72,7 +72,7 @@
             {%- endif -%}
             {%- if show_sticky_buy -%}
               <a
-                href="/cart/{{ fv.id }}:1{{ fast_checkout_suffix }}"
+                href="{{ routes.cart_url }}/{{ fv.id }}:1{{ fast_checkout_suffix }}"
                 class="btn sticky-atc__fast-checkout"
                 data-buy-now
                 data-checkout-destination="{{ fast_checkout_destination }}"
@@ -327,7 +327,7 @@ class SpStickyAtc extends HTMLElement {
       buy.dataset.variantId = String(variant.id);
       buy.href = window.BLC && typeof window.BLC.checkoutHref === 'function'
         ? window.BLC.checkoutHref(variant.id, 1, buy)
-        : '/cart/' + variant.id + ':1' + (buy.dataset.checkoutDestination === 'cart' ? '?storefront=true' : '');
+        : (window.routes ? window.routes.cart_url : '/cart') + '/' + variant.id + ':1' + (buy.dataset.checkoutDestination === 'cart' ? '?storefront=true' : '');
       buy.toggleAttribute('aria-disabled', !variant.available);
     }
   }

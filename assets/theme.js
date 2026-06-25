@@ -400,12 +400,33 @@
   /* ─────────── PRODUCT THUMBNAILS ─────────── */
   document.addEventListener('click',function(e){
     var thumb=e.target.closest('.product-media-thumb, .sph__thumb');if(!thumb)return;
-    var stack=thumb.closest('.product-media-stack, .sph__media');if(!stack)return;
+    var stack=thumb.closest('.product-media-stack, .sph__media, .blc-hero__split-media');if(!stack)return;
     var main=qs('#ProductMainImage, #SphMainImg, .sph__img',stack);if(!main)return;
     var img=thumb.querySelector('img');if(!img)return;
     main.src=img.src.replace(/_\d+x\d+/,'_900x900').replace(/_\d+x\./,'_900x.');
     qsa('.product-media-thumb, .sph__thumb',stack).forEach(function(t){t.classList.remove('is-active');});
     thumb.classList.add('is-active');
+  });
+
+  /* ─────────── PRODUCT NAVIGATION ARROWS ─────────── */
+  document.addEventListener('click',function(e){
+    var nav=e.target.closest('[data-sph-nav]');if(!nav)return;
+    var direction=nav.getAttribute('data-sph-nav');
+    var stack=nav.closest('.product-media-stack, .sph__media, .blc-hero__split-media');if(!stack)return;
+    var thumbs=qsa('.product-media-thumb, .sph__thumb',stack);if(!thumbs.length)return;
+    var activeIdx=-1;
+    for(var i=0;i<thumbs.length;i++){
+      if(thumbs[i].classList.contains('is-active')){activeIdx=i;break;}
+    }
+    if(activeIdx===-1)activeIdx=0;
+    var newIdx;
+    if(direction==='next'){
+      newIdx=(activeIdx+1)%thumbs.length;
+    }else{
+      newIdx=(activeIdx-1+thumbs.length)%thumbs.length;
+    }
+    var targetThumb=thumbs[newIdx];
+    if(targetThumb)targetThumb.click();
   });
 
   /* ─────────── ACCORDION ─────────── */
@@ -750,5 +771,12 @@
       }
       if(window.dataLayer)window.dataLayer.push({event:'cookie_consent', consent_choice:'declined'});
     }
+  });
+
+  /* Listen to cart updates dispatched by other components (e.g. product-form) */
+  window.addEventListener('cart:updated', function() {
+    if (typeof _updateCartCount === 'function') _updateCartCount();
+    if (typeof refreshCartDrawer === 'function') refreshCartDrawer();
+    if (typeof openCartDrawer === 'function') openCartDrawer();
   });
 })();

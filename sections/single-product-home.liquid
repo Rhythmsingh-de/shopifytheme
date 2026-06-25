@@ -93,7 +93,7 @@
 
 
 <section class="sph" id="SingleProductHome-{{ section.id }}" data-product-detail {% if sp != blank %}data-variants="{{ sp.variants | json | escape }}"{% endif %} {{ section.shopify_attributes }}>
-  <div class="sph__inner container">
+  <div class="sph__inner sph__inner--media-{{ section.settings.media_position | default: 'left' }} container">
 
     <div class="sph__media" id="SphMedia">
       <div class="sph__media-main">
@@ -136,6 +136,15 @@
             style: section.settings.sale_stripe_design, 
             position: section.settings.sale_stripe_orientation 
           -%}
+        {%- endif -%}
+
+        {%- if sp != blank and sp.images.size > 1 -%}
+          <button class="sph__media-nav sph__media-nav--prev" data-sph-nav="prev" aria-label="Previous image">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <button class="sph__media-nav sph__media-nav--next" data-sph-nav="next" aria-label="Next image">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
         {%- endif -%}
       </div>
 
@@ -232,104 +241,116 @@
         {%- endif -%}
       </div>
 
-      <div class="sph__btns">
-        {%- comment -%}Scarcity text from global settings{%- endcomment -%}
-        {%- if settings.weekly_scarcity_text != blank -%}
-          <p class="sph__scarcity" role="status">
-            <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><circle cx="5" cy="5" r="5" fill="#e8260d"/></svg>
-            {{ settings.weekly_scarcity_text }}
-          </p>
-        {%- endif -%}
+      {%- capture cta_buttons_html -%}
+        <div class="sph__btns">
+          {%- comment -%}Scarcity text from global settings{%- endcomment -%}
+          {%- if settings.weekly_scarcity_text != blank -%}
+            <p class="sph__scarcity" role="status">
+              <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><circle cx="5" cy="5" r="5" fill="#e8260d"/></svg>
+              {{ settings.weekly_scarcity_text }}
+            </p>
+          {%- endif -%}
 
-        {%- if sp != blank and fv.available -%}
-          {%- if show_cart_button -%}
-            <button
-              class="btn sph__btn-atc sph__btn-atc--pulse"
-              data-add-to-cart
-              data-variant-id="{{ fv.id }}"
-              data-qty="1"
-              aria-label="Add {{ sp.title | escape }} to cart">
-              <span class="atc-btn-text">{{ atc_label | escape }}</span>
-            </button>
+          {%- if sp != blank and fv.available -%}
+            {%- if show_cart_button -%}
+              <button
+                class="btn sph__btn-atc sph__btn-atc--pulse"
+                data-add-to-cart
+                data-variant-id="{{ fv.id }}"
+                data-qty="1"
+                aria-label="Add {{ sp.title | escape }} to cart">
+                <span class="atc-btn-text">{{ atc_label | escape }}</span>
+              </button>
+            {%- endif -%}
+            {%- if show_buy_now -%}
+              <a href="{{ routes.cart_url }}/{{ fv.id }}:1{{ fast_checkout_suffix }}"
+                class="btn sph__btn-buy"
+                data-buy-now
+                data-checkout-destination="{{ fast_checkout_destination }}"
+                data-variant-id="{{ fv.id }}">
+                {{ buy_label | escape }}
+              </a>
+            {%- endif -%}
+            {%- if settings.conversion_microcopy != blank -%}
+              <p class="sph__cta-microcopy">{{ settings.conversion_microcopy | escape }}</p>
+            {%- endif -%}
+          {%- else -%}
+            <button class="btn sph__btn-atc" disabled aria-disabled="true">Sold Out</button>
           {%- endif -%}
-          {%- if show_buy_now -%}
-            <a href="/cart/{{ fv.id }}:1{{ fast_checkout_suffix }}"
-              class="btn sph__btn-buy"
-              data-buy-now
-              data-checkout-destination="{{ fast_checkout_destination }}"
-              data-variant-id="{{ fv.id }}">
-              {{ buy_label | escape }}
-            </a>
-          {%- endif -%}
-          {%- if settings.conversion_microcopy != blank -%}
-            <p class="sph__cta-microcopy">{{ settings.conversion_microcopy | escape }}</p>
-          {%- endif -%}
-        {%- else -%}
-          <button class="btn sph__btn-atc" disabled aria-disabled="true">Sold Out</button>
-        {%- endif -%}
-      </div>
-
-      {%- if section.settings.show_payment_icons -%}
-        <div class="sph__payment-icons">
-          <span class="sph__payment-icons-label">We accept:</span>
-          {%- for type in shop.enabled_payment_types -%}
-            {{ type | payment_type_svg_tag: class: 'sph__payment-icon' }}
-          {%- endfor -%}
         </div>
-      {%- endif -%}
 
-      <div class="sph__options-row">
-        {%- if section.settings.show_qty_selector -%}
-          <div class="sph__qty-wrap">
-            <p class="sph__opt-label">Quantity</p>
-            <div class="sph__qty" data-qty-stepper>
-              <button class="sph__qty-btn" data-qty-minus aria-label="Decrease">&#8722;</button>
-              <input class="sph__qty-val" type="number" value="1" min="1" max="99"
-                readonly aria-label="Quantity">
-              <button class="sph__qty-btn" data-qty-plus aria-label="Increase">&#43;</button>
-            </div>
+        {%- if section.settings.show_payment_icons -%}
+          <div class="sph__payment-icons">
+            <span class="sph__payment-icons-label">We accept:</span>
+            {%- for type in shop.enabled_payment_types -%}
+              {{ type | payment_type_svg_tag: class: 'sph__payment-icon' }}
+            {%- endfor -%}
           </div>
         {%- endif -%}
+      {%- endcapture -%}
 
-        {%- if sp != blank and sp.has_only_default_variant == false -%}
-          {%- for opt in sp.options_with_values -%}
-            <div class="product-option">
-              <p class="sph__opt-label">
-                {{ opt.name }}:
-                <strong id="selected-{{ opt.name | handleize }}">{{ opt.selected_value }}</strong>
-              </p>
-
-              {%- if opt.name == 'Color' or opt.name == 'Colour' -%}
-                <div class="product-option__swatches" role="radiogroup" aria-label="{{ opt.name }}">
-                  {%- for value in opt.values -%}
-                    <button
-                      class="option-swatch sph__swatch{% if value == opt.selected_value %} is-active{% endif %}"
-                      data-option-name="{{ opt.name | escape }}"
-                      data-option-value="{{ value | escape }}"
-                      style="background-color: {{ value | downcase | replace: ' ', '' }};"
-                      aria-pressed="{% if value == opt.selected_value %}true{% else %}false{% endif %}"
-                      aria-label="{{ value | escape }}">
-                    </button>
-                  {%- endfor -%}
-                </div>
-              {%- else -%}
-                <div class="product-option__swatches product-option__swatches--pills" role="radiogroup" aria-label="{{ opt.name }}">
-                  {%- for value in opt.values -%}
-                    <button
-                      class="option-swatch sph__pill{% if value == opt.selected_value %} is-active{% endif %}"
-                      data-option-name="{{ opt.name | escape }}"
-                      data-option-value="{{ value | escape }}"
-                      aria-pressed="{% if value == opt.selected_value %}true{% else %}false{% endif %}"
-                      aria-label="{{ value | escape }}">
-                      {{ value }}
-                    </button>
-                  {%- endfor -%}
-                </div>
-              {%- endif -%}
+      {%- capture options_html -%}
+        <div class="sph__options-row">
+          {%- if section.settings.show_qty_selector -%}
+            <div class="sph__qty-wrap">
+              <p class="sph__opt-label">Quantity</p>
+              <div class="sph__qty" data-qty-stepper>
+                <button class="sph__qty-btn" data-qty-minus aria-label="Decrease">&#8722;</button>
+                <input class="sph__qty-val" type="number" value="1" min="1" max="99"
+                  readonly aria-label="Quantity">
+                <button class="sph__qty-btn" data-qty-plus aria-label="Increase">&#43;</button>
+              </div>
             </div>
-          {%- endfor -%}
-        {%- endif -%}
-      </div>
+          {%- endif -%}
+
+          {%- if sp != blank and sp.has_only_default_variant == false -%}
+            {%- for opt in sp.options_with_values -%}
+              <div class="product-option">
+                <p class="sph__opt-label">
+                  {{ opt.name }}:
+                  <strong id="selected-{{ opt.name | handleize }}">{{ opt.selected_value }}</strong>
+                </p>
+
+                {%- if opt.name == 'Color' or opt.name == 'Colour' -%}
+                  <div class="product-option__swatches" role="radiogroup" aria-label="{{ opt.name }}">
+                    {%- for value in opt.values -%}
+                      <button
+                        class="option-swatch sph__swatch{% if value == opt.selected_value %} is-active{% endif %}"
+                        data-option-name="{{ opt.name | escape }}"
+                        data-option-value="{{ value | escape }}"
+                        style="background-color: {{ value | downcase | replace: ' ', '' }};"
+                        aria-pressed="{% if value == opt.selected_value %}true{% else %}false{% endif %}"
+                        aria-label="{{ value | escape }}">
+                      </button>
+                    {%- endfor -%}
+                  </div>
+                {%- else -%}
+                  <div class="product-option__swatches product-option__swatches--pills" role="radiogroup" aria-label="{{ opt.name }}">
+                    {%- for value in opt.values -%}
+                      <button
+                        class="option-swatch sph__pill{% if value == opt.selected_value %} is-active{% endif %}"
+                        data-option-name="{{ opt.name | escape }}"
+                        data-option-value="{{ value | escape }}"
+                        aria-pressed="{% if value == opt.selected_value %}true{% else %}false{% endif %}"
+                        aria-label="{{ value | escape }}">
+                        {{ value }}
+                      </button>
+                    {%- endfor -%}
+                  </div>
+                {%- endif -%}
+              </div>
+            {%- endfor -%}
+          {%- endif -%}
+        </div>
+      {%- endcapture -%}
+
+      {%- if section.settings.cta_position == 'above' -%}
+        {{ cta_buttons_html }}
+        {{ options_html }}
+      {%- else -%}
+        {{ options_html }}
+        {{ cta_buttons_html }}
+      {%- endif -%}
 
       {%- if section.settings.show_trust_strip -%}
         <div class="sph__trust" aria-label="Guarantees">
@@ -538,8 +559,95 @@
   gap: clamp(32px, 4vw, 80px);
   align-items: start;
 }
+@media (min-width: 769px) {
+  .sph__inner--media-left {
+    grid-template-columns: 1fr 1fr;
+  }
+  .sph__inner--media-right {
+    grid-template-columns: 1fr 1fr;
+  }
+  .sph__inner--media-right .sph__media {
+    order: 2;
+  }
+  .sph__inner--media-right .sph__info {
+    order: 1;
+  }
+  .sph__inner--media-top {
+    grid-template-columns: 1fr;
+  }
+  .sph__inner--media-top .sph__media {
+    order: 1;
+    max-width: 768px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  .sph__inner--media-top .sph__info {
+    order: 2;
+    max-width: 768px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  .sph__inner--media-bottom {
+    grid-template-columns: 1fr;
+  }
+  .sph__inner--media-bottom .sph__media {
+    order: 2;
+    max-width: 768px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  .sph__inner--media-bottom .sph__info {
+    order: 1;
+    max-width: 768px;
+    margin: 0 auto;
+    width: 100%;
+  }
+}
 @media (max-width: 768px) {
   .sph__inner { grid-template-columns: 1fr; }
+}
+
+/* ── Gallery Nav Arrows ── */
+.sph__media-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  color: #111;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 15;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.sph__media-nav:hover {
+  background: #ffffff;
+  transform: translateY(-50%) scale(1.05);
+}
+.sph__media-nav:active {
+  transform: translateY(-50%) scale(0.95);
+}
+.sph__media-nav--prev {
+  left: 12px;
+}
+.sph__media-nav--next {
+  right: 12px;
+}
+.sph__media-nav svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+.sph__media-nav::after {
+  content: '';
+  position: absolute;
+  top: -4px; left: -4px; right: -4px; bottom: -4px;
 }
 
 /* ── Sticky image ── */
@@ -1395,6 +1503,14 @@ details-accordion[open] .sph-description__chevron,
       ],
       "default": "follow_global" },
     { "type": "product", "id": "product", "label": "Product to feature" },
+    { "type": "select", "id": "media_position", "label": "Media position (Desktop)",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "right", "label": "Right" },
+        { "value": "top", "label": "Top (Vertical stacked)" },
+        { "value": "bottom", "label": "Bottom (Vertical stacked)" }
+      ],
+      "default": "left" },
     { "type": "image_picker", "id": "fallback_image", "label": "Fallback image (if no product selected)" },
     { "type": "checkbox", "id": "show_hover_image", "label": "Show alternate image on hover", "default": true },
     { "type": "header", "content": "Hero text" },
@@ -1421,6 +1537,12 @@ details-accordion[open] .sph-description__chevron,
       ],
       "default": "left" },
     { "type": "header", "content": "Checkout & Payments" },
+    { "type": "select", "id": "cta_position", "label": "CTA buttons position",
+      "options": [
+        { "value": "above", "label": "Above variant options" },
+        { "value": "below", "label": "Below variant options (Default)" }
+      ],
+      "default": "below" },
     { "type": "checkbox", "id": "show_qty_selector", "label": "Show quantity selector", "default": true },
     { "type": "text",    "id": "atc_label",  "label": "Add to Cart label", "info": "Leave blank to use Theme Settings > Trust & Conversion." },
     { "type": "checkbox", "id": "show_buy_now", "label": "Show Buy Now button", "default": true },

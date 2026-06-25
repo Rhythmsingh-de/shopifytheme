@@ -146,29 +146,42 @@
 
   {%- else -%}
     {%- comment -%}Split layout{%- endcomment -%}
-    <div class="blc-hero__split {% if section.settings.media_position == 'right' %}blc-hero__split--media-right{% endif %}">
+    <div class="blc-hero__split blc-hero__split--media-{{ section.settings.media_position | default: 'right' }}">
 
       <div class="blc-hero__split-media" style="background:{{ section.settings.split_media_bg | default: '#0d2318' }}">
         {%- if section.settings.bg_image != blank -%}
-          <img
-            src="{{ section.settings.bg_image | image_url: width: 900 }}"
-            alt="{{ section.settings.bg_image.alt | default: 'Product image' | escape }}"
-            width="900" height="1100"
-            loading="eager" decoding="async"
-            class="blc-hero__split-img">
+          <div class="sph__media-main" style="width: 100%; height: 100%; position: relative;">
+            <img
+              src="{{ section.settings.bg_image | image_url: width: 900 }}"
+              alt="{{ section.settings.bg_image.alt | default: 'Product image' | escape }}"
+              width="900" height="1100"
+              loading="eager" decoding="async"
+              class="blc-hero__split-img">
+          </div>
         {%- elsif hero_product != blank and hero_product.featured_image != blank -%}
           {%- assign prod_img_alt = hero_product.featured_image.alt | default: hero_product.title | escape -%}
-          <img
-            src="{{ hero_product.featured_image | image_url: width: 900 }}"
-            srcset="{{ hero_product.featured_image | image_url: width: 450 }} 450w, {{ hero_product.featured_image | image_url: width: 900 }} 900w, {{ hero_product.featured_image | image_url: width: 1200 }} 1200w"
-            sizes="(max-width: 768px) 100vw, 50vw"
-            width="900"
-            height="1100"
-            loading="eager"
-            decoding="async"
-            class="blc-hero__split-img"
-            alt="{{ prod_img_alt }}"
-            data-main-image>
+          <div class="sph__media-main" style="width: 100%; height: 100%; position: relative;">
+            <img
+              src="{{ hero_product.featured_image | image_url: width: 900 }}"
+              srcset="{{ hero_product.featured_image | image_url: width: 450 }} 450w, {{ hero_product.featured_image | image_url: width: 900 }} 900w, {{ hero_product.featured_image | image_url: width: 1200 }} 1200w"
+              sizes="(max-width: 768px) 100vw, 50vw"
+              width="900"
+              height="1100"
+              loading="eager"
+              decoding="async"
+              class="blc-hero__split-img sph__img"
+              alt="{{ prod_img_alt }}"
+              data-main-image>
+
+            {%- if hero_product.images.size > 1 -%}
+              <button class="sph__media-nav sph__media-nav--prev" data-sph-nav="prev" aria-label="Previous image">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+              </button>
+              <button class="sph__media-nav sph__media-nav--next" data-sph-nav="next" aria-label="Next image">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+            {%- endif -%}
+          </div>
         {%- else -%}
           <div class="blc-hero__split-placeholder">
             {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
@@ -216,6 +229,22 @@
                   </div>
                 </div>
               {%- endif -%}
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+
+        {%- if hero_product != blank and hero_product.images.size > 1 -%}
+          <div class="sph__thumbs hero__thumbs" role="list" aria-label="Product images">
+            {%- for img in hero_product.images limit: 5 -%}
+              <button
+                class="sph__thumb{% if forloop.first %} is-active{% endif %}"
+                data-sph-thumb
+                data-src="{{ img | image_url: width: 900 }}"
+                aria-label="View image {{ forloop.index }}"
+                role="listitem">
+                {%- assign thumb_alt = img.alt | default: hero_product.title | escape -%}
+                {{ img | image_url: width: 120 | image_tag: widths: '60,120', loading: 'lazy', decoding: 'async', width: 60, height: 60, alt: thumb_alt }}
+              </button>
             {%- endfor -%}
           </div>
         {%- endif -%}
@@ -267,32 +296,44 @@
             </div>
           {%- endif -%}
 
-          {%- render 'hero-product-controls',
-            product: hero_product,
-            variant: hero_fv,
-            show_options: section.settings.show_variant_picker,
-            show_quantity: section.settings.show_quantity_selector
-          -%}
+          {%- capture product_controls -%}
+            {%- render 'hero-product-controls',
+              product: hero_product,
+              variant: hero_fv,
+              show_options: section.settings.show_variant_picker,
+              show_quantity: section.settings.show_quantity_selector
+            -%}
+          {%- endcapture -%}
 
-          {%- if section.settings.show_buttons -%}
-            <div class="blc-hero__btns reveal">
-              {%- capture hero_primary_style -%}background:{{ section.settings.cta1_bg | default: '#1a1a1a' }};color:{{ section.settings.cta1_color | default: '#ffffff' }}{%- endcapture -%}
-              {%- render 'hero-cta-buttons',
-                mode: section.settings.cta_button_mode,
-                product: hero_product,
-                variant: hero_fv,
-                primary_label: section.settings.cta1_label,
-                secondary_label: section.settings.cta2_label,
-                cart_label: section.settings.hero_cart_label,
-                checkout_label: section.settings.hero_checkout_label,
-                primary_link: hero_cta_primary,
-                secondary_link: hero_cta_secondary,
-                primary_class: 'btn btn--hero-primary-dark',
-                secondary_class: 'btn btn--hero-ghost-dark',
-                primary_style: hero_primary_style,
-                show_icon: section.settings.cta1_icon
-              -%}
-            </div>
+          {%- capture cta_buttons -%}
+            {%- if section.settings.show_buttons -%}
+              <div class="blc-hero__btns reveal">
+                {%- capture hero_primary_style -%}background:{{ section.settings.cta1_bg | default: '#1a1a1a' }};color:{{ section.settings.cta1_color | default: '#ffffff' }}{%- endcapture -%}
+                {%- render 'hero-cta-buttons',
+                  mode: section.settings.cta_button_mode,
+                  product: hero_product,
+                  variant: hero_fv,
+                  primary_label: section.settings.cta1_label,
+                  secondary_label: section.settings.cta2_label,
+                  cart_label: section.settings.hero_cart_label,
+                  checkout_label: section.settings.hero_checkout_label,
+                  primary_link: hero_cta_primary,
+                  secondary_link: hero_cta_secondary,
+                  primary_class: 'btn btn--hero-primary-dark',
+                  secondary_class: 'btn btn--hero-ghost-dark',
+                  primary_style: hero_primary_style,
+                  show_icon: section.settings.cta1_icon
+                -%}
+              </div>
+            {%- endif -%}
+          {%- endcapture -%}
+
+          {%- if section.settings.cta_position == 'above' -%}
+            {{ cta_buttons }}
+            {{ product_controls }}
+          {%- else -%}
+            {{ product_controls }}
+            {{ cta_buttons }}
           {%- endif -%}
 
           {%- render 'hero-reassurance',
@@ -362,9 +403,131 @@
 
 /* Split */
 .blc-hero--split { min-height: clamp(480px, 70vh, 820px); }
-.blc-hero__split { display: grid; grid-template-columns: 1fr 1fr; min-height: inherit; }
+.blc-hero__split { display: grid; min-height: inherit; }
 
-.blc-hero__split-media { position: relative; overflow: hidden; }
+.blc-hero__split--media-left {
+  grid-template-columns: 1fr 1fr;
+}
+.blc-hero__split--media-right {
+  grid-template-columns: 1fr 1fr;
+}
+@media (min-width: 769px) {
+  .blc-hero__split--media-right .blc-hero__split-media {
+    order: 2;
+  }
+  .blc-hero__split--media-right .blc-hero__split-content {
+    order: 1;
+  }
+  .blc-hero__split--media-top {
+    grid-template-columns: 1fr;
+  }
+  .blc-hero__split--media-top .blc-hero__split-media {
+    order: 1;
+    max-height: 480px;
+    aspect-ratio: 21 / 9;
+  }
+  .blc-hero__split--media-top .blc-hero__split-content {
+    order: 2;
+  }
+  .blc-hero__split--media-bottom {
+    grid-template-columns: 1fr;
+  }
+  .blc-hero__split--media-bottom .blc-hero__split-media {
+    order: 2;
+    max-height: 480px;
+    aspect-ratio: 21 / 9;
+  }
+  .blc-hero__split--media-bottom .blc-hero__split-content {
+    order: 1;
+  }
+}
+
+.blc-hero__split-media {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.blc-hero__split-media .sph__media-main {
+  flex-grow: 1;
+  position: relative;
+  overflow: hidden;
+}
+.blc-hero__split-media .sph__media-main img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.blc-hero__split-media .sph__thumbs {
+  display: flex;
+  gap: 8px;
+  margin: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.blc-hero__split-media .sph__thumb {
+  width: 50px;
+  height: 50px;
+  border-radius: var(--radius-sm, 4px);
+  overflow: hidden;
+  border: 2px solid transparent;
+  transition: border-color 0.18s ease;
+  flex-shrink: 0;
+  cursor: pointer;
+  background: none;
+  padding: 0;
+}
+.blc-hero__split-media .sph__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.blc-hero__split-media .sph__thumb.is-active,
+.blc-hero__split-media .sph__thumb:hover {
+  border-color: #ffffff;
+}
+.blc-hero__split-media .sph__media-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  color: #111;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 15;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.blc-hero__split-media .sph__media-nav:hover {
+  background: #ffffff;
+  transform: translateY(-50%) scale(1.05);
+}
+.blc-hero__split-media .sph__media-nav:active {
+  transform: translateY(-50%) scale(0.95);
+}
+.blc-hero__split-media .sph__media-nav--prev {
+  left: 12px;
+}
+.blc-hero__split-media .sph__media-nav--next {
+  right: 12px;
+}
+.blc-hero__split-media .sph__media-nav svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+.blc-hero__split-media .sph__media-nav::after {
+  content: '';
+  position: absolute;
+  top: -4px; left: -4px; right: -4px; bottom: -4px;
+}
+
 .blc-hero__split-img {
   width: 100%; height: 100%;
   object-fit: cover; object-position: center top;
@@ -737,19 +900,20 @@
 .blc-hero--light .blc-hero__trust { color: var(--color-text-muted); }
 .blc-hero__trust--split { color: var(--color-text-faint); }
 
-@media (min-width: 769px) {
-  .blc-hero__split--media-right .blc-hero__split-media {
-    order: 2;
-  }
-  .blc-hero__split--media-right .blc-hero__split-content {
-    order: 1;
-  }
-}
-
 @media (max-width: 768px) {
   .blc-hero__split {
     grid-template-columns: 1fr;
-    grid-template-rows: clamp(280px, 50vw, 420px) auto;
+  }
+  .blc-hero__split-media {
+    min-height: clamp(280px, 50vw, 420px);
+  }
+  .blc-hero__split--media-bottom .blc-hero__split-media,
+  .blc-hero__split--media-right .blc-hero__split-media {
+    order: 2;
+  }
+  .blc-hero__split--media-bottom .blc-hero__split-content,
+  .blc-hero__split--media-right .blc-hero__split-content {
+    order: 1;
   }
   .blc-hero__split-content { padding: 28px 20px 36px; }
   .blc-hero__split-inner   { max-width: 100%; }
@@ -781,7 +945,9 @@
     { "type": "select", "id": "media_position", "label": "Media position (Desktop)",
       "options": [
         { "value": "left",  "label": "Left" },
-        { "value": "right", "label": "Right" }
+        { "value": "right", "label": "Right" },
+        { "value": "top",   "label": "Top (Vertical stacked)" },
+        { "value": "bottom", "label": "Bottom (Vertical stacked)" }
       ], "default": "right" },
     { "type": "header", "content": "Star Badge Row" },
     { "type": "text",     "id": "best_seller_text", "label": "Badge label text", "default": "BEST SELLER" },
@@ -811,6 +977,12 @@
     { "type": "text",     "id": "countdown_end",   "label": "Custom countdown end (ISO 8601)", "info": "Leave blank to use Theme Settings > Weekly Offer countdown source." },
     { "type": "header", "content": "CTA Buttons" },
     { "type": "checkbox", "id": "show_buttons", "label": "Show CTA buttons", "default": true },
+    { "type": "select", "id": "cta_position", "label": "CTA buttons position",
+      "options": [
+        { "value": "above", "label": "Above variant options" },
+        { "value": "below", "label": "Below variant options (Default)" }
+      ],
+      "default": "below" },
     { "type": "select", "id": "cta_button_mode", "label": "Button action",
       "info": "Product actions use this section product first, then Theme Settings > Storefront Mode > Primary product.",
       "options": [

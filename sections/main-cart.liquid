@@ -549,7 +549,7 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   function updateCartLine(line, qty) {
-    fetch('/cart/change.json', {
+    fetch('{{ routes.cart_change_url }}.js', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify({ line: line, quantity: qty })
@@ -565,7 +565,7 @@ document.addEventListener('DOMContentLoaded', function () {
       var qty = parseInt(this.dataset.qty) || 1;
       btn.disabled = true;
       btn.textContent = 'Adding...';
-      fetch('/cart/add.json', {
+      fetch('{{ routes.cart_add_url }}.js', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
         body: JSON.stringify({ id: variantId, quantity: qty })

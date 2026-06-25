@@ -132,7 +132,7 @@
             </button>
           {%- endif -%}
           {%- if card_product.variants.first.available and card_show_buy -%}
-            <a href="/cart/{{ card_product.variants.first.id }}:1{{ card_fast_suffix }}"
+            <a href="{{ routes.cart_url }}/{{ card_product.variants.first.id }}:1{{ card_fast_suffix }}"
                class="btn btn--ghost btn--sm prod-card__btn-buy"
                data-card-buy-now
                data-checkout-destination="{{ card_fast_destination }}"

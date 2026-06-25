@@ -125,7 +125,7 @@
       {%- endif -%}
 
       {%- if pf_fv.available and pf_show_buy -%}
-        <a href="/cart/{{ pf_fv.id }}:1{{ pf_fast_suffix }}"
+        <a href="{{ routes.cart_url }}/{{ pf_fv.id }}:1{{ pf_fast_suffix }}"
           class="btn btn--secondary pf__buy"
           data-buy-now
           data-checkout-destination="{{ pf_fast_destination }}"
@@ -294,7 +294,7 @@
       buyBtn.dataset.variantId = String(variant.id);
       buyBtn.href = window.BLC && typeof window.BLC.checkoutHref === 'function'
         ? window.BLC.checkoutHref(variant.id, buyQty, buyBtn)
-        : '/cart/' + variant.id + ':' + buyQty + (buyBtn.dataset.checkoutDestination === 'cart' ? '?storefront=true' : '');
+        : (window.routes ? window.routes.cart_url : '/cart') + '/' + variant.id + ':' + buyQty + (buyBtn.dataset.checkoutDestination === 'cart' ? '?storefront=true' : '');
       buyBtn.toggleAttribute('aria-disabled', !variant.available);
     }
     /* Emit event for other components (price, image swap, etc.) */
@@ -348,7 +348,7 @@
       if (atcSpinner) atcSpinner.style.display = 'inline-flex';
       if (atcText) atcText.style.display = 'none';
 
-      fetch('/cart/add.json', {
+      fetch((window.routes ? window.routes.cart_add_url : '/cart/add') + '.js', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: idInput.value, quantity: qty ? parseInt(qty.value) || 1 : 1 })
