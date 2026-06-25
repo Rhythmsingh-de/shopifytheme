@@ -103,7 +103,7 @@
     "offer_countdown_expired_text": "Offer ended",
     "weekly_offer_scope": "all",
     "weekly_offer_cta_label": "Shop the offer",
-    "upcoming_sale_enabled": false,
+    "upcoming_sale_enabled": true,
     "upcoming_sale_label": "Next Sale Coming",
     "upcoming_sale_countdown_label": "Starts in",
     "upcoming_sale_start_datetime": "2026-08-15T09:00:00",
