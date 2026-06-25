@@ -16,6 +16,9 @@
     "weekly_offer_enabled": true,
     "weekly_offer_end_datetime": "2026-07-11T23:59:59",
     "weekly_offer_scope": "homepage_only",
-    "cursor_enabled": true
+    "cursor_enabled": true,
+    "show_order_tracking_link": true,
+    "order_tracking_label": "Bestellung verfolgen",
+    "order_tracking_url": "shopify://pages/bestellung-verfolgen"
   }
 }
