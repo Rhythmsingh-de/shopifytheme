@@ -12,5 +12,16 @@
     "market": "de"
   },
   "parent": "header-group.json",
-  "sections": {}
+  "sections": {
+    "header": {
+      "settings": {
+        "logo_position": "left",
+        "show_desktop_menu": false,
+        "cta_label": "BUY NOW",
+        "enable_mega_menu": false,
+        "show_mobile_menu": false
+      },
+      "blocks": {}
+    }
+  }
 }
