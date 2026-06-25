@@ -262,12 +262,17 @@
       </div>
 
       {%- if section.settings.show_trust_strip -%}
+        {%- liquid
+          assign trust_1_val = section.settings.trust_1 | default: settings.trust_shipping_title | default: 'Free Shipping'
+          assign trust_2_val = section.settings.trust_2 | default: settings.trust_secure_title | default: 'Secure Checkout'
+          assign trust_3_val = section.settings.trust_3 | default: settings.trust_returns_title | default: '30-Day Guarantee'
+        -%}
         <div class="sph__trust" aria-label="Guarantees">
-          <span>&#10003; {{ section.settings.trust_1 | default: 'Free Shipping' }}</span>
+          <span>&#10003; {{ trust_1_val }}</span>
           <span class="sph__trust-sep">|</span>
-          <span>&#10003; {{ section.settings.trust_2 | default: 'Secure Checkout' }}</span>
+          <span>&#10003; {{ trust_2_val }}</span>
           <span class="sph__trust-sep">|</span>
-          <span>&#10003; {{ section.settings.trust_3 | default: '30-Day Guarantee' }}</span>
+          <span>&#10003; {{ trust_3_val }}</span>
         </div>
       {%- endif -%}
 
@@ -1306,9 +1311,9 @@ details-accordion[open] .sph-description__chevron,
     { "type": "checkbox", "id": "show_payment_icons", "label": "Show accepted payment icons", "default": true },
     { "type": "header", "content": "Trust strip" },
     { "type": "checkbox", "id": "show_trust_strip", "label": "Show trust strip", "default": true },
-    { "type": "text", "id": "trust_1", "label": "Trust item 1", "default": "Free Shipping" },
-    { "type": "text", "id": "trust_2", "label": "Trust item 2", "default": "Secure Checkout" },
-    { "type": "text", "id": "trust_3", "label": "Trust item 3", "default": "30-Day Guarantee" },
+    { "type": "text", "id": "trust_1", "label": "Trust item 1 (leave blank to use global settings)", "default": "" },
+    { "type": "text", "id": "trust_2", "label": "Trust item 2 (leave blank to use global settings)", "default": "" },
+    { "type": "text", "id": "trust_3", "label": "Trust item 3 (leave blank to use global settings)", "default": "" },
     { "type": "header", "content": "Features strip" },
     { "type": "checkbox", "id": "show_features", "label": "Show features strip", "default": true },
     { "type": "text",   "id": "feat_1_title", "label": "Feature 1 title", "default": "Waterproof" },

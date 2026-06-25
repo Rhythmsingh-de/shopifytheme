@@ -70,8 +70,30 @@
             {%- endif -%}
           </div>
         {%- endif -%}
-        {%- if section.settings.trust_text != blank -%}
-          <p class="blc-hero__trust">{{ section.settings.trust_text }}</p>
+        {%- liquid
+          assign trust_line = section.settings.trust_text
+          if trust_line == blank
+            assign trust_parts = ''
+            if settings.trust_returns_title != blank
+              assign trust_parts = trust_parts | append: settings.trust_returns_title
+            endif
+            if settings.trust_shipping_title != blank
+              if trust_parts != blank
+                assign trust_parts = trust_parts | append: '  ·  '
+              endif
+              assign trust_parts = trust_parts | append: settings.trust_shipping_title
+            endif
+            if settings.trust_secure_title != blank
+              if trust_parts != blank
+                assign trust_parts = trust_parts | append: '  ·  '
+              endif
+              assign trust_parts = trust_parts | append: settings.trust_secure_title
+            endif
+            assign trust_line = trust_parts
+          endif
+        -%}
+        {%- if trust_line != blank -%}
+          <p class="blc-hero__trust">{{ trust_line }}</p>
         {%- endif -%}
       </div>
     </div>
@@ -209,8 +231,30 @@
             </div>
           {%- endif -%}
 
-          {%- if section.settings.trust_text != blank -%}
-            <p class="blc-hero__trust blc-hero__trust--split reveal">{{ section.settings.trust_text }}</p>
+          {%- liquid
+            assign trust_line = section.settings.trust_text
+            if trust_line == blank
+              assign trust_parts = ''
+              if settings.trust_returns_title != blank
+                assign trust_parts = trust_parts | append: settings.trust_returns_title
+              endif
+              if settings.trust_shipping_title != blank
+                if trust_parts != blank
+                  assign trust_parts = trust_parts | append: '  ·  '
+                endif
+                assign trust_parts = trust_parts | append: settings.trust_shipping_title
+              endif
+              if settings.trust_secure_title != blank
+                if trust_parts != blank
+                  assign trust_parts = trust_parts | append: '  ·  '
+                endif
+                assign trust_parts = trust_parts | append: settings.trust_secure_title
+              endif
+              assign trust_line = trust_parts
+            endif
+          -%}
+          {%- if trust_line != blank -%}
+            <p class="blc-hero__trust blc-hero__trust--split reveal">{{ trust_line }}</p>
           {%- endif -%}
 
           {%- if section.settings.show_countdown -%}
@@ -587,7 +631,7 @@
     { "type": "text",     "id": "eyebrow",    "label": "Eyebrow text (if no badge)",  "default": "New Weekly Drop" },
     { "type": "textarea", "id": "heading",    "label": "Heading",       "default": "This Week's Drop" },
     { "type": "textarea", "id": "subheading", "label": "Subheading",    "default": "Premium products designed for comfort, beauty, and everyday luxury." },
-    { "type": "text",     "id": "trust_text", "label": "Trust line (below buttons)", "default": "Free shipping $75+ \u00b7 30-day returns \u00b7 Secure checkout" },
+    { "type": "text",     "id": "trust_text", "label": "Trust line (leave blank to use global settings)", "default": "" },
     { "type": "header", "content": "Product (Split mode)" },
     { "type": "product",  "id": "hero_product",    "label": "Featured product" },
     { "type": "checkbox", "id": "show_price",      "label": "Show product price",       "default": true },
@@ -660,7 +704,7 @@
         "cta1_label": "Shop Now",
         "cta2_label": "Learn More",
         "eyebrow": "New Weekly Drop",
-        "trust_text": "Free shipping $75+ \u00b7 30-day returns \u00b7 Secure checkout",
+        "trust_text": "",
         "show_price": true,
         "show_buttons": true
       }

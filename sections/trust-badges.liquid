@@ -12,6 +12,27 @@
 
     {%- for block in section.blocks -%}
       {%- if block.type == 'badge' -%}
+        {%- liquid
+          assign badge_title = block.settings.title
+          assign badge_sub = block.settings.subtitle
+          
+          if badge_title == blank
+            case block.settings.icon
+              when 'return'
+                assign badge_title = settings.trust_returns_title | default: '30-Day Money Back'
+                assign badge_sub = settings.trust_returns_sub | default: 'No questions asked'
+              when 'shipping'
+                assign badge_title = settings.trust_shipping_title | default: 'International Shipping'
+                assign badge_sub = settings.trust_shipping_sub | default: '5–10 business days'
+              when 'secure'
+                assign badge_title = settings.trust_secure_title | default: 'Secure Checkout'
+                assign badge_sub = settings.trust_secure_sub | default: 'SSL encrypted'
+              when 'support'
+                assign badge_title = settings.trust_support_title | default: '24/7 Support'
+                assign badge_sub = settings.trust_support_sub | default: 'We reply within hours'
+            endcase
+          endif
+        -%}
         <div class="trust-badge" {{ block.shopify_attributes }}>
           <div class="trust-badge__icon">
             {%- case block.settings.icon -%}
@@ -81,9 +102,9 @@
           </div>
 
           <div class="trust-badge__body">
-            <p class="trust-badge__title">{{ block.settings.title }}</p>
-            {%- if block.settings.subtitle != blank -%}
-              <p class="trust-badge__sub">{{ block.settings.subtitle }}</p>
+            <p class="trust-badge__title">{{ badge_title }}</p>
+            {%- if badge_sub != blank -%}
+              <p class="trust-badge__sub">{{ badge_sub }}</p>
             {%- endif -%}
           </div>
         </div>
@@ -201,18 +222,18 @@
           {"value":"gift","label":"🎁 Gift"},
           {"value":"check","label":"✓ General checkmark"}
         ],"default":"return"},
-        {"type":"text","id":"title","label":"Title","default":"14-Day Returns"},
-        {"type":"text","id":"subtitle","label":"Subtitle (optional)","default":"Hassle-free, no questions asked"}
+        {"type":"text","id":"title","label":"Title (leave blank to use global settings)","default":""},
+        {"type":"text","id":"subtitle","label":"Subtitle (leave blank to use global settings)","default":""}
       ]
     }
   ],
   "presets": [{
     "name": "Trust Badges",
     "blocks": [
-      {"type":"badge","settings":{"icon":"return","title":"14-Day Free Returns","subtitle":"No questions asked"}},
-      {"type":"badge","settings":{"icon":"shipping","title":"7–10 Day Shipping","subtitle":"Fast & tracked delivery"}},
-      {"type":"badge","settings":{"icon":"secure","title":"Secure Payments","subtitle":"SSL encrypted checkout"}},
-      {"type":"badge","settings":{"icon":"quality","title":"Premium Quality","subtitle":"Crafted to last"}}
+      {"type":"badge","settings":{"icon":"return","title":"","subtitle":""}},
+      {"type":"badge","settings":{"icon":"shipping","title":"","subtitle":""}},
+      {"type":"badge","settings":{"icon":"secure","title":"","subtitle":""}},
+      {"type":"badge","settings":{"icon":"support","title":"","subtitle":""}}
     ]
   }]
 }

@@ -14,7 +14,7 @@
         "cta1_bg": "#ff501a",
         "cta1_color": "#ffffff",
         "cta2_label": "",
-        "trust_text": "30-Day Money Back Guarantee  ·  1-Year Warranty",
+        "trust_text": "",
         "show_price": false,
         "show_sale_ribbon": false,
         "show_countdown": false,
@@ -70,24 +70,24 @@
           "type": "badge",
           "settings": {
             "icon": "secure",
-            "title": "Secure Checkout",
-            "subtitle": "SSL encrypted payments"
+            "title": "",
+            "subtitle": ""
           }
         },
         "badge_2": {
           "type": "badge",
           "settings": {
             "icon": "shipping",
-            "title": "Free Shipping",
-            "subtitle": "On all orders over $50"
+            "title": "",
+            "subtitle": ""
           }
         },
         "badge_3": {
           "type": "badge",
           "settings": {
             "icon": "quality",
-            "title": "30-Day Guarantee",
-            "subtitle": "Love it or get your money back"
+            "title": "",
+            "subtitle": ""
           }
         }
       },
@@ -246,9 +246,9 @@
         "buy_label": "Buy Now",
         "show_payment_icons": true,
         "show_trust_strip": true,
-        "trust_1": "30-Day Money Back Guarantee",
-        "trust_2": "1-Year Warranty",
-        "trust_3": "Secure checkout",
+        "trust_1": "",
+        "trust_2": "",
+        "trust_3": "",
         "show_features": true,
         "description_style": "plain",
         "description_label": "Description",
