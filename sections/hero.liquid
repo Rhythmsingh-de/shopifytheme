@@ -86,7 +86,12 @@
     </div>
 
     {%- if hero_show_sale_strip -%}
-      {%- render 'sale-strip', is_sale: hero_is_sale, savings: hero_save_pct -%}
+      {%- render 'sale-strip', 
+        is_sale: hero_is_sale, 
+        savings: hero_save_pct,
+        style: section.settings.sale_stripe_design, 
+        position: section.settings.sale_stripe_orientation 
+      -%}
     {%- endif -%}
 
     <div class="container">
@@ -169,9 +174,13 @@
               height="1100"
               loading="eager"
               decoding="async"
-              class="blc-hero__split-img sph__img"
+              class="blc-hero__split-img sph__img sph__img--primary"
               alt="{{ prod_img_alt }}"
               data-main-image>
+
+            {%- if section.settings.show_hover_image and hero_product.images.size > 1 -%}
+              {{ hero_product.images[1] | image_url: width: 900 | image_tag: class: 'blc-hero__split-img blc-hero__split-img--hover sph__img sph__img--hover', widths: '450,900,1200', loading: 'lazy', decoding: 'async', width: 900, height: 1100, alt: prod_img_alt }}
+            {%- endif -%}
 
             {%- if hero_product.images.size > 1 -%}
               <button class="sph__media-nav sph__media-nav--prev" data-sph-nav="prev" aria-label="Previous image">
@@ -196,7 +205,12 @@
         {%- endif -%}
 
         {%- if hero_show_sale_strip -%}
-          {%- render 'sale-strip', is_sale: hero_is_sale, savings: hero_save_pct -%}
+          {%- render 'sale-strip', 
+            is_sale: hero_is_sale, 
+            savings: hero_save_pct,
+            style: section.settings.sale_stripe_design, 
+            position: section.settings.sale_stripe_orientation 
+          -%}
         {%- endif -%}
 
         {%- comment -%}Floating highlight cards overlay (PeakFlow layout) {%- endcomment -%}
@@ -532,7 +546,17 @@
   width: 100%; height: 100%;
   object-fit: cover; object-position: center top;
   display: block;
-  transition: transform 8s ease;
+  transition: transform 8s ease, opacity 0.4s ease;
+}
+.blc-hero__split-img--hover {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+.sph__media-main:hover .blc-hero__split-img--hover {
+  opacity: 1;
 }
 .blc-hero--split:hover .blc-hero__split-img { transform: scale(1.04); }
 .blc-hero__split-placeholder {
@@ -966,10 +990,25 @@
     { "type": "text", "id": "secure_payment_text", "label": "Secure payment subtext", "default": "SSL encrypted checkout" },
     { "type": "header", "content": "Product" },
     { "type": "product",  "id": "hero_product",    "label": "Featured product" },
+    { "type": "checkbox", "id": "show_hover_image", "label": "Show alternate image on hover", "default": true },
     { "type": "checkbox", "id": "show_price",      "label": "Show product price",       "default": true },
     { "type": "checkbox", "id": "show_variant_picker", "label": "Show color / size options", "default": true },
     { "type": "checkbox", "id": "show_quantity_selector", "label": "Show quantity selector", "default": true },
     { "type": "checkbox", "id": "show_sale_ribbon","label": "Show sale stripe on hero media", "default": true },
+    { "type": "select", "id": "sale_stripe_design", "label": "Stripe style",
+      "options": [
+        { "value": "rolling_strip", "label": "Rolling Marquee" },
+        { "value": "classic_ribbon", "label": "Static Ribbon" }
+      ],
+      "default": "rolling_strip" },
+    { "type": "select", "id": "sale_stripe_orientation", "label": "Orientation & Position",
+      "options": [
+        { "value": "left", "label": "Vertical Left" },
+        { "value": "right", "label": "Vertical Right" },
+        { "value": "top", "label": "Horizontal Top" },
+        { "value": "bottom", "label": "Horizontal Bottom" }
+      ],
+      "default": "left" },
     { "type": "header", "content": "Countdown Timer" },
     { "type": "checkbox", "id": "show_countdown",   "label": "Show countdown timer",    "default": false,
       "info": "Reads offer end date from Theme Settings > Weekly Offer." },

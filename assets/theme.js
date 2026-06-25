@@ -402,8 +402,9 @@
     var thumb=e.target.closest('.product-media-thumb, .sph__thumb');if(!thumb)return;
     var stack=thumb.closest('.product-media-stack, .sph__media, .blc-hero__split-media');if(!stack)return;
     var main=qs('#ProductMainImage, #SphMainImg, .sph__img',stack);if(!main)return;
-    var img=thumb.querySelector('img');if(!img)return;
-    main.src=img.src.replace(/_\d+x\d+/,'_900x900').replace(/_\d+x\./,'_900x.');
+    var img=thumb.querySelector('img');
+    var src=thumb.getAttribute('data-src') || (img && img.src.replace(/_\d+x\d+/,'_900x900').replace(/_\d+x\./,'_900x.'));if(!src)return;
+    main.src=src;
     qsa('.product-media-thumb, .sph__thumb',stack).forEach(function(t){t.classList.remove('is-active');});
     thumb.classList.add('is-active');
   });

@@ -5,8 +5,8 @@
   if is_sale and settings.sale_stripe_show_savings and savings_value != blank
     assign sale_label = sale_label | append: ' - Save ' | append: savings_value | append: '%'
   endif
-  assign stripe_style = settings.sale_stripe_style | default: 'rolling_strip'
-  assign stripe_position = settings.sale_stripe_position | default: 'left'
+  assign stripe_style = style | default: settings.sale_stripe_style | default: 'rolling_strip'
+  assign stripe_position = position | default: settings.sale_stripe_position | default: 'left'
   assign stripe_speed = settings.sale_stripe_speed | default: 12
 -%}
 
