@@ -12,5 +12,26 @@
     "market": "de"
   },
   "parent": "product.json",
-  "sections": {}
+  "sections": {
+    "product_recommendations": {
+      "disabled": true,
+      "settings": {},
+      "blocks": {}
+    },
+    "recently_viewed": {
+      "disabled": true,
+      "settings": {},
+      "blocks": {}
+    },
+    "frequently_bought_together": {
+      "disabled": true,
+      "settings": {},
+      "blocks": {}
+    },
+    "trust_badges": {
+      "disabled": false,
+      "settings": {},
+      "blocks": {}
+    }
+  }
 }

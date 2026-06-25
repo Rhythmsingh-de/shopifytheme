@@ -14,6 +14,7 @@
   "parent": "index.json",
   "sections": {
     "hero_3zRf8U": {
+      "disabled": true,
       "settings": {
         "show_hover_image": false,
         "show_price": false,
@@ -22,15 +23,232 @@
         "show_sale_ribbon": false,
         "sale_stripe_design": "rolling_strip",
         "show_buttons": false,
-        "show_overlay": false,
         "split_media_bg": "#FAF9F7",
-        "offer_badge_color": "#FFFFFF",
         "offer_badge_bg": "#EF0000",
+        "offer_badge_color": "#FFFFFF",
         "color_scheme": "dark",
-        "content_align": "left"
+        "show_overlay": false,
+        "content_align": "left",
+        "media_position": "left"
       },
       "blocks": {},
       "block_order": []
+    },
+    "email_capture_MrGqT": {
+      "type": "email-capture",
+      "disabled": false,
+      "settings": {
+        "eyebrow": "Exclusive Offer",
+        "title": "Get 10% Off Your First Order",
+        "subtitle": "Join the BodyLuxCare family and be the first to hear about new arrivals, exclusive deals, and wellness tips.",
+        "placeholder": "Enter your email address",
+        "button_text": "Claim My 10% Off",
+        "success_message": "Thank you! Check your inbox for a discount code.",
+        "disclaimer": "No spam ever. Unsubscribe anytime. By subscribing you agree to our Privacy Policy.",
+        "max_width": 700,
+        "header-4c4d73c9e16f399b1b9bdec91e8dda34": null,
+        "bg_color": "#1a1a1a",
+        "text_color": "#ffffff",
+        "accent_color": "#ffeed2",
+        "padding_top": 80,
+        "padding_bottom": 80
+      },
+      "blocks": {},
+      "block_order": [],
+      "name": "Email Capture"
+    },
+    "single_product_home_mcEnM": {
+      "type": "single-product-home",
+      "disabled": false,
+      "settings": {
+        "header-b1387ace5d7d5c5d66c7ed28f4362555": null,
+        "enabled": true,
+        "visibility": "single_only",
+        "product": "",
+        "media_position": "left",
+        "header-688168415863e69d931217f77855f0d7": null,
+        "desktop_info_style": "card",
+        "mobile_info_style": "card",
+        "mobile_media_visibility": "show",
+        "visual_style": "classic",
+        "media_shape": "square",
+        "fallback_image": null,
+        "show_hover_image": true,
+        "show_wishlist_button": false,
+        "show_compare_button": false,
+        "header-43930a556578a9e845e54cad0e05d847": null,
+        "show_eyebrow": false,
+        "eyebrow": "",
+        "heading": "Premium daily essential",
+        "subheading": "A focused product story with price, reviews, trust, and fast checkout controls.",
+        "show_rating": true,
+        "show_demo_rating": true,
+        "show_sale_badge": true,
+        "show_sale_strip": true,
+        "sale_stripe_design": "rolling_strip",
+        "sale_stripe_orientation": "left",
+        "header-ca6a9631e878081b5128f0fd84f4f53f": null,
+        "cta_position": "below",
+        "desktop_cta_layout": "row",
+        "mobile_cta_layout": "row",
+        "show_qty_selector": false,
+        "atc_label": "",
+        "show_buy_now": true,
+        "buy_label": "Fast Checkout",
+        "show_payment_icons": true,
+        "show_payment_icons_desktop": true,
+        "show_payment_icons_mobile": true,
+        "header-dd1ffcb48da6d64be1c8f148ba68b2e4": null,
+        "show_trust_strip": true,
+        "show_trust_strip_desktop": true,
+        "show_trust_strip_mobile": true,
+        "trust_1": "Free Shipping",
+        "trust_2": "Secure Checkout",
+        "trust_3": "14-Day Guarantee",
+        "header-84757a226c25abcc70c3f7886d3c4ffd": null,
+        "show_features": false,
+        "feat_1_title": "Waterproof",
+        "feat_1_sub": "Durable Materials",
+        "feat_1_icon": "water",
+        "feat_2_title": "Ultralight",
+        "feat_2_sub": "30L Capacity",
+        "feat_2_icon": "leaf",
+        "feat_3_title": "Ergonomic",
+        "feat_3_sub": "Comfort Straps",
+        "feat_3_icon": "bag",
+        "header-127ea0ecaf71139b47daf006a9506e12": null,
+        "description_style": "accordion",
+        "description_label": "Description",
+        "description_open_desktop": true,
+        "description_open_mobile": false,
+        "header-ecd714ad84ab6af5d271c8d6ccbf8305": null,
+        "show_reviews": false,
+        "show_faq": false,
+        "bottom_alignment": "left",
+        "reviews_title": "Reviews",
+        "faq_title": "FAQ",
+        "header-66d076766b58c93d39a2bdf015f4fe97": null,
+        "use_global_review_settings": true,
+        "enable_review_slider_cycling": true,
+        "review_slider_interval": 4,
+        "visible_reviews_count": 3,
+        "header-00ea0962e6211315c4ecae3fceb92a19": null,
+        "bg_color_override": "",
+        "text_color_override": "",
+        "padding_top": 36,
+        "padding_bottom": 48,
+        "mobile_padding_top": 16,
+        "mobile_padding_bottom": 32
+      },
+      "blocks": {
+        "review_Eq6FE": {
+          "type": "review",
+          "disabled": false,
+          "settings": {
+            "name": "Sarah M.",
+            "rating": 5,
+            "avatar": null,
+            "images": null,
+            "body": "Absolutely love this! Fits perfectly and looks amazing."
+          }
+        },
+        "review_T9i4F": {
+          "type": "review",
+          "disabled": false,
+          "settings": {
+            "name": "Mike L.",
+            "rating": 5,
+            "avatar": null,
+            "images": null,
+            "body": "Best purchase I've made this year. Highly recommend."
+          }
+        },
+        "faq_9YY4h": {
+          "type": "faq",
+          "disabled": false,
+          "settings": {
+            "question": "Key questions about this product?",
+            "answer": "<p>This product is designed for maximum comfort and performance.</p>"
+          }
+        },
+        "faq_qk6x7": {
+          "type": "faq",
+          "disabled": false,
+          "settings": {
+            "question": "How is the quality?",
+            "answer": "<p>We use only premium materials tested for durability and longevity.</p>"
+          }
+        },
+        "faq_7YCqD": {
+          "type": "faq",
+          "disabled": false,
+          "settings": {
+            "question": "What are the shipping options?",
+            "answer": "<p>Free shipping on all orders. Standard delivery 5–10 business days.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "review_Eq6FE",
+        "review_T9i4F",
+        "faq_9YY4h",
+        "faq_qk6x7",
+        "faq_7YCqD"
+      ],
+      "name": "Single Product Home"
+    },
+    "faq_FpJhq": {
+      "type": "faq",
+      "disabled": false,
+      "settings": {
+        "heading": "Frequently Asked Questions"
+      },
+      "blocks": {},
+      "block_order": [],
+      "name": "FAQ"
+    },
+    "urgency_banner_mctMg": {
+      "type": "urgency-banner",
+      "disabled": false,
+      "settings": {
+        "header-e4e3bf22cb0085d7c18d1b740b89f6cc": null,
+        "eyebrow": "Limited Time Offer!",
+        "heading": "Get 20% Off Today Only",
+        "subheading": "Don't miss out on our best deal of the year.",
+        "header-56da48da1f85bfdd15e85ae023be24ab": null,
+        "offer_type": "weekly_offer",
+        "show_countdown": true,
+        "countdown_end": "",
+        "days_label": "Days",
+        "hours_label": "Hours",
+        "mins_label": "Minutes",
+        "secs_label": "Seconds",
+        "header-291b8776dcdea5aef6fb44c0518162d3": null,
+        "show_product_card": true,
+        "offer_product": "herren-brusttasche-sling-bag-wasserdicht",
+        "offer_collection": "",
+        "header-c9dcd505fa19906408d3cae150577d4c": null,
+        "cta_label": "BUY NOW",
+        "cta_link": "",
+        "cta_behavior": "link",
+        "show_cart_icon": true,
+        "header-e8f1b1b636099b56504009e884206e52": null,
+        "bg_color": "#ff501a",
+        "text_color": "#ffffff",
+        "cta_bg": "#ffffff",
+        "cta_text": "#ff501a"
+      },
+      "blocks": {},
+      "block_order": [],
+      "name": "Urgency Promo Banner"
     }
-  }
+  },
+  "order": [
+    "announcement_bar_Lm4kTf",
+    "hero_3zRf8U",
+    "urgency_banner_mctMg",
+    "single_product_home_mcEnM",
+    "faq_FpJhq",
+    "email_capture_MrGqT"
+  ]
 }

@@ -17,9 +17,10 @@
       "settings": {
         "logo_position": "left",
         "show_desktop_menu": false,
-        "cta_label": "BUY NOW",
         "enable_mega_menu": false,
-        "show_mobile_menu": false
+        "show_mobile_menu": false,
+        "cta_label": "BUY NOW",
+        "logo": "shopify://shop_images/bodyluxcare_logo_white_bg.png"
       },
       "blocks": {}
     }
