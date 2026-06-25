@@ -10,9 +10,22 @@
   assign align = section.settings.info_align | default: 'left'
   assign atc_label = section.settings.atc_label | default: settings.conversion_primary_cta_label | default: 'Add to Cart'
   assign buy_label = section.settings.buy_label | default: settings.conversion_fast_checkout_label | default: settings.conversion_buy_now_label | default: 'Buy Now'
+  assign cta_button_mode = settings.conversion_checkout_button_mode | default: 'both'
+  assign fast_checkout_destination = settings.fast_checkout_destination | default: 'checkout'
+  assign fast_checkout_suffix = ''
+  if fast_checkout_destination == 'cart'
+    assign fast_checkout_suffix = '?storefront=true'
+  endif
+  assign show_cart_button = true
   assign show_buy_now = section.settings.show_buy_now
-  if settings.conversion_show_fast_checkout == false
+  if settings.conversion_show_fast_checkout == false or cta_button_mode == 'cart_only'
     assign show_buy_now = false
+  endif
+  if cta_button_mode == 'checkout_only' and settings.conversion_show_fast_checkout
+    assign show_cart_button = false
+  endif
+  if show_cart_button == false and show_buy_now == false
+    assign show_cart_button = true
   endif
 -%}
 
@@ -164,19 +177,23 @@
           </div>
 
           {%- if first_variant.available -%}
-            <button
-              class="btn btn--primary btn--full btn--lg"
-              id="ProductAddToCart"
-              data-add-to-cart
-              data-variant-id="{{ first_variant.id }}"
-              data-qty="1"
-              aria-label="Add {{ product.title | escape }} to cart">
-              <span class="atc-btn-text">{{ atc_label | escape }} &mdash; {{ price | money }}</span>
-            </button>
+            {%- if show_cart_button -%}
+              <button
+                class="btn btn--primary btn--full btn--lg"
+                id="ProductAddToCart"
+                data-add-to-cart
+                data-variant-id="{{ first_variant.id }}"
+                data-qty="1"
+                aria-label="Add {{ product.title | escape }} to cart">
+                <span class="atc-btn-text">{{ atc_label | escape }} &mdash; {{ price | money }}</span>
+              </button>
+            {%- endif -%}
             {%- if show_buy_now -%}
-              <a href="/cart/{{ first_variant.id }}:1"
-                class="btn btn--ghost btn--full btn--lg"
-                data-buy-now>
+              <a href="/cart/{{ first_variant.id }}:1{{ fast_checkout_suffix }}"
+                class="btn btn--ghost btn--full btn--lg product-fast-checkout"
+                data-buy-now
+                data-checkout-destination="{{ fast_checkout_destination }}"
+                data-variant-id="{{ first_variant.id }}">
                 {{ buy_label | escape }}
               </a>
             {%- endif -%}

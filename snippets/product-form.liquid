@@ -11,6 +11,22 @@
   assign pf_product = product
   assign pf_fv = pf_product.selected_or_first_available_variant
   assign pf_form_id = 'pf-form-' | append: section_id
+  assign pf_cta_mode = settings.conversion_checkout_button_mode | default: 'both'
+  assign pf_fast_destination = settings.fast_checkout_destination | default: 'checkout'
+  assign pf_fast_suffix = ''
+  if pf_fast_destination == 'cart'
+    assign pf_fast_suffix = '?storefront=true'
+  endif
+  assign pf_show_atc = true
+  assign pf_show_buy = settings.conversion_show_fast_checkout
+  if pf_cta_mode == 'cart_only'
+    assign pf_show_buy = false
+  elsif pf_cta_mode == 'checkout_only' and settings.conversion_show_fast_checkout
+    assign pf_show_atc = false
+  endif
+  if pf_show_atc == false and pf_show_buy == false
+    assign pf_show_atc = true
+  endif
 -%}
 
 <product-form data-product-id="{{ pf_product.id }}" data-section-id="{{ section_id }}">
@@ -86,29 +102,34 @@
 
     {%- comment %} ATC button {%- endcomment -%}
     <div class="pf__btns">
-      <button type="submit"
-        name="add"
-        class="btn btn--primary pf__atc"
-        {% unless pf_fv.available %}disabled aria-disabled="true"{% endunless %}
-        aria-label="{% if pf_fv.available %}{{ 'products.product.add_to_cart' | t }}{% else %}{{ 'products.product.sold_out' | t }}{% endif %}">
-        <span class="pf__atc-text">
-          {% if pf_fv.available %}
-            {{ 'products.product.add_to_cart' | t }}
-          {% else %}
-            {{ 'products.product.sold_out' | t }}
-          {% endif %}
-        </span>
-        <span class="pf__atc-spinner" aria-hidden="true" style="display:none">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10" stroke-opacity="0.3"/>
-            <path d="M12 2a10 10 0 0 1 10 10"><animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="0.8s" repeatCount="indefinite"/></path>
-          </svg>
-        </span>
-      </button>
+      {%- if pf_show_atc -%}
+        <button type="submit"
+          name="add"
+          class="btn btn--primary pf__atc"
+          {% unless pf_fv.available %}disabled aria-disabled="true"{% endunless %}
+          aria-label="{% if pf_fv.available %}{{ 'products.product.add_to_cart' | t }}{% else %}{{ 'products.product.sold_out' | t }}{% endif %}">
+          <span class="pf__atc-text">
+            {% if pf_fv.available %}
+              {{ 'products.product.add_to_cart' | t }}
+            {% else %}
+              {{ 'products.product.sold_out' | t }}
+            {% endif %}
+          </span>
+          <span class="pf__atc-spinner" aria-hidden="true" style="display:none">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10" stroke-opacity="0.3"/>
+              <path d="M12 2a10 10 0 0 1 10 10"><animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="0.8s" repeatCount="indefinite"/></path>
+            </svg>
+          </span>
+        </button>
+      {%- endif -%}
 
-      {%- if pf_fv.available -%}
-        <a href="/cart/{{ pf_fv.id }}:1"
+      {%- if pf_fv.available and pf_show_buy -%}
+        <a href="/cart/{{ pf_fv.id }}:1{{ pf_fast_suffix }}"
           class="btn btn--secondary pf__buy"
+          data-buy-now
+          data-checkout-destination="{{ pf_fast_destination }}"
+          data-variant-id="{{ pf_fv.id }}"
           aria-label="{{ 'products.product.buy_now' | t }}">
           {{ 'products.product.buy_now' | t }}
         </a>
@@ -242,6 +263,7 @@
   var atcBtn = el.querySelector('.pf__atc');
   var atcText = el.querySelector('.pf__atc-text');
   var atcSpinner = el.querySelector('.pf__atc-spinner');
+  var qtyInput = form ? form.querySelector('input[name="quantity"]') : null;
 
   /* Build current options state */
   var selectedOptions = {{ pf_product.options_with_values | map: 'selected_value' | json }};
@@ -265,6 +287,15 @@
           ? '{{ 'products.product.add_to_cart' | t | escape }}'
           : '{{ 'products.product.sold_out' | t | escape }}';
       }
+    }
+    var buyBtn = el.querySelector('.pf__buy');
+    if (buyBtn) {
+      var buyQty = qtyInput ? parseInt(qtyInput.value, 10) || 1 : 1;
+      buyBtn.dataset.variantId = String(variant.id);
+      buyBtn.href = window.BLC && typeof window.BLC.checkoutHref === 'function'
+        ? window.BLC.checkoutHref(variant.id, buyQty, buyBtn)
+        : '/cart/' + variant.id + ':' + buyQty + (buyBtn.dataset.checkoutDestination === 'cart' ? '?storefront=true' : '');
+      buyBtn.toggleAttribute('aria-disabled', !variant.available);
     }
     /* Emit event for other components (price, image swap, etc.) */
     window.dispatchEvent(new CustomEvent('variant:changed', { detail: { variant: variant } }));
@@ -299,9 +330,11 @@
     if (!inp) return;
     wrap.querySelector('[data-qty-minus]').addEventListener('click', function () {
       if (parseInt(inp.value) > 1) inp.value = parseInt(inp.value) - 1;
+      updateUI(getVariant());
     });
     wrap.querySelector('[data-qty-plus]').addEventListener('click', function () {
       inp.value = parseInt(inp.value) + 1;
+      updateUI(getVariant());
     });
   });
 

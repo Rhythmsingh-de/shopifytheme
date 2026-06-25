@@ -5,13 +5,30 @@
   endif
   assign fv = sp.selected_or_first_available_variant
   assign sticky_label = section.settings.label | default: settings.conversion_primary_cta_label | default: 'Add to Cart'
+  assign sticky_buy_label = section.settings.buy_label | default: settings.conversion_fast_checkout_label | default: settings.conversion_buy_now_label | default: 'Buy Now'
+  assign sticky_cta_mode = settings.conversion_checkout_button_mode | default: 'both'
+  assign fast_checkout_destination = settings.fast_checkout_destination | default: 'checkout'
+  assign fast_checkout_suffix = ''
+  if fast_checkout_destination == 'cart'
+    assign fast_checkout_suffix = '?storefront=true'
+  endif
+  assign show_sticky_cart = true
+  assign show_sticky_buy = settings.conversion_show_fast_checkout
+  if sticky_cta_mode == 'cart_only'
+    assign show_sticky_buy = false
+  elsif sticky_cta_mode == 'checkout_only' and settings.conversion_show_fast_checkout
+    assign show_sticky_cart = false
+  endif
+  if show_sticky_cart == false and show_sticky_buy == false
+    assign show_sticky_cart = true
+  endif
 -%}
 
 {%- if sp != blank and settings.product_sticky_atc_enabled -%}
 <sp-sticky-atc
   class="sticky-atc"
   id="StickyAtc"
-  data-trigger="#ProductAddToCart, .sph__btn-atc"
+  data-trigger="#ProductAddToCart, .sph__btn-atc, .product-fast-checkout, .sph__btn-buy"
   aria-hidden="true"
   aria-label="Sticky add to cart bar">
 
@@ -41,15 +58,30 @@
     <div class="sticky-atc__actions">
       {%- if fv.available -%}
         <div class="sticky-atc__btn-wrap">
-          <button
-            class="btn sticky-atc__btn"
-            id="StickyAtcBtn"
-            data-add-to-cart
-            data-variant-id="{{ fv.id }}"
-            data-qty="1"
-            aria-label="Add {{ sp.title | escape }} to cart">
-            {{ sticky_label | escape }}
-          </button>
+          <div class="sticky-atc__buttons">
+            {%- if show_sticky_cart -%}
+              <button
+                class="btn sticky-atc__btn"
+                id="StickyAtcBtn"
+                data-add-to-cart
+                data-variant-id="{{ fv.id }}"
+                data-qty="1"
+                aria-label="Add {{ sp.title | escape }} to cart">
+                {{ sticky_label | escape }}
+              </button>
+            {%- endif -%}
+            {%- if show_sticky_buy -%}
+              <a
+                href="/cart/{{ fv.id }}:1{{ fast_checkout_suffix }}"
+                class="btn sticky-atc__fast-checkout"
+                data-buy-now
+                data-checkout-destination="{{ fast_checkout_destination }}"
+                data-variant-id="{{ fv.id }}"
+                aria-label="Checkout {{ sp.title | escape }}">
+                {{ sticky_buy_label | escape }}
+              </a>
+            {%- endif -%}
+          </div>
           <p class="sticky-atc__trust">
             {%- if settings.trust_secure_title != blank -%}
               {{ settings.trust_secure_title | escape }}
@@ -155,6 +187,11 @@
   align-items: center;
   gap: 4px;
 }
+.sticky-atc__buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 .sticky-atc__trust {
   font-size: 10px;
   color: var(--color-text-muted);
@@ -162,24 +199,34 @@
   text-align: center;
   letter-spacing: 0.02em;
 }
-.sticky-atc__btn {
+.sticky-atc__btn,
+.sticky-atc__fast-checkout {
   padding: 12px 28px;
   min-height: 48px;
   font-size: var(--text-sm);
   font-weight: 800;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  background: var(--color-primary);
-  color: var(--color-primary-text);
   border-radius: var(--btn-radius);
   border: none;
   cursor: pointer;
   white-space: nowrap;
   position: relative;
   overflow: hidden;
+  text-decoration: none;
   transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
 }
-.sticky-atc__btn::before {
+.sticky-atc__btn {
+  background: var(--color-primary);
+  color: var(--color-primary-text);
+}
+.sticky-atc__fast-checkout {
+  background: transparent;
+  color: var(--color-primary);
+  border: 2px solid var(--color-primary);
+}
+.sticky-atc__btn::before,
+.sticky-atc__fast-checkout::before {
   content: '';
   position: absolute;
   inset: 0;
@@ -187,9 +234,12 @@
   transform: translateX(-100%);
   transition: transform 0.4s ease;
 }
-.sticky-atc__btn:hover::before { transform: translateX(0); }
-.sticky-atc__btn:hover {
+.sticky-atc__btn:hover::before,
+.sticky-atc__fast-checkout:hover::before { transform: translateX(0); }
+.sticky-atc__btn:hover,
+.sticky-atc__fast-checkout:hover {
   background: var(--color-primary-hover);
+  color: var(--color-primary-text);
   transform: translateY(-1px);
   box-shadow: 0 4px 16px color-mix(in oklab, var(--color-primary) 40%, transparent);
 }
@@ -200,7 +250,9 @@
   .sticky-atc__name  { max-width: 120px; }
   .sticky-atc__img   { display: none; }
   .sticky-atc__trust { display: none; }
-  .sticky-atc__btn   { padding: 14px 20px; font-size: 12px; min-height: 50px; }
+  .sticky-atc__buttons { gap: 6px; }
+  .sticky-atc__btn,
+  .sticky-atc__fast-checkout { padding: 14px 14px; font-size: 11px; min-height: 50px; }
   .sticky-atc__inner { gap: var(--space-3); }
 }
 </style>
@@ -270,6 +322,14 @@ class SpStickyAtc extends HTMLElement {
       btn.disabled = !variant.available;
       btn.setAttribute('aria-disabled', String(!variant.available));
     }
+    const buy = this.querySelector('[data-buy-now]');
+    if (buy) {
+      buy.dataset.variantId = String(variant.id);
+      buy.href = window.BLC && typeof window.BLC.checkoutHref === 'function'
+        ? window.BLC.checkoutHref(variant.id, 1, buy)
+        : '/cart/' + variant.id + ':1' + (buy.dataset.checkoutDestination === 'cart' ? '?storefront=true' : '');
+      buy.toggleAttribute('aria-disabled', !variant.available);
+    }
   }
 }
 customElements.define('sp-sticky-atc', SpStickyAtc);
@@ -282,7 +342,8 @@ customElements.define('sp-sticky-atc', SpStickyAtc);
   "class": "shopify-section-sticky-atc",
   "settings": [
     { "type": "product", "id": "product", "label": "Product (leave blank to use page product)" },
-    { "type": "text",    "id": "label",   "label": "Button label", "info": "Leave blank to use Theme Settings > Trust & Conversion." }
+    { "type": "text",    "id": "label",   "label": "Add-to-cart label", "info": "Leave blank to use Theme Settings > Trust & Conversion." },
+    { "type": "text",    "id": "buy_label", "label": "Fast checkout label", "info": "Leave blank to use Theme Settings > Trust & Conversion." }
   ],
   "presets": [
     { "name": "Sticky Add to Cart" }

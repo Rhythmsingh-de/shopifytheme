@@ -33,6 +33,12 @@
   elsif hero_cta_secondary == blank
     assign hero_cta_secondary = routes.all_products_collection_url
   endif
+  assign hero_offer_enabled = settings.weekly_offer_enabled
+  assign hero_offer_label = settings.weekly_offer_label
+  if settings.offer_countdown_mode == 'upcoming_sale' and settings.upcoming_sale_enabled
+    assign hero_offer_enabled = true
+    assign hero_offer_label = settings.upcoming_sale_label
+  endif
 -%}
 
 {%- if section.settings.bg_image != blank -%}
@@ -83,12 +89,20 @@
         {%- endif -%}
         {%- if section.settings.show_buttons -%}
           <div class="blc-hero__btns">
-            {%- if section.settings.cta1_label != blank -%}
-              <a href="{{ hero_cta_primary }}" class="btn btn--hero-primary">{{ section.settings.cta1_label }}</a>
-            {%- endif -%}
-            {%- if section.settings.cta2_label != blank -%}
-              <a href="{{ hero_cta_secondary }}" class="btn btn--hero-ghost">{{ section.settings.cta2_label }}</a>
-            {%- endif -%}
+            {%- render 'hero-cta-buttons',
+              mode: section.settings.cta_button_mode,
+              product: hero_product,
+              variant: hero_fv,
+              primary_label: section.settings.cta1_label,
+              secondary_label: section.settings.cta2_label,
+              cart_label: section.settings.hero_cart_label,
+              checkout_label: section.settings.hero_checkout_label,
+              primary_link: hero_cta_primary,
+              secondary_link: hero_cta_secondary,
+              primary_class: 'btn btn--hero-primary',
+              secondary_class: 'btn btn--hero-ghost',
+              show_icon: section.settings.cta1_icon
+            -%}
           </div>
         {%- endif -%}
         {%- if section.settings.trust_text != blank -%}
@@ -123,15 +137,17 @@
           </div>
         {%- endif -%}
 
-        {%- if settings.weekly_offer_enabled and settings.weekly_offer_label != blank -%}
+        {%- if hero_offer_enabled and hero_offer_label != blank -%}
           <div class="blc-hero__offer-badge">
             <span class="blc-hero__offer-dot"></span>
-            {{ settings.weekly_offer_label }}
+            {{ hero_offer_label | escape }}
           </div>
         {%- endif -%}
 
-        {%- if hero_is_sale and section.settings.show_sale_ribbon -%}
-          <div class="blc-hero__ribbon">Save {{ hero_save_pct }}%</div>
+        {%- if hero_is_sale and section.settings.show_sale_ribbon and settings.sale_stripe_enabled -%}
+          <div class="blc-hero__ribbon{% if settings.sale_stripe_animate %} blc-hero__ribbon--animate{% endif %}">
+            <span>{{ settings.sale_stripe_text | default: 'Sale' | escape }}{% if settings.sale_stripe_show_savings %} - Save {{ hero_save_pct }}%{% endif %}</span>
+          </div>
         {%- endif -%}
 
         {%- comment -%}Floating highlight cards overlay (PeakFlow layout) {%- endcomment -%}
@@ -211,22 +227,22 @@
 
           {%- if section.settings.show_buttons -%}
             <div class="blc-hero__btns reveal">
-              {%- if section.settings.cta1_label != blank -%}
-                <a href="{{ hero_cta_primary }}"
-                  class="btn btn--hero-primary-dark"
-                  style="background:{{ section.settings.cta1_bg | default: '#1a1a1a' }};color:{{ section.settings.cta1_color | default: '#ffffff' }}">
-                  {%- if section.settings.cta1_icon -%}
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:8px;vertical-align:middle;display:inline-block;"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
-                  {%- endif -%}
-                  <span>{{ section.settings.cta1_label }}</span>
-                </a>
-              {%- endif -%}
-              {%- if section.settings.cta2_label != blank -%}
-                <a href="{{ hero_cta_secondary }}"
-                  class="btn btn--hero-ghost-dark">
-                  {{ section.settings.cta2_label }}
-                </a>
-              {%- endif -%}
+              {%- capture hero_primary_style -%}background:{{ section.settings.cta1_bg | default: '#1a1a1a' }};color:{{ section.settings.cta1_color | default: '#ffffff' }}{%- endcapture -%}
+              {%- render 'hero-cta-buttons',
+                mode: section.settings.cta_button_mode,
+                product: hero_product,
+                variant: hero_fv,
+                primary_label: section.settings.cta1_label,
+                secondary_label: section.settings.cta2_label,
+                cart_label: section.settings.hero_cart_label,
+                checkout_label: section.settings.hero_checkout_label,
+                primary_link: hero_cta_primary,
+                secondary_link: hero_cta_secondary,
+                primary_class: 'btn btn--hero-primary-dark',
+                secondary_class: 'btn btn--hero-ghost-dark',
+                primary_style: hero_primary_style,
+                show_icon: section.settings.cta1_icon
+              -%}
             </div>
           {%- endif -%}
 
@@ -235,47 +251,18 @@
           {%- endif -%}
 
           {%- if section.settings.show_countdown -%}
-            <div class="blc-hero__countdown reveal" id="HeroCountdown-{{ section.id }}" aria-live="polite">
-              <span class="blc-hero__countdown-label">{{ section.settings.countdown_label | default: 'Offer ends in' }}</span>
-              <div class="blc-hero__countdown-units">
-                <div class="blc-hero__countdown-unit">
-                  <span class="blc-hero__countdown-num" id="hcHours-{{ section.id }}">00</span>
-                  <span class="blc-hero__countdown-name">hrs</span>
-                </div>
-                <span class="blc-hero__countdown-sep">:</span>
-                <div class="blc-hero__countdown-unit">
-                  <span class="blc-hero__countdown-num" id="hcMins-{{ section.id }}">00</span>
-                  <span class="blc-hero__countdown-name">min</span>
-                </div>
-                <span class="blc-hero__countdown-sep">:</span>
-                <div class="blc-hero__countdown-unit">
-                  <span class="blc-hero__countdown-num" id="hcSecs-{{ section.id }}">00</span>
-                  <span class="blc-hero__countdown-name">sec</span>
-                </div>
-              </div>
+            <div class="reveal">
+              {%- render 'offer-countdown',
+                id: section.id,
+                variant: 'boxed',
+                label: section.settings.countdown_label,
+                end_datetime: section.settings.countdown_end,
+                days_label: 'Days',
+                hours_label: 'Hours',
+                mins_label: 'Min',
+                secs_label: 'Sec'
+              -%}
             </div>
-            <script>
-            (function(){
-              var endMeta = document.querySelector('meta[name="weekly-offer-end"]');
-              if (!endMeta) return;
-              var endTime = new Date(endMeta.content).getTime();
-              var sid = '{{ section.id }}';
-              var hEl = document.getElementById('hcHours-' + sid);
-              var mEl = document.getElementById('hcMins-'  + sid);
-              var sEl = document.getElementById('hcSecs-'  + sid);
-              if (!hEl || !mEl || !sEl) return;
-              function pad(n) { return n < 10 ? '0' + n : '' + n; }
-              function tick() {
-                var diff = endTime - Date.now();
-                if (diff <= 0) { hEl.textContent = mEl.textContent = sEl.textContent = '00'; return; }
-                hEl.textContent = pad(Math.floor(diff / 3600000));
-                mEl.textContent = pad(Math.floor((diff % 3600000) / 60000));
-                sEl.textContent = pad(Math.floor((diff % 60000) / 1000));
-                setTimeout(tick, 1000);
-              }
-              tick();
-            })();
-            </script>
           {%- endif -%}
 
         </div>
@@ -429,12 +416,41 @@
   50%      { box-shadow: 0 0 0 7px rgba(74,222,128,0.1); }
 }
 .blc-hero__ribbon {
-  position: absolute; bottom: 0; left: 0;
+  position: absolute; bottom: 18px; left: 0;
   background: var(--color-sale, #e8260d); color: #fff;
   font-size: 12px; font-weight: 800;
   letter-spacing: 0.08em; text-transform: uppercase;
-  padding: 8px 22px 8px 16px;
+  padding: 9px 26px 9px 18px;
   clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 50%, calc(100% - 14px) 100%, 0 100%);
+  transform: skewY(-4deg);
+  transform-origin: left center;
+  box-shadow: 0 12px 28px rgba(0,0,0,0.16);
+  overflow: hidden;
+}
+.blc-hero__ribbon span {
+  display: inline-block;
+  transform: skewY(4deg);
+}
+.blc-hero__ribbon::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, transparent 0%, rgba(255,255,255,0.3) 45%, transparent 70%);
+  transform: translateX(-130%);
+}
+.blc-hero__ribbon--animate {
+  animation: sale-stripe-bend 3.8s ease-in-out infinite;
+}
+.blc-hero__ribbon--animate::after {
+  animation: sale-stripe-shine 3.8s ease-in-out infinite;
+}
+@keyframes sale-stripe-bend {
+  0%,100% { transform: skewY(-4deg) translateX(0); }
+  50% { transform: skewY(3deg) translateX(5px); }
+}
+@keyframes sale-stripe-shine {
+  0%,40% { transform: translateX(-130%); }
+  72%,100% { transform: translateX(130%); }
 }
 
 .blc-hero__split-content {
@@ -508,6 +524,8 @@
   padding: 14px 32px; min-height: 52px;
   font-weight: 700; font-size: var(--text-sm); letter-spacing: 0.02em;
   border-radius: var(--btn-radius, 9999px); text-decoration: none;
+  border: none; cursor: pointer;
+  gap: 8px;
   transition: transform var(--trans-base), box-shadow var(--trans-base);
 }
 .btn--hero-primary {
@@ -538,26 +556,6 @@
 .blc-hero--dark  .blc-hero__trust { color: rgba(255,255,255,0.55); }
 .blc-hero--light .blc-hero__trust { color: var(--color-text-muted); }
 .blc-hero__trust--split { color: var(--color-text-faint); }
-
-/* Countdown */
-.blc-hero__countdown {
-  display: flex; flex-direction: column; gap: 6px;
-  padding: 14px 18px;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  width: fit-content;
-}
-.blc-hero__countdown-label {
-  font-size: 11px; font-weight: 600;
-  letter-spacing: 0.08em; text-transform: uppercase;
-  color: var(--color-text-muted);
-}
-.blc-hero__countdown-units { display: flex; align-items: center; gap: 6px; }
-.blc-hero__countdown-unit  { display: flex; flex-direction: column; align-items: center; gap: 2px; }
-.blc-hero__countdown-num   { font-size: 1.6rem; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1; color: var(--color-text); }
-.blc-hero__countdown-name  { font-size: 10px; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
-.blc-hero__countdown-sep   { font-size: 1.4rem; font-weight: 700; color: var(--color-text-muted); margin-bottom: 12px; }
 
 @media (min-width: 769px) {
   .blc-hero__split--media-right .blc-hero__split-media {
@@ -617,14 +615,27 @@
     { "type": "checkbox", "id": "show_countdown",   "label": "Show countdown timer",    "default": false,
       "info": "Reads offer end date from Theme Settings > Weekly Offer." },
     { "type": "text",     "id": "countdown_label", "label": "Countdown label",          "default": "Offer ends in" },
+    { "type": "text",     "id": "countdown_end",   "label": "Custom countdown end (ISO 8601)", "info": "Leave blank to use Theme Settings > Weekly Offer countdown source." },
     { "type": "header", "content": "CTA Buttons" },
     { "type": "checkbox", "id": "show_buttons", "label": "Show CTA buttons", "default": true },
-    { "type": "text",     "id": "cta1_label", "label": "Button 1 label", "default": "Shop Now" },
+    { "type": "select", "id": "cta_button_mode", "label": "Button action",
+      "info": "Product actions use this section product first, then Theme Settings > Storefront Mode > Primary product.",
+      "options": [
+        { "value": "checkout_permalink", "label": "Direct checkout product" },
+        { "value": "cart_permalink", "label": "Open cart with product" },
+        { "value": "cart_and_checkout", "label": "Show cart and checkout buttons" },
+        { "value": "add_to_cart", "label": "Add product to cart" },
+        { "value": "custom_links", "label": "Use custom links" }
+      ],
+      "default": "checkout_permalink" },
+    { "type": "text",     "id": "hero_checkout_label", "label": "Checkout button label", "default": "Buy Now" },
+    { "type": "text",     "id": "hero_cart_label",     "label": "Cart button label",     "default": "Add to Cart" },
+    { "type": "text",     "id": "cta1_label", "label": "Custom button 1 label", "default": "Buy Now" },
     { "type": "url",      "id": "cta1_link",  "label": "Button 1 link" },
     { "type": "checkbox", "id": "cta1_icon",  "label": "Show shopping cart icon", "default": true },
     { "type": "color",    "id": "cta1_bg",    "label": "Button 1 background", "default": "#1a1a1a" },
     { "type": "color",    "id": "cta1_color", "label": "Button 1 text color", "default": "#ffffff" },
-    { "type": "text",     "id": "cta2_label", "label": "Button 2 label",      "default": "Learn More" },
+    { "type": "text",     "id": "cta2_label", "label": "Custom button 2 label",      "default": "Learn More" },
     { "type": "url",      "id": "cta2_link",  "label": "Button 2 link" },
     { "type": "header", "content": "Colors (Split)" },
     { "type": "color", "id": "split_media_bg",   "label": "Image panel background",   "default": "#0d2318" },
@@ -678,7 +689,8 @@
         "media_position": "right",
         "heading": "This Week's Drop",
         "subheading": "Premium products designed for comfort, beauty, recovery, and everyday luxury.",
-        "cta1_label": "Shop Now",
+        "cta_button_mode": "checkout_permalink",
+        "cta1_label": "Buy Now",
         "cta2_label": "Learn More",
         "eyebrow": "New Weekly Drop",
         "trust_text": "Free shipping $75+ \u00b7 30-day returns \u00b7 Secure checkout",

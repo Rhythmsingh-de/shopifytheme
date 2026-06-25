@@ -1,7 +1,17 @@
 {%- liquid
   assign header_cta_label = section.settings.cta_label | default: settings.conversion_buy_now_label | default: 'Shop now'
+  assign header_cta_action = section.settings.cta_action | default: 'checkout_permalink'
+  assign header_cta_product = settings.primary_product
+  assign header_cta_variant = header_cta_product.selected_or_first_available_variant
   assign header_cta_link = section.settings.cta_link
-  if header_cta_link == blank and settings.storefront_mode == 'single_product' and settings.primary_product != blank
+  assign header_cta_destination = blank
+  if header_cta_action == 'checkout_permalink' and header_cta_variant != blank and header_cta_variant.available
+    assign header_cta_link = '/cart/' | append: header_cta_variant.id | append: ':1'
+    assign header_cta_destination = 'checkout'
+  elsif header_cta_action == 'cart_permalink' and header_cta_variant != blank and header_cta_variant.available
+    assign header_cta_link = '/cart/' | append: header_cta_variant.id | append: ':1?storefront=true'
+    assign header_cta_destination = 'cart'
+  elsif header_cta_link == blank and settings.storefront_mode == 'single_product' and settings.primary_product != blank
     assign header_cta_link = settings.primary_product.url
   elsif header_cta_link == blank and settings.primary_collection != blank
     assign header_cta_link = settings.primary_collection.url
@@ -82,7 +92,12 @@
         </button>
 
         {%- if header_cta_label != blank -%}
-          <a href="{{ header_cta_link }}" class="btn header__cta-btn">
+          <a href="{{ header_cta_link }}" class="btn header__cta-btn"
+            {% if header_cta_destination != blank %}
+              data-buy-now
+              data-checkout-destination="{{ header_cta_destination }}"
+              data-variant-id="{{ header_cta_variant.id }}"
+            {% endif %}>
             {{ header_cta_label | escape }}
           </a>
         {%- endif -%}
@@ -351,6 +366,11 @@
     { "type": "checkbox", "id": "show_account_icon", "label": "Show account icon", "default": true },
     { "type": "header", "content": "Header Button CTA" },
     { "type": "text", "id": "cta_label", "label": "CTA button label", "default": "Shop now" },
+    { "type": "select", "id": "cta_action", "label": "CTA action", "options": [
+      { "value": "checkout_permalink", "label": "Direct checkout primary product" },
+      { "value": "cart_permalink", "label": "Open cart with primary product" },
+      { "value": "custom_link", "label": "Use custom link" }
+    ], "default": "checkout_permalink" },
     { "type": "url", "id": "cta_link", "label": "CTA button link" }
   ]
 }

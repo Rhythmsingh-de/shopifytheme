@@ -26,9 +26,28 @@
   endif
   assign atc_label = section.settings.atc_label | default: settings.conversion_primary_cta_label | default: 'Add to Cart'
   assign buy_label = section.settings.buy_label | default: settings.conversion_fast_checkout_label | default: settings.conversion_buy_now_label | default: 'Buy Now'
+  assign cta_button_mode = settings.conversion_checkout_button_mode | default: 'both'
+  assign fast_checkout_destination = settings.fast_checkout_destination | default: 'checkout'
+  assign fast_checkout_suffix = ''
+  if fast_checkout_destination == 'cart'
+    assign fast_checkout_suffix = '?storefront=true'
+  endif
+  assign show_cart_button = true
   assign show_buy_now = section.settings.show_buy_now
-  if settings.conversion_show_fast_checkout == false
+  if settings.conversion_show_fast_checkout == false or cta_button_mode == 'cart_only'
     assign show_buy_now = false
+  endif
+  if cta_button_mode == 'checkout_only' and settings.conversion_show_fast_checkout
+    assign show_cart_button = false
+  endif
+  if show_cart_button == false and show_buy_now == false
+    assign show_cart_button = true
+  endif
+  assign sph_offer_enabled = settings.weekly_offer_enabled
+  assign sph_offer_label = settings.weekly_offer_label
+  if settings.offer_countdown_mode == 'upcoming_sale' and settings.upcoming_sale_enabled
+    assign sph_offer_enabled = true
+    assign sph_offer_label = settings.upcoming_sale_label
   endif
   assign visible_reviews_count = section.settings.visible_reviews_count
   assign review_slider_cycling = section.settings.enable_review_slider_cycling
@@ -121,11 +140,10 @@
         </div>
       {%- endif -%}
 
-      {%- comment -%}Weekly offer badge on image{%- endcomment -%}
-      {%- if settings.weekly_offer_enabled and settings.weekly_offer_label != blank -%}
+      {%- if sph_offer_enabled and sph_offer_label != blank -%}
         <div class="sph__weekly-badge">
           <span class="sph__weekly-badge-dot"></span>
-          {{ settings.weekly_offer_label }}
+          {{ sph_offer_label | escape }}
         </div>
       {%- endif -%}
     </div>
@@ -209,17 +227,22 @@
         {%- endif -%}
 
         {%- if sp != blank and fv.available -%}
-          <button
-            class="btn sph__btn-atc sph__btn-atc--pulse"
-            data-add-to-cart
-            data-variant-id="{{ fv.id }}"
-            data-qty="1"
-            aria-label="Add {{ sp.title | escape }} to cart">
-            <span class="atc-btn-text">{{ atc_label | escape }}</span>
-          </button>
+          {%- if show_cart_button -%}
+            <button
+              class="btn sph__btn-atc sph__btn-atc--pulse"
+              data-add-to-cart
+              data-variant-id="{{ fv.id }}"
+              data-qty="1"
+              aria-label="Add {{ sp.title | escape }} to cart">
+              <span class="atc-btn-text">{{ atc_label | escape }}</span>
+            </button>
+          {%- endif -%}
           {%- if show_buy_now -%}
-            <a href="/cart/{{ fv.id }}:1"
-              class="btn sph__btn-buy">
+            <a href="/cart/{{ fv.id }}:1{{ fast_checkout_suffix }}"
+              class="btn sph__btn-buy"
+              data-buy-now
+              data-checkout-destination="{{ fast_checkout_destination }}"
+              data-variant-id="{{ fv.id }}">
               {{ buy_label | escape }}
             </a>
           {%- endif -%}

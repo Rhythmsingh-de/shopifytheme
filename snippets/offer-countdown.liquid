@@ -1,0 +1,53 @@
+{%- liquid
+  assign countdown_id = id | default: section.id
+  assign countdown_variant = variant | default: 'boxed'
+  assign countdown_label = label
+  assign countdown_end = end_datetime
+
+  if countdown_end == blank
+    if settings.offer_countdown_mode == 'upcoming_sale' and settings.upcoming_sale_enabled
+      assign countdown_end = settings.upcoming_sale_start_datetime
+      assign countdown_label = countdown_label | default: settings.upcoming_sale_countdown_label
+    else
+      assign countdown_end = settings.weekly_offer_end_datetime
+      assign countdown_label = countdown_label | default: settings.weekly_countdown_label
+    endif
+  endif
+
+  assign countdown_label = countdown_label | default: 'Ends in'
+  assign expired_text = settings.offer_countdown_expired_text | default: 'Offer ended'
+  assign days_text = days_label | default: 'Days'
+  assign hours_text = hours_label | default: 'Hours'
+  assign mins_text = mins_label | default: 'Min'
+  assign secs_text = secs_label | default: 'Sec'
+-%}
+
+{%- if countdown_end != blank -%}
+  <div
+    class="offer-countdown offer-countdown--{{ countdown_variant }}"
+    id="OfferCountdown-{{ countdown_id }}"
+    data-offer-countdown
+    data-countdown-end="{{ countdown_end | escape }}"
+    data-expired-text="{{ expired_text | escape }}"
+    aria-live="polite">
+    <span class="offer-countdown__label" data-countdown-label>{{ countdown_label | escape }}</span>
+    <span class="offer-countdown__units">
+      <span class="offer-countdown__unit" data-countdown-days-wrap>
+        <strong data-countdown-days>00</strong>
+        <small>{{ days_text | escape }}</small>
+      </span>
+      <span class="offer-countdown__unit">
+        <strong data-countdown-hours>00</strong>
+        <small>{{ hours_text | escape }}</small>
+      </span>
+      <span class="offer-countdown__unit">
+        <strong data-countdown-mins>00</strong>
+        <small>{{ mins_text | escape }}</small>
+      </span>
+      <span class="offer-countdown__unit">
+        <strong data-countdown-secs>00</strong>
+        <small>{{ secs_text | escape }}</small>
+      </span>
+    </span>
+  </div>
+{%- endif -%}

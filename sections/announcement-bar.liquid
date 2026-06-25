@@ -1,4 +1,14 @@
 {%- if section.settings.enabled -%}
+{%- liquid
+  assign ann_show_countdown = section.settings.offer_mode
+  if settings.offer_countdown_mode == 'upcoming_sale'
+    unless settings.upcoming_sale_enabled and settings.upcoming_sale_start_datetime != blank
+      assign ann_show_countdown = false
+    endunless
+  elsif settings.weekly_offer_enabled == false or settings.weekly_offer_end_datetime == blank
+    assign ann_show_countdown = false
+  endif
+-%}
 <div
   id="announcement-bar-{{ section.id }}"
   style="background:{{ section.settings.bg_color }};color:{{ section.settings.text_color }};"
@@ -28,12 +38,16 @@
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
     </button>
 
-    {%- if section.settings.offer_mode and settings.weekly_offer_enabled -%}
-      <div class="ann-countdown" id="ann-countdown-{{ section.id }}" aria-label="Offer countdown">
-        <span class="ann-countdown__dot"></span>
-        <span class="ann-countdown__label">{{ section.settings.countdown_prefix | default: 'Ends in' }}</span>
-        <span class="ann-countdown__time" id="ann-time-{{ section.id }}">--:--:--</span>
-      </div>
+    {%- if ann_show_countdown -%}
+      {%- render 'offer-countdown',
+        id: section.id,
+        variant: 'compact',
+        label: section.settings.countdown_prefix,
+        days_label: 'D',
+        hours_label: 'H',
+        mins_label: 'M',
+        secs_label: 'S'
+      -%}
     {%- endif -%}
 
     <button class="ann-close" id="ann-close-{{ section.id }}" aria-label="Dismiss">
@@ -79,37 +93,15 @@
 .ann-nav-btn:hover, .ann-close:hover { background: rgba(255,255,255,0.32); }
 .ann-close { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); }
 
-/* Countdown */
-.ann-countdown {
-  display: flex; align-items: center; gap: 6px;
-  flex-shrink: 0;
-  font-weight: 700;
-  font-size: 12px;
-  letter-spacing: 0.04em;
-  background: rgba(255,255,255,0.15);
-  border-radius: 9999px;
-  padding: 4px 12px;
-  white-space: nowrap;
-}
-.ann-countdown__dot {
-  width: 6px; height: 6px; border-radius: 50%;
-  background: #4ade80;
-  box-shadow: 0 0 0 2px rgba(74,222,128,0.4);
-  animation: ann-dot-pulse 2s ease-in-out infinite;
+#announcement-bar-{{ section.id }} .offer-countdown--compact {
   flex-shrink: 0;
 }
-@keyframes ann-dot-pulse {
-  0%,100% { box-shadow: 0 0 0 2px rgba(74,222,128,0.4); }
-  50%      { box-shadow: 0 0 0 5px rgba(74,222,128,0.1); }
-}
-.ann-countdown__label { opacity: 0.8; }
-.ann-countdown__time  { font-variant-numeric: tabular-nums; }
 
 @media (max-width: 480px) {
   .ann-msg { white-space: normal; font-size: 11px; }
   .ann-nav-btn { display: none; }
   .ann-inner { padding: 0 44px 0 16px; }
-  .ann-countdown { display: none; }
+  #announcement-bar-{{ section.id }} .offer-countdown--compact { display: none; }
 }
 </style>
 
@@ -173,29 +165,6 @@
 })();
 </script>
 
-{%- if section.settings.offer_mode -%}
-<script>
-(function() {
-  var timeEl = document.getElementById('ann-time-{{ section.id }}');
-  if (!timeEl) return;
-  var endMeta = document.querySelector('meta[name="weekly-offer-end"]');
-  if (!endMeta) return;
-  var endTime = new Date(endMeta.content).getTime();
-  function pad(n) { return n < 10 ? '0' + n : '' + n; }
-  function tick() {
-    var diff = endTime - Date.now();
-    if (diff <= 0) { timeEl.textContent = '00:00:00'; return; }
-    var h = Math.floor(diff / 3600000);
-    var m = Math.floor((diff % 3600000) / 60000);
-    var s = Math.floor((diff % 60000) / 1000);
-    timeEl.textContent = pad(h) + ':' + pad(m) + ':' + pad(s);
-    setTimeout(tick, 1000);
-  }
-  tick();
-})();
-</script>
-{%- endif -%}
-
 {% endif %}
 
 {% schema %}
@@ -214,7 +183,7 @@
     { "type": "range",    "id": "speed",      "label": "Rotation speed (seconds)", "min": 2, "max": 10, "step": 1, "default": 4 },
     { "type": "header",   "content": "Weekly Offer Countdown" },
     { "type": "checkbox", "id": "offer_mode", "label": "Show live countdown timer", "default": false,
-      "info": "Reads offer end date from Theme Settings > Weekly Offer. Enable 'Weekly Offer' there first." },
+      "info": "Reads the active countdown source from Theme Settings > Weekly Offer." },
     { "type": "text",     "id": "countdown_prefix", "label": "Countdown label text", "default": "Ends in" }
   ],
   "presets": [

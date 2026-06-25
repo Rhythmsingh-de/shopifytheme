@@ -122,7 +122,32 @@
       { "type": "text", "id": "trust_support_sub",    "label": "Support badge subtitle",       "default": "We reply within hours" },
       { "type": "header", "content": "Urgency / Scarcity" },
       { "type": "checkbox", "id": "show_urgency_banner", "label": "Show announcement urgency banner",       "default": true },
-      { "type": "checkbox", "id": "show_scarcity_bar",   "label": "Show stock scarcity bar on product",    "default": true }
+      { "type": "checkbox", "id": "show_scarcity_bar",   "label": "Show stock scarcity bar on product",    "default": true },
+      { "type": "header", "content": "Global CTA Defaults" },
+      { "type": "text", "id": "conversion_primary_cta_label", "label": "Primary add-to-cart label", "default": "Add to Cart" },
+      { "type": "text", "id": "conversion_buy_now_label", "label": "Buy now label", "default": "Buy Now" },
+      { "type": "text", "id": "conversion_fast_checkout_label", "label": "Fast checkout label", "default": "Fast Checkout" },
+      { "type": "checkbox", "id": "conversion_show_fast_checkout", "label": "Show fast checkout buttons", "default": true },
+      { "type": "select", "id": "conversion_checkout_button_mode", "label": "Product CTA button layout",
+        "options": [
+          { "value": "both", "label": "Add to cart and fast checkout" },
+          { "value": "cart_only", "label": "Add to cart only" },
+          { "value": "checkout_only", "label": "Fast checkout only" }
+        ],
+        "default": "both" },
+      { "type": "select", "id": "fast_checkout_destination", "label": "Fast checkout destination",
+        "options": [
+          { "value": "checkout", "label": "Checkout permalink" },
+          { "value": "cart", "label": "Cart permalink" }
+        ],
+        "default": "checkout" },
+      { "type": "text", "id": "conversion_microcopy", "label": "Checkout trust microcopy", "default": "Secure checkout - free shipping available - 30-day returns" },
+      { "type": "checkbox", "id": "product_sticky_atc_enabled", "label": "Show sticky add-to-cart on product pages", "default": true },
+      { "type": "header", "content": "Product Page Benefit Defaults" },
+      { "type": "text", "id": "product_benefit_1", "label": "Product benefit 1", "default": "Premium quality, built to last" },
+      { "type": "text", "id": "product_benefit_2", "label": "Product benefit 2", "default": "Free shipping threshold shown at checkout" },
+      { "type": "text", "id": "product_benefit_3", "label": "Product benefit 3", "default": "30-day hassle-free returns" },
+      { "type": "text", "id": "product_benefit_4", "label": "Product benefit 4", "default": "Secure checkout guaranteed" }
     ]
   },
   {
@@ -153,7 +178,20 @@
         "info": "Used for back-in-stock subscriptions." },
       { "type": "text", "id": "gtm_container_id", "label": "Google Tag Manager container ID",
         "info": "Example: GTM-XXXXXXX" },
-      { "type": "text", "id": "google_site_verification", "label": "Google Search Console verification code" }
+      { "type": "text", "id": "google_site_verification", "label": "Google Search Console verification code" },
+      { "type": "header", "content": "DataLayer Event Controls" },
+      { "type": "checkbox", "id": "data_layer_enabled", "label": "Enable theme dataLayer events", "default": true },
+      { "type": "checkbox", "id": "gtm_noscript_enabled", "label": "Render GTM noscript iframe", "default": true },
+      { "type": "checkbox", "id": "track_page_views", "label": "Track page views", "default": true },
+      { "type": "checkbox", "id": "track_ecommerce_events", "label": "Track ecommerce events", "default": true },
+      { "type": "checkbox", "id": "track_lead_events", "label": "Track email/contact leads", "default": true },
+      { "type": "checkbox", "id": "track_engagement_events", "label": "Track engagement events", "default": true },
+      { "type": "select", "id": "tracking_blocked_event_mode", "label": "When consent is declined",
+        "options": [
+          { "value": "status_only", "label": "Record blocked-event status only" },
+          { "value": "none", "label": "Record nothing after decline" }
+        ],
+        "default": "status_only" }
     ]
   },
   {
@@ -169,7 +207,54 @@
         "info": "Example: 2026-12-31T23:59:59. Used for countdown timers." },
       { "type": "text", "id": "weekly_scarcity_text", "label": "Scarcity text (near ATC button)",
         "default": "Only 14 left in stock — order soon",
-        "info": "Leave blank to hide. Example: 'Only 12 left in stock!'" }
+        "info": "Leave blank to hide. Example: 'Only 12 left in stock!'" },
+      { "type": "select", "id": "offer_countdown_mode", "label": "Default countdown source",
+        "options": [
+          { "value": "weekly_offer", "label": "Weekly offer ends" },
+          { "value": "upcoming_sale", "label": "Upcoming sale starts" }
+        ],
+        "default": "weekly_offer" },
+      { "type": "text", "id": "weekly_countdown_label", "label": "Weekly countdown label", "default": "Ends in" },
+      { "type": "text", "id": "offer_countdown_expired_text", "label": "Expired countdown text", "default": "Offer ended" },
+      { "type": "header", "content": "Weekly Offer Targeting" },
+      { "type": "select", "id": "weekly_offer_scope", "label": "Where weekly offer applies",
+        "options": [
+          { "value": "all", "label": "All pages" },
+          { "value": "homepage_only", "label": "Homepage only" },
+          { "value": "all_products", "label": "All products" },
+          { "value": "all_collections", "label": "All collections" },
+          { "value": "selected_products", "label": "Selected products" },
+          { "value": "selected_collection", "label": "Selected collection" }
+        ],
+        "default": "all" },
+      { "type": "product", "id": "weekly_offer_product", "label": "Featured weekly offer product" },
+      { "type": "product_list", "id": "weekly_offer_products", "label": "Selected weekly offer products", "limit": 12 },
+      { "type": "collection", "id": "weekly_offer_collection", "label": "Weekly offer collection" },
+      { "type": "text", "id": "weekly_offer_cta_label", "label": "Weekly offer CTA label", "default": "Shop the offer" },
+      { "type": "header", "content": "Upcoming Sale" },
+      { "type": "checkbox", "id": "upcoming_sale_enabled", "label": "Enable upcoming sale countdown", "default": false },
+      { "type": "text", "id": "upcoming_sale_label", "label": "Upcoming sale badge label", "default": "Next Sale Coming" },
+      { "type": "text", "id": "upcoming_sale_countdown_label", "label": "Upcoming countdown label", "default": "Starts in" },
+      { "type": "text", "id": "upcoming_sale_start_datetime", "label": "Sale start date/time (ISO 8601)", "default": "2026-12-31T09:00:00" },
+      { "type": "select", "id": "upcoming_sale_scope", "label": "Where upcoming sale applies",
+        "options": [
+          { "value": "all", "label": "All pages" },
+          { "value": "homepage_only", "label": "Homepage only" },
+          { "value": "all_products", "label": "All products" },
+          { "value": "all_collections", "label": "All collections" },
+          { "value": "selected_products", "label": "Selected products" },
+          { "value": "selected_collection", "label": "Selected collection" }
+        ],
+        "default": "all" },
+      { "type": "product", "id": "upcoming_sale_product", "label": "Featured upcoming sale product" },
+      { "type": "product_list", "id": "upcoming_sale_products", "label": "Selected upcoming sale products", "limit": 12 },
+      { "type": "collection", "id": "upcoming_sale_collection", "label": "Upcoming sale collection" },
+      { "type": "text", "id": "upcoming_sale_cta_label", "label": "Upcoming sale CTA label", "default": "Preview the sale" },
+      { "type": "header", "content": "Sale Stripe" },
+      { "type": "checkbox", "id": "sale_stripe_enabled", "label": "Show sale stripe", "default": true },
+      { "type": "text", "id": "sale_stripe_text", "label": "Sale stripe text", "default": "Sale" },
+      { "type": "checkbox", "id": "sale_stripe_show_savings", "label": "Append savings percentage", "default": true },
+      { "type": "checkbox", "id": "sale_stripe_animate", "label": "Animate sale stripe bend", "default": true }
     ]
   },
   {

@@ -252,9 +252,23 @@
     <script>window.KLAVIYO_COMPANY_ID = {{ settings.klaviyo_company_id | json }};</script>
   {%- endif -%}
 
-  {%- comment -%}Weekly offer end date for countdown timers{%- endcomment -%}
+  {%- liquid
+    assign active_offer_countdown_end = settings.weekly_offer_end_datetime
+    assign active_offer_countdown_label = settings.weekly_countdown_label | default: 'Ends in'
+    if settings.offer_countdown_mode == 'upcoming_sale' and settings.upcoming_sale_enabled and settings.upcoming_sale_start_datetime != blank
+      assign active_offer_countdown_end = settings.upcoming_sale_start_datetime
+      assign active_offer_countdown_label = settings.upcoming_sale_countdown_label | default: 'Starts in'
+    endif
+  -%}
+  {%- if active_offer_countdown_end != blank -%}
+    <meta name="offer-countdown-end" content="{{ active_offer_countdown_end | escape }}">
+    <meta name="offer-countdown-label" content="{{ active_offer_countdown_label | escape }}">
+  {%- endif -%}
   {%- if settings.weekly_offer_enabled and settings.weekly_offer_end_datetime != blank -%}
-    <meta name="weekly-offer-end" content="{{ settings.weekly_offer_end_datetime }}">
+    <meta name="weekly-offer-end" content="{{ settings.weekly_offer_end_datetime | escape }}">
+  {%- endif -%}
+  {%- if settings.upcoming_sale_enabled and settings.upcoming_sale_start_datetime != blank -%}
+    <meta name="upcoming-sale-start" content="{{ settings.upcoming_sale_start_datetime | escape }}">
   {%- endif -%}
 
   {%- if settings.data_layer_enabled -%}
@@ -300,7 +314,8 @@
     window.blcSettings = {
       freeShippingThreshold: {{ settings.free_shipping_threshold | default: 75 }},
       showFreeShippingBar:   {{ settings.show_free_shipping_bar | default: true }},
-      cartShowUpsell:        {{ settings.cart_show_upsell | default: true }}
+      cartShowUpsell:        {{ settings.cart_show_upsell | default: true }},
+      fastCheckoutDestination: {{ settings.fast_checkout_destination | default: 'checkout' | json }}
     };
   </script>
 

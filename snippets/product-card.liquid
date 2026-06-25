@@ -2,6 +2,24 @@
 {%- assign card_index = index | default: 0 -%}
 {%- assign card_atc_label = settings.conversion_primary_cta_label | default: 'Add to Cart' -%}
 {%- assign card_buy_label = settings.conversion_fast_checkout_label | default: settings.conversion_buy_now_label | default: 'Buy Now' -%}
+{%- liquid
+  assign card_cta_mode = settings.conversion_checkout_button_mode | default: 'both'
+  assign card_fast_destination = settings.fast_checkout_destination | default: 'checkout'
+  assign card_fast_suffix = ''
+  if card_fast_destination == 'cart'
+    assign card_fast_suffix = '?storefront=true'
+  endif
+  assign card_show_atc = true
+  assign card_show_buy = settings.conversion_show_fast_checkout
+  if card_cta_mode == 'cart_only'
+    assign card_show_buy = false
+  elsif card_cta_mode == 'checkout_only' and settings.conversion_show_fast_checkout
+    assign card_show_atc = false
+  endif
+  if card_show_atc == false and card_show_buy == false
+    assign card_show_atc = true
+  endif
+-%}
 
 <div class="prod-card reveal"
   style="transition-delay:{{ card_index | times: 60 }}ms"
@@ -103,18 +121,22 @@
         {%- endif -%}
 
         <div class="prod-card__buttons">
-          <button class="btn btn--primary btn--sm prod-card__btn-atc atc-btn"
-                  data-add-to-cart
-                  data-variant-id="{{ card_product.variants.first.id }}"
-                  data-qty="1"
-                  aria-label="Add {{ card_product.title | escape }} to cart"
-                  {% unless card_product.variants.first.available %}disabled aria-disabled="true"{% endunless %}>
-            <span class="atc-btn-text">{% if card_product.variants.first.available %}{{ card_atc_label | escape }}{% else %}Sold Out{% endif %}</span>
-          </button>
-          {%- if card_product.variants.first.available -%}
-            <a href="/cart/{{ card_product.variants.first.id }}:1"
+          {%- if card_show_atc or card_product.variants.first.available == false -%}
+            <button class="btn btn--primary btn--sm prod-card__btn-atc atc-btn"
+                    data-add-to-cart
+                    data-variant-id="{{ card_product.variants.first.id }}"
+                    data-qty="1"
+                    aria-label="Add {{ card_product.title | escape }} to cart"
+                    {% unless card_product.variants.first.available %}disabled aria-disabled="true"{% endunless %}>
+              <span class="atc-btn-text">{% if card_product.variants.first.available %}{{ card_atc_label | escape }}{% else %}Sold Out{% endif %}</span>
+            </button>
+          {%- endif -%}
+          {%- if card_product.variants.first.available and card_show_buy -%}
+            <a href="/cart/{{ card_product.variants.first.id }}:1{{ card_fast_suffix }}"
                class="btn btn--ghost btn--sm prod-card__btn-buy"
                data-card-buy-now
+               data-checkout-destination="{{ card_fast_destination }}"
+               data-variant-id="{{ card_product.variants.first.id }}"
                aria-label="Buy {{ card_product.title | escape }} now">
               {{ card_buy_label | escape }}
             </a>

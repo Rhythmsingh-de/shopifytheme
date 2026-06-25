@@ -159,6 +159,13 @@
     addToCart(btn.dataset.variant,1,btn);
   });
 
+  function checkoutHref(variantId, qty, trigger) {
+    var destination = trigger && trigger.dataset ? trigger.dataset.checkoutDestination : 'checkout';
+    if (!destination && window.blcSettings) destination = window.blcSettings.fastCheckoutDestination || 'checkout';
+    var suffix = destination === 'cart' ? '?storefront=true' : '';
+    return '/cart/' + encodeURIComponent(variantId) + ':' + encodeURIComponent(qty || 1) + suffix;
+  }
+
   /* ─────────── BUY NOW (DIRECT CHECKOUT) ─────────── */
   document.addEventListener('click', function(e) {
     var btn = e.target.closest('[data-card-buy-now], .sph__btn-buy, [data-buy-now], .pf__buy');
@@ -201,7 +208,7 @@
       window.location.href = '/cart';
     } else {
       btn.textContent = 'Redirecting…';
-      btn.setAttribute('href', '/cart/' + vid + ':' + qty);
+      btn.setAttribute('href', checkoutHref(vid, qty, btn));
     }
   });
 
@@ -316,8 +323,8 @@
       if(atc)atc.dataset.qty=val;
       var buyBtn=detail.querySelector('[data-buy-now], [data-card-buy-now], .sph__btn-buy, .pf__buy');
       if(buyBtn){
-        var vid=atc?atc.dataset.variantId:null;
-        if(vid)buyBtn.href='/cart/'+vid+':'+val;
+        var vid=atc?atc.dataset.variantId:buyBtn.dataset.variantId;
+        if(vid)buyBtn.href=checkoutHref(vid,val,buyBtn);
       }
     }
   });
@@ -366,7 +373,10 @@
     
     // Update Buy Now link href
     var buy=card.querySelector('[data-card-buy-now]');
-    if(buy)buy.href='/cart/'+vid+':1';
+    if(buy){
+      buy.dataset.variantId=vid;
+      buy.href=checkoutHref(vid,1,buy);
+    }
   });
 
   function _syncVariant(form){
@@ -442,7 +452,8 @@
           var currentQty=1;
           var qtyInp=form.querySelector('[data-qty-input],.product-qty__val,.sph__qty-val');
           if(qtyInp)currentQty=parseInt(qtyInp.value)||1;
-          buyBtn.href='/cart/'+match.id+':'+currentQty;
+          buyBtn.dataset.variantId=String(match.id);
+          buyBtn.href=checkoutHref(match.id,currentQty,buyBtn);
         }
 
         // Trigger events to sync other components (like sticky ATC)
@@ -502,6 +513,58 @@
     var pane=document.getElementById('tab-pane-'+tabId);if(pane)pane.classList.add('active');
   });
 
+  function initOfferCountdowns(root) {
+    qsa('[data-offer-countdown]', root || document).forEach(function(el) {
+      if (el._offerCountdownTimer) clearInterval(el._offerCountdownTimer);
+      var rawEnd = el.dataset.countdownEnd;
+      if (!rawEnd) {
+        var meta = document.querySelector('meta[name="offer-countdown-end"]');
+        rawEnd = meta ? meta.content : '';
+      }
+      var endTime = rawEnd ? new Date(rawEnd).getTime() : 0;
+      if (!endTime || Number.isNaN(endTime)) return;
+
+      var labelEl = el.querySelector('[data-countdown-label]');
+      var daysEl = el.querySelector('[data-countdown-days]');
+      var hoursEl = el.querySelector('[data-countdown-hours]');
+      var minsEl = el.querySelector('[data-countdown-mins]');
+      var secsEl = el.querySelector('[data-countdown-secs]');
+      var daysWrap = el.querySelector('[data-countdown-days-wrap]');
+      var expiredText = el.dataset.expiredText || 'Offer ended';
+
+      function pad(n) { return n < 10 ? '0' + n : '' + n; }
+      function tick() {
+        var diff = endTime - Date.now();
+        if (diff <= 0) {
+          el.classList.add('is-expired');
+          if (labelEl) labelEl.textContent = expiredText;
+          if (daysEl) daysEl.textContent = '00';
+          if (hoursEl) hoursEl.textContent = '00';
+          if (minsEl) minsEl.textContent = '00';
+          if (secsEl) secsEl.textContent = '00';
+          clearInterval(el._offerCountdownTimer);
+          return;
+        }
+        var days = Math.floor(diff / 86400000);
+        var hours = Math.floor((diff % 86400000) / 3600000);
+        var mins = Math.floor((diff % 3600000) / 60000);
+        var secs = Math.floor((diff % 60000) / 1000);
+        if (daysEl) daysEl.textContent = pad(days);
+        if (hoursEl) hoursEl.textContent = pad(hours);
+        if (minsEl) minsEl.textContent = pad(mins);
+        if (secsEl) secsEl.textContent = pad(secs);
+        if (daysWrap) daysWrap.hidden = days === 0 && !el.classList.contains('offer-countdown--compact');
+      }
+
+      tick();
+      el._offerCountdownTimer = setInterval(tick, 1000);
+    });
+  }
+
+  document.addEventListener('shopify:section:load', function(e) {
+    initOfferCountdowns(e.target);
+  });
+
   /* ─────────── ESC KEY ─────────── */
   document.addEventListener('keydown',function(e){
     if(e.key!=='Escape')return;
@@ -521,6 +584,7 @@
   /* ─────────── INIT ─────────── */
   document.addEventListener('DOMContentLoaded',function(){
     _updateCartCount();
+    initOfferCountdowns();
     if(document.cookie.indexOf('blc_cookie_consent=accepted')>-1)_activateTracking();
 
     // Bind mobile navigation drawer elements
@@ -547,6 +611,8 @@
     openCartDrawer:openCartDrawer,closeCartDrawer:closeCartDrawer,
     openCart:openCartDrawer,closeCart:closeCartDrawer,
     addToCart:addToCart,
+    checkoutHref:checkoutHref,
+    initOfferCountdowns:initOfferCountdowns,
     refreshCartDrawer:refreshCartDrawer,
     acceptCookies:function(){
       var expires=';max-age=31536000;path=/;SameSite=Lax';
