@@ -89,7 +89,7 @@
         "feat_3_icon": "bag",
         "description_style": "accordion",
         "description_label": "Description",
-        "description_open_desktop": true,
+        "description_open_desktop": false,
         "description_open_mobile": false,
         "show_reviews": true,
         "show_faq": true,
