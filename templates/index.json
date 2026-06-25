@@ -157,6 +157,30 @@
     "single_product_home_f7zdV9": {
       "type": "single-product-home",
       "blocks": {
+        "feat_block_1": {
+          "type": "feature",
+          "settings": {
+            "title": "Stay Hydrated, Effortlessly",
+            "subtitle": "Smart reminders and real-time tracking help you hit your daily hydration goals.",
+            "icon": "water"
+          }
+        },
+        "feat_block_2": {
+          "type": "feature",
+          "settings": {
+            "title": "See Progress, Stay Motivated",
+            "subtitle": "Track your streaks and hydration insights in the app to build better habits.",
+            "icon": "leaf"
+          }
+        },
+        "feat_block_3": {
+          "type": "feature",
+          "settings": {
+            "title": "Built to Keep Up",
+            "subtitle": "Long-lasting battery, durable design, and leak-proof — ready for anything.",
+            "icon": "bag"
+          }
+        },
         "review_PQY4N7": {
           "type": "review",
           "settings": {
@@ -196,6 +220,9 @@
         }
       },
       "block_order": [
+        "feat_block_1",
+        "feat_block_2",
+        "feat_block_3",
         "review_PQY4N7",
         "review_GhWHDx",
         "faq_e43AA7",
@@ -223,15 +250,6 @@
         "trust_2": "1-Year Warranty",
         "trust_3": "Secure checkout",
         "show_features": true,
-        "feat_1_title": "Stay Hydrated, Effortlessly",
-        "feat_1_sub": "Smart reminders and real-time tracking help you hit your daily hydration goals.",
-        "feat_1_icon": "water",
-        "feat_2_title": "See Progress, Stay Motivated",
-        "feat_2_sub": "Track your streaks and hydration insights in the app to build better habits.",
-        "feat_2_icon": "leaf",
-        "feat_3_title": "Built to Keep Up",
-        "feat_3_sub": "Long-lasting battery, durable design, and leak-proof — ready for anything.",
-        "feat_3_icon": "bag",
         "description_style": "plain",
         "description_label": "Description",
         "description_open_desktop": false,
@@ -262,7 +280,7 @@
         "rev_1": {
           "type": "review",
           "settings": {
-            "stars": "★★★★★",
+            "stars": 5,
             "text": "This bottle changed the way I hydrate. The reminders are super helpful and the battery lasts forever!",
             "author": "James D.",
             "verified": true
@@ -271,7 +289,7 @@
         "rev_2": {
           "type": "review",
           "settings": {
-            "stars": "★★★★★",
+            "stars": 5,
             "text": "Love the design and the app integration. It keeps me accountable every single day.",
             "author": "Sarah M.",
             "verified": true
@@ -280,7 +298,7 @@
         "rev_3": {
           "type": "review",
           "settings": {
-            "stars": "★★★★★",
+            "stars": 5,
             "text": "Perfect for the gym and work. Durable, stylish, and actually makes a difference.",
             "author": "Michael T.",
             "verified": true
