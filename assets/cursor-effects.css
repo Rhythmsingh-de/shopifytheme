@@ -26,7 +26,7 @@ html.cursor-active label {
   top: 0; left: 0;
   border-radius: 50%;
   pointer-events: none;
-  z-index: 99999;
+  z-index: 2147483647;
   will-change: transform;
   transform: translate(-50%, -50%);
   transition-property: width, height, opacity, background, border-color, box-shadow;
