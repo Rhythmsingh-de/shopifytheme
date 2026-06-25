@@ -9,185 +9,25 @@
  */
 {
   "sections": {
-    "newsletter_bar_r6KAXY": {
-      "type": "newsletter-bar",
-      "disabled": true,
-      "name": "Newsletter Bar",
+    "announcement_bar_Lm4kTf": {
+      "type": "announcement-bar",
+      "name": "Announcement Bar",
       "settings": {
-        "eyebrow": "Stay in the loop",
-        "heading": "Join the Community",
-        "subtext": "Be first to know about new arrivals, exclusive offers, and our latest giving campaigns.",
-        "placeholder": "Enter your email address",
-        "button": "Subscribe",
-        "success_msg": "You're in! Check your inbox for a welcome gift.",
-        "privacy_note": "No spam. Unsubscribe anytime. We respect your privacy.",
-        "bg_color": "#f5f3f0",
-        "text_color": "#111111"
-      }
-    },
-    "hero_4TB6Ft": {
-      "type": "hero",
-      "name": "Hero Banner",
-      "settings": {
-        "layout": "full",
-        "media_position": "right",
-        "best_seller_text": "BEST SELLER",
-        "best_seller_stars": true,
-        "eyebrow": "New Weekly Drop",
-        "heading": "This Week's Drop",
-        "subheading": "Premium products designed for comfort, beauty, recovery, and everyday luxury.",
-        "show_product_description": false,
-        "product_description_words": 28,
-        "trust_text": "Free shipping",
-        "show_secure_payment_badge": false,
-        "secure_payment_label": "Secure Payment",
-        "secure_payment_text": "SSL encrypted checkout",
-        "hero_product": "",
-        "show_hover_image": true,
-        "show_price": true,
-        "show_variant_picker": true,
-        "show_quantity_selector": true,
-        "show_sale_ribbon": true,
-        "sale_stripe_design": "rolling_strip",
-        "sale_stripe_orientation": "left",
-        "show_countdown": false,
-        "countdown_label": "Offer ends in",
-        "countdown_end": "",
-        "show_buttons": false,
-        "cta_position": "below",
-        "cta_button_mode": "checkout_permalink",
-        "hero_checkout_label": "Buy Now",
-        "hero_cart_label": "Add to Cart",
-        "cta1_label": "Buy Now",
-        "cta1_link": "",
-        "cta1_icon": false,
-        "cta1_bg": "#1a1a1a",
-        "cta1_color": "#ffffff",
-        "cta2_label": "Learn More",
-        "cta2_link": "",
-        "split_media_bg": "#ffffff",
-        "split_content_bg": "#faf9f7",
-        "heading_color": "#111111",
-        "subheading_color": "#555555",
-        "accent_color": "#1d6b44",
-        "offer_badge_bg": "#ffffff1f",
-        "offer_badge_color": "#ffffff",
-        "color_scheme": "dark",
-        "bg_color": "#FFFFFF",
-        "show_overlay": false,
-        "overlay_opacity": 9,
-        "min_height": 750,
-        "content_align": "left"
-      }
-    },
-    "single_product_home_wXjWyH": {
-      "type": "single-product-home",
-      "blocks": {
-        "review_KxCBmf": {
-          "type": "review",
-          "settings": {
-            "name": "Sarah M.",
-            "rating": 5,
-            "body": "Absolutely love this! Fits perfectly and looks amazing."
-          }
-        },
-        "review_8JXrWt": {
-          "type": "review",
-          "settings": {
-            "name": "Mike L.",
-            "rating": 5,
-            "body": "Best purchase I've made this year. Highly recommend."
-          }
-        },
-        "faq_33Bici": {
-          "type": "faq",
-          "settings": {
-            "question": "Key questions about this product?",
-            "answer": "<p>This product is designed for maximum comfort and performance.</p>"
-          }
-        },
-        "faq_TwbmLg": {
-          "type": "faq",
-          "settings": {
-            "question": "How is the quality?",
-            "answer": "<p>We use only premium materials tested for durability and longevity.</p>"
-          }
-        },
-        "faq_xhqcLM": {
-          "type": "faq",
-          "settings": {
-            "question": "What are the shipping options?",
-            "answer": "<p>Free shipping on all orders over $75. Standard delivery 5–10 business days.</p>"
-          }
-        }
-      },
-      "block_order": [
-        "review_KxCBmf",
-        "review_8JXrWt",
-        "faq_33Bici",
-        "faq_TwbmLg",
-        "faq_xhqcLM"
-      ],
-      "disabled": true,
-      "name": "Single Product Home",
-      "settings": {
-        "visibility": "follow_global",
-        "product": "herren-brusttasche-sling-bag-wasserdicht",
-        "media_position": "left",
-        "show_hover_image": true,
-        "show_eyebrow": true,
-        "eyebrow": "Featured product",
-        "heading": "Premium daily essential",
-        "subheading": "A focused product story with price, reviews, trust, and fast checkout controls.",
-        "show_rating": true,
-        "show_demo_rating": true,
-        "show_sale_badge": true,
-        "show_sale_strip": true,
-        "sale_stripe_design": "rolling_strip",
-        "sale_stripe_orientation": "left",
-        "cta_position": "below",
-        "show_qty_selector": true,
-        "atc_label": "",
-        "show_buy_now": true,
-        "buy_label": "",
-        "show_payment_icons": true,
-        "show_trust_strip": true,
-        "trust_1": "Free Shipping",
-        "trust_2": "Secure Checkout",
-        "trust_3": "14-Day Guarantee",
-        "show_features": true,
-        "feat_1_title": "Waterproof",
-        "feat_1_sub": "Durable Materials",
-        "feat_1_icon": "water",
-        "feat_2_title": "Ultralight",
-        "feat_2_sub": "30L Capacity",
-        "feat_2_icon": "leaf",
-        "feat_3_title": "Ergonomic",
-        "feat_3_sub": "Comfort Straps",
-        "feat_3_icon": "bag",
-        "description_style": "accordion",
-        "description_label": "Description",
-        "description_open_desktop": false,
-        "description_open_mobile": true,
-        "show_reviews": false,
-        "show_faq": false,
-        "bottom_alignment": "left",
-        "reviews_title": "Reviews",
-        "faq_title": "FAQ",
-        "use_global_review_settings": true,
-        "enable_review_slider_cycling": true,
-        "review_slider_interval": 4,
-        "visible_reviews_count": 3,
-        "bg_color_override": "",
-        "text_color_override": "",
-        "padding_top": 36,
-        "padding_bottom": 48
+        "enabled": true,
+        "bg_color": "#111111",
+        "text_color": "#ffffff",
+        "text_1": "⚡ Free shipping on orders over $75",
+        "text_2": "🔒 60-Day Money-Back Guarantee",
+        "text_3": "",
+        "link": "",
+        "auto_rotate": true,
+        "speed": 4,
+        "offer_mode": false,
+        "countdown_prefix": "Ends in"
       }
     }
   },
   "order": [
-    "newsletter_bar_r6KAXY",
-    "hero_4TB6Ft",
-    "single_product_home_wXjWyH"
+    "announcement_bar_Lm4kTf"
   ]
 }
