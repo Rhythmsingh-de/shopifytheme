@@ -10,53 +10,6 @@
 {
   "type": "footer",
   "name": "Footer",
-  "sections": {
-    "footer_tyYtQ3": {
-      "type": "footer",
-      "blocks": {
-        "link_list_tg8Udp": {
-          "type": "link_list",
-          "settings": {
-            "heading": "Shop",
-            "menu": "main-menu"
-          }
-        },
-        "link_list_cxN9wW": {
-          "type": "link_list",
-          "settings": {
-            "heading": "Help",
-            "menu": "footer"
-          }
-        },
-        "link_list_pXQK9i": {
-          "type": "link_list",
-          "settings": {
-            "heading": "Company",
-            "menu": "footer"
-          }
-        }
-      },
-      "block_order": [
-        "link_list_tg8Udp",
-        "link_list_cxN9wW",
-        "link_list_pXQK9i"
-      ],
-      "name": "Footer",
-      "settings": {
-        "tagline": "Premium wellness products for you, your home & your pets.",
-        "layout_style": "compact",
-        "bg_color": "#111111",
-        "text_color": "#ffffff",
-        "social_instagram": "",
-        "social_facebook": "",
-        "social_tiktok": "",
-        "social_pinterest": "",
-        "social_youtube": "",
-        "show_trust_bar": false
-      }
-    }
-  },
-  "order": [
-    "footer_tyYtQ3"
-  ]
+  "sections": {},
+  "order": []
 }
