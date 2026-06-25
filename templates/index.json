@@ -9,6 +9,59 @@
  */
 {
   "sections": {
+    "hero": {
+      "type": "hero",
+      "settings": {
+        "layout": "split",
+        "media_position": "right",
+        "best_seller_text": "BEST SELLER",
+        "best_seller_stars": true,
+        "heading": "Stay Hydrated. Perform Better.",
+        "subheading": "The smart water bottle that tracks your hydration and helps you build better daily habits.",
+        "cta1_label": "Buy Now — $89",
+        "cta1_icon": true,
+        "cta1_bg": "#ff501a",
+        "cta1_color": "#ffffff",
+        "cta2_label": "",
+        "trust_text": "30-Day Money Back Guarantee  ·  1-Year Warranty",
+        "show_price": false,
+        "show_sale_ribbon": false,
+        "show_countdown": false,
+        "split_media_bg": "#f0f2f5",
+        "split_content_bg": "#ffffff"
+      },
+      "blocks": {
+        "highlight_1": {
+          "type": "highlight",
+          "settings": {
+            "title": "Tracks Hydration",
+            "subtitle": "Real-time reminders",
+            "icon": "hydration"
+          }
+        },
+        "highlight_2": {
+          "type": "highlight",
+          "settings": {
+            "title": "Smart LED Display",
+            "subtitle": "Stay on track",
+            "icon": "display"
+          }
+        },
+        "highlight_3": {
+          "type": "highlight",
+          "settings": {
+            "title": "Long Battery Life",
+            "subtitle": "Up to 16 days",
+            "icon": "battery"
+          }
+        }
+      },
+      "block_order": [
+        "highlight_1",
+        "highlight_2",
+        "highlight_3"
+      ]
+    },
     "single_product_home_f7zdV9": {
       "type": "single-product-home",
       "blocks": {
@@ -107,6 +160,7 @@
     }
   },
   "order": [
+    "hero",
     "single_product_home_f7zdV9"
   ]
 }
