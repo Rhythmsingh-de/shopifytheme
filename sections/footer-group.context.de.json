@@ -16,7 +16,8 @@
     "footer_YVFfbB": {
       "settings": {
         "layout_style": "compact",
-        "show_trust_bar": false
+        "show_trust_bar": false,
+        "tagline": "Premium-Taschen für deinen Alltag, deine Reisen & Abenteuer."
       },
       "blocks": {}
     }
