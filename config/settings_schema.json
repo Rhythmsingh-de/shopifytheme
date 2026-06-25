@@ -100,7 +100,7 @@
       { "type": "checkbox", "id": "collection_show_empty_state_cta", "label": "Show empty-state CTA", "default": true },
       { "type": "header", "content": "Collection Trust Row" },
       { "type": "checkbox", "id": "collection_show_trust_bar", "label": "Show trust row on collection pages", "default": true },
-      { "type": "text", "id": "collection_trust_text", "label": "Collection trust text", "default": "Free shipping available - 30-day returns - Secure checkout" }
+      { "type": "text", "id": "collection_trust_text", "label": "Collection trust text", "default": "Free shipping on all orders - 14-day guarantee - Secure checkout" }
     ]
   },
   {
@@ -123,7 +123,7 @@
         "default": true },
       { "type": "number", "id": "free_shipping_threshold",
         "label": "Free shipping threshold (in your store currency)",
-        "default": 75,
+        "default": 0,
         "info": "Customers see a progress bar until their cart reaches this value. Set to 0 to disable." },
       { "type": "header", "content": "Cart Upsell" },
       { "type": "checkbox", "id": "cart_show_upsell",
@@ -147,9 +147,9 @@
     "name": "Trust & Conversion",
     "settings": [
       { "type": "header", "content": "Shipping & Returns" },
-      { "type": "text", "id": "trust_shipping_title", "label": "Shipping badge title",         "default": "International Shipping" },
-      { "type": "text", "id": "trust_shipping_sub",   "label": "Shipping badge subtitle",      "default": "5\u201310 business days" },
-      { "type": "text", "id": "trust_returns_title",  "label": "Returns badge title",          "default": "30-Day Money Back" },
+      { "type": "text", "id": "trust_shipping_title", "label": "Shipping badge title",         "default": "Free Shipping" },
+      { "type": "text", "id": "trust_shipping_sub",   "label": "Shipping badge subtitle",      "default": "On all orders" },
+      { "type": "text", "id": "trust_returns_title",  "label": "Returns badge title",          "default": "14-Day Guarantee" },
       { "type": "text", "id": "trust_returns_sub",    "label": "Returns badge subtitle",       "default": "No questions asked" },
       { "type": "text", "id": "trust_secure_title",   "label": "Secure payment badge title",   "default": "Secure Checkout" },
       { "type": "text", "id": "trust_secure_sub",     "label": "Secure payment badge subtitle", "default": "SSL encrypted" },
@@ -176,12 +176,12 @@
           { "value": "cart", "label": "Cart permalink" }
         ],
         "default": "checkout" },
-      { "type": "text", "id": "conversion_microcopy", "label": "Checkout trust microcopy", "default": "Secure checkout - free shipping available - 30-day returns" },
+      { "type": "text", "id": "conversion_microcopy", "label": "Checkout trust microcopy", "default": "Secure checkout - free shipping on all orders - 14-day guarantee" },
       { "type": "checkbox", "id": "product_sticky_atc_enabled", "label": "Show sticky add-to-cart on product pages", "default": true },
       { "type": "header", "content": "Product Page Benefit Defaults" },
       { "type": "text", "id": "product_benefit_1", "label": "Product benefit 1", "default": "Premium quality, built to last" },
-      { "type": "text", "id": "product_benefit_2", "label": "Product benefit 2", "default": "Free shipping threshold shown at checkout" },
-      { "type": "text", "id": "product_benefit_3", "label": "Product benefit 3", "default": "30-day hassle-free returns" },
+      { "type": "text", "id": "product_benefit_2", "label": "Product benefit 2", "default": "Free shipping on all orders" },
+      { "type": "text", "id": "product_benefit_3", "label": "Product benefit 3", "default": "14-day money-back guarantee" },
       { "type": "text", "id": "product_benefit_4", "label": "Product benefit 4", "default": "Secure checkout guaranteed" }
     ]
   },

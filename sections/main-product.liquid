@@ -251,7 +251,7 @@
             <div class="product-trust-item">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
               <div>
-                <strong>{{ section.settings.trust_1_title | default: settings.trust_returns_title | default: '30-Day Returns' }}</strong>
+                <strong>{{ section.settings.trust_1_title | default: settings.trust_returns_title | default: '14-Day Returns' }}</strong>
                 <span>{{ section.settings.trust_1_sub | default: settings.trust_returns_sub | default: 'Easy returns' }}</span>
               </div>
             </div>
@@ -691,7 +691,7 @@
     { "type": "text",     "id": "tab_shipping_label",  "label": "Shipping tab label",        "default": "Shipping & Returns" },
     { "type": "richtext", "id": "tab_shipping_content","label": "Shipping tab content",      "default": "<p>We ship worldwide. Orders are dispatched within 1-2 business days. Standard delivery takes 7-10 business days.</p>" },
     { "type": "text",     "id": "tab_policy_label",   "label": "Return policy tab label",   "default": "Return Policy" },
-    { "type": "richtext", "id": "tab_policy_content",  "label": "Return policy tab content", "default": "<p>Not happy? Return within 30 days for a full refund. No questions asked.</p>" }
+    { "type": "richtext", "id": "tab_policy_content",  "label": "Return policy tab content", "default": "<p>Not happy? Return within 14 days for a full refund. No questions asked.</p>" }
   ]
 }
 {% endschema %}

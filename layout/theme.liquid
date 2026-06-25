@@ -328,7 +328,7 @@
       };
     })();
     window.blcSettings = {
-      freeShippingThreshold: {{ settings.free_shipping_threshold | default: 75 }},
+      freeShippingThreshold: {% if settings.free_shipping_threshold != blank %}{{ settings.free_shipping_threshold }}{% else %}75{% endif %},
       showFreeShippingBar:   {{ settings.show_free_shipping_bar | default: true }},
       cartShowUpsell:        {{ settings.cart_show_upsell | default: true }},
       fastCheckoutDestination: {{ settings.fast_checkout_destination | default: 'checkout' | json }}

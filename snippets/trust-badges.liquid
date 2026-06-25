@@ -6,8 +6,8 @@
 {% endcomment %}
 {%- liquid
   assign tb_style   = style | default: 'horizontal'
-  assign tb_return  = settings.trust_returns_title   | default: '30-Day Returns'
-  assign tb_ship    = settings.trust_shipping_title | default: '7–10 Day Shipping'
+  assign tb_return  = settings.trust_returns_title   | default: '14-Day Returns'
+  assign tb_ship    = settings.trust_shipping_title | default: 'Free Shipping'
   assign tb_secure  = settings.trust_secure_title   | default: 'Secure Payments'
   assign tb_quality = settings.trust_support_title  | default: 'Premium Quality'
 -%}

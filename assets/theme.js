@@ -365,8 +365,9 @@
   }
   function _updateFSBar(totalCents){
     var bar=qs('#freeShippingBar');if(!bar)return;
-    var threshold=((window.blcSettings&&window.blcSettings.freeShippingThreshold)||75)*100;
-    var pct=Math.min((totalCents/threshold)*100,100);
+    var rawThreshold=(window.blcSettings&&typeof window.blcSettings.freeShippingThreshold!=='undefined')?window.blcSettings.freeShippingThreshold:75;
+    var threshold=rawThreshold*100;
+    var pct=threshold>0?Math.min((totalCents/threshold)*100,100):100;
     var fill=bar.querySelector('.fs-bar__fill');var label=bar.querySelector('.fs-bar__label');
     if(fill)fill.style.width=pct+'%';
     if(label)label.textContent=pct>=100?'🎉 Free shipping unlocked!':'$'+((threshold-totalCents)/100).toFixed(2)+' away from free shipping';

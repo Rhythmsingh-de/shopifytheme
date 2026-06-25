@@ -1,15 +1,23 @@
 {%- liquid
   assign cart_count = cart.item_count
-  assign free_threshold = settings.free_shipping_threshold | default: 75
-  assign free_threshold_cents = free_threshold | times: 100
-  assign remaining_cents = free_threshold_cents | minus: cart.total_price
-  assign progress_pct = cart.total_price | times: 100 | divided_by: free_threshold_cents
-  if progress_pct > 100
-    assign progress_pct = 100
+  assign free_threshold = settings.free_shipping_threshold
+  if free_threshold == blank
+    assign free_threshold = 0
   endif
+  assign free_threshold_cents = free_threshold | times: 100
   assign free_shipping_unlocked = false
-  if cart.total_price >= free_threshold_cents
+  if free_threshold == 0 or cart.total_price >= free_threshold_cents
     assign free_shipping_unlocked = true
+  endif
+  if free_threshold > 0
+    assign remaining_cents = free_threshold_cents | minus: cart.total_price
+    assign progress_pct = cart.total_price | times: 100 | divided_by: free_threshold_cents
+    if progress_pct > 100
+      assign progress_pct = 100
+    endif
+  else
+    assign remaining_cents = 0
+    assign progress_pct = 100
   endif
 -%}
 

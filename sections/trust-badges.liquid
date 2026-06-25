@@ -19,11 +19,11 @@
           if badge_title == blank
             case block.settings.icon
               when 'return'
-                assign badge_title = settings.trust_returns_title | default: '30-Day Money Back'
+                assign badge_title = settings.trust_returns_title | default: '14-Day Money Back'
                 assign badge_sub = settings.trust_returns_sub | default: 'No questions asked'
               when 'shipping'
-                assign badge_title = settings.trust_shipping_title | default: 'International Shipping'
-                assign badge_sub = settings.trust_shipping_sub | default: '5–10 business days'
+                assign badge_title = settings.trust_shipping_title | default: 'Free Shipping'
+                assign badge_sub = settings.trust_shipping_sub | default: 'On all orders'
               when 'secure'
                 assign badge_title = settings.trust_secure_title | default: 'Secure Checkout'
                 assign badge_sub = settings.trust_secure_sub | default: 'SSL encrypted'
