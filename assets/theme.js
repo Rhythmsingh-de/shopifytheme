@@ -446,6 +446,11 @@
           if(qtyInp)currentQty=parseInt(qtyInp.value)||1;
           buyBtn.href='/cart/'+match.id+':'+currentQty;
         }
+
+        // Trigger events to sync other components (like sticky ATC)
+        var detail = { variant: match };
+        window.dispatchEvent(new CustomEvent('variant:changed', { detail: detail }));
+        window.dispatchEvent(new CustomEvent('sph:variant:changed', { detail: detail }));
       }
     }catch(ex){console.error('[BLC variants]',ex);}
   }

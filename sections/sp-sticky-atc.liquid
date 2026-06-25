@@ -254,9 +254,11 @@ class SpStickyAtc extends HTMLElement {
     /* Update price */
     const priceEl = this.querySelector('#StickyPrice');
     if (priceEl) {
-      const price = new Intl.NumberFormat('en', { style: 'currency', currency: window.Shopify?.currency?.active || 'USD' }).format(variant.price / 100);
+      const locale = window.Shopify?.locale || document.documentElement.lang || 'en';
+      const formatter = new Intl.NumberFormat(locale, { style: 'currency', currency: window.Shopify?.currency?.active || 'USD' });
+      const price = formatter.format(variant.price / 100);
       const wasHtml = variant.compare_at_price > variant.price
-        ? `<s class="sticky-atc__was">${new Intl.NumberFormat('en', { style: 'currency', currency: window.Shopify?.currency?.active || 'USD' }).format(variant.compare_at_price / 100)}</s>`
+        ? `<s class="sticky-atc__was">${formatter.format(variant.compare_at_price / 100)}</s>`
         : '';
       priceEl.innerHTML = price + (wasHtml ? ' ' + wasHtml : '');
     }
