@@ -11,20 +11,6 @@
   "type": "header",
   "name": "Header",
   "sections": {
-    "announcement": {
-      "type": "announcement-bar",
-      "settings": {
-        "enabled": true,
-        "bg_color": "#111111",
-        "text_color": "#ffffff",
-        "text_1": "⚡ Free shipping on orders",
-        "text_2": "🔒 30-Day Money-Back Guarantee",
-        "text_3": "",
-        "link": "shopify://products/outdoor-large-capacity-messenger-bag-men-chest-bag-simple-fashion-men-bag-shoulder-bag",
-        "auto_rotate": true,
-        "speed": 4
-      }
-    },
     "header": {
       "type": "header",
       "settings": {
@@ -39,7 +25,6 @@
     }
   },
   "order": [
-    "announcement",
     "header"
   ]
 }
