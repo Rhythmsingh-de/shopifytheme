@@ -31,6 +31,10 @@
       {%- if section.settings.show_countdown -%}
         <div class="urgency-banner__countdown" id="BannerCountdown-{{ section.id }}" aria-live="polite">
           <div class="urgency-banner__countdown-units">
+            <div class="urgency-banner__countdown-unit" id="bcDaysUnit-{{ section.id }}">
+              <span class="urgency-banner__countdown-num" id="bcDays-{{ section.id }}">00</span>
+              <span class="urgency-banner__countdown-name">{{ section.settings.days_label | default: 'Days' }}</span>
+            </div>
             <div class="urgency-banner__countdown-unit">
               <span class="urgency-banner__countdown-num" id="bcHours-{{ section.id }}">00</span>
               <span class="urgency-banner__countdown-name">{{ section.settings.hours_label | default: 'Hours' }}</span>
@@ -58,6 +62,7 @@
           
           if (!endTime) return;
           var sid = '{{ section.id }}';
+          var dEl = document.getElementById('bcDays-' + sid);
           var hEl = document.getElementById('bcHours-' + sid);
           var mEl = document.getElementById('bcMins-'  + sid);
           var sEl = document.getElementById('bcSecs-'  + sid);
@@ -65,10 +70,28 @@
           function pad(n) { return n < 10 ? '0' + n : '' + n; }
           function tick() {
             var diff = endTime - Date.now();
-            if (diff <= 0) { hEl.textContent = mEl.textContent = sEl.textContent = '00'; return; }
-            hEl.textContent = pad(Math.floor(diff / 3600000));
-            mEl.textContent = pad(Math.floor((diff % 3600000) / 60000));
-            sEl.textContent = pad(Math.floor((diff % 60000) / 1000));
+            if (diff <= 0) {
+              if (dEl) dEl.textContent = '00';
+              hEl.textContent = mEl.textContent = sEl.textContent = '00';
+              return;
+            }
+            var days = Math.floor(diff / 86400000);
+            var hours = Math.floor((diff % 86400000) / 3600000);
+            var mins = Math.floor((diff % 3600000) / 60000);
+            var secs = Math.floor((diff % 60000) / 1000);
+            
+            if (dEl) {
+              dEl.textContent = pad(days);
+              var dUnit = document.getElementById('bcDaysUnit-' + sid);
+              if (days === 0 && dUnit) {
+                dUnit.style.display = 'none';
+              } else if (dUnit) {
+                dUnit.style.display = '';
+              }
+            }
+            hEl.textContent = pad(hours);
+            mEl.textContent = pad(mins);
+            sEl.textContent = pad(secs);
             setTimeout(tick, 1000);
           }
           tick();
