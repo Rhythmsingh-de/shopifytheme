@@ -17,7 +17,6 @@
           "settings": {
             "title": "Wishlist Feature",
             "subtitle": "Save favorites locally without forcing signup.",
-            "visibility": "all",
             "icon": "heart"
           }
         },
@@ -26,7 +25,6 @@
           "settings": {
             "title": "Ajax Cart",
             "subtitle": "Fast cart drawer with quantity updates.",
-            "visibility": "all",
             "icon": "bag"
           }
         },
@@ -35,7 +33,6 @@
           "settings": {
             "title": "Product Compare",
             "subtitle": "Shown only when the storefront is in multiple-products mode.",
-            "visibility": "multi_product",
             "icon": "compare"
           }
         },
@@ -44,7 +41,6 @@
           "settings": {
             "title": "Blogs & SEO",
             "subtitle": "Content-ready layout with meta tags and product schema.",
-            "visibility": "all",
             "icon": "seo"
           }
         },
@@ -53,7 +49,6 @@
           "settings": {
             "title": "Super Fast Loading",
             "subtitle": "Responsive images, LCP preload, and lightweight interactions.",
-            "visibility": "all",
             "icon": "speed"
           }
         },
@@ -62,7 +57,6 @@
           "settings": {
             "title": "Secure Payment",
             "subtitle": "Shopify checkout with enabled payment gateway icons.",
-            "visibility": "all",
             "icon": "shield"
           }
         },
@@ -124,15 +118,11 @@
         "mobile_info_style": "compact",
         "mobile_media_visibility": "show",
         "show_hover_image": true,
-        "show_wishlist_button": true,
-        "show_compare_button": true,
         "show_eyebrow": false,
         "eyebrow": "",
         "heading": "Premium daily essential",
         "subheading": "A focused product story with price, reviews, trust, and fast checkout controls.",
         "show_rating": true,
-        "atc_label": "Add to Cart",
-        "buy_label": "Fast Checkout",
         "show_demo_rating": true,
         "show_sale_strip": true,
         "sale_stripe_design": "rolling_strip",
@@ -141,7 +131,9 @@
         "desktop_cta_layout": "row",
         "mobile_cta_layout": "row",
         "show_qty_selector": true,
+        "atc_label": "Add to Cart",
         "show_buy_now": true,
+        "buy_label": "Fast Checkout",
         "show_payment_icons": true,
         "show_payment_icons_desktop": true,
         "show_payment_icons_mobile": true,
