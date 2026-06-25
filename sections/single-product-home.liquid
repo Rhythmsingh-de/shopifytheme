@@ -206,9 +206,9 @@
 
         {%- if settings.card_show_new_badge -%}
           {%- if sp.tags contains 'new' -%}
-            <span class="sph__badge" style="background:var(--color-primary); color:var(--color-primary-text);">New</span>
+            <span class="sph__badge sph__badge--new">New</span>
           {%- elsif sp.tags contains 'bestseller' -%}
-            <span class="sph__badge" style="background:var(--color-gold); color:#fff;">Bestseller</span>
+            <span class="sph__badge sph__badge--bestseller">Bestseller</span>
           {%- endif -%}
         {%- endif -%}
 
@@ -685,6 +685,14 @@
   padding: 3px 8px;
   border-radius: var(--radius-full, 9999px);
 }
+.sph__badge--new {
+  background: var(--color-primary, #111111);
+  color: var(--color-primary-text, #ffffff);
+}
+.sph__badge--bestseller {
+  background: var(--color-gold, #c8941a);
+  color: #ffffff;
+}
 .sph__stars {
   display: flex;
   align-items: center;
@@ -1071,8 +1079,8 @@
   flex-shrink: 0;
 }
 .sph-review-card__avatar--initials {
-  background: var(--color-btn-primary-bg, #1a1a1a);
-  color: var(--color-btn-primary-text, #ffffff);
+  background: var(--color-primary, #1a1a1a);
+  color: var(--color-primary-text, #ffffff);
   font-size: var(--text-sm, 0.875rem);
   font-weight: 700;
   display: flex;
