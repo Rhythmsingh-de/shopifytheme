@@ -1,0 +1,39 @@
+{%- liquid
+  assign trust_text_value = trust_text | strip
+  assign secure_label_value = secure_label | default: settings.trust_secure_title | default: 'Secure Payment'
+  assign secure_subtext_value = secure_text | default: settings.trust_secure_sub | default: 'SSL encrypted checkout'
+  assign trust_text_compare = trust_text_value | downcase
+  assign secure_is_repeated = false
+
+  if trust_text_compare contains 'secure' or trust_text_compare contains 'payment'
+    assign secure_is_repeated = true
+  endif
+
+  assign show_secure_badge = false
+  if show_secure_payment and secure_is_repeated == false and secure_label_value != blank
+    assign show_secure_badge = true
+  endif
+-%}
+
+{%- if show_secure_badge or trust_text_value != blank -%}
+  <div class="blc-hero__reassurance{% if split %} blc-hero__reassurance--split{% endif %}{% if reveal %} reveal{% endif %}">
+    {%- if show_secure_badge -%}
+      <div class="blc-hero__secure-payment" aria-label="{{ secure_label_value | escape }}">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          <polyline points="9 12 11 14 15 10"/>
+        </svg>
+        <span>{{ secure_label_value | escape }}</span>
+        {%- if secure_subtext_value != blank -%}
+          <small>{{ secure_subtext_value | escape }}</small>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- if trust_text_value != blank -%}
+      <p class="blc-hero__trust{% if split %} blc-hero__trust--split{% endif %}">
+        {{ trust_text_value | escape }}
+      </p>
+    {%- endif -%}
+  </div>
+{%- endif -%}

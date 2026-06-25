@@ -1,0 +1,26 @@
+{%- liquid
+  assign description_text = ''
+  assign description_words = word_count | default: 28
+
+  if show_description and product != blank and product.description != blank
+    assign product_description_plain = product.description | strip_html | strip
+    assign subheading_plain = subheading | strip_html | strip
+    assign product_description_compare = product_description_plain | downcase
+    assign subheading_compare = subheading_plain | downcase
+    assign description_is_duplicate = false
+
+    if subheading_compare != blank and product_description_compare contains subheading_compare
+      assign description_is_duplicate = true
+    endif
+
+    unless description_is_duplicate
+      assign description_text = product_description_plain | truncatewords: description_words
+    endunless
+  endif
+-%}
+
+{%- if description_text != blank -%}
+  <p class="blc-hero__description{% if split %} blc-hero__description--split{% endif %}{% if reveal %} reveal{% endif %}">
+    {{ description_text | escape }}
+  </p>
+{%- endif -%}
