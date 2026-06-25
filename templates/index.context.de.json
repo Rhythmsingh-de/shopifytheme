@@ -17,11 +17,11 @@
       "type": "urgency-banner",
       "disabled": true,
       "settings": {
-        "header-0d504e72b54cca0672ae014be6843ba4": null,
+        "header-36dc632aa4ec884da1ce9180f9d603be": null,
         "eyebrow": "Limited Time Offer!",
         "heading": "Get 20% Off Today Only",
         "subheading": "Don't miss out on our best deal of the year.",
-        "header-9f9b9e7580b3b1939e41fa2e6b28228f": null,
+        "header-71468899b99a587e236ad9d843d04f06": null,
         "offer_type": "weekly_offer",
         "show_countdown": true,
         "countdown_end": "",
@@ -29,16 +29,16 @@
         "hours_label": "Hours",
         "mins_label": "Minutes",
         "secs_label": "Seconds",
-        "header-230990938b6dc1c59f472ede7d8ee9bc": null,
+        "header-55de8e069034be83f1e6b851feed15f9": null,
         "show_product_card": false,
         "offer_product": "herren-brusttasche-sling-bag-wasserdicht",
         "offer_collection": "",
-        "header-a1a71ed54a291cd490250243152c0b96": null,
+        "header-b232751c8fc00f87b54090d8b79b9132": null,
         "cta_label": "BUY NOW",
         "cta_link": "",
         "cta_behavior": "link",
         "show_cart_icon": false,
-        "header-15cbf17ff1e7bd321a48fb4b03739dd5": null,
+        "header-4ac74b1ab98ebb168d3cc4968da7cb10": null,
         "bg_color": "#ff501a",
         "text_color": "#ffffff",
         "cta_bg": "#ffffff",
@@ -52,12 +52,12 @@
       "type": "single-product-home",
       "disabled": false,
       "settings": {
-        "header-114069138f0f2e37c01bc8f181666760": null,
+        "header-1f01e3fde420514c3877c513d8a044cc": null,
         "enabled": true,
         "visibility": "single_only",
         "product": "",
         "media_position": "left",
-        "header-45fc0a653c3bbeb02eb9a156e38499f3": null,
+        "header-741c54e45cdf6ea01e5c9d003abe7a3a": null,
         "desktop_info_style": "card",
         "mobile_info_style": "card",
         "mobile_media_visibility": "show",
@@ -67,18 +67,18 @@
         "show_hover_image": true,
         "show_wishlist_button": false,
         "show_compare_button": false,
-        "header-6b25cc7c33a0b9df0a7a6552eb56aee9": null,
-        "show_eyebrow": false,
-        "eyebrow": "",
-        "heading": "Premium daily essential",
-        "subheading": "A focused product story with price, reviews, trust, and fast checkout controls.",
+        "header-26db8780f0d9d16629d5e7359a9d0bc2": null,
+        "show_eyebrow": true,
+        "eyebrow": "Dein täglicher Begleiter",
+        "heading": "Premium Brusttasche",
+        "subheading": "Stilvoll. Praktisch. Immer dabei – perfekt für Alltag, Reise & Freizeit.",
         "show_rating": true,
         "show_demo_rating": true,
         "show_sale_badge": true,
         "show_sale_strip": true,
         "sale_stripe_design": "rolling_strip",
         "sale_stripe_orientation": "left",
-        "header-8b903ee89edb650fb835d9feb31294d9": null,
+        "header-6052295d42e9789f661cd511575f922d": null,
         "cta_position": "below",
         "desktop_cta_layout": "row",
         "mobile_cta_layout": "row",
@@ -89,41 +89,41 @@
         "show_payment_icons": true,
         "show_payment_icons_desktop": true,
         "show_payment_icons_mobile": true,
-        "header-2708b84ab82492b76113411273207566": null,
-        "show_trust_strip": false,
+        "header-5ff9b744c2734a08c2f694e411e6cfa7": null,
+        "show_trust_strip": true,
         "show_trust_strip_desktop": true,
         "show_trust_strip_mobile": true,
-        "trust_1": "Free Shipping",
-        "trust_2": "Secure Checkout",
-        "trust_3": "14-Day Guarantee",
-        "header-b3cccd00cb8f0c702417bee1437521ce": null,
-        "show_features": false,
-        "feat_1_title": "Waterproof",
-        "feat_1_sub": "Durable Materials",
+        "trust_1": "Kostenloser Versand",
+        "trust_2": "Sicherer Checkout",
+        "trust_3": "Zurück-Garantie",
+        "header-05b2bb9390a2a06e0e547001e5c72007": null,
+        "show_features": true,
+        "feat_1_title": "Wasserabweisend",
+        "feat_1_sub": "Schützt vor Regen & Spritzwasser",
         "feat_1_icon": "water",
-        "feat_2_title": "Ultralight",
-        "feat_2_sub": "30L Capacity",
+        "feat_2_title": "Ultraleicht",
+        "feat_2_sub": "Klein & handlich",
         "feat_2_icon": "leaf",
-        "feat_3_title": "Ergonomic",
-        "feat_3_sub": "Comfort Straps",
+        "feat_3_title": "Einstellbar",
+        "feat_3_sub": "Für alle Körpergrößen",
         "feat_3_icon": "bag",
-        "header-ecad1bd8aef7c5a8a109be1dc0d783a3": null,
+        "header-fd1b43890c29fc395e3fb66ed38b0198": null,
         "description_style": "accordion",
         "description_label": "Description",
         "description_open_desktop": true,
-        "description_open_mobile": false,
-        "header-19d199af7c768cff0ccf43559b5f8388": null,
+        "description_open_mobile": true,
+        "header-8a8c1bbdc1662cee3ef901dcfa3ec2bc": null,
         "show_reviews": false,
         "show_faq": false,
         "bottom_alignment": "left",
         "reviews_title": "Reviews",
         "faq_title": "FAQ",
-        "header-a92f15ae2a25537d38a97325f9d8f342": null,
+        "header-a8bed22e59f14a2498f903729dea6883": null,
         "use_global_review_settings": true,
         "enable_review_slider_cycling": true,
         "review_slider_interval": 4,
         "visible_reviews_count": 3,
-        "header-6849c11071e673969990d4c40d3f455b": null,
+        "header-11c343a5818f38ec899e3aedf8c68e90": null,
         "bg_color_override": "",
         "text_color_override": "",
         "padding_top": 36,
@@ -253,10 +253,66 @@
       "type": "faq",
       "disabled": false,
       "settings": {
-        "heading": "Frequently Asked Questions"
+        "heading": "Häufig gestellte Fragen"
       },
-      "blocks": {},
-      "block_order": [],
+      "blocks": {
+        "item_hGwe9": {
+          "type": "item",
+          "disabled": false,
+          "settings": {
+            "question": "Was ist, wenn ich nicht zufrieden bin?",
+            "answer": "Kein Problem – wir bieten eine 14-Tage-Geld-zurück-Garantie ohne Fragen."
+          }
+        },
+        "item_tcirY": {
+          "type": "item",
+          "disabled": false,
+          "settings": {
+            "question": "Wie lange dauert die Lieferung?",
+            "answer": "Die Lieferung erfolgt in der Regel innerhalb von 5–10 Werktagen."
+          }
+        },
+        "item_jb39i": {
+          "type": "item",
+          "disabled": false,
+          "settings": {
+            "question": "Kann ich den Riemen anpassen?",
+            "answer": "Ja, der Schulterriemen ist vollständig verstellbar und passt sich jeder Körpergröße an."
+          }
+        },
+        "item_GCFaT": {
+          "type": "item",
+          "disabled": false,
+          "settings": {
+            "question": "Für wen ist die Tasche geeignet?",
+            "answer": "Perfekt für Männer, die unterwegs leicht & stilvoll organisiert bleiben wollen – ob Alltag, Reise oder Sport."
+          }
+        },
+        "item_6VP6D": {
+          "type": "item",
+          "disabled": false,
+          "settings": {
+            "question": "Ist die Tasche wasserdicht?",
+            "answer": "Ja, das Material ist wasserabweisend und schützt deine Sachen vor Regen & Spritzwasser."
+          }
+        },
+        "item_tHBdB": {
+          "type": "item",
+          "disabled": false,
+          "settings": {
+            "question": "Wie groß ist die Tasche?",
+            "answer": "Die Tasche misst ca. 22 × 14 × 6 cm – ideal für Handy, Geldbörse, Schlüssel & mehr."
+          }
+        }
+      },
+      "block_order": [
+        "item_hGwe9",
+        "item_tcirY",
+        "item_jb39i",
+        "item_GCFaT",
+        "item_6VP6D",
+        "item_tHBdB"
+      ],
       "name": "FAQ"
     },
     "newsletter_bar_fhtpi": {
@@ -270,7 +326,7 @@
         "button": "Subscribe",
         "success_msg": "You're in! Check your inbox for a welcome gift.",
         "privacy_note": "No spam. Unsubscribe anytime. We respect your privacy.",
-        "header-94d5acd62e14f24e772dc02f84a2e4ec": null,
+        "header-b10265f369b0ebaf77a39d5617ce2570": null,
         "bg_color": "#f5f3f0",
         "text_color": "#111111"
       },
@@ -298,6 +354,16 @@
       },
       "blocks": {},
       "block_order": []
+    },
+    "announcement_bar_Lm4kTf": {
+      "settings": {
+        "text_1": "⚡ Kostenloser Versand",
+        "text_2": "🔒 14-Tage-Geld-zurück-Garantie",
+        "text_3": "🔐 Sicherer Checkout",
+        "speed": 6,
+        "offer_mode": false
+      },
+      "blocks": {}
     }
   },
   "order": [
