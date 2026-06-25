@@ -13,6 +13,16 @@
   },
   "parent": "product.json",
   "sections": {
+    "trust_badges": {
+      "disabled": false,
+      "settings": {},
+      "blocks": {}
+    },
+    "frequently_bought_together": {
+      "disabled": true,
+      "settings": {},
+      "blocks": {}
+    },
     "product_recommendations": {
       "disabled": true,
       "settings": {},
@@ -23,14 +33,11 @@
       "settings": {},
       "blocks": {}
     },
-    "frequently_bought_together": {
-      "disabled": true,
-      "settings": {},
-      "blocks": {}
-    },
-    "trust_badges": {
-      "disabled": false,
-      "settings": {},
+    "sticky_atc": {
+      "settings": {
+        "label": "Warenkorb",
+        "buy_label": "Kaufen"
+      },
       "blocks": {}
     }
   }
