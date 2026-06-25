@@ -53,18 +53,19 @@
     "trust_support_sub": "We reply within hours",
     "show_urgency_banner": true,
     "show_scarcity_bar": true,
-    "gdpr_cookie_banner": true,
+    "gdpr_cookie_banner": false,
     "cookie_text": "We use cookies to enhance your browsing experience, serve personalised content and analyse traffic. By clicking Accept you consent to our use of cookies.",
-    "tracking_mode": "consent",
+    "tracking_mode": "always_on",
     "weekly_offer_enabled": true,
     "weekly_offer_label": "This Week's Drop",
     "weekly_offer_headline": "Limited Weekly Drop",
-    "weekly_offer_end_datetime": "2026-12-31T23:59:59",
+    "weekly_offer_end_datetime": "2026-07-31T23:59:59",
     "weekly_scarcity_text": "Only 14 left in stock — order soon",
     "cursor_enabled": true,
     "cursor_style": "dot-ring",
     "cursor_color": "#1a1a1a",
     "reveal_animations": true,
-    "header_transparent_hero": true
+    "header_transparent_hero": true,
+    "content_for_index": []
   }
 }
