@@ -1,5 +1,13 @@
 <!doctype html>
-<html lang="{{ request.locale.iso_code }}">
+{%- liquid
+  assign rtl_locales = 'ar,arc,dv,fa,ha,he,khw,ks,ku,ps,ur,yi'
+  assign locale_root = request.locale.iso_code | split: '-' | first
+  assign text_direction = 'ltr'
+  if rtl_locales contains locale_root
+    assign text_direction = 'rtl'
+  endif
+-%}
+<html lang="{{ request.locale.iso_code }}" dir="{{ text_direction }}" data-theme-mode="{{ settings.theme_mode | default: 'system' }}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -185,6 +193,41 @@
       --ease-out:   cubic-bezier(0.16, 1, 0.3, 1);
     }
 
+    html[data-theme-mode="dark"] {
+      --color-bg: #101010;
+      --color-surface: #181818;
+      --color-surface-2: #242424;
+      --color-border: #343434;
+      --color-text: #f5f3ef;
+      --color-text-muted: #b5b0a8;
+      --color-text-faint: rgba(245,243,239,0.45);
+      --color-header-bg: #101010;
+      --color-header-text: #f5f3ef;
+      --color-footer-bg: #080808;
+      --color-footer-text: #f5f3ef;
+    }
+    @media (prefers-color-scheme: dark) {
+      html[data-theme-mode="system"] {
+        --color-bg: #101010;
+        --color-surface: #181818;
+        --color-surface-2: #242424;
+        --color-border: #343434;
+        --color-text: #f5f3ef;
+        --color-text-muted: #b5b0a8;
+        --color-text-faint: rgba(245,243,239,0.45);
+        --color-header-bg: #101010;
+        --color-header-text: #f5f3ef;
+        --color-footer-bg: #080808;
+        --color-footer-text: #f5f3ef;
+      }
+    }
+
+    html[dir="rtl"] body { direction: rtl; }
+    html[dir="rtl"] .header__actions,
+    html[dir="rtl"] .product-info__price,
+    html[dir="rtl"] .sph__price-row,
+    html[dir="rtl"] .cart-item__row { flex-direction: row-reverse; }
+
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html {
       font-size: var(--font-size-base);
@@ -308,8 +351,10 @@
   {%- sections 'header-group' -%}
 
   {% render 'cart-drawer' %}
+  {% render 'quick-view-modal' %}
 
   <main id="MainContent" role="main" tabindex="-1">
+    {% render 'breadcrumbs' %}
     {{ content_for_layout }}
   </main>
 

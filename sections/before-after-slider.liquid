@@ -1,0 +1,54 @@
+{%- if section.settings.enabled -%}
+<section id="BeforeAfter-{{ section.id }}" class="before-after section-spacing" {{ section.shopify_attributes }}>
+  <div class="container">
+    {%- if section.settings.heading != blank -%}<h2 class="before-after__title">{{ section.settings.heading | escape }}</h2>{%- endif -%}
+    <div class="before-after__frame" data-before-after style="--ba-pos: {{ section.settings.initial_position }}%;">
+      {%- if section.settings.before_image != blank -%}
+        {{ section.settings.before_image | image_url: width: 1200 | image_tag: class: 'before-after__img', loading: 'lazy', widths: '600,900,1200', alt: section.settings.before_label }}
+      {%- endif -%}
+      {%- if section.settings.after_image != blank -%}
+        <div class="before-after__after">
+          {{ section.settings.after_image | image_url: width: 1200 | image_tag: class: 'before-after__img', loading: 'lazy', widths: '600,900,1200', alt: section.settings.after_label }}
+        </div>
+      {%- endif -%}
+      <span class="before-after__label before-after__label--before">{{ section.settings.before_label | escape }}</span>
+      <span class="before-after__label before-after__label--after">{{ section.settings.after_label | escape }}</span>
+      <input class="before-after__range" data-before-after-range type="range" min="0" max="100" value="{{ section.settings.initial_position }}" aria-label="Before after comparison">
+    </div>
+  </div>
+</section>
+
+<style>
+#BeforeAfter-{{ section.id }} .before-after__title { margin-bottom: var(--sp-6); font-family: var(--font-display); font-size: var(--text-xl); }
+#BeforeAfter-{{ section.id }} .before-after__frame { position: relative; overflow: hidden; border-radius: var(--card-radius); background: var(--color-surface); aspect-ratio: {{ section.settings.aspect_ratio }}; }
+#BeforeAfter-{{ section.id }} .before-after__img { width: 100%; height: 100%; object-fit: cover; }
+#BeforeAfter-{{ section.id }} .before-after__after { position: absolute; inset: 0; clip-path: inset(0 0 0 var(--ba-pos)); }
+#BeforeAfter-{{ section.id }} .before-after__range { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: ew-resize; }
+#BeforeAfter-{{ section.id }} .before-after__frame::after { content: ''; position: absolute; top: 0; bottom: 0; left: var(--ba-pos); width: 2px; background: #fff; box-shadow: 0 0 0 1px rgba(0,0,0,.2); pointer-events: none; }
+#BeforeAfter-{{ section.id }} .before-after__label { position: absolute; top: 12px; padding: 6px 10px; border-radius: var(--radius-full); background: rgba(0,0,0,.62); color: #fff; font-size: var(--text-xs); font-weight: 800; }
+#BeforeAfter-{{ section.id }} .before-after__label--before { left: 12px; }
+#BeforeAfter-{{ section.id }} .before-after__label--after { right: 12px; }
+</style>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Before/After Slider",
+  "tag": "section",
+  "settings": [
+    { "type": "checkbox", "id": "enabled", "label": "Enable section", "default": true },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "See the difference" },
+    { "type": "image_picker", "id": "before_image", "label": "Before image" },
+    { "type": "image_picker", "id": "after_image", "label": "After image" },
+    { "type": "text", "id": "before_label", "label": "Before label", "default": "Before" },
+    { "type": "text", "id": "after_label", "label": "After label", "default": "After" },
+    { "type": "select", "id": "aspect_ratio", "label": "Aspect ratio", "options": [
+      { "value": "16 / 9", "label": "Landscape" },
+      { "value": "4 / 3", "label": "Standard" },
+      { "value": "1 / 1", "label": "Square" }
+    ], "default": "16 / 9" },
+    { "type": "range", "id": "initial_position", "label": "Initial slider position", "min": 10, "max": 90, "step": 5, "default": 50, "unit": "%" }
+  ],
+  "presets": [{ "name": "Before/After Slider" }]
+}
+{% endschema %}

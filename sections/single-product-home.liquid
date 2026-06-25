@@ -2,6 +2,9 @@
   assign storefront_mode = settings.storefront_mode | default: 'single_product'
   assign section_visibility = section.settings.visibility | default: 'follow_global'
   assign render_section = true
+  if section.settings.enabled == false
+    assign render_section = false
+  endif
   if section_visibility == 'follow_global' and settings.single_product_sections_follow_mode and storefront_mode == 'multi_product'
     assign render_section = false
   elsif section_visibility == 'single_only' and storefront_mode == 'multi_product'
@@ -68,6 +71,8 @@
   assign mobile_media_visibility = section.settings.mobile_media_visibility | default: 'show'
   assign desktop_cta_layout = section.settings.desktop_cta_layout | default: 'row'
   assign mobile_cta_layout = section.settings.mobile_cta_layout | default: 'row'
+  assign visual_style = section.settings.visual_style | default: 'classic'
+  assign media_shape = section.settings.media_shape | default: 'soft'
   assign show_payment_icons_desktop = true
   assign show_payment_icons_mobile = true
   if section.settings.show_payment_icons == false
@@ -133,7 +138,22 @@
 {%- endstyle -%}
 
 
-<section class="sph sph--desktop-info-{{ desktop_info_style }} sph--mobile-info-{{ mobile_info_style }} sph--mobile-media-{{ mobile_media_visibility }} sph--desktop-cta-{{ desktop_cta_layout }} sph--mobile-cta-{{ mobile_cta_layout }}" id="SingleProductHome-{{ section.id }}" data-product-detail {% if sp != blank %}data-variants="{{ sp.variants | json | escape }}"{% endif %} {{ section.shopify_attributes }}>
+<section
+  class="sph sph--style-{{ visual_style }} sph--media-shape-{{ media_shape }} sph--desktop-info-{{ desktop_info_style }} sph--mobile-info-{{ mobile_info_style }} sph--mobile-media-{{ mobile_media_visibility }} sph--desktop-cta-{{ desktop_cta_layout }} sph--mobile-cta-{{ mobile_cta_layout }}"
+  id="SingleProductHome-{{ section.id }}"
+  data-product-detail
+  {% if sp != blank %}data-variants="{{ sp.variants | json | escape }}"{% endif %}
+  {{ section.shopify_attributes }}>
+  {%- if sp != blank -%}
+    <span
+      data-recent-product
+      hidden
+      data-handle="{{ sp.handle | escape }}"
+      data-title="{{ sp.title | escape }}"
+      data-url="{{ sp.url }}"
+      data-image="{% if sp.featured_image != blank %}{{ sp.featured_image | image_url: width: 600 }}{% endif %}"
+      data-price="{{ sp.price | money | escape }}"></span>
+  {%- endif -%}
   <div class="sph__inner sph__inner--media-{{ section.settings.media_position | default: 'left' }} container">
 
     <div class="sph__media">
@@ -680,6 +700,26 @@
 <style>
 /* ── Hero layout ── */
 .sph { background: var(--color-bg); padding-block: clamp(24px, 4vw, 48px) clamp(32px, 5vw, 64px); }
+.sph--style-editorial {
+  background:
+    linear-gradient(135deg, color-mix(in oklab, var(--color-surface) 86%, transparent), var(--color-bg));
+}
+.sph--style-bold .sph__title,
+.sph--style-bold .sph__price {
+  letter-spacing: 0;
+}
+.sph--style-bold .sph__info {
+  gap: 22px;
+}
+.sph--style-minimal .sph__sub,
+.sph--style-minimal .sph__trust,
+.sph--style-minimal .sph__payment-icons {
+  color: color-mix(in oklab, var(--color-text-muted) 80%, transparent);
+}
+.sph--media-shape-square .sph__media-main { border-radius: 0; }
+.sph--media-shape-soft .sph__media-main { border-radius: var(--radius-lg, 12px); }
+.sph--media-shape-rounded .sph__media-main { border-radius: var(--radius-xl, 16px); }
+.sph--media-shape-arch .sph__media-main { border-radius: 999px 999px var(--radius-lg, 12px) var(--radius-lg, 12px); }
 .sph__inner {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1851,6 +1891,7 @@ details-accordion[open] .sph-description__chevron,
   "class": "shopify-section-single-product-home",
   "settings": [
     { "type": "header", "content": "Product" },
+    { "type": "checkbox", "id": "enabled", "label": "Enable section", "default": true },
     { "type": "select", "id": "visibility", "label": "Visibility by selling mode",
       "options": [
         { "value": "follow_global", "label": "Follow global setting" },
@@ -1887,6 +1928,22 @@ details-accordion[open] .sph-description__chevron,
         { "value": "hide", "label": "Hide" }
       ],
       "default": "show" },
+    { "type": "select", "id": "visual_style", "label": "Visual style",
+      "options": [
+        { "value": "classic", "label": "Classic" },
+        { "value": "editorial", "label": "Editorial surface" },
+        { "value": "bold", "label": "Bold conversion" },
+        { "value": "minimal", "label": "Minimal" }
+      ],
+      "default": "classic" },
+    { "type": "select", "id": "media_shape", "label": "Media shape",
+      "options": [
+        { "value": "soft", "label": "Soft rounded" },
+        { "value": "square", "label": "Square" },
+        { "value": "rounded", "label": "More rounded" },
+        { "value": "arch", "label": "Arch" }
+      ],
+      "default": "soft" },
     { "type": "image_picker", "id": "fallback_image", "label": "Fallback image (if no product selected)" },
     { "type": "checkbox", "id": "show_hover_image", "label": "Show alternate image on hover", "default": true },
     { "type": "checkbox", "id": "show_wishlist_button", "label": "Show wishlist button", "default": true },

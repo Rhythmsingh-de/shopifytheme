@@ -16,6 +16,9 @@
     "pagination": {
       "previous": "Zur\u00fcck",
       "next": "Weiter"
+    },
+    "breadcrumbs": {
+      "home": "Startseite"
     }
   },
   "products": {
@@ -28,7 +31,14 @@
       "color": "Farbe",
       "size": "Gr\u00f6\u00dfe",
       "reviews": "Bewertungen",
-      "select_options": "Optionen w\u00e4hlen"
+      "select_options": "Optionen w\u00e4hlen",
+      "quick_view": "Schnellansicht",
+      "added_to_cart": "Hinzugef\u00fcgt \u2713",
+      "view_full_details": "Alle Details anzeigen",
+      "description": "Beschreibung",
+      "in_stock": "Auf Lager",
+      "low_stock": "Nur noch {{ count }} verf\u00fcgbar",
+      "on_sale": "Angebot"
     },
     "listing": {
       "from": "ab",

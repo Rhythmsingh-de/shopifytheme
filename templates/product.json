@@ -17,6 +17,24 @@
       "type": "trust-badges",
       "settings": {}
     },
+    "frequently_bought_together": {
+      "type": "frequently-bought-together",
+      "settings": {
+        "enabled": true
+      }
+    },
+    "product_recommendations": {
+      "type": "product-recommendations",
+      "settings": {
+        "enabled": true
+      }
+    },
+    "recently_viewed": {
+      "type": "recently-viewed-products",
+      "settings": {
+        "enabled": true
+      }
+    },
     "sticky_atc": {
       "type": "sp-sticky-atc",
       "settings": {
@@ -27,6 +45,9 @@
   "order": [
     "main_product",
     "trust_badges",
+    "frequently_bought_together",
+    "product_recommendations",
+    "recently_viewed",
     "sticky_atc"
   ]
 }

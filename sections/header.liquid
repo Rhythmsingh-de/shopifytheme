@@ -82,7 +82,27 @@
       {%- if show_desktop_menu and desktop_nav_menu != blank and desktop_nav_menu.links.size > 0 -%}
         <nav class="header__nav" aria-label="Main navigation">
           {%- for link in desktop_nav_menu.links -%}
-            <a href="{{ link.url }}" class="header__nav-link{% if link.active %} is-active{% endif %}">{{ link.title | escape }}</a>
+            <div class="header__nav-item{% if link.links.size > 0 %} header__nav-item--has-children{% endif %}">
+              <a href="{{ link.url }}" class="header__nav-link{% if link.active %} is-active{% endif %}">{{ link.title | escape }}</a>
+              {%- if section.settings.enable_mega_menu and link.links.size > 0 -%}
+                <div class="header__mega" role="group" aria-label="{{ link.title | escape }}">
+                  <div class="header__mega-grid">
+                    {%- for childlink in link.links -%}
+                      <div class="header__mega-col">
+                        <a href="{{ childlink.url }}" class="header__mega-title">{{ childlink.title | escape }}</a>
+                        {%- if childlink.links.size > 0 -%}
+                          <ul class="header__mega-list" role="list">
+                            {%- for grandchildlink in childlink.links -%}
+                              <li><a href="{{ grandchildlink.url }}">{{ grandchildlink.title | escape }}</a></li>
+                            {%- endfor -%}
+                          </ul>
+                        {%- endif -%}
+                      </div>
+                    {%- endfor -%}
+                  </div>
+                </div>
+              {%- endif -%}
+            </div>
           {%- endfor -%}
         </nav>
       {%- endif -%}
@@ -222,6 +242,7 @@
   line-height: 1;
 }
 .header__nav { display: flex; gap: var(--sp-8); }
+.header__nav-item { position: relative; }
 .header__nav-link {
   font-size: var(--text-sm);
   font-weight: 500;
@@ -230,6 +251,50 @@
 }
 .header__nav-link:hover,
 .header__nav-link.is-active { color: var(--color-text); }
+.header__mega {
+  position: absolute;
+  top: calc(100% + 18px);
+  left: 50%;
+  width: min(780px, calc(100vw - 48px));
+  padding: var(--sp-5);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--card-radius);
+  box-shadow: var(--shadow-lg);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 8px);
+  transition: opacity var(--transition), transform var(--transition);
+  z-index: 250;
+}
+.header__nav-item:hover .header__mega,
+.header__nav-item:focus-within .header__mega {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, 0);
+}
+.header__mega-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--sp-5);
+}
+.header__mega-title {
+  display: block;
+  margin-bottom: var(--sp-2);
+  color: var(--color-text);
+  font-size: var(--text-sm);
+  font-weight: 800;
+}
+.header__mega-list {
+  display: grid;
+  gap: 6px;
+  list-style: none;
+}
+.header__mega-list a {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+.header__mega-list a:hover { color: var(--color-text); }
 .header__actions { display: flex; align-items: center; gap: var(--sp-3); }
 .header__icon-btn {
   display: flex;
@@ -396,6 +461,7 @@
     { "type": "header", "content": "Navigation menus" },
     { "type": "checkbox", "id": "show_desktop_menu", "label": "Show desktop menu", "default": true },
     { "type": "link_list", "id": "desktop_menu", "label": "Desktop navigation menu", "default": "main-menu" },
+    { "type": "checkbox", "id": "enable_mega_menu", "label": "Enable mega menu for nested desktop links", "default": true },
     { "type": "checkbox", "id": "show_mobile_menu", "label": "Show mobile menu", "default": true },
     { "type": "link_list", "id": "mobile_menu", "label": "Mobile navigation menu", "info": "Leave blank to use the desktop menu.", "default": "main-menu" },
     { "type": "checkbox", "id": "sticky", "label": "Sticky header", "default": true },

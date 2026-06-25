@@ -1,0 +1,39 @@
+{%- liquid
+  assign show_breadcrumbs = false
+  if request.page_type == 'product' or request.page_type == 'collection' or request.page_type == 'page' or request.page_type == 'blog' or request.page_type == 'article'
+    assign show_breadcrumbs = true
+  endif
+-%}
+{%- if show_breadcrumbs -%}
+  <nav class="breadcrumbs container" aria-label="Breadcrumb">
+    <a href="{{ routes.root_url }}">{{ 'general.breadcrumbs.home' | t | default: 'Home' }}</a>
+    {%- case request.page_type -%}
+      {%- when 'product' -%}
+        {%- if collection != blank -%}
+          <span aria-hidden="true">/</span><a href="{{ collection.url }}">{{ collection.title | escape }}</a>
+        {%- endif -%}
+        <span aria-hidden="true">/</span><span>{{ product.title | escape }}</span>
+      {%- when 'collection' -%}
+        <span aria-hidden="true">/</span><span>{{ collection.title | escape }}</span>
+      {%- when 'page' -%}
+        <span aria-hidden="true">/</span><span>{{ page.title | escape }}</span>
+      {%- when 'blog' -%}
+        <span aria-hidden="true">/</span><span>{{ blog.title | escape }}</span>
+      {%- when 'article' -%}
+        <span aria-hidden="true">/</span><a href="{{ blog.url }}">{{ blog.title | escape }}</a><span aria-hidden="true">/</span><span>{{ article.title | escape }}</span>
+    {%- endcase -%}
+  </nav>
+  <style>
+    .breadcrumbs {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding-top: 14px;
+      color: var(--color-text-muted);
+      font-size: var(--text-xs);
+      font-weight: 700;
+    }
+    .breadcrumbs a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+    .breadcrumbs span:last-child { color: var(--color-text); }
+  </style>
+{%- endif -%}

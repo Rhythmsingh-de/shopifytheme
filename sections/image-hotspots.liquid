@@ -1,0 +1,65 @@
+{%- if section.settings.enabled -%}
+<section id="Hotspots-{{ section.id }}" class="hotspots section-spacing" {{ section.shopify_attributes }}>
+  <div class="container">
+    {%- if section.settings.heading != blank -%}<h2 class="hotspots__title">{{ section.settings.heading | escape }}</h2>{%- endif -%}
+    <div class="hotspots__frame">
+      {%- if section.settings.image != blank -%}
+        {{ section.settings.image | image_url: width: 1400 | image_tag: widths: '700,1000,1400', loading: 'lazy', class: 'hotspots__image', alt: section.settings.heading }}
+      {%- else -%}
+        <div class="hotspots__placeholder">{{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}</div>
+      {%- endif -%}
+      {%- for block in section.blocks -%}
+        <details class="hotspots__pin" style="--x: {{ block.settings.x_position }}%; --y: {{ block.settings.y_position }}%;" {{ block.shopify_attributes }}>
+          <summary aria-label="{{ block.settings.title | escape }}"><span></span></summary>
+          <div class="hotspots__card">
+            <strong>{{ block.settings.title | escape }}</strong>
+            {%- if block.settings.text != blank -%}<p>{{ block.settings.text | escape }}</p>{%- endif -%}
+            {%- if block.settings.link != blank -%}<a href="{{ block.settings.link }}">{{ block.settings.link_label | escape }}</a>{%- endif -%}
+          </div>
+        </details>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+<style>
+#Hotspots-{{ section.id }} .hotspots__title { margin-bottom: var(--sp-6); font-family: var(--font-display); font-size: var(--text-xl); }
+#Hotspots-{{ section.id }} .hotspots__frame { position: relative; overflow: hidden; border-radius: var(--card-radius); background: var(--color-surface); }
+#Hotspots-{{ section.id }} .hotspots__image,
+#Hotspots-{{ section.id }} .hotspots__placeholder { width: 100%; min-height: 320px; object-fit: cover; }
+#Hotspots-{{ section.id }} .hotspots__pin { position: absolute; left: var(--x); top: var(--y); transform: translate(-50%, -50%); }
+#Hotspots-{{ section.id }} .hotspots__pin summary { list-style: none; width: 44px; height: 44px; display: grid; place-items: center; cursor: pointer; }
+#Hotspots-{{ section.id }} .hotspots__pin summary::-webkit-details-marker { display: none; }
+#Hotspots-{{ section.id }} .hotspots__pin summary span { width: 18px; height: 18px; border-radius: 50%; background: var(--color-primary); box-shadow: 0 0 0 8px color-mix(in oklab, var(--color-bg) 75%, transparent); }
+#Hotspots-{{ section.id }} .hotspots__card { position: absolute; z-index: 3; left: 50%; top: calc(100% + 8px); width: min(240px, 80vw); padding: var(--sp-3); background: var(--color-bg); border: 1px solid var(--color-border); border-radius: var(--radius-md); box-shadow: var(--shadow-md); color: var(--color-text); }
+#Hotspots-{{ section.id }} .hotspots__card p { color: var(--color-text-muted); font-size: var(--text-sm); }
+#Hotspots-{{ section.id }} .hotspots__card a { display: inline-block; margin-top: 8px; font-size: var(--text-xs); font-weight: 800; text-decoration: underline; }
+</style>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Image Hotspots",
+  "tag": "section",
+  "settings": [
+    { "type": "checkbox", "id": "enabled", "label": "Enable section", "default": true },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Explore the details" },
+    { "type": "image_picker", "id": "image", "label": "Image" }
+  ],
+  "blocks": [
+    {
+      "type": "hotspot",
+      "name": "Hotspot",
+      "settings": [
+        { "type": "range", "id": "x_position", "label": "Horizontal position", "min": 5, "max": 95, "step": 1, "default": 50, "unit": "%" },
+        { "type": "range", "id": "y_position", "label": "Vertical position", "min": 5, "max": 95, "step": 1, "default": 50, "unit": "%" },
+        { "type": "text", "id": "title", "label": "Title", "default": "Feature detail" },
+        { "type": "textarea", "id": "text", "label": "Text", "default": "Highlight a material, benefit, or product detail." },
+        { "type": "url", "id": "link", "label": "Link" },
+        { "type": "text", "id": "link_label", "label": "Link label", "default": "Learn more" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Image Hotspots", "blocks": [{ "type": "hotspot" }, { "type": "hotspot", "settings": { "x_position": 70, "y_position": 35 } }] }]
+}
+{% endschema %}

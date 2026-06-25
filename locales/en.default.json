@@ -23,6 +23,9 @@
       "next": "Next",
       "current_page": "Page {{ page }} of {{ total }}"
     },
+    "breadcrumbs": {
+      "home": "Home"
+    },
     "password_page": {
       "login_form_heading": "Enter store password",
       "login_form_password_label": "Password",
@@ -43,6 +46,7 @@
       "size": "Size",
       "reviews": "Reviews",
       "select_options": "Select Options",
+      "quick_view": "Quick view",
       "added_to_cart": "Added \u2713",
       "view_full_details": "View full details",
       "share": "Share",

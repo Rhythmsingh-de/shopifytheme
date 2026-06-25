@@ -1,0 +1,42 @@
+{%- if section.settings.enabled -%}
+<button
+  id="BackToTop-{{ section.id }}"
+  class="back-to-top"
+  type="button"
+  data-back-to-top
+  aria-label="{{ section.settings.label | escape }}"
+  {{ section.shopify_attributes }}>
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
+<style>
+#BackToTop-{{ section.id }} {
+  position: fixed;
+  right: {{ section.settings.offset_right }}px;
+  bottom: {{ section.settings.offset_bottom }}px;
+  z-index: 620;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-full);
+  background: var(--color-primary);
+  color: var(--color-primary-text);
+  box-shadow: var(--shadow-md);
+}
+</style>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Back to Top Button",
+  "tag": "section",
+  "settings": [
+    { "type": "checkbox", "id": "enabled", "label": "Enable button", "default": true },
+    { "type": "text", "id": "label", "label": "Accessible label", "default": "Back to top" },
+    { "type": "range", "id": "offset_right", "label": "Right offset", "min": 8, "max": 48, "step": 2, "default": 18, "unit": "px" },
+    { "type": "range", "id": "offset_bottom", "label": "Bottom offset", "min": 8, "max": 96, "step": 2, "default": 18, "unit": "px" }
+  ],
+  "presets": [{ "name": "Back to Top Button" }]
+}
+{% endschema %}

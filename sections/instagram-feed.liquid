@@ -1,0 +1,63 @@
+{%- if section.settings.enabled -%}
+<section id="InstagramFeed-{{ section.id }}" class="instagram-feed section-spacing" {{ section.shopify_attributes }}>
+  <div class="container">
+    <div class="instagram-feed__head">
+      {%- if section.settings.heading != blank -%}<h2>{{ section.settings.heading | escape }}</h2>{%- endif -%}
+      {%- if section.settings.text != blank -%}<p>{{ section.settings.text | escape }}</p>{%- endif -%}
+    </div>
+    {%- if section.settings.embed_code != blank -%}
+      <div class="instagram-feed__embed">{{ section.settings.embed_code }}</div>
+    {%- else -%}
+      <div class="instagram-feed__grid">
+        {%- for block in section.blocks -%}
+          <a class="instagram-feed__item" href="{{ block.settings.link | default: section.settings.profile_link }}" target="_blank" rel="noopener noreferrer" {{ block.shopify_attributes }}>
+            {%- if block.settings.image != blank -%}
+              {{ block.settings.image | image_url: width: 500 | image_tag: widths: '250,500', loading: 'lazy', alt: block.settings.caption }}
+            {%- else -%}
+              {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+            {%- endif -%}
+          </a>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+<style>
+#InstagramFeed-{{ section.id }} .instagram-feed__head { margin-bottom: var(--sp-6); text-align: {{ section.settings.text_align }}; }
+#InstagramFeed-{{ section.id }} .instagram-feed__head h2 { font-family: var(--font-display); font-size: var(--text-xl); }
+#InstagramFeed-{{ section.id }} .instagram-feed__head p { color: var(--color-text-muted); }
+#InstagramFeed-{{ section.id }} .instagram-feed__grid { display: grid; grid-template-columns: repeat({{ section.settings.columns_desktop }}, minmax(0,1fr)); gap: var(--sp-3); }
+#InstagramFeed-{{ section.id }} .instagram-feed__item { aspect-ratio: 1; overflow: hidden; border-radius: var(--radius-md); background: var(--color-surface); }
+#InstagramFeed-{{ section.id }} .instagram-feed__item img,
+#InstagramFeed-{{ section.id }} .instagram-feed__item svg { width: 100%; height: 100%; object-fit: cover; }
+@media (max-width: 640px) { #InstagramFeed-{{ section.id }} .instagram-feed__grid { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+</style>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Instagram Feed",
+  "tag": "section",
+  "settings": [
+    { "type": "checkbox", "id": "enabled", "label": "Enable section", "default": true },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Follow us on Instagram" },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "Use an app embed for a live feed, or upload fallback images below." },
+    { "type": "url", "id": "profile_link", "label": "Instagram profile link" },
+    { "type": "html", "id": "embed_code", "label": "App/embed code", "info": "Optional. Live Instagram feeds usually require an app or token-based embed." },
+    { "type": "select", "id": "text_align", "label": "Text alignment", "options": [
+      { "value": "left", "label": "Left" },
+      { "value": "center", "label": "Center" }
+    ], "default": "center" },
+    { "type": "range", "id": "columns_desktop", "label": "Desktop columns", "min": 3, "max": 6, "step": 1, "default": 4 }
+  ],
+  "blocks": [
+    { "type": "image", "name": "Fallback image", "settings": [
+      { "type": "image_picker", "id": "image", "label": "Image" },
+      { "type": "text", "id": "caption", "label": "Caption" },
+      { "type": "url", "id": "link", "label": "Link" }
+    ] }
+  ],
+  "presets": [{ "name": "Instagram Feed", "blocks": [{ "type": "image" }, { "type": "image" }, { "type": "image" }, { "type": "image" }] }]
+}
+{% endschema %}

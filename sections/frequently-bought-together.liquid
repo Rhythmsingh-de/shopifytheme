@@ -1,0 +1,57 @@
+{%- if section.settings.enabled -%}
+<section id="Fbt-{{ section.id }}" class="fbt section-spacing" {{ section.shopify_attributes }}>
+  <div class="container">
+    <div class="fbt__head">
+      {%- if section.settings.heading != blank -%}<h2>{{ section.settings.heading | escape }}</h2>{%- endif -%}
+      {%- if section.settings.text != blank -%}<p>{{ section.settings.text | escape }}</p>{%- endif -%}
+    </div>
+    <div class="fbt__grid">
+      {%- if product != blank -%}
+        <div class="fbt__item fbt__item--main">
+          {%- render 'product-card', product: product, index: 0 -%}
+        </div>
+      {%- endif -%}
+      {%- for item_product in section.settings.products limit: 4 -%}
+        <div class="fbt__item">
+          {%- render 'product-card', product: item_product, index: forloop.index -%}
+        </div>
+      {%- endfor -%}
+    </div>
+    {%- if section.settings.discount_text != blank -%}
+      <p class="fbt__note">{{ section.settings.discount_text | escape }}</p>
+    {%- endif -%}
+  </div>
+</section>
+
+<style>
+#Fbt-{{ section.id }} .fbt__head { margin-bottom: clamp(20px,4vw,36px); }
+#Fbt-{{ section.id }} .fbt__head h2 { font-family: var(--font-display); font-size: var(--text-xl); }
+#Fbt-{{ section.id }} .fbt__head p,
+#Fbt-{{ section.id }} .fbt__note { color: var(--color-text-muted); }
+#Fbt-{{ section.id }} .fbt__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: clamp(14px, 2vw, 24px);
+}
+#Fbt-{{ section.id }} .fbt__note {
+  margin-top: var(--sp-4);
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+</style>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Bought Together",
+  "tag": "section",
+  "settings": [
+    { "type": "checkbox", "id": "enabled", "label": "Enable section", "default": true },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Frequently bought together" },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "Build a complete set with selected add-ons." },
+    { "type": "product_list", "id": "products", "label": "Additional products", "limit": 4 },
+    { "type": "text", "id": "discount_text", "label": "Discount note", "info": "Display-only. Configure actual discounts in Shopify.", "default": "Bundle discounts are applied at checkout when configured in Shopify." }
+  ],
+  "presets": [{ "name": "Bought Together" }]
+}
+{% endschema %}

@@ -1,0 +1,79 @@
+<div class="quick-view" data-quick-view-modal hidden aria-hidden="true">
+  <div class="quick-view__overlay" data-quick-view-close></div>
+  <div class="quick-view__dialog" role="dialog" aria-modal="true" aria-label="{{ 'products.product.quick_view' | t | default: 'Quick view' }}">
+    <button class="quick-view__close" type="button" data-quick-view-close aria-label="{{ 'accessibility.close' | t | default: 'Close' }}">&times;</button>
+    <div class="quick-view__body" data-quick-view-content>
+      <p class="quick-view__loading">{{ 'accessibility.loading' | t | default: 'Loading...' }}</p>
+    </div>
+  </div>
+</div>
+
+<style>
+  .quick-view[hidden] { display: none; }
+  .quick-view {
+    position: fixed;
+    inset: 0;
+    z-index: 950;
+  }
+  .quick-view__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.52);
+  }
+  .quick-view__dialog {
+    position: relative;
+    width: min(920px, calc(100vw - 28px));
+    max-height: calc(100vh - 28px);
+    margin: 14px auto;
+    overflow: auto;
+    background: var(--color-bg);
+    color: var(--color-text);
+    border-radius: var(--card-radius);
+    box-shadow: var(--shadow-lg);
+  }
+  .quick-view__close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 2;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-full);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    font-size: 28px;
+    line-height: 1;
+  }
+  .quick-view__content {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(20px, 4vw, 40px);
+    padding: clamp(20px, 4vw, 44px);
+  }
+  .quick-view__media {
+    aspect-ratio: 1;
+    overflow: hidden;
+    border-radius: var(--card-radius);
+    background: var(--color-surface);
+  }
+  .quick-view__media img { width: 100%; height: 100%; object-fit: cover; }
+  .quick-view__info { display: flex; flex-direction: column; gap: 14px; }
+  .quick-view__title { font-family: var(--font-display); font-size: var(--text-xl); line-height: 1.1; }
+  .quick-view__price { font-size: var(--text-lg); font-weight: 800; }
+  .quick-view__select,
+  .quick-view__qty {
+    min-height: 44px;
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-bg);
+    color: var(--color-text);
+    padding: 0 12px;
+    font: inherit;
+  }
+  .quick-view__actions { display: flex; gap: 10px; flex-wrap: wrap; }
+  .quick-view__actions .btn { flex: 1; min-width: 150px; }
+  .quick-view__desc { color: var(--color-text-muted); font-size: var(--text-sm); line-height: 1.65; }
+  @media (max-width: 720px) {
+    .quick-view__content { grid-template-columns: 1fr; }
+  }
+</style>

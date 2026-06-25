@@ -30,6 +30,14 @@
 -%}
 
 <section class="section-spacing product-page-section" data-product-detail data-variants="{{ product.variants | json | escape }}" {{ section.shopify_attributes }}>
+  <span
+    data-recent-product
+    hidden
+    data-handle="{{ product.handle | escape }}"
+    data-title="{{ product.title | escape }}"
+    data-url="{{ product.url }}"
+    data-image="{% if product.featured_image != blank %}{{ product.featured_image | image_url: width: 600 }}{% endif %}"
+    data-price="{{ product.price | money | escape }}"></span>
   <div class="container">
     <div class="product-page-grid">
 
@@ -165,13 +173,17 @@
                 value="1" min="1" max="99" readonly aria-label="Quantity">
               <button class="product-qty__btn" data-qty-plus aria-label="Increase quantity">&#43;</button>
             </div>
-            <span class="product-stock-label">
+            <span class="product-stock-label" data-product-stock>
               {%- if first_variant.available -%}
                 <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><circle cx="5" cy="5" r="5" fill="#1d6b44"/></svg>
-                In stock
+                {%- if section.settings.show_stock_counter and first_variant.inventory_management != blank and first_variant.inventory_quantity > 0 and first_variant.inventory_quantity <= section.settings.low_stock_threshold -%}
+                  {{ 'products.product.low_stock' | t: count: first_variant.inventory_quantity }}
+                {%- else -%}
+                  {{ 'products.product.in_stock' | t | default: 'In stock' }}
+                {%- endif -%}
               {%- else -%}
                 <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><circle cx="5" cy="5" r="5" fill="#e8260d"/></svg>
-                Out of stock
+                {{ 'products.product.sold_out' | t | default: 'Out of stock' }}
               {%- endif -%}
             </span>
           </div>
@@ -282,6 +294,14 @@
           </div>
         {%- endif -%}
 
+        {%- assign show_size_guide_popup = false -%}
+        {%- if section.settings.show_size_guide and section.settings.size_guide_content != blank or section.settings.show_size_guide and section.settings.size_guide_page != blank -%}
+          {%- assign show_size_guide_popup = true -%}
+          <button class="product-size-guide__trigger" type="button" data-size-guide-open="SizeGuide-{{ section.id }}">
+            {{ section.settings.size_guide_label | default: 'Size guide' | escape }}
+          </button>
+        {%- endif -%}
+
         <!-- Accordion tabs -->
         <div class="product-accordions">
           {%- if product.description != blank -%}
@@ -318,6 +338,22 @@
       </div>
     </div>
   </div>
+  {%- if show_size_guide_popup -%}
+    <div class="product-size-guide" id="SizeGuide-{{ section.id }}" data-size-guide-modal hidden aria-hidden="true">
+      <button class="product-size-guide__overlay" type="button" data-size-guide-close aria-label="{{ 'accessibility.close' | t | default: 'Close' }}"></button>
+      <div class="product-size-guide__dialog" role="dialog" aria-modal="true" aria-labelledby="SizeGuideTitle-{{ section.id }}">
+        <button class="product-size-guide__close" type="button" data-size-guide-close aria-label="{{ 'accessibility.close' | t | default: 'Close' }}">&times;</button>
+        <h2 id="SizeGuideTitle-{{ section.id }}">{{ section.settings.size_guide_label | default: 'Size guide' | escape }}</h2>
+        <div class="product-size-guide__content rte">
+          {%- if section.settings.size_guide_page != blank -%}
+            {{ section.settings.size_guide_page.content }}
+          {%- else -%}
+            {{ section.settings.size_guide_content }}
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  {%- endif -%}
 </section>
 
 <style>
@@ -587,6 +623,64 @@
 }
 .payment-icon { height: 22px; width: auto; border-radius: 3px; }
 
+.product-size-guide__trigger {
+  min-height: 44px;
+  width: fit-content;
+  padding: 0 var(--space-4);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+  font-size: var(--text-sm);
+  font-weight: 800;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.product-size-guide[hidden] { display: none; }
+.product-size-guide {
+  position: fixed;
+  inset: 0;
+  z-index: 960;
+}
+.product-size-guide__overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,.54);
+}
+.product-size-guide__dialog {
+  position: relative;
+  width: min(720px, calc(100vw - 28px));
+  max-height: calc(100vh - 28px);
+  margin: 14px auto;
+  overflow: auto;
+  padding: clamp(24px, 5vw, 44px);
+  border-radius: var(--card-radius);
+  background: var(--color-bg);
+  color: var(--color-text);
+  box-shadow: var(--shadow-lg);
+}
+.product-size-guide__close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  font-size: 28px;
+  line-height: 1;
+}
+.product-size-guide__dialog h2 {
+  margin: 0 48px var(--space-4) 0;
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+}
+.product-size-guide__content {
+  color: var(--color-text-muted);
+}
+
 .product-accordions { border-top: 1px solid var(--color-border); margin-top: var(--space-4); }
 .product-accordion {
   border-bottom: 1px solid var(--color-border);
@@ -669,6 +763,8 @@
     { "type": "checkbox", "id": "show_sale_badge", "label": "Show sale badge", "default": true },
     { "type": "checkbox", "id": "show_benefits", "label": "Show benefits checklist", "default": true },
     { "type": "checkbox", "id": "show_trust", "label": "Show trust badges", "default": true },
+    { "type": "checkbox", "id": "show_stock_counter", "label": "Show low-stock counter when available", "default": true },
+    { "type": "range", "id": "low_stock_threshold", "label": "Low-stock threshold", "min": 1, "max": 25, "step": 1, "default": 8 },
     { "type": "header", "content": "Checkout Buttons" },
     { "type": "text", "id": "atc_label", "label": "Add to Cart button text", "info": "Leave blank to use Theme Settings > Trust & Conversion." },
     { "type": "text", "id": "buy_label", "label": "Buy It Now button text", "info": "Leave blank to use Theme Settings > Trust & Conversion." },
@@ -686,6 +782,11 @@
     { "type": "text", "id": "trust_3_title", "label": "Trust 3 title" },
     { "type": "text", "id": "trust_3_sub",   "label": "Trust 3 subtitle" },
     { "type": "checkbox", "id": "show_payment_icons", "label": "Show payment icons", "default": true },
+    { "type": "header", "content": "Size guide" },
+    { "type": "checkbox", "id": "show_size_guide", "label": "Show size guide popup", "default": false },
+    { "type": "text", "id": "size_guide_label", "label": "Size guide label", "default": "Size guide" },
+    { "type": "page", "id": "size_guide_page", "label": "Size guide page" },
+    { "type": "richtext", "id": "size_guide_content", "label": "Size guide content", "default": "<p>Add measurements, fit notes, or care guidance here.</p>" },
     { "type": "header", "content": "Accordion tabs" },
     { "type": "text",     "id": "tab_desc_label",      "label": "Description tab label",     "default": "Description" },
     { "type": "text",     "id": "tab_shipping_label",  "label": "Shipping tab label",        "default": "Shipping & Returns" },

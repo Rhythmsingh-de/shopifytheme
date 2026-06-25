@@ -45,6 +45,13 @@
   {
     "name": "Layout",
     "settings": [
+      { "type": "select", "id": "theme_mode", "label": "Theme mode",
+        "options": [
+          { "value": "system", "label": "Follow system" },
+          { "value": "light", "label": "Light" },
+          { "value": "dark", "label": "Dark" }
+        ],
+        "default": "system" },
       { "type": "range",  "id": "container_max_width",  "label": "Max page width",    "min": 960, "max": 1440, "step": 40, "default": 1280, "unit": "px" },
       { "type": "select", "id": "button_border_radius", "label": "Button shape",
         "options": [
@@ -133,6 +140,9 @@
       { "type": "text", "id": "cart_upsell_title",
         "label": "Upsell section heading",
         "default": "You might also like" },
+      { "type": "product", "id": "cart_drawer_upsell_product",
+        "label": "Cart drawer upsell product",
+        "info": "Optional. Cart page upsell still uses the cart section setting." },
       { "type": "header", "content": "Cart Note" },
       { "type": "checkbox", "id": "cart_show_note",
         "label": "Allow customers to add a note to their order",

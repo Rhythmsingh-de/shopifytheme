@@ -1,0 +1,65 @@
+{%- if section.settings.enabled -%}
+<section id="Lookbook-{{ section.id }}" class="lookbook section-spacing" {{ section.shopify_attributes }}>
+  <div class="container">
+    <div class="lookbook__head">
+      {%- if section.settings.heading != blank -%}<h2>{{ section.settings.heading | escape }}</h2>{%- endif -%}
+      {%- if section.settings.text != blank -%}<p>{{ section.settings.text | escape }}</p>{%- endif -%}
+    </div>
+    <div class="lookbook__grid lookbook__grid--{{ section.settings.layout_style }}">
+      {%- for block in section.blocks -%}
+        <article class="lookbook__item" {{ block.shopify_attributes }}>
+          {%- if block.settings.image != blank -%}
+            {{ block.settings.image | image_url: width: 900 | image_tag: widths: '450,700,900', loading: 'lazy', alt: block.settings.title, class: 'lookbook__image' }}
+          {%- endif -%}
+          <div class="lookbook__copy">
+            {%- if block.settings.title != blank -%}<h3>{{ block.settings.title | escape }}</h3>{%- endif -%}
+            {%- if block.settings.text != blank -%}<p>{{ block.settings.text | escape }}</p>{%- endif -%}
+            {%- if block.settings.product != blank -%}<a href="{{ block.settings.product.url }}" class="btn btn--ghost btn--sm">{{ block.settings.link_label | default: 'Shop look' | escape }}</a>{%- endif -%}
+          </div>
+        </article>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+<style>
+#Lookbook-{{ section.id }} .lookbook__head { margin-bottom: clamp(22px,4vw,40px); }
+#Lookbook-{{ section.id }} .lookbook__head h2 { font-family: var(--font-display); font-size: var(--text-xl); }
+#Lookbook-{{ section.id }} .lookbook__head p { color: var(--color-text-muted); max-width: 62ch; }
+#Lookbook-{{ section.id }} .lookbook__grid { display: grid; gap: clamp(14px,2vw,24px); }
+#Lookbook-{{ section.id }} .lookbook__grid--mosaic { grid-template-columns: 1.2fr .8fr; }
+#Lookbook-{{ section.id }} .lookbook__grid--cards { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+#Lookbook-{{ section.id }} .lookbook__item { position: relative; overflow: hidden; min-height: 320px; border-radius: var(--card-radius); background: var(--color-surface); }
+#Lookbook-{{ section.id }} .lookbook__image { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
+#Lookbook-{{ section.id }} .lookbook__copy { position: absolute; left: 0; right: 0; bottom: 0; padding: var(--sp-5); color: #fff; background: linear-gradient(transparent, rgba(0,0,0,.7)); }
+#Lookbook-{{ section.id }} .lookbook__copy h3 { font-size: var(--text-lg); }
+#Lookbook-{{ section.id }} .lookbook__copy p { font-size: var(--text-sm); opacity: .84; }
+@media (max-width: 760px) { #Lookbook-{{ section.id }} .lookbook__grid--mosaic { grid-template-columns: 1fr; } }
+</style>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Lookbook",
+  "tag": "section",
+  "settings": [
+    { "type": "checkbox", "id": "enabled", "label": "Enable section", "default": true },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Shop the look" },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "Curated scenes that connect products with real use." },
+    { "type": "select", "id": "layout_style", "label": "Layout", "options": [
+      { "value": "cards", "label": "Cards" },
+      { "value": "mosaic", "label": "Mosaic" }
+    ], "default": "cards" }
+  ],
+  "blocks": [
+    { "type": "look", "name": "Look", "settings": [
+      { "type": "image_picker", "id": "image", "label": "Image" },
+      { "type": "text", "id": "title", "label": "Title", "default": "Everyday setup" },
+      { "type": "textarea", "id": "text", "label": "Text" },
+      { "type": "product", "id": "product", "label": "Linked product" },
+      { "type": "text", "id": "link_label", "label": "Link label", "default": "Shop look" }
+    ] }
+  ],
+  "presets": [{ "name": "Lookbook", "blocks": [{ "type": "look" }, { "type": "look" }] }]
+}
+{% endschema %}
