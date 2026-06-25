@@ -1,4 +1,4 @@
-/* BodyLuxCare — theme.js v5.3.0 — June 2026
+/* BodyLuxCare — theme.js v3.1.0 — June 2026
    CHANGE: Wrap all inline header onclick BLC calls with window.BLC? to avoid
            runtime errors before theme.js initializes.
    IDs unified across files:
