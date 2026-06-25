@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "announcement_bar": {
@@ -6,13 +15,14 @@
         "enabled": true,
         "bg_color": "#111111",
         "text_color": "#ffffff",
-        "text_1": "\u26a1 Free shipping on orders over $75",
-        "text_2": "\ud83d\udd12 30-Day Money-Back Guarantee",
-        "text_3": "\ud83d\ude80 Limited Weekly Drop \u2014 Order Today",
+        "text_1": "⚡ Free shipping on orders over $75",
+        "text_2": "🔒 30-Day Money-Back Guarantee",
+        "text_3": "🚀 Limited Weekly Drop — Order Today",
+        "link": "",
         "auto_rotate": true,
         "speed": 4,
-        "offer_mode": true,
-        "countdown_prefix": "Offer ends in"
+        "offer_mode": false,
+        "countdown_prefix": "Ends in"
       }
     },
     "hero": {
@@ -22,21 +32,30 @@
         "eyebrow": "New Weekly Drop",
         "heading": "This Week's Drop",
         "subheading": "Premium products designed for comfort, beauty, recovery, and everyday luxury.",
-        "cta1_label": "Shop Now",
-        "cta2_label": "Learn More",
-        "trust_text": "Free shipping $75+ \u00b7 30-day returns \u00b7 Secure checkout",
+        "trust_text": "Free shipping $75+ · 30-day returns · Secure checkout",
+        "hero_product": "bange-new-men-anti-theft-waterproof-toiletry-wash-bag-travel-high-quality-men",
         "show_price": true,
-        "show_buttons": true,
-        "show_countdown": true,
-        "countdown_label": "Offer ends in",
         "show_sale_ribbon": true,
+        "show_countdown": false,
+        "countdown_label": "Offer ends in 5 Days",
+        "show_buttons": true,
+        "cta1_label": "Shop Now",
+        "cta1_link": "",
+        "cta1_bg": "#1a1a1a",
+        "cta1_color": "#ffffff",
+        "cta2_label": "Learn More",
+        "cta2_link": "",
         "split_media_bg": "#0d2318",
         "split_content_bg": "#faf9f7",
         "heading_color": "#111111",
         "subheading_color": "#555555",
         "accent_color": "#1d6b44",
-        "cta1_bg": "#1a1a1a",
-        "cta1_color": "#ffffff"
+        "color_scheme": "dark",
+        "bg_color": "#0d2318",
+        "show_overlay": true,
+        "overlay_opacity": 5,
+        "min_height": 600,
+        "content_align": "left"
       }
     },
     "single_product_home_4t7cKi": {
@@ -111,9 +130,8 @@
         "show_eyebrow": true,
         "eyebrow": "",
         "heading": "",
+        "subheading": "Durable, waterproof, and ergonomic for your toughest hikes.",
         "show_rating": true,
-        "atc_label": "Add to Cart — Order Now",
-        "buy_label": "Buy Now",
         "show_demo_rating": true,
         "show_sale_badge": true,
         "show_qty_selector": true,
@@ -159,8 +177,8 @@
         "review_cDwrw7": {
           "type": "review",
           "settings": {
-            "stars": "\u2605\u2605\u2605\u2605\u2605",
-            "text": "Absolutely love the quality. These are the most comfortable clothes I've ever worn \u2014 worth every penny!",
+            "stars": "★★★★★",
+            "text": "Absolutely love the quality. These are the most comfortable clothes I've ever worn — worth every penny!",
             "author": "Emma L.",
             "verified": true
           }
@@ -168,7 +186,7 @@
         "review_VWYQcK": {
           "type": "review",
           "settings": {
-            "stars": "\u2605\u2605\u2605\u2605\u2605",
+            "stars": "★★★★★",
             "text": "The jewellery is stunning. Packaged beautifully, arrived fast, and the craftsmanship is incredible. Already ordered again.",
             "author": "Priya K.",
             "verified": true
@@ -177,8 +195,8 @@
         "review_X7fDVF": {
           "type": "review",
           "settings": {
-            "stars": "\u2605\u2605\u2605\u2605\u2605",
-            "text": "My dog went crazy for the toys \u2014 built really tough too. Great brand, great mission. I'll be a customer for life.",
+            "stars": "★★★★★",
+            "text": "My dog went crazy for the toys — built really tough too. Great brand, great mission. I'll be a customer for life.",
             "author": "James T.",
             "verified": true
           }
@@ -192,7 +210,7 @@
       "name": "Reviews Strip",
       "settings": {
         "heading": "What Our Customers Say",
-        "subtext": "4.8 out of 5 stars \u00b7 1150+ reviews",
+        "subtext": "4.8 out of 5 stars · 1150+ reviews",
         "bg_color": "#ffffff",
         "text_color": "#111111"
       }
@@ -219,7 +237,7 @@
       "type": "sp-sticky-atc",
       "settings": {
         "product": "",
-        "label": "Add to Cart \u2014 Order Now"
+        "label": "Add to Cart — Order Now"
       }
     }
   },
