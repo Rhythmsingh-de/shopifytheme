@@ -12,6 +12,60 @@
     "single_product_home": {
       "type": "single-product-home",
       "blocks": {
+        "feature_wishlist": {
+          "type": "feature",
+          "settings": {
+            "title": "Wishlist Feature",
+            "subtitle": "Save favorites locally without forcing signup.",
+            "visibility": "all",
+            "icon": "heart"
+          }
+        },
+        "feature_ajax_cart": {
+          "type": "feature",
+          "settings": {
+            "title": "Ajax Cart",
+            "subtitle": "Fast cart drawer with quantity updates.",
+            "visibility": "all",
+            "icon": "bag"
+          }
+        },
+        "feature_compare": {
+          "type": "feature",
+          "settings": {
+            "title": "Product Compare",
+            "subtitle": "Shown only when the storefront is in multiple-products mode.",
+            "visibility": "multi_product",
+            "icon": "compare"
+          }
+        },
+        "feature_blogs_seo": {
+          "type": "feature",
+          "settings": {
+            "title": "Blogs & SEO",
+            "subtitle": "Content-ready layout with meta tags and product schema.",
+            "visibility": "all",
+            "icon": "seo"
+          }
+        },
+        "feature_speed": {
+          "type": "feature",
+          "settings": {
+            "title": "Super Fast Loading",
+            "subtitle": "Responsive images, LCP preload, and lightweight interactions.",
+            "visibility": "all",
+            "icon": "speed"
+          }
+        },
+        "feature_secure_payment": {
+          "type": "feature",
+          "settings": {
+            "title": "Secure Payment",
+            "subtitle": "Shopify checkout with enabled payment gateway icons.",
+            "visibility": "all",
+            "icon": "shield"
+          }
+        },
         "review_1": {
           "type": "review",
           "settings": {
@@ -51,6 +105,12 @@
         }
       },
       "block_order": [
+        "feature_wishlist",
+        "feature_ajax_cart",
+        "feature_compare",
+        "feature_blogs_seo",
+        "feature_speed",
+        "feature_secure_payment",
         "review_1",
         "review_2",
         "faq_1",
@@ -64,6 +124,8 @@
         "mobile_info_style": "compact",
         "mobile_media_visibility": "show",
         "show_hover_image": true,
+        "show_wishlist_button": true,
+        "show_compare_button": true,
         "show_eyebrow": false,
         "eyebrow": "",
         "heading": "Premium daily essential",

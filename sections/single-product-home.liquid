@@ -92,6 +92,11 @@
   if section.settings.show_trust_strip_mobile == false
     assign show_trust_mobile = false
   endif
+  assign show_wishlist_button = section.settings.show_wishlist_button
+  assign show_compare_button = section.settings.show_compare_button
+  if storefront_mode != 'multi_product'
+    assign show_compare_button = false
+  endif
 -%}
 
 {%- if render_section -%}
@@ -131,17 +136,17 @@
 <section class="sph sph--desktop-info-{{ desktop_info_style }} sph--mobile-info-{{ mobile_info_style }} sph--mobile-media-{{ mobile_media_visibility }} sph--desktop-cta-{{ desktop_cta_layout }} sph--mobile-cta-{{ mobile_cta_layout }}" id="SingleProductHome-{{ section.id }}" data-product-detail {% if sp != blank %}data-variants="{{ sp.variants | json | escape }}"{% endif %} {{ section.shopify_attributes }}>
   <div class="sph__inner sph__inner--media-{{ section.settings.media_position | default: 'left' }} container">
 
-    <div class="sph__media" id="SphMedia">
+    <div class="sph__media">
       <div class="sph__media-main">
         {%- if sp != blank and sp.featured_image != blank -%}
           {%- assign sph_main_alt = sp.featured_image.alt | default: sp.title | escape -%}
-          {{ sp.featured_image | image_url: width: 900 | image_tag: id: 'SphMainImg', class: 'sph__img sph__img--primary', widths: '450,900,1200', loading: 'eager', decoding: 'async', width: 900, height: 900, alt: sph_main_alt }}
+          {{ sp.featured_image | image_url: width: 900 | image_tag: class: 'sph__img sph__img--primary', widths: '450,900,1200', loading: 'eager', decoding: 'async', width: 900, height: 900, alt: sph_main_alt, data-main-image: '' }}
           {%- if section.settings.show_hover_image and sp.images.size > 1 -%}
             {{ sp.images[1] | image_url: width: 900 | image_tag: class: 'sph__img sph__img--hover', widths: '450,900,1200', loading: 'lazy', decoding: 'async', width: 900, height: 900, alt: sph_main_alt }}
           {%- endif -%}
         {%- elsif section.settings.fallback_image != blank -%}
           {%- assign sph_fallback_alt = section.settings.heading | escape -%}
-          {{ section.settings.fallback_image | image_url: width: 900 | image_tag: id: 'SphMainImg', class: 'sph__img', widths: '450,900,1200', loading: 'eager', decoding: 'async', width: 900, height: 900, alt: sph_fallback_alt }}
+          {{ section.settings.fallback_image | image_url: width: 900 | image_tag: class: 'sph__img', widths: '450,900,1200', loading: 'eager', decoding: 'async', width: 900, height: 900, alt: sph_fallback_alt, data-main-image: '' }}
         {%- else -%}
           <div class="sph__img-placeholder">
             {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
@@ -149,6 +154,31 @@
         {%- endif -%}
 
         {%- if sp != blank -%}
+          {%- if show_wishlist_button or show_compare_button -%}
+            <div class="sph__media-actions" aria-label="Product actions">
+              {%- if show_wishlist_button -%}
+                {%- render 'wishlist-btn', product: sp -%}
+              {%- endif -%}
+              {%- if show_compare_button -%}
+                <button
+                  class="sph__compare-btn"
+                  data-compare-btn
+                  data-product-id="{{ sp.id }}"
+                  data-product-title="{{ sp.title | escape }}"
+                  data-product-url="{{ sp.url }}"
+                  aria-label="Add {{ sp.title | escape }} to compare"
+                  aria-pressed="false">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true">
+                    <path d="M8 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h3"/>
+                    <path d="M16 3h3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-3"/>
+                    <path d="M12 4v16"/>
+                    <path d="m10 8-2 2 2 2"/>
+                    <path d="m14 16 2-2-2-2"/>
+                  </svg>
+                </button>
+              {%- endif -%}
+            </div>
+          {%- endif -%}
           <div class="sph__badges">
             {%- if compare > price -%}
               {%- assign savings = compare | minus: price | times: 100 | divided_by: compare -%}
@@ -216,15 +246,15 @@
           {%- assign eyebrow = sp.vendor -%}
         {%- endif -%}
         {%- if eyebrow != blank -%}
-          <p class="sph__eyebrow">{{ eyebrow | upcase }}</p>
+          <p class="sph__eyebrow">{{ eyebrow | upcase | escape }}</p>
         {%- endif -%}
       {%- endif -%}
 
       <h1 class="sph__title">
         {%- if section.settings.heading != blank -%}
-          {{ section.settings.heading }}
+          {{ section.settings.heading | escape }}
         {%- elsif sp != blank -%}
-          {{ sp.title }}
+          {{ sp.title | escape }}
         {%- else -%}
           Adventure Ready
         {%- endif -%}
@@ -235,7 +265,7 @@
         {%- assign subtitle = sp.description | strip_html | truncate: 100 -%}
       {%- endif -%}
       {%- if subtitle != blank -%}
-        <p class="sph__sub">{{ subtitle }}</p>
+        <p class="sph__sub">{{ subtitle | escape }}</p>
       {%- endif -%}
 
       <div class="sph__price-row">
@@ -343,8 +373,8 @@
             {%- for opt in sp.options_with_values -%}
               <div class="product-option">
                 <p class="sph__opt-label">
-                  {{ opt.name }}:
-                  <strong id="selected-{{ opt.name | handleize }}">{{ opt.selected_value }}</strong>
+                  {{ opt.name | escape }}:
+                  <strong id="selected-{{ section.id }}-{{ opt.name | handleize }}">{{ opt.selected_value | escape }}</strong>
                 </p>
 
                 {%- if opt.name == 'Color' or opt.name == 'Colour' -%}
@@ -369,7 +399,7 @@
                         data-option-value="{{ value | escape }}"
                         aria-pressed="{% if value == opt.selected_value %}true{% else %}false{% endif %}"
                         aria-label="{{ value | escape }}">
-                        {{ value }}
+                        {{ value | escape }}
                       </button>
                     {%- endfor -%}
                   </div>
@@ -390,11 +420,11 @@
 
       {%- if show_trust_desktop or show_trust_mobile -%}
         <div class="sph__trust{% unless show_trust_desktop %} sph__trust--hide-desktop{% endunless %}{% unless show_trust_mobile %} sph__trust--hide-mobile{% endunless %}" aria-label="Guarantees">
-          <span>&#10003; {{ section.settings.trust_1 | default: 'Free Shipping' }}</span>
+          <span>&#10003; {{ section.settings.trust_1 | default: 'Free Shipping' | escape }}</span>
           <span class="sph__trust-sep">|</span>
-          <span>&#10003; {{ section.settings.trust_2 | default: 'Secure Checkout' }}</span>
+          <span>&#10003; {{ section.settings.trust_2 | default: 'Secure Checkout' | escape }}</span>
           <span class="sph__trust-sep">|</span>
-          <span>&#10003; {{ section.settings.trust_3 | default: '30-Day Guarantee' }}</span>
+          <span>&#10003; {{ section.settings.trust_3 | default: '30-Day Guarantee' | escape }}</span>
         </div>
       {%- endif -%}
 
@@ -409,9 +439,9 @@
             data-desc-open-mobile="{{ desc_open_mobile }}">
             <details
               class="sph-description__item"
-              id="SphDescDetails">
+              id="SphDescDetails-{{ section.id }}">
               <summary class="sph-description__q">
-                <span>{{ section.settings.description_label | default: 'Description' }}</span>
+                <span>{{ section.settings.description_label | default: 'Description' | escape }}</span>
                 <svg class="sph-description__chevron" width="16" height="16" viewBox="0 0 24 24"
                   fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                   <polyline points="6 9 12 15 18 9"/>
@@ -429,7 +459,7 @@
         </details-accordion>
         <script>
         (function() {
-          var el = document.getElementById('SphDescDetails');
+          var el = document.getElementById('SphDescDetails-{{ section.id }}');
           var wrap = el ? el.closest('[data-desc-open-desktop]') : null;
           if (!el || !wrap) return;
           var isMobile = window.innerWidth < 768;
@@ -457,20 +487,44 @@
   assign feature_blocks = 0
   for block in section.blocks
     if block.type == 'feature'
-      assign feature_blocks = feature_blocks | plus: 1
+      assign feature_visibility = block.settings.visibility | default: 'all'
+      if feature_visibility == 'all' or feature_visibility == storefront_mode
+        assign feature_blocks = feature_blocks | plus: 1
+      endif
     endif
   endfor
+  assign fallback_features = false
+  if feature_blocks == 0
+    if section.settings.feat_1_title != blank or section.settings.feat_2_title != blank or section.settings.feat_3_title != blank
+      assign fallback_features = true
+    endif
+  endif
 -%}
 
-{%- if section.settings.show_features and feature_blocks > 0 -%}
+{%- if section.settings.show_features and feature_blocks > 0 or section.settings.show_features and fallback_features -%}
 <section class="sph-features" aria-label="Key features">
   <div class="container">
-    <div class="sph-features__grid" style="grid-template-columns: repeat({{ feature_blocks | at_most: 3 }}, 1fr);">
-      {%- for block in section.blocks -%}
-        {%- if block.type == 'feature' -%}
+    <div class="sph-features__grid">
+      {%- if feature_blocks > 0 -%}
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'feature' -%}
+            {%- assign feature_visibility = block.settings.visibility | default: 'all' -%}
+            {%- if feature_visibility == 'all' or feature_visibility == storefront_mode -%}
           <div class="sph-features__item" {{ block.shopify_attributes }}>
             <div class="sph-features__icon" aria-hidden="true">
               {%- case block.settings.icon -%}
+                {%- when 'heart' -%}
+                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 1 0-7.8 7.8L12 21.2l8.8-8.8a5.5 5.5 0 0 0 0-7.8z"/></svg>
+                {%- when 'compare' -%}
+                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h3"/><path d="M16 3h3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-3"/><path d="M12 4v16"/><path d="m10 8-2 2 2 2"/><path d="m14 16 2-2-2-2"/></svg>
+                {%- when 'article' -%}
+                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M8 7h8M8 11h8M8 15h5"/></svg>
+                {%- when 'speed' -%}
+                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 14a8 8 0 1 1 16 0"/><path d="M12 14l4-4"/><path d="M3 20h18"/></svg>
+                {%- when 'seo' -%}
+                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/><path d="M8 11h6M11 8v6"/></svg>
+                {%- when 'code' -%}
+                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m8 9-4 3 4 3"/><path d="m16 9 4 3-4 3"/><path d="m14 4-4 16"/></svg>
                 {%- when 'water' -%}
                   <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2C6 9 4 13 4 16a8 8 0 0 0 16 0c0-3-2-7-8-14z"/></svg>
                 {%- when 'leaf' -%}
@@ -487,13 +541,50 @@
                   <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 8 12 12 14 14"/></svg>
               {%- endcase -%}
             </div>
-            <strong class="sph-features__title">{{ block.settings.title }}</strong>
+            <strong class="sph-features__title">{{ block.settings.title | escape }}</strong>
             {%- if block.settings.subtitle != blank -%}
-              <span class="sph-features__sub">{{ block.settings.subtitle }}</span>
+              <span class="sph-features__sub">{{ block.settings.subtitle | escape }}</span>
             {%- endif -%}
           </div>
-        {%- endif -%}
-      {%- endfor -%}
+            {%- endif -%}
+          {%- endif -%}
+        {%- endfor -%}
+      {%- else -%}
+        {%- for i in (1..3) -%}
+          {%- liquid
+            assign feature_title_key = 'feat_' | append: i | append: '_title'
+            assign feature_sub_key = 'feat_' | append: i | append: '_sub'
+            assign feature_icon_key = 'feat_' | append: i | append: '_icon'
+            assign feature_title = section.settings[feature_title_key]
+            assign feature_sub = section.settings[feature_sub_key]
+            assign feature_icon = section.settings[feature_icon_key]
+          -%}
+          {%- if feature_title != blank -%}
+            <div class="sph-features__item">
+              <div class="sph-features__icon" aria-hidden="true">
+                {%- case feature_icon -%}
+                  {%- when 'leaf' -%}
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 8C8 10 5.9 16.17 3.82 19.31M15 8a6 6 0 0 0-6 6"/><path d="M3.82 19.31a10.32 10.32 0 0 0 9.4-8.19"/></svg>
+                  {%- when 'bag' -%}
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                  {%- when 'shield' -%}
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  {%- when 'truck' -%}
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 3h15v13H1zM16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                  {%- when 'star' -%}
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  {%- else -%}
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2C6 9 4 13 4 16a8 8 0 0 0 16 0c0-3-2-7-8-14z"/></svg>
+                {%- endcase -%}
+              </div>
+              <strong class="sph-features__title">{{ feature_title | escape }}</strong>
+              {%- if feature_sub != blank -%}
+                <span class="sph-features__sub">{{ feature_sub | escape }}</span>
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      {%- endif -%}
     </div>
   </div>
 </section>
@@ -776,6 +867,39 @@
   overflow: hidden;
   aspect-ratio: 1;
   background: var(--color-surface);
+}
+.sph__media-actions {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 18;
+  display: flex;
+  gap: 8px;
+}
+.sph__media-actions .wl-btn,
+.sph__compare-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-full, 9999px);
+  background: color-mix(in oklab, var(--color-bg, #fff) 90%, transparent);
+  border: 1px solid color-mix(in oklab, var(--color-border, #e5e5e5) 85%, transparent);
+  color: var(--color-text, #111);
+  box-shadow: 0 8px 22px rgba(0,0,0,0.12);
+  backdrop-filter: blur(10px);
+}
+.sph__compare-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.18s ease, background 0.18s ease, color 0.18s ease;
+}
+.sph__media-actions .wl-btn:hover,
+.sph__compare-btn:hover,
+.sph__compare-btn.is-saved {
+  transform: translateY(-1px);
+  background: var(--color-primary, #111);
+  color: var(--color-primary-text, #fff);
 }
 .sph__badges {
   position: absolute;
@@ -1277,8 +1401,8 @@
 }
 .sph-features__grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 32px;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: clamp(16px, 2.5vw, 32px);
   text-align: center;
 }
 @media (max-width: 560px) {
@@ -1289,6 +1413,7 @@
   flex-direction: column;
   align-items: center;
   gap: 10px;
+  min-width: 0;
 }
 .sph-features__icon { color: var(--color-text, #111); }
 .sph-features__title {
@@ -1497,9 +1622,9 @@ details-accordion[open] .sph-description__chevron,
 
 <script>
   (function() {
-    function initReviewSlider() {
-      var container = document.querySelector('.sph-review-cards');
-      if (!container) return;
+    function initReviewSlider(root) {
+      var containers = Array.prototype.slice.call((root || document).querySelectorAll('.sph-review-cards'));
+      containers.forEach(function(container) {
       
       // If already running an interval, don't create another
       if (container.dataset.sliderIntervalId) {
@@ -1573,20 +1698,62 @@ details-accordion[open] .sph-description__chevron,
       }, intervalMs);
 
       container.dataset.sliderIntervalId = String(intervalId);
+      });
     }
 
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initReviewSlider);
+      document.addEventListener('DOMContentLoaded', function() { initReviewSlider(document); });
     } else {
-      initReviewSlider();
+      initReviewSlider(document);
     }
     
     // Support Shopify Theme Editor reloads
     document.addEventListener('shopify:section:load', function(e) {
       if (e.target.classList.contains('shopify-section-single-product-home') || e.target.querySelector('.sph-review-cards')) {
-        initReviewSlider();
+        initReviewSlider(e.target);
       }
     });
+  })();
+
+  (function() {
+    var COMPARE_KEY = 'theme_compare_products';
+    function getList() {
+      try { return JSON.parse(localStorage.getItem(COMPARE_KEY)) || []; } catch(e) { return []; }
+    }
+    function saveList(list) {
+      try { localStorage.setItem(COMPARE_KEY, JSON.stringify(list)); } catch(e) {}
+    }
+    function syncButton(btn) {
+      var saved = getList().some(function(item) { return String(item.id) === String(btn.dataset.productId); });
+      btn.classList.toggle('is-saved', saved);
+      btn.setAttribute('aria-pressed', String(saved));
+      btn.setAttribute('aria-label', (saved ? 'Remove ' : 'Add ') + btn.dataset.productTitle + (saved ? ' from compare' : ' to compare'));
+    }
+    function initCompare(root) {
+      Array.prototype.slice.call((root || document).querySelectorAll('[data-compare-btn]')).forEach(syncButton);
+    }
+    document.addEventListener('click', function(e) {
+      var btn = e.target.closest('[data-compare-btn]');
+      if (!btn) return;
+      e.preventDefault();
+      var list = getList();
+      var id = String(btn.dataset.productId);
+      var index = list.findIndex(function(item) { return String(item.id) === id; });
+      if (index > -1) {
+        list.splice(index, 1);
+      } else {
+        list.push({ id: id, title: btn.dataset.productTitle || '', url: btn.dataset.productUrl || '' });
+      }
+      saveList(list.slice(-4));
+      syncButton(btn);
+      window.dispatchEvent(new CustomEvent('compare:updated', { detail: { products: getList() } }));
+    });
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function() { initCompare(document); });
+    } else {
+      initCompare(document);
+    }
+    document.addEventListener('shopify:section:load', function(e) { initCompare(e.target); });
   })();
 
   class DetailsAccordion extends HTMLElement {
@@ -1594,6 +1761,8 @@ details-accordion[open] .sph-description__chevron,
       this.details = this.querySelector('details');
       this.summary = this.querySelector('summary');
       this.content = this.querySelector('.sph-description__a');
+      if (!this.details || !this.summary || !this.content || this.dataset.accordionReady === 'true') return;
+      this.dataset.accordionReady = 'true';
       this.animation = null;
       this.isClosing = false;
       this.isExpanding = false;
@@ -1720,6 +1889,8 @@ details-accordion[open] .sph-description__chevron,
       "default": "show" },
     { "type": "image_picker", "id": "fallback_image", "label": "Fallback image (if no product selected)" },
     { "type": "checkbox", "id": "show_hover_image", "label": "Show alternate image on hover", "default": true },
+    { "type": "checkbox", "id": "show_wishlist_button", "label": "Show wishlist button", "default": true },
+    { "type": "checkbox", "id": "show_compare_button", "label": "Show compare button in multi-product mode", "default": true },
     { "type": "header", "content": "Hero text" },
     { "type": "checkbox", "id": "show_eyebrow", "label": "Show eyebrow label", "default": false },
     { "type": "text",     "id": "eyebrow",    "label": "Eyebrow label" },
@@ -1781,17 +1952,17 @@ details-accordion[open] .sph-description__chevron,
     { "type": "text",   "id": "feat_1_title", "label": "Feature 1 title", "default": "Waterproof" },
     { "type": "text",   "id": "feat_1_sub",   "label": "Feature 1 subtitle", "default": "Durable Materials" },
     { "type": "select", "id": "feat_1_icon",  "label": "Feature 1 icon", "options": [
-      {"value":"water","label":"Water drops"},{"value":"leaf","label":"Leaf / lightweight"},{"value":"bag","label":"Bag"},{"value":"shield","label":"Shield"},{"value":"truck","label":"Truck"},{"value":"star","label":"Star"}
+      {"value":"water","label":"Water drops"},{"value":"leaf","label":"Leaf / lightweight"},{"value":"bag","label":"Bag"},{"value":"shield","label":"Shield"},{"value":"truck","label":"Truck"},{"value":"star","label":"Star"},{"value":"heart","label":"Wishlist"},{"value":"compare","label":"Compare"},{"value":"article","label":"Blog/article"},{"value":"speed","label":"Speed"},{"value":"seo","label":"SEO"},{"value":"code","label":"Code"}
     ], "default": "water" },
     { "type": "text",   "id": "feat_2_title", "label": "Feature 2 title", "default": "Ultralight" },
     { "type": "text",   "id": "feat_2_sub",   "label": "Feature 2 subtitle", "default": "30L Capacity" },
     { "type": "select", "id": "feat_2_icon",  "label": "Feature 2 icon", "options": [
-      {"value":"water","label":"Water drops"},{"value":"leaf","label":"Leaf / lightweight"},{"value":"bag","label":"Bag"},{"value":"shield","label":"Shield"},{"value":"truck","label":"Truck"},{"value":"star","label":"Star"}
+      {"value":"water","label":"Water drops"},{"value":"leaf","label":"Leaf / lightweight"},{"value":"bag","label":"Bag"},{"value":"shield","label":"Shield"},{"value":"truck","label":"Truck"},{"value":"star","label":"Star"},{"value":"heart","label":"Wishlist"},{"value":"compare","label":"Compare"},{"value":"article","label":"Blog/article"},{"value":"speed","label":"Speed"},{"value":"seo","label":"SEO"},{"value":"code","label":"Code"}
     ], "default": "leaf" },
     { "type": "text",   "id": "feat_3_title", "label": "Feature 3 title", "default": "Ergonomic" },
     { "type": "text",   "id": "feat_3_sub",   "label": "Feature 3 subtitle", "default": "Comfort Straps" },
     { "type": "select", "id": "feat_3_icon",  "label": "Feature 3 icon", "options": [
-      {"value":"water","label":"Water drops"},{"value":"leaf","label":"Leaf / lightweight"},{"value":"bag","label":"Bag"},{"value":"shield","label":"Shield"},{"value":"truck","label":"Truck"},{"value":"star","label":"Star"}
+      {"value":"water","label":"Water drops"},{"value":"leaf","label":"Leaf / lightweight"},{"value":"bag","label":"Bag"},{"value":"shield","label":"Shield"},{"value":"truck","label":"Truck"},{"value":"star","label":"Star"},{"value":"heart","label":"Wishlist"},{"value":"compare","label":"Compare"},{"value":"article","label":"Blog/article"},{"value":"speed","label":"Speed"},{"value":"seo","label":"SEO"},{"value":"code","label":"Code"}
     ], "default": "bag" },
     { "type": "header", "content": "Product Description" },
     { "type": "select", "id": "description_style", "label": "Description style", "options": [
@@ -1852,8 +2023,13 @@ details-accordion[open] .sph-description__chevron,
       "settings": [
         { "type": "text", "id": "title", "label": "Title", "default": "Feature Title" },
         { "type": "textarea", "id": "subtitle", "label": "Subtitle", "default": "Feature Description" },
+        { "type": "select", "id": "visibility", "label": "Visibility by selling mode", "options": [
+          { "value": "all", "label": "Single and multiple products" },
+          { "value": "single_product", "label": "Single-product mode only" },
+          { "value": "multi_product", "label": "Multiple-products mode only" }
+        ], "default": "all" },
         { "type": "select", "id": "icon", "label": "Icon", "options": [
-          {"value":"water","label":"Water drops"},{"value":"leaf","label":"Leaf / lightweight"},{"value":"bag","label":"Bag"},{"value":"shield","label":"Shield"},{"value":"truck","label":"Truck"},{"value":"star","label":"Star"}
+          {"value":"water","label":"Water drops"},{"value":"leaf","label":"Leaf / lightweight"},{"value":"bag","label":"Bag"},{"value":"shield","label":"Shield"},{"value":"truck","label":"Truck"},{"value":"star","label":"Star"},{"value":"heart","label":"Wishlist"},{"value":"compare","label":"Compare"},{"value":"article","label":"Blog/article"},{"value":"speed","label":"Speed"},{"value":"seo","label":"SEO"},{"value":"code","label":"Code"}
         ], "default": "water" }
       ]
     }
@@ -1873,6 +2049,8 @@ details-accordion[open] .sph-description__chevron,
         "mobile_cta_layout": "row",
         "show_payment_icons_desktop": true,
         "show_payment_icons_mobile": true,
+        "show_wishlist_button": true,
+        "show_compare_button": true,
         "show_trust_strip_desktop": true,
         "show_trust_strip_mobile": true,
         "mobile_padding_top": 16,
@@ -1882,6 +2060,12 @@ details-accordion[open] .sph-description__chevron,
         "feat_3_title": "Ergonomic",   "feat_3_sub": "Comfort Straps",   "feat_3_icon": "bag"
       },
       "blocks": [
+        { "type": "feature", "settings": { "title": "Wishlist Feature", "subtitle": "Save favorites locally without forcing signup.", "visibility": "all", "icon": "heart" } },
+        { "type": "feature", "settings": { "title": "Ajax Cart", "subtitle": "Fast add-to-cart drawer with quantity updates.", "visibility": "all", "icon": "bag" } },
+        { "type": "feature", "settings": { "title": "Product Compare", "subtitle": "Mode-aware compare controls for multi-product stores.", "visibility": "multi_product", "icon": "compare" } },
+        { "type": "feature", "settings": { "title": "Blogs & SEO", "subtitle": "Content, meta tags, canonical URLs, and product schema.", "visibility": "all", "icon": "seo" } },
+        { "type": "feature", "settings": { "title": "Fast Loading", "subtitle": "Responsive images, LCP preload, and lightweight UI.", "visibility": "all", "icon": "speed" } },
+        { "type": "feature", "settings": { "title": "Secure Payment", "subtitle": "Shopify checkout and enabled payment gateway icons.", "visibility": "all", "icon": "shield" } },
         { "type": "review", "settings": { "name": "Sarah M.", "rating": 5, "body": "Absolutely love this! Fits perfectly and looks amazing." } },
         { "type": "review", "settings": { "name": "Mike L.",  "rating": 5, "body": "Best purchase I've made this year. Highly recommend." } },
         { "type": "faq",    "settings": { "question": "Key questions about this product?", "answer": "<p>This product is designed for maximum comfort and performance.</p>" } },

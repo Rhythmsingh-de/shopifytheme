@@ -4,10 +4,12 @@
       {%- if block.settings.logo != blank -%}
         <a href="{{ routes.root_url }}" aria-label="{{ shop.name }} home" style="display: inline-block;">
           {%- assign logo_w = block.settings.logo_width | default: 120 -%}
+          {%- assign logo_h = logo_w | divided_by: block.settings.logo.aspect_ratio | round -%}
           <img
             src="{{ block.settings.logo | image_url: width: 360 }}"
-            alt="{{ block.settings.logo.alt | default: shop.name }}"
+            alt="{{ block.settings.logo.alt | default: shop.name | escape }}"
             width="{{ logo_w }}"
+            height="{{ logo_h }}"
             style="max-width: 100%; height: auto;"
             loading="lazy" decoding="async">
         </a>
