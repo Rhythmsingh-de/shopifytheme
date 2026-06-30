@@ -283,12 +283,27 @@
         "bg_color": "#f5f3f0",
         "text_color": "#111111"
       }
+    },
+    "featured_products": {
+      "type": "featured-products",
+      "settings": {
+        "visibility": "always",
+        "source": "all_products",
+        "product_limit": 4,
+        "columns_desktop": 4,
+        "eyebrow": "Upcoming Collection",
+        "heading": "Upcoming Sales & Releases",
+        "subtext": "Subscribe below to get notified when these items drop and gain exclusive early access.",
+        "show_top_cta": true,
+        "cta_label": "View All"
+      }
     }
   },
   "order": [
     "announcement_bar",
     "single_product_home",
     "trust_badges",
+    "featured_products",
     "faq",
     "newsletter_bar"
   ]

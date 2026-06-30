@@ -539,7 +539,14 @@
         }
       });
     }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
-    document.querySelectorAll('.reveal').forEach(function(el) { revealObs.observe(el); });
+    document.querySelectorAll('.reveal').forEach(function(el) {
+      var rect = el.getBoundingClientRect();
+      if (rect.top < window.innerHeight) {
+        el.classList.add('is-visible');
+      } else {
+        revealObs.observe(el);
+      }
+    });
     /* Also observe any added later (for SPH section re-renders in editor) */
     if (window.MutationObserver) {
       new MutationObserver(function(muts) {

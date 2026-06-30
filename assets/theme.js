@@ -413,6 +413,10 @@
     targets.forEach(function(el, index) {
       el.setAttribute('data-blc-reveal', '');
       el.style.setProperty('--blc-reveal-delay', Math.min(index % 4, 3) * 70 + 'ms');
+      var rect = el.getBoundingClientRect();
+      if (rect.top < window.innerHeight) {
+        el.classList.add('is-revealed');
+      }
     });
     if (!('IntersectionObserver' in window)) {
       targets.forEach(function(el) { el.classList.add('is-revealed'); });
@@ -425,7 +429,11 @@
         observer.unobserve(entry.target);
       });
     }, { rootMargin: '0px 0px -10% 0px', threshold: 0.12 });
-    targets.forEach(function(el) { observer.observe(el); });
+    targets.forEach(function(el) {
+      if (!el.classList.contains('is-revealed')) {
+        observer.observe(el);
+      }
+    });
   }
 
   /* ─────────── PRODUCT PAGE QTY ─────────── */

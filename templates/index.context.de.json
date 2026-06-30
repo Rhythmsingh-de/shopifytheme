@@ -140,6 +140,14 @@
         "success_msg": "Du bist dabei. Schau in dein Postfach.",
         "privacy_note": "Kein Spam. Jederzeit abmeldbar."
       }
+    },
+    "featured_products": {
+      "settings": {
+        "eyebrow": "Kommende Kollektion",
+        "heading": "Nächste Sales & Neuerscheinungen",
+        "subtext": "Melde dich unten an, um bei Veröffentlichung benachrichtigt zu werden und exklusiven Vorabzugang zu erhalten.",
+        "cta_label": "Alle ansehen"
+      }
     }
   }
 }
