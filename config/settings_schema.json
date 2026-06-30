@@ -2,7 +2,7 @@
   {
     "name": "theme_info",
     "theme_name": "BodyLuxCare",
-    "theme_version": "3.4.0",
+    "theme_version": "3.5.0",
     "theme_author": "Rhythmsingh",
     "theme_documentation_url": "https://github.com/Rhythmsingh-de/shopifytheme",
     "theme_support_url": "https://github.com/Rhythmsingh-de/shopifytheme"
@@ -61,6 +61,14 @@
           { "value": "9999px", "label": "Pill" }
         ], "default": "9999px" },
       { "type": "range", "id": "card_border_radius", "label": "Card corner radius", "min": 0, "max": 24, "step": 2, "default": 12, "unit": "px" }
+    ]
+  },
+  {
+    "name": "Motion & Effects",
+    "settings": [
+      { "type": "checkbox", "id": "ui_reveal_enabled", "label": "Enable scroll reveal effects", "default": true },
+      { "type": "checkbox", "id": "ui_button_sheen_enabled", "label": "Enable premium CTA sheen", "default": true },
+      { "type": "checkbox", "id": "ui_respect_reduced_motion", "label": "Respect reduced-motion browser setting", "default": true }
     ]
   },
   {
@@ -176,8 +184,8 @@
       { "type": "text", "id": "trust_support_title",  "label": "Support badge title",          "default": "24/7 Support" },
       { "type": "text", "id": "trust_support_sub",    "label": "Support badge subtitle",       "default": "We reply within hours" },
       { "type": "header", "content": "Store Promise" },
-      { "type": "text", "id": "store_promise_heading", "label": "Promise headline", "default": "Free shipping. 14-day returns. Secure payment." },
-      { "type": "textarea", "id": "store_promise_text", "label": "Promise supporting text", "default": "Order today with free shipping, protected checkout, and a clear 14-day return window." },
+      { "type": "text", "id": "store_promise_heading", "label": "Promise headline", "info": "Optional. Leave blank when the promise cards already explain shipping, returns, and payment." },
+      { "type": "textarea", "id": "store_promise_text", "label": "Promise supporting text", "info": "Optional. Leave blank to avoid repeated trust copy." },
       { "type": "text", "id": "shipping_window", "label": "Delivery window", "default": "5-10 business days" },
       { "type": "text", "id": "shipping_dispatch_text", "label": "Dispatch text", "default": "Orders are packed within 1-2 business days." },
       { "type": "text", "id": "returns_window", "label": "Return window", "default": "14 days" },
@@ -207,13 +215,13 @@
           { "value": "cart", "label": "Cart permalink" }
         ],
         "default": "checkout" },
-      { "type": "text", "id": "conversion_microcopy", "label": "Checkout trust microcopy", "default": "Secure checkout - free shipping on all orders - 14-day guarantee" },
+      { "type": "text", "id": "conversion_microcopy", "label": "Checkout trust microcopy", "info": "Optional short line below checkout buttons. Leave blank when Store Promise is enabled to avoid repeated trust copy." },
       { "type": "checkbox", "id": "product_sticky_atc_enabled", "label": "Show sticky add-to-cart on product pages", "default": true },
       { "type": "header", "content": "Product Page Benefit Defaults" },
-      { "type": "text", "id": "product_benefit_1", "label": "Product benefit 1", "default": "Premium quality, built to last" },
-      { "type": "text", "id": "product_benefit_2", "label": "Product benefit 2", "default": "Free shipping on all orders" },
-      { "type": "text", "id": "product_benefit_3", "label": "Product benefit 3", "default": "14-day money-back guarantee" },
-      { "type": "text", "id": "product_benefit_4", "label": "Product benefit 4", "default": "Secure checkout guaranteed" }
+      { "type": "text", "id": "product_benefit_1", "label": "Product benefit 1", "default": "Durable daily-use construction" },
+      { "type": "text", "id": "product_benefit_2", "label": "Product benefit 2", "default": "Comfortable carry for travel" },
+      { "type": "text", "id": "product_benefit_3", "label": "Product benefit 3", "default": "Compact storage for essentials" },
+      { "type": "text", "id": "product_benefit_4", "label": "Product benefit 4", "default": "Clean design for everyday outfits" }
     ]
   },
   {
