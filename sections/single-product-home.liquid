@@ -276,263 +276,349 @@
     </div>
 
     <div class="sph__info">
+      {%- if has_layout_blocks -%}
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+            {%- when 'title' -%}
+              <div class="sph__block-title" {{ block.shopify_attributes }} style="margin-bottom: 20px;">
+                {%- if section.settings.show_eyebrow -%}
+                  {%- assign eyebrow = section.settings.eyebrow -%}
+                  {%- if eyebrow == blank and sp != blank and settings.card_show_vendor -%}
+                    {%- assign eyebrow = sp.vendor -%}
+                  {%- endif -%}
+                  {%- if eyebrow != blank -%}
+                    <p class="sph__eyebrow">{{ eyebrow | upcase | escape }}</p>
+                  {%- endif -%}
+                {%- endif -%}
 
-      {%- if section.settings.show_eyebrow -%}
-        {%- assign eyebrow = section.settings.eyebrow -%}
-        {%- if eyebrow == blank and sp != blank and settings.card_show_vendor -%}
-          {%- assign eyebrow = sp.vendor -%}
-        {%- endif -%}
-        {%- if eyebrow != blank -%}
-          <p class="sph__eyebrow">{{ eyebrow | upcase | escape }}</p>
-        {%- endif -%}
-      {%- endif -%}
+                <h1 class="sph__title" style="margin-top: 0; margin-bottom: 8px;">
+                  {%- if section.settings.heading != blank -%}
+                    {{ section.settings.heading | escape }}
+                  {%- elsif sp != blank -%}
+                    {{ sp.title | escape }}
+                  {%- else -%}
+                    Adventure Ready
+                  {%- endif -%}
+                </h1>
 
-      <h1 class="sph__title">
-        {%- if section.settings.heading != blank -%}
-          {{ section.settings.heading | escape }}
-        {%- elsif sp != blank -%}
-          {{ sp.title | escape }}
-        {%- else -%}
-          Adventure Ready
-        {%- endif -%}
-      </h1>
+                {%- assign subtitle = section.settings.subheading -%}
+                {%- if subtitle == blank and sp != blank -%}
+                  {%- assign subtitle = sp.description | strip_html | truncate: 100 -%}
+                {%- endif -%}
+                {%- if subtitle != blank -%}
+                  <p class="sph__sub" style="margin-top: 0; margin-bottom: 16px;">{{ subtitle | escape }}</p>
+                {%- endif -%}
 
-      {%- assign subtitle = section.settings.subheading -%}
-      {%- if subtitle == blank and sp != blank -%}
-        {%- assign subtitle = sp.description | strip_html | truncate: 100 -%}
-      {%- endif -%}
-      {%- if subtitle != blank -%}
-        <p class="sph__sub">{{ subtitle | escape }}</p>
-      {%- endif -%}
+                <div class="sph__price-row">
+                  <span class="sph__price{% if is_sale %} is-sale{% endif %}">
+                    {%- if sp != blank -%}{{ price | money }}{%- else -%}$149.00{%- endif -%}
+                  </span>
+                  {%- if is_sale -%}
+                    <span class="sph__price-was">{{ compare | money }}</span>
+                    {%- if section.settings.show_sale_badge -%}
+                      <span class="sph__badge">Save {{ save_pct }}%</span>
+                    {%- endif -%}
+                  {%- endif -%}
 
-      <div class="sph__price-row">
-        <span class="sph__price{% if is_sale %} is-sale{% endif %}">
-          {%- if sp != blank -%}{{ price | money }}{%- else -%}$149.00{%- endif -%}
-        </span>
-        {%- if is_sale -%}
-          <span class="sph__price-was">{{ compare | money }}</span>
-          {%- if section.settings.show_sale_badge -%}
-            <span class="sph__badge">Save {{ save_pct }}%</span>
-          {%- endif -%}
-        {%- endif -%}
+                  {%- if settings.card_show_new_badge -%}
+                    {%- if sp.tags contains 'new' -%}
+                      <span class="sph__badge sph__badge--new">New</span>
+                    {%- elsif sp.tags contains 'bestseller' -%}
+                      <span class="sph__badge sph__badge--bestseller">Bestseller</span>
+                    {%- endif -%}
+                  {%- endif -%}
 
-        {%- if settings.card_show_new_badge -%}
-          {%- if sp.tags contains 'new' -%}
-            <span class="sph__badge sph__badge--new">New</span>
-          {%- elsif sp.tags contains 'bestseller' -%}
-            <span class="sph__badge sph__badge--bestseller">Bestseller</span>
-          {%- endif -%}
-        {%- endif -%}
-
-        {%- if section.settings.show_rating -%}
-          {%- assign rating_val = sp.metafields.reviews.rating.value | plus: 0 -%}
-          {%- assign rating_count = sp.metafields.reviews.rating_count.value | plus: 0 -%}
-          {%- if rating_val > 0 or section.settings.show_demo_rating -%}
-            {%- unless rating_val > 0 -%}{%- assign rating_val = 4.8 -%}{%- assign rating_count = 1150 -%}{%- endunless -%}
-            <div class="sph__stars" aria-label="{{ rating_val }} out of 5 stars">
-              {%- assign full = rating_val | floor -%}
-              {%- for i in (1..5) -%}
-                <svg width="14" height="14" viewBox="0 0 24 24"
-                  fill="{% if i <= full %}#f5a623{% else %}none{% endif %}"
-                  stroke="#f5a623" stroke-width="1.5" aria-hidden="true">
-                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-                </svg>
-              {%- endfor -%}
-              <span class="sph__rating-label">{{ rating_val }} | {{ rating_count }} + Reviews</span>
-            </div>
-          {%- endif -%}
-        {%- endif -%}
-      </div>
-
-      {%- capture cta_buttons_html -%}
-        <div style="display:flex; flex-direction:column; gap:16px; margin-top:20px; width:100%;">
-          {%- if section.settings.show_qty_selector -%}
-            <div class="sph__qty-wrap" style="display:flex; flex-direction:column; gap:6px; align-items:flex-start;">
-              <p class="sph__opt-label" style="margin-bottom:0;">
-                {%- if request.locale.iso_code == 'de' -%}Menge{%- else -%}Quantity{%- endif -%}
-              </p>
-              <div class="sph__qty" data-qty-stepper>
-                <button class="sph__qty-btn" data-qty-minus aria-label="Decrease">&#8722;</button>
-                <input class="sph__qty-val" type="number" value="1" min="1" max="99"
-                  readonly aria-label="Quantity">
-                <button class="sph__qty-btn" data-qty-plus aria-label="Increase">&#43;</button>
+                  {%- if section.settings.show_rating -%}
+                    {%- assign rating_val = sp.metafields.reviews.rating.value | plus: 0 -%}
+                    {%- assign rating_count = sp.metafields.reviews.rating_count.value | plus: 0 -%}
+                    {%- if rating_val > 0 or section.settings.show_demo_rating -%}
+                      {%- unless rating_val > 0 -%}{%- assign rating_val = 4.8 -%}{%- assign rating_count = 1150 -%}{%- endunless -%}
+                      <div class="sph__stars" aria-label="{{ rating_val }} out of 5 stars">
+                        {%- assign full = rating_val | floor -%}
+                        {%- for i in (1..5) -%}
+                          <svg width="14" height="14" viewBox="0 0 24 24"
+                            fill="{% if i <= full %}#f5a623{% else %}none{% endif %}"
+                            stroke="#f5a623" stroke-width="1.5" aria-hidden="true">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                          </svg>
+                        {%- endfor -%}
+                        <span class="sph__rating-label">{{ rating_val }} | {{ rating_count }} + Reviews</span>
+                      </div>
+                    {%- endif -%}
+                  {%- endif -%}
+                </div>
               </div>
-            </div>
-          {%- endif -%}
 
-          <div class="sph__btns">
-            {%- if sp != blank and fv.available -%}
-              {%- if show_cart_button -%}
-                <button
-                  class="btn sph__btn-atc sph__btn-atc--pulse"
-                  data-add-to-cart
-                  data-variant-id="{{ fv.id }}"
-                  data-qty="1"
-                  aria-label="Add {{ sp.title | escape }} to cart">
-                  <span class="atc-btn-text">{{ atc_label | escape }}</span>
-                </button>
-              {%- endif -%}
-              {%- if show_buy_now -%}
-                <a href="{{ routes.cart_url }}/{{ fv.id }}:1{{ fast_checkout_suffix }}"
-                  class="btn sph__btn-buy"
-                  data-buy-now
-                  data-checkout-destination="{{ fast_checkout_destination }}"
-                  data-variant-id="{{ fv.id }}">
-                  {{ buy_label | escape }}
-                </a>
-              {%- endif -%}
-              {%- if settings.conversion_microcopy != blank -%}
-                <p class="sph__cta-microcopy">{{ settings.conversion_microcopy | escape }}</p>
-              {%- endif -%}
-            {%- else -%}
-              <button class="btn sph__btn-atc" disabled aria-disabled="true">Sold Out</button>
-            {%- endif -%}
-          </div>
-        </div>
+            {%- when 'options' -%}
+              <div class="sph__block-options" {{ block.shopify_attributes }} style="margin-bottom: 20px;">
+                {{ options_html }}
+              </div>
 
-        {%- if show_payment_icons_desktop or show_payment_icons_mobile -%}
-          <div class="sph__payment-icons{% unless show_payment_icons_desktop %} sph__payment-icons--hide-desktop{% endunless %}{% unless show_payment_icons_mobile %} sph__payment-icons--hide-mobile{% endunless %}">
-            {%- for type in shop.enabled_payment_types -%}
-              {{ type | payment_type_svg_tag: class: 'sph__payment-icon' }}
-            {%- endfor -%}
-          </div>
-        {%- endif -%}
-      {%- endcapture -%}
-
-      {%- capture options_html -%}
-        <div class="sph__options-row" style="display:flex; flex-direction:column; gap:16px; margin-bottom:20px; align-items:stretch;">
-          {%- if sp != blank and sp.has_only_default_variant == false -%}
-            {%- for opt in sp.options_with_values -%}
-              {%- liquid
-                assign is_color = false
-                if opt.name == 'Color' or opt.name == 'Colour' or opt.name == '颜色'
-                  assign is_color = true
-                endif
-                
-                assign opt_name_translated = opt.name
-                if opt.name == '颜色'
-                  if request.locale.iso_code == 'de'
-                    assign opt_name_translated = 'Farbe'
-                  else
-                    assign opt_name_translated = 'Color'
-                  endif
-                elsif opt.name == '尺寸' or opt.name == '尺码'
-                  if request.locale.iso_code == 'de'
-                    assign opt_name_translated = 'Größe'
-                  else
-                    assign opt_name_translated = 'Size'
-                  endif
-                endif
-              -%}
-              <div class="product-option" style="display:flex; flex-direction:column; gap:6px; align-items:flex-start;">
-                <p class="sph__opt-label" style="margin-bottom:0;">
-                  {{ opt_name_translated | escape }}:
-                  <strong id="selected-{{ section.id }}-{{ opt.name | handleize }}">{{ opt.selected_value | escape }}</strong>
-                </p>
-
-                {%- if is_color -%}
-                  <div class="product-option__swatches" role="radiogroup" aria-label="{{ opt_name_translated }}" style="display:flex; gap:8px;">
-                    {%- for value in opt.values -%}
-                      <button
-                        class="option-swatch sph__swatch{% if value == opt.selected_value %} is-active{% endif %}"
-                        data-option-name="{{ opt.name | escape }}"
-                        data-option-value="{{ value | escape }}"
-                        style="background-color: {{ value | downcase | replace: ' ', '' }};"
-                        aria-pressed="{% if value == opt.selected_value %}true{% else %}false{% endif %}"
-                        aria-label="{{ value | escape }}">
-                      </button>
-                    {%- endfor -%}
+            {%- when 'qty_selector' -%}
+              <div class="sph__block-qty" {{ block.shopify_attributes }} style="margin-bottom: 20px;">
+                {%- if section.settings.show_qty_selector -%}
+                  <div class="sph__qty-wrap" style="display:flex; flex-direction:column; gap:6px; align-items:flex-start;">
+                    <p class="sph__opt-label" style="margin-bottom:0;">
+                      {%- if request.locale.iso_code == 'de' -%}Menge{%- else -%}Quantity{%- endif -%}
+                    </p>
+                    <div class="sph__qty" data-qty-stepper>
+                      <button class="sph__qty-btn" data-qty-minus aria-label="Decrease">&#8722;</button>
+                      <input class="sph__qty-val" type="number" value="1" min="1" max="99"
+                        readonly aria-label="Quantity">
+                      <button class="sph__qty-btn" data-qty-plus aria-label="Increase">&#43;</button>
+                    </div>
                   </div>
-                {%- else -%}
-                  <div class="product-option__swatches product-option__swatches--pills" role="radiogroup" aria-label="{{ opt_name_translated }}" style="display:flex; gap:8px;">
-                    {%- for value in opt.values -%}
+                {%- endif -%}
+              </div>
+
+            {%- when 'buy_buttons' -%}
+              <div class="sph__block-buy" {{ block.shopify_attributes }} style="margin-bottom: 20px;">
+                <div class="sph__btns">
+                  {%- if sp != blank and fv.available -%}
+                    {%- if show_cart_button -%}
                       <button
-                        class="option-swatch sph__pill{% if value == opt.selected_value %} is-active{% endif %}"
-                        data-option-name="{{ opt.name | escape }}"
-                        data-option-value="{{ value | escape }}"
-                        aria-pressed="{% if value == opt.selected_value %}true{% else %}false{% endif %}"
-                        aria-label="{{ value | escape }}">
-                        {{ value | escape }}
+                        class="btn sph__btn-atc sph__btn-atc--pulse"
+                        data-add-to-cart
+                        data-variant-id="{{ fv.id }}"
+                        data-qty="1"
+                        aria-label="Add {{ sp.title | escape }} to cart">
+                        <span class="atc-btn-text">{{ atc_label | escape }}</span>
                       </button>
+                    {%- endif -%}
+                    {%- if show_buy_now -%}
+                      <a href="{{ routes.cart_url }}/{{ fv.id }}:1{{ fast_checkout_suffix }}"
+                        class="btn sph__btn-buy"
+                        data-buy-now
+                        data-checkout-destination="{{ fast_checkout_destination }}"
+                        data-variant-id="{{ fv.id }}">
+                        {{ buy_label | escape }}
+                      </a>
+                    {%- endif -%}
+                    {%- if settings.conversion_microcopy != blank -%}
+                      <p class="sph__cta-microcopy">{{ settings.conversion_microcopy | escape }}</p>
+                    {%- endif -%}
+                  {%- else -%}
+                    <button class="btn sph__btn-atc" disabled aria-disabled="true">Sold Out</button>
+                  {%- endif -%}
+                </div>
+                {%- if show_payment_icons_desktop or show_payment_icons_mobile -%}
+                  <div class="sph__payment-icons{% unless show_payment_icons_desktop %} sph__payment-icons--hide-desktop{% endunless %}{% unless show_payment_icons_mobile %} sph__payment-icons--hide-mobile{% endunless %}" style="margin-top:12px;">
+                    {%- for type in shop.enabled_payment_types -%}
+                      {{ type | payment_type_svg_tag: class: 'sph__payment-icon' }}
                     {%- endfor -%}
                   </div>
                 {%- endif -%}
               </div>
-            {%- endfor -%}
-          {%- endif -%}
-        </div>
-      {%- endcapture -%}
 
-      {%- if section.settings.cta_position == 'above' -%}
-        {{ cta_buttons_html }}
-        {{ options_html }}
+            {%- when 'trust_strip' -%}
+              <div class="sph__block-trust" {{ block.shopify_attributes }} style="margin-bottom: 20px;">
+                {%- if show_trust_desktop or show_trust_mobile -%}
+                  <div class="sph__trust{% unless show_trust_desktop %} sph__trust--hide-desktop{% endunless %}{% unless show_trust_mobile %} sph__trust--hide-mobile{% endunless %}" aria-label="Guarantees">
+                    <span>&#10003; {{ section.settings.trust_1 | default: settings.trust_shipping_title | default: 'Free Shipping' | escape }}</span>
+                    <span class="sph__trust-sep">|</span>
+                    <span>&#10003; {{ section.settings.trust_3 | default: settings.trust_returns_title | default: '14-Day Guarantee' | escape }}</span>
+                  </div>
+                {%- endif -%}
+              </div>
+
+            {%- when 'guarantees' -%}
+              <div class="sph__block-promise" {{ block.shopify_attributes }} style="margin-bottom: 20px;">
+                {%- render 'store-promise', mode: 'compact', show_header: false, show_payment_icons: false -%}
+              </div>
+
+            {%- when 'description' -%}
+              <div class="sph__block-desc" {{ block.shopify_attributes }} style="margin-bottom: 20px;">
+                {%- if section.settings.description_style == 'accordion' -%}
+                  {%- liquid
+                    assign desc_open_desktop = section.settings.description_open_desktop
+                    assign desc_open_mobile  = section.settings.description_open_mobile
+                  -%}
+                  <details-accordion>
+                    <div class="sph__description-accordion"
+                      data-desc-open-desktop="{{ desc_open_desktop }}"
+                      data-desc-open-mobile="{{ desc_open_mobile }}">
+                      <details
+                        class="sph-description__item"
+                        id="SphDescDetailsBlock-{{ block.id }}">
+                        <summary class="sph-description__q">
+                          <span>{{ section.settings.description_label | default: 'Description' | escape }}</span>
+                          <svg class="sph-description__chevron" width="16" height="16" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <polyline points="6 9 12 15 18 9"/>
+                          </svg>
+                        </summary>
+                        <div class="sph-description__a rte">
+                          {%- if sp != blank and sp.description != blank -%}
+                            {{ sp.description }}
+                          {%- else -%}
+                            <p>This premium product is crafted from high-quality materials to ensure durability and comfort. Designed for daily use, it offers a perfect blend of style, functionality, and performance.</p>
+                          {%- endif -%}
+                        </div>
+                      </details>
+                    </div>
+                  </details-accordion>
+                  <script>
+                  (function() {
+                    var el = document.getElementById('SphDescDetailsBlock-{{ block.id }}');
+                    var wrap = el ? el.closest('[data-desc-open-desktop]') : null;
+                    if (!el || !wrap) return;
+                    var isMobile = window.innerWidth < 768;
+                    var openDesktop = wrap.dataset.descOpenDesktop === 'true';
+                    var openMobile  = wrap.dataset.descOpenMobile  === 'true';
+                    if (isMobile && openMobile)  { el.setAttribute('open', ''); }
+                    if (!isMobile && openDesktop) { el.setAttribute('open', ''); }
+                  })();
+                  </script>
+                {%- elsif section.settings.description_style == 'plain' -%}
+                  <div class="sph-description__plain rte">
+                    {%- if sp != blank and sp.description != blank -%}
+                      {{ sp.description }}
+                    {%- else -%}
+                      <p>This premium product is crafted from high-quality materials to ensure durability and comfort. Designed for daily use, it offers a perfect blend of style, functionality, and performance.</p>
+                    {%- endif -%}
+                  </div>
+                {%- endif -%}
+              </div>
+
+          {%- endcase -%}
+        {%- endfor -%}
       {%- else -%}
-        {{ options_html }}
-        {{ cta_buttons_html }}
-      {%- endif -%}
+        {%- if section.settings.show_eyebrow -%}
+          {%- assign eyebrow = section.settings.eyebrow -%}
+          {%- if eyebrow == blank and sp != blank and settings.card_show_vendor -%}
+            {%- assign eyebrow = sp.vendor -%}
+          {%- endif -%}
+          {%- if eyebrow != blank -%}
+            <p class="sph__eyebrow">{{ eyebrow | upcase | escape }}</p>
+          {%- endif -%}
+        {%- endif -%}
 
-      {%- if show_trust_desktop or show_trust_mobile -%}
-        <div class="sph__trust{% unless show_trust_desktop %} sph__trust--hide-desktop{% endunless %}{% unless show_trust_mobile %} sph__trust--hide-mobile{% endunless %}" aria-label="Guarantees">
-          <span>&#10003; {{ section.settings.trust_1 | default: settings.trust_shipping_title | default: 'Free Shipping' | escape }}</span>
-          <span class="sph__trust-sep">|</span>
-          <span>&#10003; {{ section.settings.trust_3 | default: settings.trust_returns_title | default: '14-Day Guarantee' | escape }}</span>
-        </div>
-      {%- endif -%}
-
-      {%- render 'store-promise', mode: 'compact', show_header: false, show_payment_icons: false -%}
-
-      {%- if section.settings.description_style == 'accordion' -%}
-        {%- liquid
-          assign desc_open_desktop = section.settings.description_open_desktop
-          assign desc_open_mobile  = section.settings.description_open_mobile
-        -%}
-        <details-accordion>
-          <div class="sph__description-accordion"
-            data-desc-open-desktop="{{ desc_open_desktop }}"
-            data-desc-open-mobile="{{ desc_open_mobile }}">
-            <details
-              class="sph-description__item"
-              id="SphDescDetails-{{ section.id }}">
-              <summary class="sph-description__q">
-                <span>{{ section.settings.description_label | default: 'Description' | escape }}</span>
-                <svg class="sph-description__chevron" width="16" height="16" viewBox="0 0 24 24"
-                  fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                  <polyline points="6 9 12 15 18 9"/>
-                </svg>
-              </summary>
-              <div class="sph-description__a rte">
-                {%- if sp != blank and sp.description != blank -%}
-                  {{ sp.description }}
-                {%- else -%}
-                  <p>This premium product is crafted from high-quality materials to ensure durability and comfort. Designed for daily use, it offers a perfect blend of style, functionality, and performance.</p>
-                {%- endif -%}
-              </div>
-            </details>
-          </div>
-        </details-accordion>
-        <script>
-        (function() {
-          var el = document.getElementById('SphDescDetails-{{ section.id }}');
-          var wrap = el ? el.closest('[data-desc-open-desktop]') : null;
-          if (!el || !wrap) return;
-          var isMobile = window.innerWidth < 768;
-          var openDesktop = wrap.dataset.descOpenDesktop === 'true';
-          var openMobile  = wrap.dataset.descOpenMobile  === 'true';
-          if (isMobile && openMobile)  { el.setAttribute('open', ''); }
-          if (!isMobile && openDesktop) { el.setAttribute('open', ''); }
-        })();
-        </script>
-      {%- elsif section.settings.description_style == 'plain' -%}
-        <div class="sph-description__plain rte">
-          {%- if sp != blank and sp.description != blank -%}
-            {{ sp.description }}
+        <h1 class="sph__title">
+          {%- if section.settings.heading != blank -%}
+            {{ section.settings.heading | escape }}
+          {%- elsif sp != blank -%}
+            {{ sp.title | escape }}
           {%- else -%}
-            <p>This premium product is crafted from high-quality materials to ensure durability and comfort. Designed for daily use, it offers a perfect blend of style, functionality, and performance.</p>
+            Adventure Ready
+          {%- endif -%}
+        </h1>
+
+        {%- assign subtitle = section.settings.subheading -%}
+        {%- if subtitle == blank and sp != blank -%}
+          {%- assign subtitle = sp.description | strip_html | truncate: 100 -%}
+        {%- endif -%}
+        {%- if subtitle != blank -%}
+          <p class="sph__sub">{{ subtitle | escape }}</p>
+        {%- endif -%}
+
+        <div class="sph__price-row">
+          <span class="sph__price{% if is_sale %} is-sale{% endif %}">
+            {%- if sp != blank -%}{{ price | money }}{%- else -%}$149.00{%- endif -%}
+          </span>
+          {%- if is_sale -%}
+            <span class="sph__price-was">{{ compare | money }}</span>
+            {%- if section.settings.show_sale_badge -%}
+              <span class="sph__badge">Save {{ save_pct }}%</span>
+            {%- endif -%}
+          {%- endif -%}
+
+          {%- if settings.card_show_new_badge -%}
+            {%- if sp.tags contains 'new' -%}
+              <span class="sph__badge sph__badge--new">New</span>
+            {%- elsif sp.tags contains 'bestseller' -%}
+              <span class="sph__badge sph__badge--bestseller">Bestseller</span>
+            {%- endif -%}
+          {%- endif -%}
+
+          {%- if section.settings.show_rating -%}
+            {%- assign rating_val = sp.metafields.reviews.rating.value | plus: 0 -%}
+            {%- assign rating_count = sp.metafields.reviews.rating_count.value | plus: 0 -%}
+            {%- if rating_val > 0 or section.settings.show_demo_rating -%}
+              {%- unless rating_val > 0 -%}{%- assign rating_val = 4.8 -%}{%- assign rating_count = 1150 -%}{%- endunless -%}
+              <div class="sph__stars" aria-label="{{ rating_val }} out of 5 stars">
+                {%- assign full = rating_val | floor -%}
+                {%- for i in (1..5) -%}
+                  <svg width="14" height="14" viewBox="0 0 24 24"
+                    fill="{% if i <= full %}#f5a623{% else %}none{% endif %}"
+                    stroke="#f5a623" stroke-width="1.5" aria-hidden="true">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                  </svg>
+                {%- endfor -%}
+                <span class="sph__rating-label">{{ rating_val }} | {{ rating_count }} + Reviews</span>
+              </div>
+            {%- endif -%}
           {%- endif -%}
         </div>
-      {%- endif -%}
 
-    </div>
+        {%- if section.settings.cta_position == 'above' -%}
+          {{ cta_buttons_html }}
+          {{ options_html }}
+        {%- else -%}
+          {{ options_html }}
+          {{ cta_buttons_html }}
+        {%- endif -%}
+
+        {%- if show_trust_desktop or show_trust_mobile -%}
+          <div class="sph__trust{% unless show_trust_desktop %} sph__trust--hide-desktop{% endunless %}{% unless show_trust_mobile %} sph__trust--hide-mobile{% endunless %}" aria-label="Guarantees">
+            <span>&#10003; {{ section.settings.trust_1 | default: settings.trust_shipping_title | default: 'Free Shipping' | escape }}</span>
+            <span class="sph__trust-sep">|</span>
+            <span>&#10003; {{ section.settings.trust_3 | default: settings.trust_returns_title | default: '14-Day Guarantee' | escape }}</span>
+          </div>
+        {%- endif -%}
+
+        {%- render 'store-promise', mode: 'compact', show_header: false, show_payment_icons: false -%}
+
+        {%- if section.settings.description_style == 'accordion' -%}
+          {%- liquid
+            assign desc_open_desktop = section.settings.description_open_desktop
+            assign desc_open_mobile  = section.settings.description_open_mobile
+          -%}
+          <details-accordion>
+            <div class="sph__description-accordion"
+              data-desc-open-desktop="{{ desc_open_desktop }}"
+              data-desc-open-mobile="{{ desc_open_mobile }}">
+              <details
+                class="sph-description__item"
+                id="SphDescDetails-{{ section.id }}">
+                <summary class="sph-description__q">
+                  <span>{{ section.settings.description_label | default: 'Description' | escape }}</span>
+                  <svg class="sph-description__chevron" width="16" height="16" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <polyline points="6 9 12 15 18 9"/>
+                  </summary>
+                  <div class="sph-description__a rte">
+                    {%- if sp != blank and sp.description != blank -%}
+                      {{ sp.description }}
+                    {%- else -%}
+                      <p>This premium product is crafted from high-quality materials to ensure durability and comfort. Designed for daily use, it offers a perfect blend of style, functionality, and performance.</p>
+                    {%- endif -%}
+                  </div>
+                </details>
+              </div>
+            </details-accordion>
+            <script>
+            (function() {
+              var el = document.getElementById('SphDescDetails-{{ section.id }}');
+              var wrap = el ? el.closest('[data-desc-open-desktop]') : null;
+              if (!el || !wrap) return;
+              var isMobile = window.innerWidth < 768;
+              var openDesktop = wrap.dataset.descOpenDesktop === 'true';
+              var openMobile  = wrap.dataset.descOpenMobile  === 'true';
+              if (isMobile && openMobile)  { el.setAttribute('open', ''); }
+              if (!isMobile && openDesktop) { el.setAttribute('open', ''); }
+            })();
+            </script>
+          {%- elsif section.settings.description_style == 'plain' -%}
+            <div class="sph-description__plain rte">
+              {%- if sp != blank and sp.description != blank -%}
+                {{ sp.description }}
+              {%- else -%}
+                <p>This premium product is crafted from high-quality materials to ensure durability and comfort. Designed for daily use, it offers a perfect blend of style, functionality, and performance.</p>
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+        {%- endif -%}
+</div>
   </div>
 </section>
 
@@ -2122,6 +2208,48 @@ details-accordion[open] .sph-description__chevron,
           {"value":"water","label":"Water drops"},{"value":"leaf","label":"Leaf / lightweight"},{"value":"bag","label":"Bag"},{"value":"shield","label":"Shield"},{"value":"truck","label":"Truck"},{"value":"star","label":"Star"},{"value":"heart","label":"Wishlist"},{"value":"compare","label":"Compare"},{"value":"article","label":"Blog/article"},{"value":"speed","label":"Speed"},{"value":"seo","label":"SEO"},{"value":"code","label":"Code"}
         ], "default": "water" }
       ]
+    },
+    {
+      "type": "title",
+      "name": "Title & Price",
+      "limit": 1,
+      "settings": []
+    },
+    {
+      "type": "options",
+      "name": "Variant Swatches",
+      "limit": 1,
+      "settings": []
+    },
+    {
+      "type": "qty_selector",
+      "name": "Quantity Selector",
+      "limit": 1,
+      "settings": []
+    },
+    {
+      "type": "buy_buttons",
+      "name": "Purchase Buttons",
+      "limit": 1,
+      "settings": []
+    },
+    {
+      "type": "trust_strip",
+      "name": "Simple Trust Strip",
+      "limit": 1,
+      "settings": []
+    },
+    {
+      "type": "guarantees",
+      "name": "Detailed Guarantees List",
+      "limit": 1,
+      "settings": []
+    },
+    {
+      "type": "description",
+      "name": "Description Accordion",
+      "limit": 1,
+      "settings": []
     }
   ],
   "presets": [
