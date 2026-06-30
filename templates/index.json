@@ -141,12 +141,12 @@
         "atc_label": "",
         "show_buy_now": true,
         "buy_label": "",
-        "show_payment_icons": true,
-        "show_payment_icons_desktop": true,
-        "show_payment_icons_mobile": true,
-        "show_trust_strip": true,
-        "show_trust_strip_desktop": true,
-        "show_trust_strip_mobile": true,
+        "show_payment_icons": false,
+        "show_payment_icons_desktop": false,
+        "show_payment_icons_mobile": false,
+        "show_trust_strip": false,
+        "show_trust_strip_desktop": false,
+        "show_trust_strip_mobile": false,
         "trust_1": "",
         "trust_2": "",
         "trust_3": "",
@@ -184,12 +184,45 @@
     "trust_badges": {
       "type": "trust-badges",
       "blocks": {
-        "returns": { "type": "badge", "settings": { "icon": "return", "title": "", "subtitle": "" } },
-        "shipping": { "type": "badge", "settings": { "icon": "shipping", "title": "", "subtitle": "" } },
-        "secure": { "type": "badge", "settings": { "icon": "secure", "title": "", "subtitle": "" } },
-        "support": { "type": "badge", "settings": { "icon": "support", "title": "", "subtitle": "" } }
+        "returns": {
+          "type": "badge",
+          "settings": {
+            "icon": "return",
+            "title": "",
+            "subtitle": ""
+          }
+        },
+        "shipping": {
+          "type": "badge",
+          "settings": {
+            "icon": "shipping",
+            "title": "",
+            "subtitle": ""
+          }
+        },
+        "secure": {
+          "type": "badge",
+          "settings": {
+            "icon": "secure",
+            "title": "",
+            "subtitle": ""
+          }
+        },
+        "support": {
+          "type": "badge",
+          "settings": {
+            "icon": "support",
+            "title": "",
+            "subtitle": ""
+          }
+        }
       },
-      "block_order": ["returns", "shipping", "secure", "support"],
+      "block_order": [
+        "returns",
+        "shipping",
+        "secure",
+        "support"
+      ],
       "settings": {
         "layout": "contained",
         "bg_color": "#ffffff",
@@ -231,7 +264,11 @@
           }
         }
       },
-      "block_order": ["return_policy", "delivery_time", "payment_security"]
+      "block_order": [
+        "return_policy",
+        "delivery_time",
+        "payment_security"
+      ]
     },
     "newsletter_bar": {
       "type": "newsletter-bar",

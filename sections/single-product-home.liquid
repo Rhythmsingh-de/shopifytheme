@@ -367,7 +367,6 @@
 
         {%- if show_payment_icons_desktop or show_payment_icons_mobile -%}
           <div class="sph__payment-icons{% unless show_payment_icons_desktop %} sph__payment-icons--hide-desktop{% endunless %}{% unless show_payment_icons_mobile %} sph__payment-icons--hide-mobile{% endunless %}">
-            <span class="sph__payment-icons-label">We accept:</span>
             {%- for type in shop.enabled_payment_types -%}
               {{ type | payment_type_svg_tag: class: 'sph__payment-icon' }}
             {%- endfor -%}
@@ -448,7 +447,7 @@
         </div>
       {%- endif -%}
 
-      {%- render 'store-promise', mode: 'compact', show_payment_icons: false -%}
+      {%- render 'store-promise', mode: 'compact', show_header: false, show_payment_icons: false -%}
 
       {%- if section.settings.description_style == 'accordion' -%}
         {%- liquid
@@ -1996,13 +1995,13 @@ details-accordion[open] .sph-description__chevron,
     { "type": "text",    "id": "atc_label",  "label": "Add to Cart label", "info": "Leave blank to use Theme Settings > Trust & Conversion." },
     { "type": "checkbox", "id": "show_buy_now", "label": "Show Buy Now button", "default": true },
     { "type": "text",    "id": "buy_label",  "label": "Buy Now label",     "info": "Leave blank to use Theme Settings > Trust & Conversion." },
-    { "type": "checkbox", "id": "show_payment_icons", "label": "Show accepted payment icons", "default": true },
-    { "type": "checkbox", "id": "show_payment_icons_desktop", "label": "Show payment icons on desktop", "default": true },
-    { "type": "checkbox", "id": "show_payment_icons_mobile", "label": "Show payment icons on mobile", "default": true },
+    { "type": "checkbox", "id": "show_payment_icons", "label": "Show accepted payment icons", "default": false },
+    { "type": "checkbox", "id": "show_payment_icons_desktop", "label": "Show payment icons on desktop", "default": false },
+    { "type": "checkbox", "id": "show_payment_icons_mobile", "label": "Show payment icons on mobile", "default": false },
     { "type": "header", "content": "Trust strip" },
-    { "type": "checkbox", "id": "show_trust_strip", "label": "Show trust strip", "default": true },
-    { "type": "checkbox", "id": "show_trust_strip_desktop", "label": "Show trust strip on desktop", "default": true },
-    { "type": "checkbox", "id": "show_trust_strip_mobile", "label": "Show trust strip on mobile", "default": true },
+    { "type": "checkbox", "id": "show_trust_strip", "label": "Show trust strip", "default": false },
+    { "type": "checkbox", "id": "show_trust_strip_desktop", "label": "Show trust strip on desktop", "default": false },
+    { "type": "checkbox", "id": "show_trust_strip_mobile", "label": "Show trust strip on mobile", "default": false },
     { "type": "text", "id": "trust_1", "label": "Trust item 1", "default": "Free Shipping" },
     { "type": "text", "id": "trust_2", "label": "Trust item 2", "default": "Secure Checkout" },
     { "type": "text", "id": "trust_3", "label": "Trust item 3", "default": "14-Day Guarantee" },
@@ -2106,12 +2105,12 @@ details-accordion[open] .sph-description__chevron,
         "buy_label": "Fast Checkout",
         "desktop_cta_layout": "row",
         "mobile_cta_layout": "row",
-        "show_payment_icons_desktop": true,
-        "show_payment_icons_mobile": true,
+        "show_payment_icons_desktop": false,
+        "show_payment_icons_mobile": false,
         "show_wishlist_button": true,
         "show_compare_button": true,
-        "show_trust_strip_desktop": true,
-        "show_trust_strip_mobile": true,
+        "show_trust_strip_desktop": false,
+        "show_trust_strip_mobile": false,
         "mobile_padding_top": 16,
         "mobile_padding_bottom": 32,
         "feat_1_title": "Waterproof", "feat_1_sub": "Durable Materials", "feat_1_icon": "water",

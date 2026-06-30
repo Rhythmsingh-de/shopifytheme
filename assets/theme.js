@@ -401,6 +401,33 @@
     return div.textContent || div.innerText || '';
   }
 
+  function initPremiumMotion(root) {
+    var cfg = window.blcSettings || {};
+    var reduceMotion = !!(cfg.respectReducedMotion && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    document.documentElement.classList.toggle('blc-reduce-motion', reduceMotion);
+    document.documentElement.classList.toggle('blc-button-sheen', !!cfg.buttonSheenEnabled && !reduceMotion);
+    if (!cfg.revealEnabled || reduceMotion) return;
+    var scope = root || document;
+    var targets = qsa('.shopify-section, .sph__media, .sph__info, .sph__feature, .sph-review, .faq-item, .product-media, .product-info, .store-promise__item', scope)
+      .filter(function(el) { return !el.hasAttribute('data-blc-reveal'); });
+    targets.forEach(function(el, index) {
+      el.setAttribute('data-blc-reveal', '');
+      el.style.setProperty('--blc-reveal-delay', Math.min(index % 4, 3) * 70 + 'ms');
+    });
+    if (!('IntersectionObserver' in window)) {
+      targets.forEach(function(el) { el.classList.add('is-revealed'); });
+      return;
+    }
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-revealed');
+        observer.unobserve(entry.target);
+      });
+    }, { rootMargin: '0px 0px -10% 0px', threshold: 0.12 });
+    targets.forEach(function(el) { observer.observe(el); });
+  }
+
   /* ─────────── PRODUCT PAGE QTY ─────────── */
   document.addEventListener('click',function(e){
     var btn=e.target.closest('[data-qty-minus],[data-qty-plus]');
@@ -990,6 +1017,7 @@
     initRecentlyViewed();
     initProductRecommendations();
     initPromoPopups();
+    initPremiumMotion(document);
     if(document.cookie.indexOf('blc_cookie_consent=accepted')>-1)_activateTracking();
 
     // Bind mobile navigation drawer elements
@@ -1020,6 +1048,7 @@
     routeJs:routeJs,
     checkoutHref:checkoutHref,
     checkoutUrl:checkoutUrl,
+    initPremiumMotion:initPremiumMotion,
     initOfferCountdowns:initOfferCountdowns,
     refreshCartDrawer:refreshCartDrawer,
     openQuickView:openQuickView,
@@ -1079,5 +1108,8 @@
     if (typeof _updateCartCount === 'function') _updateCartCount();
     if (typeof refreshCartDrawer === 'function') refreshCartDrawer();
     if (typeof openCartDrawer === 'function') openCartDrawer();
+  });
+  document.addEventListener('shopify:section:load', function(event) {
+    initPremiumMotion(event.target);
   });
 })();

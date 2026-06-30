@@ -287,14 +287,11 @@
         <!-- Payment icons -->
         {%- if section.settings.show_payment_icons -%}
           <div class="product-payment-icons">
-            <span class="product-payment-icons__label">We accept:</span>
             {%- for type in shop.enabled_payment_types -%}
               {{ type | payment_type_svg_tag: class: 'payment-icon' }}
             {%- endfor -%}
           </div>
         {%- endif -%}
-
-        {%- render 'store-promise', mode: 'compact', show_payment_icons: false -%}
 
         {%- assign show_size_guide_popup = false -%}
         {%- if section.settings.show_size_guide and section.settings.size_guide_content != blank or section.settings.show_size_guide and section.settings.size_guide_page != blank -%}
@@ -764,7 +761,7 @@
     ], "default": "left" },
     { "type": "checkbox", "id": "show_sale_badge", "label": "Show sale badge", "default": true },
     { "type": "checkbox", "id": "show_benefits", "label": "Show benefits checklist", "default": true },
-    { "type": "checkbox", "id": "show_trust", "label": "Show trust badges", "default": true },
+    { "type": "checkbox", "id": "show_trust", "label": "Show trust badges", "default": false },
     { "type": "checkbox", "id": "show_stock_counter", "label": "Show low-stock counter when available", "default": true },
     { "type": "range", "id": "low_stock_threshold", "label": "Low-stock threshold", "min": 1, "max": 25, "step": 1, "default": 8 },
     { "type": "header", "content": "Checkout Buttons" },
@@ -783,7 +780,7 @@
     { "type": "text", "id": "trust_2_sub",   "label": "Trust 2 subtitle" },
     { "type": "text", "id": "trust_3_title", "label": "Trust 3 title" },
     { "type": "text", "id": "trust_3_sub",   "label": "Trust 3 subtitle" },
-    { "type": "checkbox", "id": "show_payment_icons", "label": "Show payment icons", "default": true },
+    { "type": "checkbox", "id": "show_payment_icons", "label": "Show payment icons", "default": false },
     { "type": "header", "content": "Size guide" },
     { "type": "checkbox", "id": "show_size_guide", "label": "Show size guide popup", "default": false },
     { "type": "text", "id": "size_guide_label", "label": "Size guide label", "default": "Size guide" },

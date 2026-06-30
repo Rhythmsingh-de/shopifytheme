@@ -11,7 +11,10 @@
   "sections": {
     "main_product": {
       "type": "main-product",
-      "settings": {}
+      "settings": {
+        "show_trust": false,
+        "show_payment_icons": false
+      }
     },
     "trust_badges": {
       "type": "trust-badges",

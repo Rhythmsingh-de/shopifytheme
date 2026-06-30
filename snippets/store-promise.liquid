@@ -1,0 +1,143 @@
+{%- liquid
+  assign promise_mode = mode | default: 'cards'
+  assign promise_heading = heading | default: settings.store_promise_heading
+  assign promise_text = text | default: settings.store_promise_text
+  assign promise_show_header = true
+  if show_header == false
+    assign promise_show_header = false
+  endif
+  assign show_payments = show_payment_icons | default: false
+  assign shipping_title = settings.trust_shipping_title | default: 'Free Shipping'
+  assign shipping_sub = settings.shipping_window | default: settings.trust_shipping_sub | default: '5-10 business days'
+  assign returns_title = settings.trust_returns_title | default: '14-Day Returns'
+  assign returns_sub = settings.returns_window | default: settings.trust_returns_sub | default: '14 days'
+  assign secure_title = settings.trust_secure_title | default: 'Secure Checkout'
+  assign secure_sub = settings.secure_payment_text | default: settings.trust_secure_sub | default: 'Encrypted checkout'
+  assign support_title = settings.trust_support_title | default: 'Support'
+  assign support_sub = settings.support_response_time | default: settings.trust_support_sub | default: 'Replies within 24 hours'
+-%}
+
+<div class="store-promise store-promise--{{ promise_mode }}">
+  {%- if promise_show_header and promise_heading != blank or promise_show_header and promise_text != blank -%}
+    <div class="store-promise__head">
+      {%- if promise_heading != blank -%}<p class="store-promise__title">{{ promise_heading | escape }}</p>{%- endif -%}
+      {%- if promise_text != blank -%}<p class="store-promise__text">{{ promise_text | escape }}</p>{%- endif -%}
+    </div>
+  {%- endif -%}
+
+  <div class="store-promise__grid" aria-label="Store guarantees">
+    <div class="store-promise__item">
+      <span class="store-promise__icon" aria-hidden="true">01</span>
+      <strong>{{ shipping_title | escape }}</strong>
+      <span>{{ shipping_sub | escape }}</span>
+    </div>
+    <div class="store-promise__item">
+      <span class="store-promise__icon" aria-hidden="true">02</span>
+      <strong>{{ returns_title | escape }}</strong>
+      <span>{{ returns_sub | escape }}</span>
+    </div>
+    <div class="store-promise__item">
+      <span class="store-promise__icon" aria-hidden="true">03</span>
+      <strong>{{ secure_title | escape }}</strong>
+      <span>{{ secure_sub | escape }}</span>
+    </div>
+    <div class="store-promise__item">
+      <span class="store-promise__icon" aria-hidden="true">04</span>
+      <strong>{{ support_title | escape }}</strong>
+      <span>{{ support_sub | escape }}</span>
+    </div>
+  </div>
+
+  {%- if show_payments -%}
+    <div class="store-promise__payments" aria-label="Accepted payment methods">
+      {%- for type in shop.enabled_payment_types -%}
+        {{ type | payment_type_svg_tag: class: 'store-promise__payment-icon' }}
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+</div>
+
+<style>
+.store-promise {
+  display: grid;
+  gap: 14px;
+  padding: clamp(18px, 3vw, 28px);
+  border: 1px solid color-mix(in oklab, var(--color-border) 70%, transparent);
+  border-radius: var(--radius-lg);
+  background:
+    linear-gradient(135deg, color-mix(in oklab, var(--color-bg) 96%, var(--color-deco) 4%), var(--color-surface));
+  box-shadow: 0 16px 42px rgba(0,0,0,.06);
+}
+.store-promise--compact {
+  padding: 16px;
+  box-shadow: none;
+}
+.store-promise__head {
+  display: grid;
+  gap: 4px;
+}
+.store-promise__title {
+  margin: 0;
+  font-size: var(--text-base);
+  font-weight: 850;
+  color: var(--color-text);
+}
+.store-promise__text {
+  margin: 0;
+  max-width: 68ch;
+  font-size: var(--text-sm);
+  line-height: 1.55;
+  color: var(--color-text-muted);
+}
+.store-promise__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+.store-promise__item {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  padding: 12px;
+  border-radius: var(--radius-md);
+  background: color-mix(in oklab, var(--color-surface) 92%, var(--color-deco-light) 8%);
+}
+.store-promise__icon {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: var(--color-deco-light);
+  color: var(--color-deco);
+  font-size: 11px;
+  font-weight: 900;
+}
+.store-promise__item strong {
+  font-size: 13px;
+  line-height: 1.25;
+  color: var(--color-text);
+}
+.store-promise__item span:last-child {
+  font-size: 12px;
+  line-height: 1.35;
+  color: var(--color-text-muted);
+}
+.store-promise__payments {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+.store-promise__payment-icon {
+  height: 18px;
+  width: auto;
+}
+@media (max-width: 900px) {
+  .store-promise__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 520px) {
+  .store-promise { padding: 14px; }
+  .store-promise__grid { grid-template-columns: 1fr; }
+}
+</style>

@@ -72,6 +72,7 @@
           var once = {{ settings.language_auto_redirect_once | default: true | json }};
           var targetUrl = {{ german_language.root_url | json }};
           if (!targetUrl || !navigator.language) return;
+          if (window.Shopify && window.Shopify.designMode) return;
           targetUrl = targetUrl.charAt(targetUrl.length - 1) === '/' ? targetUrl : targetUrl + '/';
           var browserLanguage = (navigator.languages && navigator.languages[0] ? navigator.languages[0] : navigator.language).toLowerCase();
           if (!browserLanguage || browserLanguage.slice(0, 2) !== 'de') return;
@@ -405,7 +406,10 @@
       freeShippingThreshold: {% if settings.free_shipping_threshold != blank %}{{ settings.free_shipping_threshold }}{% else %}75{% endif %},
       showFreeShippingBar:   {{ settings.show_free_shipping_bar | default: true }},
       cartShowUpsell:        {{ settings.cart_show_upsell | default: true }},
-      fastCheckoutDestination: {{ settings.fast_checkout_destination | default: 'checkout' | json }}
+      fastCheckoutDestination: {{ settings.fast_checkout_destination | default: 'checkout' | json }},
+      revealEnabled: {{ settings.ui_reveal_enabled | default: true | json }},
+      buttonSheenEnabled: {{ settings.ui_button_sheen_enabled | default: true | json }},
+      respectReducedMotion: {{ settings.ui_respect_reduced_motion | default: true | json }}
     };
     window.routes = {
       root_url: '{{ routes.root_url }}',

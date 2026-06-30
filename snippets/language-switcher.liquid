@@ -23,7 +23,8 @@
               value="{{ language.iso_code }}"
               class="language-switcher__button{% if language.iso_code == localization.language.iso_code %} is-active{% endif %}"
               {% if language.iso_code == localization.language.iso_code %}aria-current="true"{% endif %}
-              data-language-switcher-button>
+              data-language-switcher-button
+              data-locale-code="{{ language.iso_code }}">
               {{ language.iso_code | upcase }}
             </button>
           {%- endif -%}
@@ -31,4 +32,18 @@
       </div>
     {%- endform -%}
   </localization-form>
+
+  <script>
+    (function () {
+      var form = document.getElementById({{ language_form_id | json }});
+      if (!form) return;
+      form.addEventListener('click', function (event) {
+        var button = event.target.closest('[data-language-switcher-button]');
+        if (!button) return;
+        try {
+          window.localStorage.setItem({{ settings.language_auto_redirect_storage_key | default: 'blc_language_checked' | json }}, 'manual:' + button.dataset.localeCode);
+        } catch (e) {}
+      });
+    })();
+  </script>
 {%- endif -%}
