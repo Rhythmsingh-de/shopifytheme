@@ -345,34 +345,49 @@
       </div>
 
       {%- capture cta_buttons_html -%}
-        <div class="sph__btns">
-
-          {%- if sp != blank and fv.available -%}
-            {%- if show_cart_button -%}
-              <button
-                class="btn sph__btn-atc sph__btn-atc--pulse"
-                data-add-to-cart
-                data-variant-id="{{ fv.id }}"
-                data-qty="1"
-                aria-label="Add {{ sp.title | escape }} to cart">
-                <span class="atc-btn-text">{{ atc_label | escape }}</span>
-              </button>
-            {%- endif -%}
-            {%- if show_buy_now -%}
-              <a href="{{ routes.cart_url }}/{{ fv.id }}:1{{ fast_checkout_suffix }}"
-                class="btn sph__btn-buy"
-                data-buy-now
-                data-checkout-destination="{{ fast_checkout_destination }}"
-                data-variant-id="{{ fv.id }}">
-                {{ buy_label | escape }}
-              </a>
-            {%- endif -%}
-            {%- if settings.conversion_microcopy != blank -%}
-              <p class="sph__cta-microcopy">{{ settings.conversion_microcopy | escape }}</p>
-            {%- endif -%}
-          {%- else -%}
-            <button class="btn sph__btn-atc" disabled aria-disabled="true">Sold Out</button>
+        <div style="display:flex; flex-direction:column; gap:16px; margin-top:20px; width:100%;">
+          {%- if section.settings.show_qty_selector -%}
+            <div class="sph__qty-wrap" style="display:flex; flex-direction:column; gap:6px; align-items:flex-start;">
+              <p class="sph__opt-label" style="margin-bottom:0;">
+                {%- if request.locale.iso_code == 'de' -%}Menge{%- else -%}Quantity{%- endif -%}
+              </p>
+              <div class="sph__qty" data-qty-stepper>
+                <button class="sph__qty-btn" data-qty-minus aria-label="Decrease">&#8722;</button>
+                <input class="sph__qty-val" type="number" value="1" min="1" max="99"
+                  readonly aria-label="Quantity">
+                <button class="sph__qty-btn" data-qty-plus aria-label="Increase">&#43;</button>
+              </div>
+            </div>
           {%- endif -%}
+
+          <div class="sph__btns">
+            {%- if sp != blank and fv.available -%}
+              {%- if show_cart_button -%}
+                <button
+                  class="btn sph__btn-atc sph__btn-atc--pulse"
+                  data-add-to-cart
+                  data-variant-id="{{ fv.id }}"
+                  data-qty="1"
+                  aria-label="Add {{ sp.title | escape }} to cart">
+                  <span class="atc-btn-text">{{ atc_label | escape }}</span>
+                </button>
+              {%- endif -%}
+              {%- if show_buy_now -%}
+                <a href="{{ routes.cart_url }}/{{ fv.id }}:1{{ fast_checkout_suffix }}"
+                  class="btn sph__btn-buy"
+                  data-buy-now
+                  data-checkout-destination="{{ fast_checkout_destination }}"
+                  data-variant-id="{{ fv.id }}">
+                  {{ buy_label | escape }}
+                </a>
+              {%- endif -%}
+              {%- if settings.conversion_microcopy != blank -%}
+                <p class="sph__cta-microcopy">{{ settings.conversion_microcopy | escape }}</p>
+              {%- endif -%}
+            {%- else -%}
+              <button class="btn sph__btn-atc" disabled aria-disabled="true">Sold Out</button>
+            {%- endif -%}
+          </div>
         </div>
 
         {%- if show_payment_icons_desktop or show_payment_icons_mobile -%}
@@ -385,29 +400,38 @@
       {%- endcapture -%}
 
       {%- capture options_html -%}
-        <div class="sph__options-row">
-          {%- if section.settings.show_qty_selector -%}
-            <div class="sph__qty-wrap">
-              <p class="sph__opt-label">Quantity</p>
-              <div class="sph__qty" data-qty-stepper>
-                <button class="sph__qty-btn" data-qty-minus aria-label="Decrease">&#8722;</button>
-                <input class="sph__qty-val" type="number" value="1" min="1" max="99"
-                  readonly aria-label="Quantity">
-                <button class="sph__qty-btn" data-qty-plus aria-label="Increase">&#43;</button>
-              </div>
-            </div>
-          {%- endif -%}
-
+        <div class="sph__options-row" style="display:flex; flex-direction:column; gap:16px; margin-bottom:20px; align-items:stretch;">
           {%- if sp != blank and sp.has_only_default_variant == false -%}
             {%- for opt in sp.options_with_values -%}
-              <div class="product-option">
-                <p class="sph__opt-label">
-                  {{ opt.name | escape }}:
+              {%- liquid
+                assign is_color = false
+                if opt.name == 'Color' or opt.name == 'Colour' or opt.name == '颜色'
+                  assign is_color = true
+                endif
+                
+                assign opt_name_translated = opt.name
+                if opt.name == '颜色'
+                  if request.locale.iso_code == 'de'
+                    assign opt_name_translated = 'Farbe'
+                  else
+                    assign opt_name_translated = 'Color'
+                  endif
+                elsif opt.name == '尺寸' or opt.name == '尺码'
+                  if request.locale.iso_code == 'de'
+                    assign opt_name_translated = 'Größe'
+                  else
+                    assign opt_name_translated = 'Size'
+                  endif
+                endif
+              -%}
+              <div class="product-option" style="display:flex; flex-direction:column; gap:6px; align-items:flex-start;">
+                <p class="sph__opt-label" style="margin-bottom:0;">
+                  {{ opt_name_translated | escape }}:
                   <strong id="selected-{{ section.id }}-{{ opt.name | handleize }}">{{ opt.selected_value | escape }}</strong>
                 </p>
 
-                {%- if opt.name == 'Color' or opt.name == 'Colour' -%}
-                  <div class="product-option__swatches" role="radiogroup" aria-label="{{ opt.name }}">
+                {%- if is_color -%}
+                  <div class="product-option__swatches" role="radiogroup" aria-label="{{ opt_name_translated }}" style="display:flex; gap:8px;">
                     {%- for value in opt.values -%}
                       <button
                         class="option-swatch sph__swatch{% if value == opt.selected_value %} is-active{% endif %}"
@@ -420,7 +444,7 @@
                     {%- endfor -%}
                   </div>
                 {%- else -%}
-                  <div class="product-option__swatches product-option__swatches--pills" role="radiogroup" aria-label="{{ opt.name }}">
+                  <div class="product-option__swatches product-option__swatches--pills" role="radiogroup" aria-label="{{ opt_name_translated }}" style="display:flex; gap:8px;">
                     {%- for value in opt.values -%}
                       <button
                         class="option-swatch sph__pill{% if value == opt.selected_value %} is-active{% endif %}"

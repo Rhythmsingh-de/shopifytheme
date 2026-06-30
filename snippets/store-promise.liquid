@@ -28,23 +28,31 @@
   <div class="store-promise__grid" aria-label="Store guarantees">
     <div class="store-promise__item">
       <span class="store-promise__icon" aria-hidden="true">01</span>
-      <strong>{{ shipping_title | escape }}</strong>
-      <span>{{ shipping_sub | escape }}</span>
+      <div class="store-promise__content">
+        <strong>{{ shipping_title | escape }}</strong>
+        <span>{{ shipping_sub | escape }}</span>
+      </div>
     </div>
     <div class="store-promise__item">
       <span class="store-promise__icon" aria-hidden="true">02</span>
-      <strong>{{ returns_title | escape }}</strong>
-      <span>{{ returns_sub | escape }}</span>
+      <div class="store-promise__content">
+        <strong>{{ returns_title | escape }}</strong>
+        <span>{{ returns_sub | escape }}</span>
+      </div>
     </div>
     <div class="store-promise__item">
       <span class="store-promise__icon" aria-hidden="true">03</span>
-      <strong>{{ secure_title | escape }}</strong>
-      <span>{{ secure_sub | escape }}</span>
+      <div class="store-promise__content">
+        <strong>{{ secure_title | escape }}</strong>
+        <span>{{ secure_sub | escape }}</span>
+      </div>
     </div>
     <div class="store-promise__item">
       <span class="store-promise__icon" aria-hidden="true">04</span>
-      <strong>{{ support_title | escape }}</strong>
-      <span>{{ support_sub | escape }}</span>
+      <div class="store-promise__content">
+        <strong>{{ support_title | escape }}</strong>
+        <span>{{ support_sub | escape }}</span>
+      </div>
     </div>
   </div>
 
@@ -71,6 +79,8 @@
 .store-promise--compact {
   padding: 16px;
   box-shadow: none;
+  background: transparent;
+  border: none;
 }
 .store-promise__head {
   display: grid;
@@ -92,15 +102,21 @@
 .store-promise__grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 10px;
+  gap: 12px;
 }
 .store-promise__item {
   display: grid;
-  gap: 4px;
+  gap: 8px;
   min-width: 0;
-  padding: 12px;
+  padding: 14px;
   border-radius: var(--radius-md);
   background: color-mix(in oklab, var(--color-surface) 92%, var(--color-deco-light) 8%);
+  border: 1px solid color-mix(in oklab, var(--color-border) 40%, transparent);
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+.store-promise__item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
 }
 .store-promise__icon {
   display: inline-grid;
@@ -113,12 +129,17 @@
   font-size: 11px;
   font-weight: 900;
 }
+.store-promise__content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
 .store-promise__item strong {
   font-size: 13px;
   line-height: 1.25;
   color: var(--color-text);
 }
-.store-promise__item span:last-child {
+.store-promise__item span {
   font-size: 12px;
   line-height: 1.35;
   color: var(--color-text-muted);
@@ -133,11 +154,39 @@
   height: 18px;
   width: auto;
 }
+
+/* Compact layout overrides */
+.store-promise--compact .store-promise__grid {
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+.store-promise--compact .store-promise__item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 12px;
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+}
+.store-promise--compact .store-promise__icon {
+  width: 26px;
+  height: 26px;
+  font-size: 10px;
+}
+.store-promise--compact .store-promise__content strong {
+  font-size: 12px;
+}
+.store-promise--compact .store-promise__content span {
+  font-size: 11px;
+  line-height: 1.4;
+}
+
 @media (max-width: 900px) {
   .store-promise__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 520px) {
   .store-promise { padding: 14px; }
   .store-promise__grid { grid-template-columns: 1fr; }
+  .store-promise--compact .store-promise__grid { grid-template-columns: 1fr; }
 }
 </style>
