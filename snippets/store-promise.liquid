@@ -29,29 +29,29 @@
     <div class="store-promise__item">
       <span class="store-promise__icon" aria-hidden="true">01</span>
       <div class="store-promise__content">
-        <strong>{{ shipping_title | escape }}</strong>
-        <span>{{ shipping_sub | escape }}</span>
+        <h4 class="store-promise__item-title">{{ shipping_title | escape }}</h4>
+        <p class="store-promise__item-desc">{{ shipping_sub | escape }}</p>
       </div>
     </div>
     <div class="store-promise__item">
       <span class="store-promise__icon" aria-hidden="true">02</span>
       <div class="store-promise__content">
-        <strong>{{ returns_title | escape }}</strong>
-        <span>{{ returns_sub | escape }}</span>
+        <h4 class="store-promise__item-title">{{ returns_title | escape }}</h4>
+        <p class="store-promise__item-desc">{{ returns_sub | escape }}</p>
       </div>
     </div>
     <div class="store-promise__item">
       <span class="store-promise__icon" aria-hidden="true">03</span>
       <div class="store-promise__content">
-        <strong>{{ secure_title | escape }}</strong>
-        <span>{{ secure_sub | escape }}</span>
+        <h4 class="store-promise__item-title">{{ secure_title | escape }}</h4>
+        <p class="store-promise__item-desc">{{ secure_sub | escape }}</p>
       </div>
     </div>
     <div class="store-promise__item">
       <span class="store-promise__icon" aria-hidden="true">04</span>
       <div class="store-promise__content">
-        <strong>{{ support_title | escape }}</strong>
-        <span>{{ support_sub | escape }}</span>
+        <h4 class="store-promise__item-title">{{ support_title | escape }}</h4>
+        <p class="store-promise__item-desc">{{ support_sub | escape }}</p>
       </div>
     </div>
   </div>
@@ -133,16 +133,25 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
+  align-items: flex-start;
+  text-align: left;
 }
-.store-promise__item strong {
+.store-promise__item-title {
+  margin: 0;
+  padding: 0;
   font-size: 13px;
+  font-weight: 700;
   line-height: 1.25;
   color: var(--color-text);
+  font-family: inherit;
 }
-.store-promise__item span {
+.store-promise__item-desc {
+  margin: 0;
+  padding: 0;
   font-size: 12px;
   line-height: 1.35;
   color: var(--color-text-muted);
+  font-family: inherit;
 }
 .store-promise__payments {
   display: flex;
@@ -189,19 +198,11 @@
   border-radius: 0;
   margin-top: -3px;
 }
-.store-promise--compact .store-promise__content {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-.store-promise--compact .store-promise__content strong {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--color-text);
-}
-.store-promise--compact .store-promise__content span {
+.store-promise--compact .store-promise__item-title {
   font-size: 12px;
-  color: var(--color-text-muted);
+}
+.store-promise--compact .store-promise__item-desc {
+  font-size: 11px;
   line-height: 1.4;
 }
 
