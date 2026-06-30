@@ -28,7 +28,9 @@
         "show_cta_button": true,
         "cta_label": "Buy Now",
         "cta_action": "checkout_permalink",
-        "cta_link": "shopify://products/bange-new-multifunction-crossbody-bag-shoulder-messenger-bags-male-waterproof-short-trip-chest-bag-pack-for-men"
+        "cta_link": "shopify://products/bange-new-multifunction-crossbody-bag-shoulder-messenger-bags-male-waterproof-short-trip-chest-bag-pack-for-men",
+        "show_language_switcher": true,
+        "cta_product": ""
       }
     }
   },

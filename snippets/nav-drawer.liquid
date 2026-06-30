@@ -2,7 +2,7 @@
 
 <nav id="nav-drawer" class="nav-drawer" role="dialog" aria-modal="true" aria-label="Main navigation" aria-hidden="true">
   <div class="nav-drawer__header">
-    <a href="/" onclick="BLC.closeNav()" aria-label="{{ shop.name }} home">
+    <a href="{{ routes.root_url }}" onclick="BLC.closeNav()" aria-label="{{ shop.name }} home">
       <span style="font-family:var(--font-display);font-weight:700;font-size:var(--text-lg)">{{ shop.name | escape }}</span>
     </a>
     <button
@@ -40,6 +40,12 @@
       {%- endif -%}
     {%- endfor -%}
   </div>
+
+  {%- if show_language_switcher -%}
+    <div class="nav-drawer__language">
+      {%- render 'language-switcher', style: 'drawer' -%}
+    </div>
+  {%- endif -%}
 
   {%- if show_account_links -%}
     <div class="nav-drawer__footer">
@@ -150,6 +156,35 @@
 .nav-drawer__sub-link--all {
   font-weight: 700; color: var(--color-primary) !important;
   font-size: var(--text-xs); letter-spacing: 0.05em; text-transform: uppercase;
+}
+
+.nav-drawer__language {
+  padding: var(--sp-4) var(--sp-5);
+  border-top: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+.language-switcher--drawer .language-switcher__form { margin: 0; }
+.language-switcher--drawer .language-switcher__options {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  padding: 4px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  background: var(--color-surface);
+}
+.language-switcher--drawer .language-switcher__button {
+  min-height: 40px;
+  border-radius: var(--radius-full);
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+.language-switcher--drawer .language-switcher__button.is-active {
+  background: var(--color-primary);
+  color: var(--color-primary-text);
 }
 
 .nav-drawer__footer {

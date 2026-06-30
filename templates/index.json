@@ -9,81 +9,250 @@
  */
 {
   "sections": {
-    "announcement_bar_Lm4kTf": {
+    "announcement_bar": {
       "type": "announcement-bar",
       "name": "Announcement Bar",
       "settings": {
         "enabled": true,
         "bg_color": "#111111",
         "text_color": "#ffffff",
-        "text_1": "⚡ Free shipping on orders over $75",
-        "text_2": "🔒 60-Day Money-Back Guarantee",
-        "text_3": "",
+        "text_1": "Free shipping on all orders",
+        "text_2": "14-day return window",
+        "text_3": "Secure Shopify checkout",
         "link": "",
         "auto_rotate": true,
-        "speed": 4,
+        "speed": 5,
         "offer_mode": false,
         "countdown_prefix": "Ends in"
       }
     },
-    "hero_3zRf8U": {
-      "type": "hero",
-      "name": "Hero Banner",
+    "single_product_home": {
+      "type": "single-product-home",
+      "blocks": {
+        "feature_shipping": {
+          "type": "feature",
+          "settings": {
+            "title": "Fast delivery",
+            "subtitle": "5-10 business days with clear tracking.",
+            "visibility": "all",
+            "icon": "truck"
+          }
+        },
+        "feature_returns": {
+          "type": "feature",
+          "settings": {
+            "title": "14-day returns",
+            "subtitle": "Clear return window after delivery.",
+            "visibility": "all",
+            "icon": "shield"
+          }
+        },
+        "feature_secure": {
+          "type": "feature",
+          "settings": {
+            "title": "Secure payment",
+            "subtitle": "Encrypted Shopify checkout and enabled payment methods.",
+            "visibility": "all",
+            "icon": "shield"
+          }
+        },
+        "review_1": {
+          "type": "review",
+          "settings": {
+            "name": "Sarah M.",
+            "rating": 5,
+            "body": "The product feels premium, arrived quickly, and the checkout was simple."
+          }
+        },
+        "review_2": {
+          "type": "review",
+          "settings": {
+            "name": "Daniel K.",
+            "rating": 5,
+            "body": "Exactly what I expected. Clean design, useful every day, and fast shipping."
+          }
+        },
+        "review_3": {
+          "type": "review",
+          "settings": {
+            "name": "Mina R.",
+            "rating": 5,
+            "body": "Good quality and very easy to order. Payment options looked trustworthy."
+          }
+        },
+        "faq_shipping": {
+          "type": "faq",
+          "settings": {
+            "question": "How long does shipping take?",
+            "answer": "<p>Delivery usually takes 5-10 business days. Shipping and tracking details are sent by email.</p>"
+          }
+        },
+        "faq_returns": {
+          "type": "faq",
+          "settings": {
+            "question": "Can I return the product?",
+            "answer": "<p>Yes. You can return unused items within 14 days after delivery according to the store return policy.</p>"
+          }
+        },
+        "faq_payment": {
+          "type": "faq",
+          "settings": {
+            "question": "Is checkout secure?",
+            "answer": "<p>Yes. Checkout runs through Shopify with encrypted payment handling and the payment methods enabled in the store.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "feature_shipping",
+        "feature_returns",
+        "feature_secure",
+        "review_1",
+        "review_2",
+        "review_3",
+        "faq_shipping",
+        "faq_returns",
+        "faq_payment"
+      ],
       "settings": {
-        "layout": "split",
-        "media_position": "right",
-        "best_seller_text": "BEST SELLER",
-        "best_seller_stars": true,
-        "eyebrow": "New Weekly Drop",
-        "heading": "This Week's Drop",
-        "subheading": "Premium products designed for comfort, beauty, recovery, and everyday luxury.",
-        "show_product_description": false,
-        "product_description_words": 28,
-        "trust_text": "Free shipping $75+ · 30-day returns",
-        "show_secure_payment_badge": true,
-        "secure_payment_label": "Secure Payment",
-        "secure_payment_text": "SSL encrypted checkout",
-        "hero_product": "outdoor-large-capacity-messenger-bag-men-chest-bag-simple-fashion-men-bag-shoulder-bag",
+        "visibility": "follow_global",
+        "media_position": "left",
+        "desktop_info_style": "card",
+        "mobile_info_style": "compact",
+        "mobile_media_visibility": "show",
+        "visual_style": "bold",
+        "media_shape": "soft",
         "show_hover_image": true,
-        "show_price": true,
-        "show_variant_picker": true,
-        "show_quantity_selector": true,
-        "show_sale_ribbon": true,
+        "show_wishlist_button": false,
+        "show_compare_button": false,
+        "show_eyebrow": true,
+        "eyebrow": "Limited single-product offer",
+        "heading": "Premium everyday essential",
+        "subheading": "A focused product page built for fast decisions: clear benefits, secure checkout, free shipping, and a 14-day return window.",
+        "show_rating": true,
+        "show_demo_rating": true,
+        "show_sale_badge": true,
+        "show_sale_strip": true,
         "sale_stripe_design": "rolling_strip",
         "sale_stripe_orientation": "left",
-        "show_countdown": true,
-        "countdown_label": "Offer ends in",
-        "countdown_end": "",
-        "show_buttons": true,
         "cta_position": "below",
-        "cta_button_mode": "checkout_permalink",
-        "hero_checkout_label": "Buy Now",
-        "hero_cart_label": "Add to Cart",
-        "cta1_label": "Buy Now",
-        "cta1_link": "",
-        "cta1_icon": true,
-        "cta1_bg": "#1a1a1a",
-        "cta1_color": "#ffffff",
-        "cta2_label": "Learn More",
-        "cta2_link": "",
-        "split_media_bg": "#0d2318",
-        "split_content_bg": "#faf9f7",
-        "heading_color": "#111111",
-        "subheading_color": "#555555",
-        "accent_color": "#1d6b44",
-        "offer_badge_bg": "#ffffff1f",
-        "offer_badge_color": "#ffffff",
-        "color_scheme": "dark",
-        "bg_color": "#0d2318",
-        "show_overlay": true,
-        "overlay_opacity": 5,
-        "min_height": 600,
-        "content_align": "left"
+        "desktop_cta_layout": "row",
+        "mobile_cta_layout": "stack",
+        "show_qty_selector": true,
+        "atc_label": "",
+        "show_buy_now": true,
+        "buy_label": "",
+        "show_payment_icons": true,
+        "show_payment_icons_desktop": true,
+        "show_payment_icons_mobile": true,
+        "show_trust_strip": true,
+        "show_trust_strip_desktop": true,
+        "show_trust_strip_mobile": true,
+        "trust_1": "",
+        "trust_2": "",
+        "trust_3": "",
+        "show_features": true,
+        "feat_1_title": "Fast delivery",
+        "feat_1_sub": "5-10 business days",
+        "feat_1_icon": "truck",
+        "feat_2_title": "Free shipping",
+        "feat_2_sub": "On all orders",
+        "feat_2_icon": "bag",
+        "feat_3_title": "14-day returns",
+        "feat_3_sub": "Clear return window",
+        "feat_3_icon": "shield",
+        "description_style": "accordion",
+        "description_label": "Product details",
+        "description_open_desktop": true,
+        "description_open_mobile": false,
+        "show_reviews": true,
+        "show_faq": true,
+        "bottom_alignment": "left",
+        "reviews_title": "Customer feedback",
+        "faq_title": "Questions before you order",
+        "use_global_review_settings": true,
+        "enable_review_slider_cycling": true,
+        "review_slider_interval": 4,
+        "visible_reviews_count": 3,
+        "bg_color_override": "",
+        "text_color_override": "",
+        "padding_top": 28,
+        "padding_bottom": 48,
+        "mobile_padding_top": 12,
+        "mobile_padding_bottom": 28
+      }
+    },
+    "trust_badges": {
+      "type": "trust-badges",
+      "blocks": {
+        "returns": { "type": "badge", "settings": { "icon": "return", "title": "", "subtitle": "" } },
+        "shipping": { "type": "badge", "settings": { "icon": "shipping", "title": "", "subtitle": "" } },
+        "secure": { "type": "badge", "settings": { "icon": "secure", "title": "", "subtitle": "" } },
+        "support": { "type": "badge", "settings": { "icon": "support", "title": "", "subtitle": "" } }
+      },
+      "block_order": ["returns", "shipping", "secure", "support"],
+      "settings": {
+        "layout": "contained",
+        "bg_color": "#ffffff",
+        "icon_color": "#1d6b44",
+        "text_color": "#111111",
+        "divider_color": "#dddbd7",
+        "show_dividers": true,
+        "icon_size": 38,
+        "padding_top": 20,
+        "padding_bottom": 20,
+        "padding_sides": 20
+      }
+    },
+    "faq": {
+      "type": "faq",
+      "settings": {
+        "heading": "Frequently asked questions"
+      },
+      "blocks": {
+        "return_policy": {
+          "type": "item",
+          "settings": {
+            "question": "What if I am not satisfied?",
+            "answer": "You can return unused items within 14 days after delivery according to the store return policy."
+          }
+        },
+        "delivery_time": {
+          "type": "item",
+          "settings": {
+            "question": "How fast is delivery?",
+            "answer": "Standard delivery is usually 5-10 business days. Tracking details are sent after dispatch."
+          }
+        },
+        "payment_security": {
+          "type": "item",
+          "settings": {
+            "question": "Are payments secure?",
+            "answer": "Yes. Payments are handled through encrypted Shopify checkout and the enabled store payment methods."
+          }
+        }
+      },
+      "block_order": ["return_policy", "delivery_time", "payment_security"]
+    },
+    "newsletter_bar": {
+      "type": "newsletter-bar",
+      "settings": {
+        "eyebrow": "Offer updates",
+        "heading": "Get the next offer first",
+        "subtext": "Join the list for product drops, shipping updates, and limited campaigns.",
+        "placeholder": "Email address",
+        "button": "Subscribe",
+        "success_msg": "You are in. Check your inbox.",
+        "privacy_note": "No spam. Unsubscribe anytime.",
+        "bg_color": "#f5f3f0",
+        "text_color": "#111111"
       }
     }
   },
   "order": [
-    "announcement_bar_Lm4kTf",
-    "hero_3zRf8U"
+    "announcement_bar",
+    "single_product_home",
+    "trust_badges",
+    "faq",
+    "newsletter_bar"
   ]
 }

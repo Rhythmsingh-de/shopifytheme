@@ -34,6 +34,7 @@
     "button_border_radius": "9999px",
     "card_border_radius": 12,
     "storefront_mode": "single_product",
+    "primary_product": "outdoor-large-capacity-messenger-bag-men-chest-bag-simple-fashion-men-bag-shoulder-bag",
     "single_product_sections_follow_mode": false,
     "card_hover_second_image": true,
     "card_quick_add": true,
@@ -68,6 +69,14 @@
     "trust_secure_sub": "SSL encrypted",
     "trust_support_title": "24/7 Support",
     "trust_support_sub": "We reply within hours",
+    "store_promise_heading": "Free shipping. 14-day returns. Secure payment.",
+    "store_promise_text": "Order today with free shipping, protected checkout, and a clear 14-day return window.",
+    "shipping_window": "5-10 business days",
+    "shipping_dispatch_text": "Orders are packed within 1-2 business days.",
+    "returns_window": "14 days",
+    "returns_policy_summary": "Return unused items within 14 days after delivery. Refunds are processed after inspection according to your store policy.",
+    "secure_payment_text": "Encrypted Shopify checkout with enabled payment methods.",
+    "support_response_time": "Replies within 24 hours on business days.",
     "show_urgency_banner": true,
     "show_scarcity_bar": true,
     "conversion_primary_cta_label": "Add to Cart",
@@ -127,6 +136,9 @@
     "header_transparent_hero": true,
     "show_order_tracking_link": false,
     "order_tracking_url": "shopify://products/outdoor-large-capacity-messenger-bag-men-chest-bag-simple-fashion-men-bag-shoulder-bag",
-    "content_for_index": []
+    "content_for_index": [],
+    "language_auto_redirect_enabled": true,
+    "language_auto_redirect_once": true,
+    "language_auto_redirect_storage_key": "blc_language_checked"
   }
 }

@@ -2,7 +2,7 @@
   {
     "name": "theme_info",
     "theme_name": "BodyLuxCare",
-    "theme_version": "3.3.0",
+    "theme_version": "3.4.0",
     "theme_author": "Rhythmsingh",
     "theme_documentation_url": "https://github.com/Rhythmsingh-de/shopifytheme",
     "theme_support_url": "https://github.com/Rhythmsingh-de/shopifytheme"
@@ -77,6 +77,16 @@
       { "type": "product", "id": "primary_product", "label": "Primary product" },
       { "type": "collection", "id": "primary_collection", "label": "Primary collection" },
       { "type": "checkbox", "id": "single_product_sections_follow_mode", "label": "Hide single-product sections when multiple-products mode is active", "default": false }
+    ]
+  },
+  {
+    "name": "Localization",
+    "settings": [
+      { "type": "header", "content": "Languages" },
+      { "type": "paragraph", "content": "This theme UI is built for English and German. Publish only English and German in Shopify Markets/Languages for a clean store switcher." },
+      { "type": "checkbox", "id": "language_auto_redirect_enabled", "label": "Auto-switch German browser visitors to German", "default": true },
+      { "type": "checkbox", "id": "language_auto_redirect_once", "label": "Auto-switch only once per visitor", "default": true },
+      { "type": "text", "id": "language_auto_redirect_storage_key", "label": "Browser storage key", "default": "blc_language_checked" }
     ]
   },
   {
@@ -165,6 +175,17 @@
       { "type": "text", "id": "trust_secure_sub",     "label": "Secure payment badge subtitle", "default": "SSL encrypted" },
       { "type": "text", "id": "trust_support_title",  "label": "Support badge title",          "default": "24/7 Support" },
       { "type": "text", "id": "trust_support_sub",    "label": "Support badge subtitle",       "default": "We reply within hours" },
+      { "type": "header", "content": "Store Promise" },
+      { "type": "text", "id": "store_promise_heading", "label": "Promise headline", "default": "Free shipping. 14-day returns. Secure payment." },
+      { "type": "textarea", "id": "store_promise_text", "label": "Promise supporting text", "default": "Order today with free shipping, protected checkout, and a clear 14-day return window." },
+      { "type": "text", "id": "shipping_window", "label": "Delivery window", "default": "5-10 business days" },
+      { "type": "text", "id": "shipping_dispatch_text", "label": "Dispatch text", "default": "Orders are packed within 1-2 business days." },
+      { "type": "text", "id": "returns_window", "label": "Return window", "default": "14 days" },
+      { "type": "textarea", "id": "returns_policy_summary", "label": "Return policy summary", "default": "Return unused items within 14 days after delivery. Refunds are processed after inspection according to your store policy." },
+      { "type": "text", "id": "secure_payment_text", "label": "Secure payment detail", "default": "Encrypted Shopify checkout with enabled payment methods." },
+      { "type": "text", "id": "support_response_time", "label": "Support response time", "default": "Replies within 24 hours on business days." },
+      { "type": "url", "id": "shipping_policy_url", "label": "Shipping policy URL" },
+      { "type": "url", "id": "contact_page_url", "label": "Contact/support page URL" },
       { "type": "header", "content": "Urgency / Scarcity" },
       { "type": "checkbox", "id": "show_urgency_banner", "label": "Show announcement urgency banner",       "default": true },
       { "type": "checkbox", "id": "show_scarcity_bar",   "label": "Show stock scarcity bar on product",    "default": true },

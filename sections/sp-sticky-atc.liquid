@@ -258,6 +258,8 @@
 </style>
 
 <script>
+var blcStickyCartUrl = {{ routes.cart_url | json }};
+
 class SpStickyAtc extends HTMLElement {
   connectedCallback() {
     this._visible = false;
@@ -327,7 +329,7 @@ class SpStickyAtc extends HTMLElement {
       buy.dataset.variantId = String(variant.id);
       buy.href = window.BLC && typeof window.BLC.checkoutHref === 'function'
         ? window.BLC.checkoutHref(variant.id, 1, buy)
-        : (window.routes ? window.routes.cart_url : '/cart') + '/' + variant.id + ':1' + (buy.dataset.checkoutDestination === 'cart' ? '?storefront=true' : '');
+        : blcStickyCartUrl + '/' + variant.id + ':1' + (buy.dataset.checkoutDestination === 'cart' ? '?storefront=true' : '');
       buy.toggleAttribute('aria-disabled', !variant.available);
     }
   }

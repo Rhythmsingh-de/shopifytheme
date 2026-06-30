@@ -14,6 +14,26 @@
   function qsa(s,c){return Array.from((c||document).querySelectorAll(s));}
   function on(el,ev,fn){if(el)el.addEventListener(ev,fn);}
 
+  function rootUrl(){
+    var root = (window.routes && window.routes.root_url) || (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || '/';
+    return root.endsWith('/') ? root : root + '/';
+  }
+  function route(name, fallbackPath){
+    var value = window.routes && window.routes[name];
+    if (value) return value;
+    return rootUrl() + String(fallbackPath || '').replace(/^\/+/, '');
+  }
+  function routeJs(name, fallbackPath){
+    var value = route(name, fallbackPath);
+    return value.slice(-3) === '.js' ? value : value + '.js';
+  }
+  function checkoutUrl(){
+    return route('checkout_url', 'checkout');
+  }
+  function allProductsUrl(){
+    return route('all_products_collection_url', 'collections/all');
+  }
+
   /* ─────────── MOBILE NAV ─────────── */
   function openNav(){
     var d=qs('#nav-drawer'),o=qs('#nav-overlay');
@@ -123,7 +143,7 @@
   function addToCart(variantId,qty,btn){
     if(!variantId)return;
     if(btn){btn.disabled=true;btn._orig=btn._orig||readButtonText(btn);setButtonText(btn,'Adding...');}
-    fetch('/cart/add.js',{
+    fetch(routeJs('cart_add_url', 'cart/add'),{
       method:'POST',
       headers:{'Content-Type':'application/json','X-Requested-With':'XMLHttpRequest'},
       body:JSON.stringify({id:parseInt(variantId,10),quantity:qty||1})
@@ -175,7 +195,7 @@
     var destination = trigger && trigger.dataset ? trigger.dataset.checkoutDestination : 'checkout';
     if (!destination && window.blcSettings) destination = window.blcSettings.fastCheckoutDestination || 'checkout';
     var suffix = destination === 'cart' ? '?storefront=true' : '';
-    return '/cart/' + encodeURIComponent(variantId) + ':' + encodeURIComponent(qty || 1) + suffix;
+    return route('cart_url', 'cart') + '/' + encodeURIComponent(variantId) + ':' + encodeURIComponent(qty || 1) + suffix;
   }
 
   /* ─────────── BUY NOW (DIRECT CHECKOUT) ─────────── */
@@ -197,8 +217,8 @@
       var urlParams = new URLSearchParams(href.split('?')[1]);
       vid = urlParams.get('variant');
       qty = parseInt(urlParams.get('quantity')) || 1;
-    } else if (href.includes('/cart/')) {
-      var parts = href.split('/cart/')[1];
+    } else if (href.includes(route('cart_url', 'cart') + '/')) {
+      var parts = href.split(route('cart_url', 'cart') + '/')[1];
       if (parts) {
         var subparts = parts.split('?')[0].split(':');
         vid = subparts[0];
@@ -225,14 +245,14 @@
     if (isEditor) {
       btn.disabled = true;
       btn.textContent = 'Redirecting to Cart…';
-      window.location.href = window.routes ? window.routes.cart_url : '/cart';
+      window.location.href = route('cart_url', 'cart');
       return;
     }
 
     btn.textContent = 'Redirecting…';
     btn.disabled = true;
 
-    fetch(window.routes ? window.routes.cart_add_url : '/cart/add.js', {
+    fetch(routeJs('cart_add_url', 'cart/add'), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -269,9 +289,9 @@
       if (typeof refreshCartDrawer === 'function') refreshCartDrawer();
 
       if (destination === 'cart') {
-        window.location.href = window.routes ? window.routes.cart_url : '/cart';
+        window.location.href = route('cart_url', 'cart');
       } else {
-        window.location.href = '/checkout';
+        window.location.href = checkoutUrl();
       }
     })
     .catch(function(err) {
@@ -288,7 +308,7 @@
     var key=rb.dataset.key||rb.dataset.remove;
     var line=parseInt(rb.dataset.line,10);
     var body=key?{id:key,quantity:0}:(line?{line:line,quantity:0}:{});
-    fetch('/cart/change.js',{method:'POST',headers:{'Content-Type':'application/json','X-Requested-With':'XMLHttpRequest'},body:JSON.stringify(body)})
+    fetch(routeJs('cart_change_url', 'cart/change'),{method:'POST',headers:{'Content-Type':'application/json','X-Requested-With':'XMLHttpRequest'},body:JSON.stringify(body)})
     .then(function(r){return r.json();})
     .then(function(cart){_updateCartCount();refreshCartDrawer();_updateFSBar(cart.total_price);})
     .catch(function(){});
@@ -308,7 +328,7 @@
     var line=parseInt(wrap.dataset.line,10);
     if(!line)return;
     input.value=next;
-    fetch('/cart/change.js',{method:'POST',headers:{'Content-Type':'application/json','X-Requested-With':'XMLHttpRequest'},body:JSON.stringify({line:line,quantity:next})})
+    fetch(routeJs('cart_change_url', 'cart/change'),{method:'POST',headers:{'Content-Type':'application/json','X-Requested-With':'XMLHttpRequest'},body:JSON.stringify({line:line,quantity:next})})
     .then(function(r){return r.json();})
     .then(function(cart){_updateCartCount();refreshCartDrawer();_updateFSBar(cart.total_price);})
     .catch(function(){});
@@ -318,7 +338,7 @@
   function refreshCartDrawer(){
     var list=qs('#cartItemsList');
     if(!list)return;
-    fetch('/cart.js',{headers:{'X-Requested-With':'XMLHttpRequest'}})
+    fetch(routeJs('cart_url', 'cart'),{headers:{'X-Requested-With':'XMLHttpRequest'}})
     .then(function(r){return r.json();})
     .then(function(cart){
       _updateFSBar(cart.total_price);
@@ -326,7 +346,8 @@
       var cnt=qs('#cartItemCount');if(cnt)cnt.textContent=cart.item_count+' item'+(cart.item_count===1?'':'s');
       var foot=qs('#cartDrawerFoot');
       if(!cart.items||!cart.items.length){
-        list.innerHTML='<div class="cart-empty"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg><p>Your cart is empty</p><a href="/collections/all" class="btn btn--primary btn--sm" onclick="window.BLC?BLC.closeCartDrawer():void 0">Start Shopping</a></div>';
+        var productsUrl = allProductsUrl();
+        list.innerHTML='<div class="cart-empty"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg><p>Your cart is empty</p><a href="'+productsUrl+'" class="btn btn--primary btn--sm" onclick="window.BLC?BLC.closeCartDrawer():void 0">Start Shopping</a></div>';
         if(foot)foot.style.display='none';return;
       }
       if(foot)foot.style.display='';
@@ -354,7 +375,7 @@
   }
 
   function _updateCartCount(){
-    fetch('/cart.js',{headers:{'X-Requested-With':'XMLHttpRequest'}})
+    fetch(routeJs('cart_url', 'cart'),{headers:{'X-Requested-With':'XMLHttpRequest'}})
     .then(function(r){return r.json();})
     .then(function(cart){
       qsa('[data-cart-count]').forEach(function(el){
@@ -995,7 +1016,10 @@
     openCartDrawer:openCartDrawer,closeCartDrawer:closeCartDrawer,
     openCart:openCartDrawer,closeCart:closeCartDrawer,
     addToCart:addToCart,
+    route:route,
+    routeJs:routeJs,
     checkoutHref:checkoutHref,
+    checkoutUrl:checkoutUrl,
     initOfferCountdowns:initOfferCountdowns,
     refreshCartDrawer:refreshCartDrawer,
     openQuickView:openQuickView,

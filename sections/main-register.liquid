@@ -21,7 +21,7 @@
       </div>
       <button type="submit" class="fp__cta">Create Account</button>
     {%- endform -%}
-    <p style="margin-top:16px; font-size:.85rem; color:var(--text-muted);">Already have an account? <a href="/account/login" style="color:var(--accent-color);">Log in</a></p>
+    <p style="margin-top:16px; font-size:.85rem; color:var(--text-muted);">{{ 'customer.register.login_instead' | t }} <a href="{{ routes.account_login_url }}" style="color:var(--accent-color);">{{ 'customer.login.submit' | t }}</a></p>
   </div>
 </section>
 {% schema %}

@@ -57,6 +57,36 @@
     </script>
   {%- endif -%}
 
+  {%- if settings.language_auto_redirect_enabled -%}
+    {%- assign current_language_code = localization.language.iso_code | default: request.locale.iso_code | split: '-' | first -%}
+    {%- assign german_language = blank -%}
+    {%- for language in localization.available_languages -%}
+      {%- if language.iso_code == 'de' -%}
+        {%- assign german_language = language -%}
+      {%- endif -%}
+    {%- endfor -%}
+    {%- if german_language != blank and current_language_code != 'de' -%}
+      <script>
+        (function () {
+          var storageKey = {{ settings.language_auto_redirect_storage_key | default: 'blc_language_checked' | json }};
+          var once = {{ settings.language_auto_redirect_once | default: true | json }};
+          var targetUrl = {{ german_language.root_url | json }};
+          if (!targetUrl || !navigator.language) return;
+          targetUrl = targetUrl.charAt(targetUrl.length - 1) === '/' ? targetUrl : targetUrl + '/';
+          var browserLanguage = (navigator.languages && navigator.languages[0] ? navigator.languages[0] : navigator.language).toLowerCase();
+          if (!browserLanguage || browserLanguage.slice(0, 2) !== 'de') return;
+          try {
+            if (once && window.localStorage && window.localStorage.getItem(storageKey)) return;
+            if (window.localStorage) window.localStorage.setItem(storageKey, '1');
+          } catch (e) {}
+          if (window.location.pathname.indexOf(targetUrl) !== 0) {
+            window.location.replace(targetUrl + window.location.pathname.replace(/^\/+/, '') + window.location.search + window.location.hash);
+          }
+        })();
+      </script>
+    {%- endif -%}
+  {%- endif -%}
+
   {{ content_for_header }}
 
   {% render 'meta-tags' %}
@@ -378,10 +408,13 @@
       fastCheckoutDestination: {{ settings.fast_checkout_destination | default: 'checkout' | json }}
     };
     window.routes = {
+      root_url: '{{ routes.root_url }}',
       cart_url: '{{ routes.cart_url }}',
       cart_add_url: '{{ routes.cart_add_url }}',
       cart_change_url: '{{ routes.cart_change_url }}',
-      cart_clear_url: '{{ routes.cart_clear_url }}'
+      cart_clear_url: '{{ routes.cart_clear_url }}',
+      search_url: '{{ routes.search_url }}',
+      all_products_collection_url: '{{ routes.all_products_collection_url }}'
     };
   </script>
 

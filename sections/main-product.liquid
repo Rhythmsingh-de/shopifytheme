@@ -294,6 +294,8 @@
           </div>
         {%- endif -%}
 
+        {%- render 'store-promise', mode: 'compact', show_payment_icons: false -%}
+
         {%- assign show_size_guide_popup = false -%}
         {%- if section.settings.show_size_guide and section.settings.size_guide_content != blank or section.settings.show_size_guide and section.settings.size_guide_page != blank -%}
           {%- assign show_size_guide_popup = true -%}

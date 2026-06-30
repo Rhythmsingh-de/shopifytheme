@@ -1,95 +1,153 @@
-// Shopify Custom Web Pixel for GA4 & GTM Event Tracking
-// Instructions: Paste this code into your Shopify Admin under Settings > Customer Events > Add custom pixel.
+// Shopify Customer Events custom pixel.
+// Paste this file into Shopify Admin > Settings > Customer events > Add custom pixel.
+// It mirrors checkout-safe Shopify events into a GA4-style dataLayer payload.
 
-analytics.subscribe("page_viewed", (event) => {
-  window.dataLayer = window.dataLayer || [];
-  window.dataLayer.push({
-    event: "page_view",
-    page_url: event.context.document.location.href,
-    page_title: event.context.document.title
-  });
-});
+(function () {
+  var GTM_CONTAINER_ID = 'GTM-XXXXXXX';
 
-analytics.subscribe("product_viewed", (event) => {
-  window.dataLayer = window.dataLayer || [];
-  const variant = event.data.productVariant;
-  if (!variant) return;
-  window.dataLayer.push({
-    event: "view_item",
-    ecommerce: {
-      currency: variant.price.currencyCode,
-      value: parseFloat(variant.price.amount),
-      items: [{
-        item_id: String(variant.id),
-        item_name: variant.product.title,
-        item_variant: variant.title,
-        price: parseFloat(variant.price.amount),
-        quantity: 1
-      }]
-    }
-  });
-});
+  function getDataLayer() {
+    var target = typeof window !== 'undefined' ? window : (typeof self !== 'undefined' ? self : null);
+    if (!target) return null;
+    target.dataLayer = target.dataLayer || [];
+    return target.dataLayer;
+  }
 
-analytics.subscribe("product_added_to_cart", (event) => {
-  window.dataLayer = window.dataLayer || [];
-  const line = event.data.cartLine;
-  if (!line || !line.merchandise) return;
-  const variant = line.merchandise;
-  window.dataLayer.push({
-    event: "add_to_cart",
-    ecommerce: {
-      currency: variant.price.currencyCode,
-      value: parseFloat(variant.price.amount) * line.quantity,
-      items: [{
-        item_id: String(variant.id),
-        item_name: variant.product.title,
-        item_variant: variant.title,
-        price: parseFloat(variant.price.amount),
-        quantity: line.quantity
-      }]
-    }
-  });
-});
+  function loadGtm() {
+    if (!GTM_CONTAINER_ID || GTM_CONTAINER_ID === 'GTM-XXXXXXX') return;
+    if (typeof window === 'undefined' || typeof document === 'undefined') return;
+    var dataLayer = getDataLayer();
+    if (!dataLayer) return;
+    dataLayer.push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+    var firstScript = document.getElementsByTagName('script')[0];
+    var script = document.createElement('script');
+    script.async = true;
+    script.src = 'https://www.googletagmanager.com/gtm.js?id=' + encodeURIComponent(GTM_CONTAINER_ID);
+    firstScript.parentNode.insertBefore(script, firstScript);
+  }
 
-analytics.subscribe("checkout_started", (event) => {
-  window.dataLayer = window.dataLayer || [];
-  const checkout = event.data.checkout;
-  if (!checkout) return;
-  window.dataLayer.push({
-    event: "begin_checkout",
-    ecommerce: {
-      currency: checkout.totalPrice.currencyCode,
-      value: parseFloat(checkout.totalPrice.amount),
-      items: (checkout.lineItems || []).map(item => ({
-        item_id: String(item.variant ? item.variant.id : ''),
-        item_name: item.title,
-        item_variant: item.variant ? item.variant.title : '',
-        price: item.variant ? parseFloat(item.variant.price.amount) : 0,
-        quantity: item.quantity
-      }))
-    }
-  });
-});
+  function eventId(name, id) {
+    return ['shopify', name, id || Date.now(), Math.random().toString(36).slice(2, 10)].join('_');
+  }
 
-analytics.subscribe("checkout_completed", (event) => {
-  window.dataLayer = window.dataLayer || [];
-  const checkout = event.data.checkout;
-  if (!checkout || !checkout.order) return;
-  window.dataLayer.push({
-    event: "purchase",
-    ecommerce: {
-      transaction_id: String(checkout.order.id),
-      currency: checkout.totalPrice.currencyCode,
-      value: parseFloat(checkout.totalPrice.amount),
-      tax: checkout.totalTax ? parseFloat(checkout.totalTax.amount) : 0,
-      shipping: checkout.shippingLine ? parseFloat(checkout.shippingLine.price.amount) : 0,
-      items: (checkout.lineItems || []).map(item => ({
-        item_id: String(item.variant ? item.variant.id : ''),
-        item_name: item.title,
-        item_variant: item.variant ? item.variant.title : '',
-        price: item.variant ? parseFloat(item.variant.price.amount) : 0,
-        quantity: item.quantity
-      }))
-    }
+  function money(price) {
+    if (!price) return 0;
+    return Number.parseFloat(price.amount || price) || 0;
+  }
+
+  function currency(price, fallback) {
+    return (price && price.currencyCode) || fallback || 'EUR';
+  }
+
+  function variantItem(variant, quantity) {
+    if (!variant) return null;
+    var product = variant.product || {};
+    return {
+      item_id: String(variant.id || ''),
+      item_name: product.title || variant.title || '',
+      item_brand: product.vendor || '',
+      item_category: product.type || '',
+      item_variant: variant.title || '',
+      price: money(variant.price),
+      quantity: quantity || 1
+    };
+  }
+
+  function checkoutItems(checkout) {
+    return (checkout && checkout.lineItems || []).map(function (line) {
+      var variant = line.variant || line.merchandise || {};
+      var product = variant.product || {};
+      return {
+        item_id: String(variant.id || ''),
+        item_name: line.title || product.title || '',
+        item_brand: product.vendor || '',
+        item_category: product.type || '',
+        item_variant: variant.title || '',
+        price: money(line.finalLinePrice || variant.price),
+        quantity: line.quantity || 1
+      };
+    });
+  }
+
+  function push(payload) {
+    var dataLayer = getDataLayer();
+    if (!dataLayer || !payload || !payload.event) return;
+    if (payload.ecommerce) dataLayer.push({ ecommerce: null });
+    dataLayer.push(payload);
+  }
+
+  loadGtm();
+
+  if (typeof analytics === 'undefined' || !analytics.subscribe) return;
+
+  analytics.subscribe('page_viewed', function (event) {
+    var doc = event.context && event.context.document;
+    push({
+      event: 'page_view',
+      event_id: eventId('page_view', event.id),
+      page_location: doc && doc.location ? doc.location.href : '',
+      page_title: doc ? doc.title : ''
+    });
   });
-});
+
+  analytics.subscribe('product_viewed', function (event) {
+    var variant = event.data && event.data.productVariant;
+    var item = variantItem(variant, 1);
+    if (!item) return;
+    push({
+      event: 'view_item',
+      event_id: eventId('view_item', event.id),
+      ecommerce: {
+        currency: currency(variant.price),
+        value: item.price,
+        items: [item]
+      }
+    });
+  });
+
+  analytics.subscribe('product_added_to_cart', function (event) {
+    var line = event.data && event.data.cartLine;
+    var variant = line && line.merchandise;
+    var item = variantItem(variant, line ? line.quantity : 1);
+    if (!item) return;
+    push({
+      event: 'add_to_cart',
+      event_id: eventId('add_to_cart', event.id),
+      ecommerce: {
+        currency: currency(variant.price),
+        value: item.price * item.quantity,
+        items: [item]
+      }
+    });
+  });
+
+  analytics.subscribe('checkout_started', function (event) {
+    var checkout = event.data && event.data.checkout;
+    if (!checkout) return;
+    push({
+      event: 'begin_checkout',
+      event_id: eventId('begin_checkout', event.id || checkout.token),
+      ecommerce: {
+        currency: currency(checkout.totalPrice),
+        value: money(checkout.totalPrice),
+        items: checkoutItems(checkout)
+      }
+    });
+  });
+
+  analytics.subscribe('checkout_completed', function (event) {
+    var checkout = event.data && event.data.checkout;
+    if (!checkout) return;
+    push({
+      event: 'purchase',
+      event_id: eventId('purchase', checkout.order && checkout.order.id),
+      ecommerce: {
+        transaction_id: String((checkout.order && checkout.order.id) || checkout.token || ''),
+        currency: currency(checkout.totalPrice),
+        value: money(checkout.totalPrice),
+        tax: money(checkout.totalTax),
+        shipping: checkout.shippingLine ? money(checkout.shippingLine.price) : 0,
+        items: checkoutItems(checkout)
+      }
+    });
+  });
+})();

@@ -1,0 +1,34 @@
+{%- liquid
+  assign language_style = style | default: 'header'
+  assign supported_locales = 'en,de' | split: ','
+  assign visible_language_count = 0
+  for language in localization.available_languages
+    if supported_locales contains language.iso_code
+      assign visible_language_count = visible_language_count | plus: 1
+    endif
+  endfor
+  assign language_form_id = 'LocalizationForm-' | append: section.id | append: '-' | append: language_style
+-%}
+
+{%- if visible_language_count > 1 -%}
+  <localization-form class="language-switcher language-switcher--{{ language_style }}">
+    {%- form 'localization', id: language_form_id, class: 'language-switcher__form' -%}
+      <span class="visually-hidden">{{ 'general.localization.language_label' | t | default: 'Language' }}</span>
+      <div class="language-switcher__options" role="group" aria-label="{{ 'general.localization.language_label' | t | default: 'Language' }}">
+        {%- for language in localization.available_languages -%}
+          {%- if supported_locales contains language.iso_code -%}
+            <button
+              type="submit"
+              name="locale_code"
+              value="{{ language.iso_code }}"
+              class="language-switcher__button{% if language.iso_code == localization.language.iso_code %} is-active{% endif %}"
+              {% if language.iso_code == localization.language.iso_code %}aria-current="true"{% endif %}
+              data-language-switcher-button>
+              {{ language.iso_code | upcase }}
+            </button>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    {%- endform -%}
+  </localization-form>
+{%- endif -%}

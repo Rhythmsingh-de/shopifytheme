@@ -5,7 +5,10 @@
   endif
   assign header_cta_label = section.settings.cta_label | default: settings.conversion_buy_now_label | default: 'Shop now'
   assign header_cta_action = section.settings.cta_action | default: 'checkout_permalink'
-  assign header_cta_product = settings.primary_product
+  assign header_cta_product = section.settings.cta_product
+  if header_cta_product == blank
+    assign header_cta_product = settings.primary_product
+  endif
   assign header_cta_variant = header_cta_product.selected_or_first_available_variant
   assign header_cta_link = section.settings.cta_link
   assign header_cta_destination = blank
@@ -68,7 +71,7 @@
         </button>
       {%- endif -%}
 
-      <a href="/" class="header__logo" aria-label="{{ shop.name }} home">
+      <a href="{{ routes.root_url }}" class="header__logo" aria-label="{{ shop.name }} home">
         {%- if section.settings.logo != blank -%}
           {%- assign logo_alt = section.settings.logo.alt | default: shop.name | escape -%}
           {%- assign logo_width_desktop = section.settings.logo_width | default: 120 -%}
@@ -134,6 +137,10 @@
           </a>
         {%- endif -%}
 
+        {%- if section.settings.show_language_switcher -%}
+          {%- render 'language-switcher', style: 'header' -%}
+        {%- endif -%}
+
         <button class="header__icon-btn" aria-label="Cart ({{ cart.item_count }} items)" data-cart-toggle>
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
@@ -163,7 +170,7 @@
 </header>
 
 {%- if has_mobile_menu -%}
-  {% render 'nav-drawer', mobile_menu: mobile_nav_menu, show_account_links: show_mobile_account_links %}
+  {% render 'nav-drawer', mobile_menu: mobile_nav_menu, show_account_links: show_mobile_account_links, show_language_switcher: section.settings.show_language_switcher %}
 {%- endif -%}
 
 <style>
@@ -190,6 +197,7 @@
 }
 @media (max-width: 640px) {
   .header__cta-btn { display: none; }
+  .language-switcher--header { display: none; }
 }
 .site-header {
   background: var(--color-header-bg);
@@ -315,6 +323,32 @@
   transition: background var(--trans-base);
 }
 .header__icon-btn:hover { background: var(--color-surface); }
+.language-switcher--header { display: flex; }
+.language-switcher__form { margin: 0; }
+.language-switcher__options {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 3px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  background: var(--color-surface);
+}
+.language-switcher__button {
+  min-width: 34px;
+  min-height: 32px;
+  padding: 0 9px;
+  border-radius: var(--radius-full);
+  color: var(--color-text-muted);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+.language-switcher__button.is-active {
+  background: var(--color-primary);
+  color: var(--color-primary-text);
+}
 .header__cart-count {
   position: absolute;
   top: 4px; right: 4px;
@@ -473,10 +507,12 @@
     { "type": "link_list", "id": "mobile_menu", "label": "Mobile navigation menu", "info": "Leave blank to use the desktop menu.", "default": "main-menu" },
     { "type": "checkbox", "id": "sticky", "label": "Sticky header", "default": true },
     { "type": "checkbox", "id": "show_account_icon", "label": "Show account icon", "default": true },
+    { "type": "checkbox", "id": "show_language_switcher", "label": "Show English/German language switcher", "default": true },
     { "type": "checkbox", "id": "show_mobile_account_links", "label": "Show account links in mobile menu", "default": true },
     { "type": "header", "content": "Header Button CTA" },
     { "type": "checkbox", "id": "show_cta_button", "label": "Show CTA button", "default": true },
     { "type": "text", "id": "cta_label", "label": "CTA button label", "default": "Shop now" },
+    { "type": "product", "id": "cta_product", "label": "CTA product override", "info": "Leave blank to use Theme Settings > Storefront Mode > Primary product." },
     { "type": "select", "id": "cta_action", "label": "CTA action", "options": [
       { "value": "checkout_permalink", "label": "Direct checkout primary product" },
       { "value": "cart_permalink", "label": "Open cart with primary product" },

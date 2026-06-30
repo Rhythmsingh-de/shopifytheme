@@ -13,7 +13,7 @@
       </div>
       <button type="submit" class="fp__cta">Log in</button>
     {%- endform -%}
-    <p style="margin-top:16px; font-size:.85rem; color:var(--text-muted);">New customer? <a href="/account/register" style="color:var(--accent-color);">Create account</a></p>
+    <p style="margin-top:16px; font-size:.85rem; color:var(--text-muted);">{{ 'customer.login.no_account' | t }} <a href="{{ routes.account_register_url }}" style="color:var(--accent-color);">{{ 'customer.login.create_account' | t }}</a></p>
   </div>
 </section>
 {% schema %}

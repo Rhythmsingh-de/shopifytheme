@@ -13,366 +13,133 @@
   },
   "parent": "index.json",
   "sections": {
-    "urgency_banner_mctMg": {
-      "type": "urgency-banner",
-      "disabled": true,
+    "announcement_bar": {
       "settings": {
-        "header-1bcfc0a5d137f298719977e2055f185e": null,
-        "eyebrow": "Limited Time Offer!",
-        "heading": "Get 20% Off Today Only",
-        "subheading": "Don't miss out on our best deal of the year.",
-        "header-60cf795e917646066091e8e01a7bc4eb": null,
-        "offer_type": "weekly_offer",
-        "show_countdown": true,
-        "countdown_end": "",
-        "days_label": "Days",
-        "hours_label": "Hours",
-        "mins_label": "Minutes",
-        "secs_label": "Seconds",
-        "header-38c7e4a9613a2d0a38deee7ce04b9c63": null,
-        "show_product_card": false,
-        "offer_product": "herren-brusttasche-sling-bag-wasserdicht",
-        "offer_collection": "",
-        "header-da0b11f2a3ab033f63e7e46e7f3371d9": null,
-        "cta_label": "BUY NOW",
-        "cta_link": "",
-        "cta_behavior": "link",
-        "show_cart_icon": false,
-        "header-b06a5d78c95d8f1d962165faa928b4d3": null,
-        "bg_color": "#ff501a",
-        "text_color": "#ffffff",
-        "cta_bg": "#ffffff",
-        "cta_text": "#ff0000"
-      },
-      "blocks": {},
-      "block_order": [],
-      "name": "Urgency Promo Banner"
+        "text_1": "Kostenloser Versand",
+        "text_2": "14-Tage-Geld-zurück-Garantie",
+        "text_3": "Sicherer Checkout",
+        "speed": 5
+      }
     },
-    "single_product_home_mcEnM": {
-      "type": "single-product-home",
-      "disabled": false,
+    "single_product_home": {
       "settings": {
-        "header-a904f4c8fcebe69ba2fba7a8afa025f8": null,
-        "enabled": true,
-        "visibility": "single_only",
         "product": "",
-        "media_position": "left",
-        "header-aa7efe431f8e0fa57d910ba315332004": null,
-        "desktop_info_style": "card",
-        "mobile_info_style": "card",
-        "mobile_media_visibility": "show",
-        "visual_style": "classic",
-        "media_shape": "square",
-        "fallback_image": null,
-        "show_hover_image": true,
-        "show_wishlist_button": false,
-        "show_compare_button": false,
-        "header-6cf811f7550efe07d71321e70c64d6ec": null,
+        "visual_style": "bold",
         "show_eyebrow": true,
-        "eyebrow": "Dein täglicher Begleiter",
+        "eyebrow": "Premium Angebot",
         "heading": "Premium Brusttasche",
-        "subheading": "Stilvoll. Praktisch. Immer dabei – perfekt für Alltag, Reise & Freizeit.",
-        "show_rating": true,
-        "show_demo_rating": true,
-        "show_sale_badge": true,
-        "show_sale_strip": true,
-        "sale_stripe_design": "rolling_strip",
-        "sale_stripe_orientation": "left",
-        "header-2e7201a5d694c963f3684edb7a450c9e": null,
-        "cta_position": "below",
-        "desktop_cta_layout": "row",
-        "mobile_cta_layout": "row",
-        "show_qty_selector": true,
-        "atc_label": "Warenkorb",
-        "show_buy_now": true,
-        "buy_label": "Kaufen",
-        "show_payment_icons": true,
-        "show_payment_icons_desktop": true,
-        "show_payment_icons_mobile": true,
-        "header-c1ff2515a691920a2a101fbc4faa583b": null,
-        "show_trust_strip": true,
-        "show_trust_strip_desktop": true,
-        "show_trust_strip_mobile": true,
+        "subheading": "Stilvoll. Praktisch. Immer dabei - perfekt für Alltag, Reise und Freizeit.",
+        "atc_label": "In den Warenkorb",
+        "buy_label": "Jetzt kaufen",
+        "mobile_cta_layout": "stack",
         "trust_1": "Kostenloser Versand",
         "trust_2": "Sicherer Checkout",
-        "trust_3": "Zurück-Garantie",
-        "header-a2807f11418690ee34af6f5880d4214d": null,
-        "show_features": true,
+        "trust_3": "14-Tage-Garantie",
         "feat_1_title": "Wasserabweisend",
-        "feat_1_sub": "Schützt vor Regen & Spritzwasser",
+        "feat_1_sub": "Schützt vor Regen und Spritzwasser",
         "feat_1_icon": "water",
-        "feat_2_title": "Ultraleicht",
-        "feat_2_sub": "Klein & handlich",
-        "feat_2_icon": "leaf",
-        "feat_3_title": "Einstellbar",
-        "feat_3_sub": "Für alle Körpergrößen",
-        "feat_3_icon": "bag",
-        "header-7d9a0dea4673c0dbadd31bbbdacf1b5d": null,
-        "description_style": "accordion",
-        "description_label": "Description",
-        "description_open_desktop": true,
-        "description_open_mobile": true,
-        "header-cdfb5cf6fffe09efcb2c983b961f4022": null,
-        "show_reviews": false,
-        "show_faq": false,
-        "bottom_alignment": "left",
-        "reviews_title": "Reviews",
-        "faq_title": "FAQ",
-        "header-8928e959cbcf8789e1be973c9c1d110c": null,
-        "use_global_review_settings": true,
-        "enable_review_slider_cycling": true,
-        "review_slider_interval": 4,
-        "visible_reviews_count": 3,
-        "header-e6940b5d86e8a931490a2b7169c3597c": null,
-        "bg_color_override": "",
-        "text_color_override": "",
-        "padding_top": 36,
-        "padding_bottom": 48,
-        "mobile_padding_top": 16,
-        "mobile_padding_bottom": 32
+        "feat_2_title": "Leicht und kompakt",
+        "feat_2_sub": "Ideal für unterwegs",
+        "feat_2_icon": "bag",
+        "feat_3_title": "Verstellbar",
+        "feat_3_sub": "Für Alltag, Reise und Freizeit",
+        "feat_3_icon": "shield",
+        "description_label": "Produktdetails",
+        "reviews_title": "Kundenfeedback",
+        "faq_title": "Fragen vor der Bestellung"
       },
       "blocks": {
-        "review_Eq6FE": {
-          "type": "review",
-          "disabled": false,
+        "feature_shipping": {
+          "settings": {
+            "title": "Schnelle Lieferung",
+            "subtitle": "5-10 Werktage mit Sendungsverfolgung."
+          }
+        },
+        "feature_returns": {
+          "settings": {
+            "title": "14 Tage Rückgabe",
+            "subtitle": "Klare Rückgabefrist nach Lieferung."
+          }
+        },
+        "feature_secure": {
+          "settings": {
+            "title": "Sicher bezahlen",
+            "subtitle": "Verschlüsselter Shopify Checkout."
+          }
+        },
+        "review_1": {
           "settings": {
             "name": "Sarah M.",
-            "rating": 5,
-            "avatar": null,
-            "images": null,
-            "body": "Absolutely love this! Fits perfectly and looks amazing."
+            "body": "Die Tasche wirkt hochwertig, kam schnell an und war sehr einfach zu bestellen."
           }
         },
-        "review_T9i4F": {
-          "type": "review",
-          "disabled": false,
+        "review_2": {
           "settings": {
-            "name": "Mike L.",
-            "rating": 5,
-            "avatar": null,
-            "images": null,
-            "body": "Best purchase I've made this year. Highly recommend."
+            "name": "Daniel K.",
+            "body": "Genau wie erwartet. Sauberes Design, praktisch im Alltag und schneller Versand."
           }
         },
-        "faq_9YY4h": {
-          "type": "faq",
-          "disabled": false,
+        "review_3": {
           "settings": {
-            "question": "Key questions about this product?",
-            "answer": "<p>This product is designed for maximum comfort and performance.</p>"
+            "name": "Mina R.",
+            "body": "Gute Qualität und vertrauenswürdiger Checkout mit sicheren Zahlungsarten."
           }
         },
-        "faq_qk6x7": {
-          "type": "faq",
-          "disabled": false,
+        "faq_shipping": {
           "settings": {
-            "question": "How is the quality?",
-            "answer": "<p>We use only premium materials tested for durability and longevity.</p>"
+            "question": "Wie lange dauert die Lieferung?",
+            "answer": "<p>Die Lieferung dauert in der Regel 5-10 Werktage. Trackingdetails werden nach dem Versand per E-Mail gesendet.</p>"
           }
         },
-        "faq_7YCqD": {
-          "type": "faq",
-          "disabled": false,
+        "faq_returns": {
           "settings": {
-            "question": "What are the shipping options?",
-            "answer": "<p>Free shipping on all orders. Standard delivery 5–10 business days.</p>"
+            "question": "Kann ich den Artikel zurückgeben?",
+            "answer": "<p>Ja. Unbenutzte Artikel können innerhalb von 14 Tagen nach Lieferung gemäß Rückgabebedingungen zurückgegeben werden.</p>"
+          }
+        },
+        "faq_payment": {
+          "settings": {
+            "question": "Ist die Zahlung sicher?",
+            "answer": "<p>Ja. Der Checkout läuft verschlüsselt über Shopify und nutzt die im Shop aktivierten Zahlungsmethoden.</p>"
           }
         }
-      },
-      "block_order": [
-        "review_Eq6FE",
-        "review_T9i4F",
-        "faq_9YY4h",
-        "faq_qk6x7",
-        "faq_7YCqD"
-      ],
-      "name": "Single Product Home"
+      }
     },
-    "trust_badges_8B46T": {
-      "type": "trust-badges",
-      "disabled": false,
-      "settings": {
-        "layout": "contained",
-        "bg_color": "#f7f7f7",
-        "icon_color": "#1a1a1a",
-        "text_color": "#1a1a1a",
-        "divider_color": "#cccccc",
-        "show_dividers": true,
-        "icon_size": 38,
-        "padding_top": 20,
-        "padding_bottom": 20,
-        "padding_sides": 20
-      },
-      "blocks": {
-        "badge_wdcFR": {
-          "type": "badge",
-          "disabled": false,
-          "settings": {
-            "icon": "return",
-            "title": "",
-            "subtitle": ""
-          }
-        },
-        "badge_TMGaC": {
-          "type": "badge",
-          "disabled": false,
-          "settings": {
-            "icon": "shipping",
-            "title": "",
-            "subtitle": ""
-          }
-        },
-        "badge_JfHeK": {
-          "type": "badge",
-          "disabled": false,
-          "settings": {
-            "icon": "secure",
-            "title": "",
-            "subtitle": ""
-          }
-        },
-        "badge_FnkeJ": {
-          "type": "badge",
-          "disabled": false,
-          "settings": {
-            "icon": "support",
-            "title": "",
-            "subtitle": ""
-          }
-        }
-      },
-      "block_order": [
-        "badge_wdcFR",
-        "badge_TMGaC",
-        "badge_JfHeK",
-        "badge_FnkeJ"
-      ],
-      "name": "Trust Badges"
-    },
-    "faq_FpJhq": {
-      "type": "faq",
-      "disabled": false,
+    "faq": {
       "settings": {
         "heading": "Häufig gestellte Fragen"
       },
       "blocks": {
-        "item_hGwe9": {
-          "type": "item",
-          "disabled": false,
+        "return_policy": {
           "settings": {
             "question": "Was ist, wenn ich nicht zufrieden bin?",
-            "answer": "Kein Problem – wir bieten eine 14-Tage-Geld-zurück-Garantie ohne Fragen."
+            "answer": "Du kannst unbenutzte Artikel innerhalb von 14 Tagen nach Lieferung gemäß Rückgabebedingungen zurückgeben."
           }
         },
-        "item_tcirY": {
-          "type": "item",
-          "disabled": false,
+        "delivery_time": {
           "settings": {
-            "question": "Wie lange dauert die Lieferung?",
-            "answer": "Die Lieferung erfolgt in der Regel innerhalb von 5–10 Werktagen."
+            "question": "Wie schnell ist die Lieferung?",
+            "answer": "Die Standardlieferung dauert in der Regel 5-10 Werktage. Trackingdetails werden nach dem Versand gesendet."
           }
         },
-        "item_jb39i": {
-          "type": "item",
-          "disabled": false,
+        "payment_security": {
           "settings": {
-            "question": "Kann ich den Riemen anpassen?",
-            "answer": "Ja, der Schulterriemen ist vollständig verstellbar und passt sich jeder Körpergröße an."
-          }
-        },
-        "item_GCFaT": {
-          "type": "item",
-          "disabled": false,
-          "settings": {
-            "question": "Für wen ist die Tasche geeignet?",
-            "answer": "Perfekt für Männer, die unterwegs leicht & stilvoll organisiert bleiben wollen – ob Alltag, Reise oder Sport."
-          }
-        },
-        "item_6VP6D": {
-          "type": "item",
-          "disabled": false,
-          "settings": {
-            "question": "Ist die Tasche wasserdicht?",
-            "answer": "Ja, das Material ist wasserabweisend und schützt deine Sachen vor Regen & Spritzwasser."
-          }
-        },
-        "item_tHBdB": {
-          "type": "item",
-          "disabled": false,
-          "settings": {
-            "question": "Wie groß ist die Tasche?",
-            "answer": "Die Tasche misst ca. 22 × 14 × 6 cm – ideal für Handy, Geldbörse, Schlüssel & mehr."
+            "question": "Sind Zahlungen sicher?",
+            "answer": "Ja. Zahlungen laufen über den verschlüsselten Shopify Checkout und die aktivierten Zahlungsmethoden."
           }
         }
-      },
-      "block_order": [
-        "item_hGwe9",
-        "item_tcirY",
-        "item_jb39i",
-        "item_GCFaT",
-        "item_6VP6D",
-        "item_tHBdB"
-      ],
-      "name": "FAQ"
+      }
     },
-    "newsletter_bar_fhtpi": {
-      "type": "newsletter-bar",
-      "disabled": false,
+    "newsletter_bar": {
       "settings": {
-        "eyebrow": "Verpasse keine Angebote",
-        "heading": "Melde dich an und sei der Erste, der von unseren Sales & Aktionen erfährt.",
-        "subtext": "Jetzt anmelden",
+        "eyebrow": "Angebote und Updates",
+        "heading": "Erfahre als Erster vom nächsten Angebot",
+        "subtext": "Melde dich für Produktdrops, Versandupdates und Aktionen an.",
         "placeholder": "E-Mail-Adresse",
         "button": "Abonnieren",
-        "success_msg": "Du bist dabei! Schau in dein Postfach",
-        "privacy_note": "Kein Spam. Jederzeit abmeldbar.",
-        "header-4cc1e50c0645f5e4be335eae8f31654c": null,
-        "bg_color": "#f5f3f0",
-        "text_color": "#111111"
-      },
-      "blocks": {},
-      "block_order": [],
-      "name": "Newsletter Bar"
-    },
-    "announcement_bar_Lm4kTf": {
-      "settings": {
-        "text_1": "⚡ Kostenloser Versand",
-        "text_2": "🔒 14-Tage-Geld-zurück-Garantie",
-        "text_3": "🔐 Sicherer Checkout",
-        "speed": 6,
-        "offer_mode": false
-      },
-      "blocks": {}
-    },
-    "hero_3zRf8U": {
-      "disabled": true,
-      "settings": {
-        "media_position": "left",
-        "show_hover_image": false,
-        "show_price": false,
-        "show_variant_picker": false,
-        "show_quantity_selector": false,
-        "show_sale_ribbon": false,
-        "sale_stripe_design": "rolling_strip",
-        "show_buttons": false,
-        "split_media_bg": "#faf9f7",
-        "offer_badge_bg": "#ef0000",
-        "offer_badge_color": "#ffffff",
-        "color_scheme": "dark",
-        "show_overlay": false,
-        "content_align": "left"
-      },
-      "blocks": {},
-      "block_order": []
+        "success_msg": "Du bist dabei. Schau in dein Postfach.",
+        "privacy_note": "Kein Spam. Jederzeit abmeldbar."
+      }
     }
-  },
-  "order": [
-    "announcement_bar_Lm4kTf",
-    "hero_3zRf8U",
-    "urgency_banner_mctMg",
-    "single_product_home_mcEnM",
-    "trust_badges_8B46T",
-    "faq_FpJhq",
-    "newsletter_bar_fhtpi"
-  ]
+  }
 }

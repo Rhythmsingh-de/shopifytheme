@@ -23,10 +23,10 @@
     {%- endif -%}
     <div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:{{ section.settings.text_align | default: 'center' }};{% if section.settings.text_align == 'left' %}justify-content:flex-start{% endif %}">
       {%- if section.settings.cta_1_label != blank -%}
-        <a href="{{ section.settings.cta_1_url | default: '/collections/all' }}" class="btn" style="background:#fff;color:#0d2318;font-weight:700;min-width:160px">{{ section.settings.cta_1_label }}</a>
+        <a href="{{ section.settings.cta_1_url | default: routes.all_products_collection_url }}" class="btn" style="background:#fff;color:#0d2318;font-weight:700;min-width:160px">{{ section.settings.cta_1_label }}</a>
       {%- endif -%}
       {%- if section.settings.cta_2_label != blank -%}
-        <a href="{{ section.settings.cta_2_url | default: '/collections/all' }}" class="btn" style="background:transparent;color:#fff;border:2px solid rgba(255,255,255,0.6);font-weight:700;min-width:160px" onmouseover="this.style.borderColor='#fff';this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.6)';this.style.background='transparent'">{{ section.settings.cta_2_label }}</a>
+        <a href="{{ section.settings.cta_2_url | default: routes.all_products_collection_url }}" class="btn" style="background:transparent;color:#fff;border:2px solid rgba(255,255,255,0.6);font-weight:700;min-width:160px" onmouseover="this.style.borderColor='#fff';this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.6)';this.style.background='transparent'">{{ section.settings.cta_2_label }}</a>
       {%- endif -%}
     </div>
   </div>

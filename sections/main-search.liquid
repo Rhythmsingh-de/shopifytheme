@@ -1,7 +1,7 @@
 <section style="padding: 80px 0;">
   <div class="container">
     <h1 class="page-title">Search</h1>
-    <form action="/search" method="get" style="margin-bottom: 48px;">
+    <form action="{{ routes.search_url }}" method="get" style="margin-bottom: 48px;">
       <input type="search" name="q" value="{{ search.terms | escape }}" placeholder="Search products..." style="width: 100%; padding: 14px 18px; font-size: 1rem; border: 1px solid #e5e5e5; border-radius: var(--border-radius); outline: none;">
     </form>
     {%- if search.performed -%}

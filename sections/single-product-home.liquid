@@ -440,13 +440,15 @@
 
       {%- if show_trust_desktop or show_trust_mobile -%}
         <div class="sph__trust{% unless show_trust_desktop %} sph__trust--hide-desktop{% endunless %}{% unless show_trust_mobile %} sph__trust--hide-mobile{% endunless %}" aria-label="Guarantees">
-          <span>&#10003; {{ section.settings.trust_1 | default: 'Free Shipping' | escape }}</span>
+          <span>&#10003; {{ section.settings.trust_1 | default: settings.trust_shipping_title | default: 'Free Shipping' | escape }}</span>
           <span class="sph__trust-sep">|</span>
-          <span>&#10003; {{ section.settings.trust_2 | default: 'Secure Checkout' | escape }}</span>
+          <span>&#10003; {{ section.settings.trust_2 | default: settings.trust_secure_title | default: 'Secure Checkout' | escape }}</span>
           <span class="sph__trust-sep">|</span>
-          <span>&#10003; {{ section.settings.trust_3 | default: '30-Day Guarantee' | escape }}</span>
+          <span>&#10003; {{ section.settings.trust_3 | default: settings.trust_returns_title | default: '14-Day Guarantee' | escape }}</span>
         </div>
       {%- endif -%}
+
+      {%- render 'store-promise', mode: 'compact', show_payment_icons: false -%}
 
       {%- if section.settings.description_style == 'accordion' -%}
         {%- liquid
