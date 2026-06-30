@@ -19,6 +19,17 @@
   if card_show_atc == false and card_show_buy == false
     assign card_show_atc = true
   endif
+
+  assign is_upcoming = false
+  assign drop_time = settings.upcoming_sale_start_datetime | default: '2026-07-15T09:00:00'
+  for tag in card_product.tags
+    if tag == 'upcoming' or tag == 'locked'
+      assign is_upcoming = true
+    elsif tag contains 'drop:' or tag contains 'lock:'
+      assign is_upcoming = true
+      assign drop_time = tag | remove: 'drop:' | remove: 'lock:'
+    endif
+  endfor
 -%}
 
 <div class="prod-card reveal"
@@ -56,7 +67,9 @@
     </a>
 
     <div class="prod-card__badges">
-      {%- if card_product.compare_at_price > card_product.price -%}
+      {%- if is_upcoming -%}
+        <span class="badge badge--locked" style="background:#111111;color:#ffffff;font-size:10px;font-weight:800;letter-spacing:0.08em;padding:4px 8px;border-radius:4px;">🔒 LOCKED</span>
+      {%- elsif card_product.compare_at_price > card_product.price -%}
         {%- assign savings = card_product.compare_at_price | minus: card_product.price | times: 100 | divided_by: card_product.compare_at_price -%}
         {%- if settings.card_show_sale_badge -%}
           <span class="badge badge--sale">-{{ savings }}%</span>
@@ -118,39 +131,63 @@
 
     {%- if settings.card_quick_add -%}
       <div class="prod-card__quick-actions" data-product-detail data-variants="{{ card_product.variants | json | escape }}">
-        {%- if card_product.variants.size > 1 -%}
-          <div class="prod-card__select-wrapper">
-            <select class="prod-card__select" data-card-variant-selector aria-label="Select variant for {{ card_product.title | escape }}">
-              {%- for variant in card_product.variants -%}
-                <option value="{{ variant.id }}" {% unless variant.available %}disabled{% endunless %}>
-                  {{ variant.title }} &mdash; {{ variant.price | money }} {% unless variant.available %}(Sold Out){% endunless %}
-                </option>
-              {%- endfor -%}</select>
+        <div class="prod-card__quick-actions-regular" {% if is_upcoming %}style="display:none;"{% endif %}>
+          {%- if card_product.variants.size > 1 -%}
+            <div class="prod-card__select-wrapper">
+              <select class="prod-card__select" data-card-variant-selector aria-label="Select variant for {{ card_product.title | escape }}">
+                {%- for variant in card_product.variants -%}
+                  <option value="{{ variant.id }}" {% unless variant.available %}disabled{% endunless %}>
+                    {{ variant.title }} &mdash; {{ variant.price | money }} {% unless variant.available %}(Sold Out){% endunless %}
+                  </option>
+                {%- endfor -%}</select>
+            </div>
+          {%- endif -%}
+
+          <div class="prod-card__buttons">
+            {%- if card_show_atc or card_product.variants.first.available == false -%}
+              <button class="btn btn--primary btn--sm prod-card__btn-atc atc-btn"
+                      data-add-to-cart
+                      data-variant-id="{{ card_product.variants.first.id }}"
+                      data-qty="1"
+                      aria-label="Add {{ card_product.title | escape }} to cart"
+                      {% unless card_product.variants.first.available %}disabled aria-disabled="true"{% endunless %}>
+                <span class="atc-btn-text">{% if card_product.variants.first.available %}{{ card_atc_label | escape }}{% else %}Sold Out{% endif %}</span>
+              </button>
+            {%- endif -%}
+            {%- if card_product.variants.first.available and card_show_buy -%}
+              <a href="{{ routes.cart_url }}/{{ card_product.variants.first.id }}:1{{ card_fast_suffix }}"
+                 class="btn btn--ghost btn--sm prod-card__btn-buy"
+                 data-card-buy-now
+                 data-checkout-destination="{{ card_fast_destination }}"
+                 data-variant-id="{{ card_product.variants.first.id }}"
+                 aria-label="Buy {{ card_product.title | escape }} now">
+                {{ card_buy_label | escape }}
+              </a>
+            {%- endif -%}
+          </div>
+        </div>
+
+        {%- if is_upcoming -%}
+          <div class="prod-card__lock-ui" style="display:flex;flex-direction:column;width:100%;">
+            <div class="prod-card__countdown" data-lock-countdown="{{ drop_time }}" style="margin-top:10px;font-size:11px;font-weight:800;color:var(--color-secondary,#e8260d);background:var(--color-surface-2,#f5f3f0);padding:6px 10px;border-radius:4px;display:inline-flex;align-items:center;gap:6px;width:100%;justify-content:center;letter-spacing:0.04em;">
+              <span>🔒 DROPS IN:</span>
+              <span class="lock-time">--h --m --s</span>
+            </div>
+            <div class="prod-card__notify-form" style="width:100%;">
+              {%- assign card_form_id = 'CardNotifyForm-' | append: card_product.id -%}
+              {%- form 'customer', id: card_form_id -%}
+                <input type="hidden" name="contact[tags]" value="notify_drop_{{ card_product.handle }}">
+                <div style="display:flex;gap:4px;width:100%;margin-top:8px;">
+                  <input class="newsletter-input" type="email" name="contact[email]" placeholder="Get notified on drop..." required style="height:34px;font-size:12px;padding-inline:8px;flex:1;min-width:0;border-radius:4px;border:1.5px solid var(--color-border,#ddd);background:var(--color-bg,#fff);color:var(--color-text,#111);outline:none;">
+                  <button type="submit" class="btn btn--primary btn--sm" style="height:34px;border-radius:4px;padding-inline:10px;font-size:11px;text-transform:uppercase;font-weight:700;padding-top:0;padding-bottom:0;">Notify</button>
+                </div>
+                {%- if form.posted_successfully? -%}
+                  <p style="color:#2e7d32;font-size:11px;font-weight:700;margin-top:4px;margin-bottom:0;text-align:center;">✓ We will email you!</p>
+                {%- endif -%}
+              {%- endform -%}
+            </div>
           </div>
         {%- endif -%}
-
-        <div class="prod-card__buttons">
-          {%- if card_show_atc or card_product.variants.first.available == false -%}
-            <button class="btn btn--primary btn--sm prod-card__btn-atc atc-btn"
-                    data-add-to-cart
-                    data-variant-id="{{ card_product.variants.first.id }}"
-                    data-qty="1"
-                    aria-label="Add {{ card_product.title | escape }} to cart"
-                    {% unless card_product.variants.first.available %}disabled aria-disabled="true"{% endunless %}>
-              <span class="atc-btn-text">{% if card_product.variants.first.available %}{{ card_atc_label | escape }}{% else %}Sold Out{% endif %}</span>
-            </button>
-          {%- endif -%}
-          {%- if card_product.variants.first.available and card_show_buy -%}
-            <a href="{{ routes.cart_url }}/{{ card_product.variants.first.id }}:1{{ card_fast_suffix }}"
-               class="btn btn--ghost btn--sm prod-card__btn-buy"
-               data-card-buy-now
-               data-checkout-destination="{{ card_fast_destination }}"
-               data-variant-id="{{ card_product.variants.first.id }}"
-               aria-label="Buy {{ card_product.title | escape }} now">
-              {{ card_buy_label | escape }}
-            </a>
-          {%- endif -%}
-        </div>
       </div>
     {%- endif -%}
   </div>

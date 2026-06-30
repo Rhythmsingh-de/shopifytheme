@@ -759,8 +759,48 @@
     });
   }
 
+  function initLockCountdowns(root) {
+    qsa('[data-lock-countdown]', root || document).forEach(function(el) {
+      if (el._lockTimer) clearInterval(el._lockTimer);
+      var endTime = new Date(el.dataset.lockCountdown).getTime();
+      if (!endTime || Number.isNaN(endTime)) return;
+      var textEl = el.querySelector('.lock-time');
+      var card = el.closest('.prod-card');
+      function tick() {
+        var diff = endTime - Date.now();
+        if (diff <= 0) {
+          el.style.display = 'none';
+          if (card) {
+            var badge = card.querySelector('.badge--locked');
+            if (badge) badge.remove();
+            var lockUI = card.querySelector('.prod-card__lock-ui');
+            if (lockUI) lockUI.style.display = 'none';
+            var regularActions = card.querySelector('.prod-card__quick-actions-regular');
+            if (regularActions) regularActions.style.display = '';
+          }
+          clearInterval(el._lockTimer);
+          return;
+        }
+        var days = Math.floor(diff / 86400000);
+        var hours = Math.floor((diff % 86400000) / 3600000);
+        var mins = Math.floor((diff % 3600000) / 60000);
+        var secs = Math.floor((diff % 60000) / 1000);
+        
+        var parts = [];
+        if (days > 0) parts.push(days + 'd');
+        parts.push(hours + 'h');
+        parts.push(mins + 'm');
+        parts.push(secs + 's');
+        if (textEl) textEl.textContent = parts.join(' ');
+      }
+      tick();
+      el._lockTimer = setInterval(tick, 1000);
+    });
+  }
+
   document.addEventListener('shopify:section:load', function(e) {
     initOfferCountdowns(e.target);
+    initLockCountdowns(e.target);
     initRecentlyViewed(e.target);
     initProductRecommendations(e.target);
     initPromoPopups(e.target);
@@ -1021,6 +1061,7 @@
   document.addEventListener('DOMContentLoaded',function(){
     _updateCartCount();
     initOfferCountdowns();
+    initLockCountdowns();
     storeRecentProduct();
     initRecentlyViewed();
     initProductRecommendations();
