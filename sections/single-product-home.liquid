@@ -367,6 +367,13 @@
 
         {%- if show_payment_icons_desktop or show_payment_icons_mobile -%}
           <div class="sph__payment-icons{% unless show_payment_icons_desktop %} sph__payment-icons--hide-desktop{% endunless %}{% unless show_payment_icons_mobile %} sph__payment-icons--hide-mobile{% endunless %}">
+            <span class="sph__payment-icons-label">
+              {%- if request.locale.iso_code == 'de' -%}
+                Sichere Zahlung:
+              {%- else -%}
+                Secure checkout:
+              {%- endif -%}
+            </span>
             {%- for type in shop.enabled_payment_types -%}
               {{ type | payment_type_svg_tag: class: 'sph__payment-icon' }}
             {%- endfor -%}
