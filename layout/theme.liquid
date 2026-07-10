@@ -17,6 +17,8 @@
     <meta name="google-site-verification" content="{{ settings.google_site_verification | escape }}">
   {%- endif -%}
 
+  {% render 'pixel-base' %}
+
   <script>
     window.dataLayer = window.dataLayer || [];
     window.BLC = window.BLC || {};
@@ -74,15 +76,11 @@
           if (!targetUrl || !navigator.language) return;
           if (window.Shopify && window.Shopify.designMode) return;
           targetUrl = targetUrl.charAt(targetUrl.length - 1) === '/' ? targetUrl : targetUrl + '/';
-          var browserLanguage = (navigator.languages && navigator.languages[0] ? navigator.languages[0] : navigator.language).toLowerCase();
-          if (!browserLanguage || browserLanguage.slice(0, 2) !== 'de') return;
-          try {
-            if (once && window.localStorage && window.localStorage.getItem(storageKey)) return;
-            if (window.localStorage) window.localStorage.setItem(storageKey, '1');
-          } catch (e) {}
-          if (window.location.pathname.indexOf(targetUrl) !== 0) {
-            window.location.replace(targetUrl + window.location.pathname.replace(/^\/+/, '') + window.location.search + window.location.hash);
-          }
+          var browserLanguage = (navigator.languages && navigator.languages[0] ? navigator.languages[0] : navigator.language || '').toLowerCase().split('-')[0];
+          if (browserLanguage !== 'de') return;
+          if (once && sessionStorage.getItem(storageKey)) return;
+          if (once) sessionStorage.setItem(storageKey, '1');
+          window.location.href = targetUrl;
         })();
       </script>
     {%- endif -%}
@@ -90,227 +88,22 @@
 
   {{ content_for_header }}
 
-  {% render 'meta-tags' %}
+  {%- render 'css-variables' -%}
+  {{ 'base.css' | asset_url | stylesheet_tag }}
 
-  <style>
-    {%- if settings.font_display != blank -%}
-      {{ settings.font_display | font_face }}
-      {{ settings.font_display | font_modify: 'weight', 'bolder' | font_face }}
-    {%- endif -%}
-    {%- if settings.font_body != blank -%}
-      {{ settings.font_body | font_face }}
-      {{ settings.font_body | font_modify: 'weight', 'bolder' | font_face }}
-    {%- endif -%}
-  </style>
-
-  {{ 'theme.css' | asset_url | stylesheet_tag }}
-
-  {%- if settings.cursor_enabled -%}
-    {{ 'cursor-effects.css' | asset_url | stylesheet_tag }}
+  {%- if settings.custom_css != blank -%}
+    <style>{{ settings.custom_css }}</style>
   {%- endif -%}
 
+  <title>
+    {%- if page_title == blank -%}{{ shop.name }}{%- else -%}{{ page_title }} – {{ shop.name }}{%- endif -%}
+  </title>
+  {%- if page_description -%}
+    <meta name="description" content="{{ page_description | escape }}">
+  {%- endif -%}
+
+  {%- comment -%}SPH-10: review card enter/leave animations (class-based, not inline style){%- endcomment -%}
   <style>
-    :root {
-      /* Surfaces */
-      --color-bg:           {{ settings.color_bg | default: '#ffffff' }};
-      --color-surface:      {{ settings.color_surface | default: '#f9f9f9' }};
-      --color-surface-2:    {{ settings.color_surface_2 | default: '#f3f3f3' }};
-      --color-border:       {{ settings.color_border | default: '#e5e5e5' }};
-
-      /* Text */
-      --color-text:         {{ settings.color_text | default: '#111111' }};
-      --color-text-muted:   {{ settings.color_text_muted | default: '#666666' }};
-      --color-text-faint:   color-mix(in oklab, {{ settings.color_text | default: '#111111' }} 35%, {{ settings.color_bg | default: '#ffffff' }});
-      --color-text-inverse: {{ settings.color_btn_primary_text | default: '#ffffff' }};
-
-      /* Buttons / Primary */
-      --color-primary:       {{ settings.color_btn_primary_bg | default: '#111111' }};
-      --color-primary-hover: color-mix(in oklab, {{ settings.color_btn_primary_bg | default: '#111111' }} 80%, #000000);
-      --color-primary-active: color-mix(in oklab, {{ settings.color_btn_primary_bg | default: '#111111' }} 65%, #000000);
-      --color-primary-text:  {{ settings.color_btn_primary_text | default: '#ffffff' }};
-      --color-secondary:     {{ settings.color_secondary | default: '#e8260d' }};
-
-      /* Sale */
-      --color-sale:    {{ settings.color_sale | default: '#e8260d' }};
-      --color-sale-bg: {{ settings.color_sale_bg | default: '#ffeeed' }};
-
-      /* Accent colours used in product page / UI */
-      --color-gold:    #c8941a;
-      --color-success: #1d6b44;
-
-      /* Deco (cart progress bar, urgency elements) */
-      --color-deco:       {{ settings.color_deco | default: '#1d6b44' }};
-      --color-deco-light: {{ settings.color_deco_light | default: '#e6f4ed' }};
-
-      /* Header / Footer */
-      --color-header-bg:   {{ settings.color_header_bg | default: '#ffffff' }};
-      --color-header-text: {{ settings.color_header_text | default: '#111111' }};
-      --color-footer-bg:   {{ settings.color_footer_bg | default: '#111111' }};
-      --color-footer-text: {{ settings.color_footer_text | default: '#ffffff' }};
-
-      /* Typography */
-      {%- if settings.font_display != blank -%}
-        --font-display: {{ settings.font_display.family | json }}, Georgia, serif;
-        --font-display-weight: {{ settings.font_display.weight }};
-        --font-display-style:  {{ settings.font_display.style }};
-      {%- else -%}
-        --font-display: 'Cormorant Garamond', Georgia, serif;
-        --font-display-weight: 400;
-        --font-display-style: normal;
-      {%- endif -%}
-      {%- if settings.font_body != blank -%}
-        --font-body: {{ settings.font_body.family | json }}, system-ui, sans-serif;
-        --font-body-weight: {{ settings.font_body.weight }};
-        --font-body-style:  {{ settings.font_body.style }};
-      {%- else -%}
-        --font-body: 'Jost', system-ui, sans-serif;
-        --font-body-weight: 400;
-        --font-body-style: normal;
-      {%- endif -%}
-      --font-size-base: {{ settings.body_font_size | default: 16 }}px;
-
-      /* Layout */
-      --max-width:   {{ settings.container_max_width | default: 1200 }}px;
-      --card-radius: {{ settings.card_border_radius | default: 8 }}px;
-      --btn-radius:  {{ settings.button_border_radius | default: '4px' }};
-      --header-height: 72px;
-
-      /* ── Spacing scale (both --space-* and --sp-* aliases) ── */
-      --space-1:  0.25rem;   --sp-1:  0.25rem;
-      --space-2:  0.5rem;    --sp-2:  0.5rem;
-      --space-3:  0.75rem;   --sp-3:  0.75rem;
-      --space-4:  1rem;      --sp-4:  1rem;
-      --space-5:  1.25rem;   --sp-5:  1.25rem;
-      --space-6:  1.5rem;    --sp-6:  1.5rem;
-      --space-8:  2rem;      --sp-8:  2rem;
-      --space-10: 2.5rem;    --sp-10: 2.5rem;
-      --space-12: 3rem;      --sp-12: 3rem;
-      --space-16: 4rem;      --sp-16: 4rem;
-      --space-20: 5rem;      --sp-20: 5rem;
-      --space-24: 6rem;      --sp-24: 6rem;
-      --space-32: 8rem;      --sp-32: 8rem;
-
-      /* ── Type scale ── */
-      --text-xs:   clamp(0.75rem,  0.7rem  + 0.25vw, 0.875rem);
-      --text-sm:   clamp(0.875rem, 0.8rem  + 0.35vw, 1rem);
-      --text-base: clamp(1rem,     0.95rem + 0.25vw, 1.125rem);
-      --text-lg:   clamp(1.125rem, 1rem    + 0.75vw, 1.5rem);
-      --text-xl:   clamp(1.5rem,   1.2rem  + 1.25vw, 2.25rem);
-      --text-2xl:  clamp(2rem,     1.2rem  + 2.5vw,  3.5rem);
-      --text-hero: clamp(3rem,     0.5rem  + 7vw,    8rem);
-
-      /* ── Shadows ── */
-      --shadow-sm:       0 1px 3px rgba(0,0,0,0.07);
-      --shadow-md:       0 4px 12px rgba(0,0,0,0.09);
-      --shadow-lg:       0 12px 32px rgba(0,0,0,0.12);
-      --shadow-3d:       0 8px 24px rgba(0,0,0,0.10), 0 2px 6px rgba(0,0,0,0.06);
-      --shadow-card-hover: 0 16px 40px rgba(0,0,0,0.14);
-
-      /* ── Border radius ── */
-      --radius-sm:   4px;
-      --radius-md:   8px;
-      --radius-lg:   12px;
-      --radius-xl:   16px;
-      --radius-full: 9999px;
-      --radius-pill: 9999px;
-
-      /* ── Transitions ── */
-      --transition:          180ms cubic-bezier(0.16, 1, 0.3, 1);
-      --transition-slow:     350ms cubic-bezier(0.16, 1, 0.3, 1);
-      --transition-interactive: 180ms cubic-bezier(0.16, 1, 0.3, 1);
-      --trans-base: 180ms cubic-bezier(0.16, 1, 0.3, 1);
-      --trans-slow: 350ms cubic-bezier(0.16, 1, 0.3, 1);
-      --ease-out:   cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    html[data-theme-mode="dark"] {
-      --color-bg: #101010;
-      --color-surface: #181818;
-      --color-surface-2: #242424;
-      --color-border: #343434;
-      --color-text: #f5f3ef;
-      --color-text-muted: #b5b0a8;
-      --color-text-faint: rgba(245,243,239,0.45);
-      --color-header-bg: #101010;
-      --color-header-text: #f5f3ef;
-      --color-footer-bg: #080808;
-      --color-footer-text: #f5f3ef;
-    }
-    @media (prefers-color-scheme: dark) {
-      html[data-theme-mode="system"] {
-        --color-bg: #101010;
-        --color-surface: #181818;
-        --color-surface-2: #242424;
-        --color-border: #343434;
-        --color-text: #f5f3ef;
-        --color-text-muted: #b5b0a8;
-        --color-text-faint: rgba(245,243,239,0.45);
-        --color-header-bg: #101010;
-        --color-header-text: #f5f3ef;
-        --color-footer-bg: #080808;
-        --color-footer-text: #f5f3ef;
-      }
-    }
-
-    html[dir="rtl"] body { direction: rtl; }
-    html[dir="rtl"] .header__actions,
-    html[dir="rtl"] .product-info__price,
-    html[dir="rtl"] .sph__price-row,
-    html[dir="rtl"] .cart-item__row { flex-direction: row-reverse; }
-
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html {
-      font-size: var(--font-size-base);
-      scroll-behavior: smooth;
-      -webkit-text-size-adjust: none;
-      text-size-adjust: none;
-      scroll-padding-top: 80px;
-    }
-    body {
-      background-color: var(--color-bg);
-      color: var(--color-text);
-      font-family: var(--font-body);
-      font-weight: var(--font-body-weight);
-      font-style: var(--font-body-style);
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
-    a { color: inherit; text-decoration: none; }
-    img { max-width: 100%; display: block; }
-    button { cursor: pointer; border: none; background: none; font-family: inherit; color: inherit; }
-    .btn[aria-disabled]:not([aria-disabled="false"]) {
-      opacity: 0.55;
-      cursor: not-allowed;
-      pointer-events: none;
-      transform: none !important;
-    }
-    .container {
-      max-width: var(--max-width);
-      margin: 0 auto;
-      padding: 0 var(--space-6);
-    }
-    @media (max-width: 640px) {
-      .container { padding: 0 var(--space-4); }
-    }
-    .visually-hidden,
-    .sr-only {
-      position: absolute;
-      width: 1px; height: 1px;
-      overflow: hidden;
-      clip: rect(0,0,0,0);
-      white-space: nowrap;
-    }
-    .section-spacing { padding-block: clamp(var(--space-10), 6vw, var(--space-20)); }
-
-    .reveal {
-      opacity: 0;
-      transform: translateY(16px);
-      transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out);
-    }
-    .reveal.is-visible { opacity: 1; transform: none; }
-
-    /* SPH-10: review card enter/leave animations (class-based, not inline style) */
     .sph-review-card.is-leaving {
       transition: opacity 0.6s ease, transform 0.6s ease, max-height 0.6s ease, margin 0.6s ease, padding 0.6s ease, border-width 0.6s ease;
       opacity: 0;
@@ -330,260 +123,34 @@
     .sph-review-card.is-entering.is-visible {
       opacity: 1;
     }
-
-    :focus-visible {
-      outline: 2px solid var(--color-primary);
-      outline-offset: 3px;
-      border-radius: var(--radius-sm);
-    }
-    ::selection {
-      background: color-mix(in oklab, var(--color-primary) 20%, transparent);
-      color: var(--color-text);
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .reveal { opacity: 1; transform: none; transition: none; }
-      *, *::before, *::after {
-        animation-duration: 0.01ms !important;
-        transition-duration: 0.01ms !important;
-      }
-    }
   </style>
-
-  {%- if settings.custom_css != blank -%}
-    <style>{{ settings.custom_css }}</style>
-  {%- endif -%}
-
-  {%- if settings.klaviyo_company_id != blank -%}
-    <script>window.KLAVIYO_COMPANY_ID = {{ settings.klaviyo_company_id | json }};</script>
-  {%- endif -%}
-
-  {%- liquid
-    assign active_offer_countdown_end = settings.weekly_offer_end_datetime
-    assign active_offer_countdown_label = settings.weekly_countdown_label | default: 'Ends in'
-    if settings.offer_countdown_mode == 'upcoming_sale' and settings.upcoming_sale_enabled and settings.upcoming_sale_start_datetime != blank
-      assign active_offer_countdown_end = settings.upcoming_sale_start_datetime
-      assign active_offer_countdown_label = settings.upcoming_sale_countdown_label | default: 'Starts in'
-    endif
-  -%}
-  {%- if active_offer_countdown_end != blank -%}
-    <meta name="offer-countdown-end" content="{{ active_offer_countdown_end | escape }}">
-    <meta name="offer-countdown-label" content="{{ active_offer_countdown_label | escape }}">
-  {%- endif -%}
-  {%- if settings.weekly_offer_enabled and settings.weekly_offer_end_datetime != blank -%}
-    <meta name="weekly-offer-end" content="{{ settings.weekly_offer_end_datetime | escape }}">
-  {%- endif -%}
-  {%- if settings.upcoming_sale_enabled and settings.upcoming_sale_start_datetime != blank -%}
-    <meta name="upcoming-sale-start" content="{{ settings.upcoming_sale_start_datetime | escape }}">
-  {%- endif -%}
-
-  {%- if settings.data_layer_enabled -%}
-    {% render 'datalayer' %}
-  {%- endif -%}
 </head>
-
-<body>
-  {%- if settings.gtm_container_id != blank and settings.gtm_noscript_enabled and settings.tracking_mode != 'always_off' -%}
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ settings.gtm_container_id | escape }}" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-  {%- endif -%}
-
-  <a href="#MainContent" class="visually-hidden">{{ 'accessibility.skip_to_content' | t }}</a>
-
-  {%- if settings.cursor_enabled -%}
-    <div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
-    <div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
+<body class="template-{{ request.page_type }}{% if settings.animations_enabled %} animations-enabled{% endif %}">
+  {%- if settings.gtm_container_id != blank and settings.tracking_mode != 'always_off' -%}
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ settings.gtm_container_id }}" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   {%- endif -%}
 
   {%- sections 'header-group' -%}
 
-  {% render 'cart-drawer' %}
-  {% render 'quick-view-modal' %}
-
   <main id="MainContent" role="main" tabindex="-1">
-    {% render 'breadcrumbs' %}
     {{ content_for_layout }}
   </main>
 
   {%- sections 'footer-group' -%}
 
-  {% render 'cookie-consent' %}
+  {%- render 'cart-drawer' -%}
+  {%- render 'compare-drawer' -%}
+  {%- render 'cookie-banner' -%}
+  {%- render 'back-to-top-btn' -%}
 
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    window.ShopEvents = window.ShopEvents || (function(){
-      var listeners = {};
-      return {
-        on:   function(event, fn){ (listeners[event] = listeners[event] || []).push(fn); },
-        emit: function(event, data){ (listeners[event] || []).forEach(function(fn){ fn(data); }); }
-      };
-    })();
-    window.blcSettings = {
-      freeShippingThreshold: {% if settings.free_shipping_threshold != blank %}{{ settings.free_shipping_threshold }}{% else %}75{% endif %},
-      showFreeShippingBar:   {{ settings.show_free_shipping_bar | default: true }},
-      cartShowUpsell:        {{ settings.cart_show_upsell | default: true }},
-      fastCheckoutDestination: {{ settings.fast_checkout_destination | default: 'checkout' | json }},
-      revealEnabled: {{ settings.ui_reveal_enabled | default: true | json }},
-      buttonSheenEnabled: {{ settings.ui_button_sheen_enabled | default: true | json }},
-      respectReducedMotion: {{ settings.ui_respect_reduced_motion | default: true | json }}
-    };
-    window.routes = {
-      root_url: '{{ routes.root_url }}',
-      cart_url: '{{ routes.cart_url }}',
-      cart_add_url: '{{ routes.cart_add_url }}',
-      cart_change_url: '{{ routes.cart_change_url }}',
-      cart_clear_url: '{{ routes.cart_clear_url }}',
-      search_url: '{{ routes.search_url }}',
-      all_products_collection_url: '{{ routes.all_products_collection_url }}'
-    };
-  </script>
-
-  {%- if settings.data_layer_enabled -%}
-    <script src="{{ 'datalayer.js' | asset_url }}" defer></script>
-  {%- endif -%}
+  {{ 'global.js' | asset_url | script_tag }}
   <script src="{{ 'theme.js' | asset_url }}" defer></script>
 
   {%- comment -%}SPH-06: sph.js loaded once here, never inside individual section instances{%- endcomment -%}
   <script src="{{ 'sph.js' | asset_url }}" defer></script>
 
-  {%- if settings.cursor_enabled -%}
-  <script>
-  (function() {
-    if ('ontouchstart' in window || navigator.maxTouchPoints > 1) return;
-    if (window.matchMedia('(hover: none)').matches) return;
-    var dot  = document.getElementById('cursorDot');
-    var ring = document.getElementById('cursorRing');
-    if (!dot || !ring) return;
-    var html     = document.documentElement;
-    var style    = {{ settings.cursor_style | default: 'dot-ring' | json }};
-    var color    = {{ settings.cursor_color | default: '#1a1a1a' | json }};
-    html.classList.add('cursor-active');
-    html.setAttribute('data-cursor', style);
-    html.style.setProperty('--cursor-color', color);
-    var mouseX = 0, mouseY = 0, ringX = 0, ringY = 0, dotX = 0, dotY = 0;
-    document.addEventListener('mousemove', function(e) {
-      mouseX = e.clientX; mouseY = e.clientY;
-      dot.classList.remove('is-hidden'); ring.classList.remove('is-hidden');
-    });
-    document.addEventListener('mouseleave', function() { dot.classList.add('is-hidden'); ring.classList.add('is-hidden'); });
-    document.addEventListener('mouseenter', function() { dot.classList.remove('is-hidden'); ring.classList.remove('is-hidden'); });
-    document.addEventListener('mousedown', function() { html.classList.add('cursor-clicking'); });
-    document.addEventListener('mouseup',   function() { html.classList.remove('cursor-clicking'); });
-    document.addEventListener('mouseover', function(e) {
-      var t   = e.target.closest('a, button, [data-cursor-hover], .btn, label, select, input[type="checkbox"], input[type="radio"], summary');
-      var cta = e.target.closest('.btn--primary, .sph__btn-atc, .sticky-atc__btn, .btn--hero-primary');
-      if (cta) { html.classList.add('cursor-hovering', 'cursor-cta'); }
-      else if (t) { html.classList.add('cursor-hovering'); html.classList.remove('cursor-cta'); }
-      else { html.classList.remove('cursor-hovering', 'cursor-cta'); }
-    });
-    (function animate() {
-      dotX = mouseX; dotY = mouseY;
-      dot.style.transform  = 'translate(' + (dotX  - dot.offsetWidth  / 2) + 'px, ' + (dotY  - dot.offsetHeight  / 2) + 'px)';
-      ringX += (mouseX - ringX) * 0.18; ringY += (mouseY - ringY) * 0.18;
-      ring.style.transform = 'translate(' + (ringX - ring.offsetWidth / 2) + 'px, ' + (ringY - ring.offsetHeight / 2) + 'px)';
-      requestAnimationFrame(animate);
-    })();
-  })();
-  </script>
+  {%- if settings.custom_js != blank -%}
+    <script>{{ settings.custom_js }}</script>
   {%- endif -%}
-
-  {%- if settings.header_transparent_hero -%}
-  <script>
-  (function() {
-    var header = document.getElementById('site-header');
-    if (!header) return;
-    var hero = document.querySelector('.blc-hero, .shopify-section-hero');
-    if (!hero) return;
-    header.classList.add('site-header--transparent');
-    new IntersectionObserver(function(entries) {
-      header.classList.toggle('site-header--transparent', entries[0].isIntersecting);
-      header.classList.toggle('site-header--solid', !entries[0].isIntersecting);
-    }, { threshold: 0.1 }).observe(hero);
-  })();
-  </script>
-  {%- endif -%}
-
-  {%- if settings.reveal_animations -%}
-  <script>
-  (function() {
-    if (!window.IntersectionObserver) return;
-    var revealObs = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        if (entry.isIntersecting) { entry.target.classList.add('is-visible'); revealObs.unobserve(entry.target); }
-      });
-    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
-    document.querySelectorAll('.reveal').forEach(function(el) {
-      if (el.getBoundingClientRect().top < window.innerHeight) el.classList.add('is-visible');
-      else revealObs.observe(el);
-    });
-    if (window.MutationObserver) {
-      new MutationObserver(function(muts) {
-        muts.forEach(function(m) {
-          m.addedNodes.forEach(function(n) {
-            if (n.nodeType !== 1) return;
-            if (n.classList && n.classList.contains('reveal')) revealObs.observe(n);
-            n.querySelectorAll && n.querySelectorAll('.reveal').forEach(function(el) { revealObs.observe(el); });
-          });
-        });
-      }).observe(document.body, { childList: true, subtree: true });
-    }
-  })();
-  </script>
-  {%- endif -%}
-
-  <div id="searchOverlay" class="search-overlay" aria-hidden="true"></div>
-  <div id="searchModal" class="search-modal" role="dialog" aria-modal="true" aria-label="Search" hidden>
-    <div class="search-modal__inner">
-      <form action="{{ routes.search_url }}" method="get" class="search-modal__form" role="search">
-        <input type="hidden" name="type" value="product">
-        <label for="SearchInput" class="visually-hidden">Search</label>
-        <input type="search" id="SearchInput" name="q" class="search-modal__input" placeholder="Search products…" autocomplete="off" autocorrect="off" spellcheck="false" value="{{ search.terms | escape }}">
-        <button type="submit" class="search-modal__submit" aria-label="Submit search">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        </button>
-        <button type="button" id="searchClose" class="search-modal__close" aria-label="Close search">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        </button>
-      </form>
-    </div>
-  </div>
-  <style>
-  .search-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); backdrop-filter: blur(4px); z-index: 800; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
-  .search-overlay.is-open { opacity: 1; pointer-events: auto; }
-  .search-modal { position: fixed; top: 0; left: 0; right: 0; z-index: 850; background: var(--color-bg); border-bottom: 1px solid var(--color-border); box-shadow: 0 8px 40px rgba(0,0,0,0.12); transform: translateY(-100%); transition: transform 0.35s cubic-bezier(0.16,1,0.3,1); }
-  .search-modal[hidden] { display: block !important; }
-  .search-modal.is-open { transform: translateY(0); }
-  .search-modal__inner { padding: 20px var(--sp-5, 20px); max-width: 760px; margin: 0 auto; }
-  .search-modal__form { display: flex; align-items: center; gap: 12px; background: var(--color-surface); border: 1.5px solid var(--color-border); border-radius: var(--radius-full, 999px); padding: 10px 16px; transition: border-color 0.2s; }
-  .search-modal__form:focus-within { border-color: var(--color-primary); }
-  .search-modal__input { flex: 1; background: none; border: none; outline: none; font-size: var(--text-base, 1rem); color: var(--color-text); font-family: var(--font-body); }
-  .search-modal__input::placeholder { color: var(--color-text-muted); }
-  .search-modal__submit, .search-modal__close { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; flex-shrink: 0; border-radius: var(--radius-full, 999px); color: var(--color-text-muted); transition: color 0.2s, background 0.2s; cursor: pointer; background: none; border: none; }
-  .search-modal__submit:hover { color: var(--color-primary); }
-  .search-modal__close:hover { color: var(--color-text); background: var(--color-surface-2); }
-  </style>
-  <script>
-  (function() {
-    var modal   = document.getElementById('searchModal');
-    var overlay = document.getElementById('searchOverlay');
-    var closeBtn = document.getElementById('searchClose');
-    if (!modal) return;
-    function openSearch() {
-      modal.removeAttribute('hidden');
-      requestAnimationFrame(function() {
-        modal.classList.add('is-open'); overlay.classList.add('is-open');
-        var inp = modal.querySelector('input[type="search"]');
-        if (inp) setTimeout(function(){ inp.focus(); }, 60);
-      });
-    }
-    function closeSearch() {
-      modal.classList.remove('is-open'); overlay.classList.remove('is-open');
-      setTimeout(function(){ modal.setAttribute('hidden', ''); }, 350);
-    }
-    document.addEventListener('click', function(e) { if (e.target.closest('.search-toggle, [data-search-toggle]')) { e.preventDefault(); openSearch(); } });
-    if (overlay) overlay.addEventListener('click', closeSearch);
-    if (closeBtn) closeBtn.addEventListener('click', closeSearch);
-    document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeSearch(); });
-  })();
-  </script>
-
 </body>
 </html>
