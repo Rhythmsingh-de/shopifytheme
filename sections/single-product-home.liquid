@@ -162,6 +162,13 @@
 <section
   class="sph sph--style-{{ visual_style }} sph--media-shape-{{ media_shape }} sph--desktop-info-{{ desktop_info_style }} sph--mobile-info-{{ mobile_info_style }} sph--mobile-media-{{ mobile_media_visibility }} sph--desktop-cta-{{ desktop_cta_layout }} sph--mobile-cta-{{ mobile_cta_layout }}"
   id="SingleProductHome-{{ section.id }}"
+  data-sph-section
+  data-product-id="{{ sp.id }}"
+  data-variant-id="{{ fv.id }}"
+  data-price="{{ fv.price }}"
+  data-product-title="{{ sp.title | escape }}"
+  data-product-vendor="{{ sp.vendor | escape }}"
+  data-product-type="{{ sp.type | escape }}"
   data-product-detail
   {% if sp != blank %}data-variants="{{ sp.variants | json | escape }}"{% endif %}
   {{ section.shopify_attributes }}>
