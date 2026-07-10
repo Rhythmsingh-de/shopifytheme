@@ -162,13 +162,6 @@
 <section
   class="sph sph--style-{{ visual_style }} sph--media-shape-{{ media_shape }} sph--desktop-info-{{ desktop_info_style }} sph--mobile-info-{{ mobile_info_style }} sph--mobile-media-{{ mobile_media_visibility }} sph--desktop-cta-{{ desktop_cta_layout }} sph--mobile-cta-{{ mobile_cta_layout }}"
   id="SingleProductHome-{{ section.id }}"
-  data-sph-section
-  data-product-id="{{ sp.id }}"
-  data-variant-id="{{ fv.id }}"
-  data-price="{{ fv.price }}"
-  data-product-title="{{ sp.title | escape }}"
-  data-product-vendor="{{ sp.vendor | escape }}"
-  data-product-type="{{ sp.type | escape }}"
   data-product-detail
   {% if sp != blank %}data-variants="{{ sp.variants | json | escape }}"{% endif %}
   {{ section.shopify_attributes }}>
@@ -186,7 +179,7 @@
 
   <div class="sph__inner sph__inner--media-{{ section.settings.media_position | default: 'left' }} container">
 
-    {%- comment -%}── MEDIA COLUMN ──────────────────────────────────────────{%- endcomment -%}
+    {%- comment -%}── MEDIA COLUMN ─────────────────────────────────────────{%- endcomment -%}
     <div class="sph__media">
       <div class="sph__media-main">
 
@@ -368,7 +361,7 @@
         {%- endif -%}
       </div>
 
-      {%- comment -%}── SPH-05: CTA above options when cta_position == 'above' ─────────────{%- endcomment -%}
+      {%- comment -%}── SPH-05: CTA above options when cta_position == 'above' ─────────────────{%- endcomment -%}
       {%- capture cta_block -%}
       <div class="sph__cta-wrap">
         {%- if section.settings.show_qty_selector -%}
@@ -432,7 +425,7 @@
         {{ cta_block }}
       {%- endif -%}
 
-      {%- comment -%}── Variant options ───────────────────────────────────────{%- endcomment -%}
+      {%- comment -%}── Variant options ─────────────────────────────────────────{%- endcomment -%}
       <div class="sph__options-row">
         {%- if sp != blank and sp.has_only_default_variant == false -%}
           {%- for opt in sp.options_with_values -%}
@@ -548,7 +541,7 @@
   </div>
 </section>
 
-{%- comment -%}── FEATURES SECTION (delegates to sph-features snippet) ──────{%- endcomment -%}
+{%- comment -%}── FEATURES SECTION (delegates to sph-features snippet) ──────────────{%- endcomment -%}
 {%- liquid
   assign feature_blocks   = 0
   for block in section.blocks

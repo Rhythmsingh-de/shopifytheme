@@ -102,7 +102,28 @@
     <meta name="description" content="{{ page_description | escape }}">
   {%- endif -%}
 
-  {{ 'sph.js' | asset_url | script_tag }}
+  {%- comment -%}SPH-10: review card enter/leave animations (class-based, not inline style){%- endcomment -%}
+  <style>
+    .sph-review-card.is-leaving {
+      transition: opacity 0.6s ease, transform 0.6s ease, max-height 0.6s ease, margin 0.6s ease, padding 0.6s ease, border-width 0.6s ease;
+      opacity: 0;
+      transform: translateY(-20px);
+      max-height: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+      margin-top: 0;
+      margin-bottom: 0;
+      border-width: 0;
+      overflow: hidden;
+    }
+    .sph-review-card.is-entering {
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+    .sph-review-card.is-entering.is-visible {
+      opacity: 1;
+    }
+  </style>
 </head>
 <body class="template-{{ request.page_type }}{% if settings.animations_enabled %} animations-enabled{% endif %}">
   {%- if settings.gtm_container_id != blank and settings.tracking_mode != 'always_off' -%}
@@ -123,6 +144,10 @@
   {%- render 'back-to-top-btn' -%}
 
   {{ 'global.js' | asset_url | script_tag }}
+  <script src="{{ 'theme.js' | asset_url }}" defer></script>
+
+  {%- comment -%}SPH-06: sph.js loaded once here, never inside individual section instances{%- endcomment -%}
+  <script src="{{ 'sph.js' | asset_url }}" defer></script>
 
   {%- if settings.custom_js != blank -%}
     <script>{{ settings.custom_js }}</script>
