@@ -118,6 +118,12 @@
   assign trust_1 = section.settings.trust_1 | default: settings.trust_shipping_title  | default: 'Free Shipping'
   assign trust_2 = section.settings.trust_2 | default: settings.trust_guarantee_title | default: 'Secure Payment'
   assign trust_3 = section.settings.trust_3 | default: settings.trust_returns_title   | default: '14-Day Guarantee'
+
+  # SPH-04: integer schema default (48) divided by 10.0 to get 4.8
+  assign demo_rating_val = section.settings.demo_rating_value | divided_by: 10.0
+
+  # SPH-05: capture cta_position
+  assign cta_position = section.settings.cta_position | default: 'below'
 -%}
 
 {%- if render_section -%}
@@ -151,7 +157,7 @@
   }
 {%- endstyle -%}
 
-{{ 'sph.js' | asset_url | script_tag }}
+{%- comment -%}SPH-06: sph.js is loaded once in layout/theme.liquid — DO NOT add script_tag here{%- endcomment -%}
 
 <section
   class="sph sph--style-{{ visual_style }} sph--media-shape-{{ media_shape }} sph--desktop-info-{{ desktop_info_style }} sph--mobile-info-{{ mobile_info_style }} sph--mobile-media-{{ mobile_media_visibility }} sph--desktop-cta-{{ desktop_cta_layout }} sph--mobile-cta-{{ mobile_cta_layout }}"
@@ -213,7 +219,6 @@
             </div>
           {%- endif -%}
 
-          {%- comment -%}Badges — sale % or new/bestseller (computed once, reused){%- endcomment -%}
           <div class="sph__badges">
             {%- if is_sale -%}
               {%- if section.settings.show_sale_badge -%}
@@ -228,7 +233,6 @@
             {%- endif -%}
           </div>
 
-          {%- comment -%}Scarcity overlay — text comes 100% from theme settings (no hardcode){%- endcomment -%}
           {%- assign scarcity_text = section.settings.scarcity_text | default: settings.weekly_scarcity_text -%}
           {%- if scarcity_text != blank -%}
             <div class="sph__scarcity-overlay">
@@ -257,12 +261,13 @@
       </div>
 
       {%- if sp != blank and sp.images.size > 1 -%}
-        <div class="sph__thumbs" role="list" aria-label="Product images">
+        <div class="sph__thumbs" role="list" aria-label="Product images" data-sph-gallery>
           {%- for img in sp.images limit: 5 -%}
             <button
               class="sph__thumb{% if forloop.first %} is-active{% endif %}"
-              data-sph-thumb
-              data-src="{{ img | image_url: width: 900 }}"
+              data-gallery-thumb
+              data-gallery-src="{{ img | image_url: width: 900 }}"
+              data-gallery-alt="{{ img.alt | default: sp.title | escape }}"
               aria-label="View image {{ forloop.index }}"
               role="listitem">
               {%- assign sph_thumb_alt = img.alt | default: sp.title | escape -%}
@@ -299,7 +304,8 @@
         {%- elsif sp != blank -%}
           {{ sp.title | escape }}
         {%- else -%}
-          {{ 'general.product.default_title' | t | default: 'Our Product' }}
+          {%- comment -%}SPH-07: use locale key; falls back gracefully if not set{%- endcomment -%}
+          {{ 'sections.sph.no_product' | t | default: 'Select a product to display' }}
         {%- endif -%}
       </h1>
 
@@ -336,23 +342,88 @@
           {%- assign rating_count = sp.metafields.reviews.rating_count.value | plus: 0 -%}
           {%- if rating_val > 0 or section.settings.show_demo_rating -%}
             {%- unless rating_val > 0 -%}
-              {%- assign rating_val   = section.settings.demo_rating_value   | default: 4.8 -%}
-              {%- assign rating_count = section.settings.demo_rating_count   | default: 1150 -%}
+              {%- comment -%}SPH-04: divide integer 48 by 10.0 to get 4.8 — assigned in liquid block above{%- endcomment -%}
+              {%- assign rating_val   = demo_rating_val -%}
+              {%- assign rating_count = section.settings.demo_rating_count | default: 1150 -%}
             {%- endunless -%}
             {%- assign full = rating_val | floor -%}
             <div class="sph__stars" aria-label="{{ rating_val }} out of 5 stars">
               {%- for i in (1..5) -%}
                 <svg width="14" height="14" viewBox="0 0 24 24"
-                  fill="{% if i <= full %}#f5a623{% else %}none{% endif %}"
-                  stroke="#f5a623" stroke-width="1.5" aria-hidden="true">
+                  fill="{% if i <= full %}var(--color-gold, #c8941a){% else %}none{% endif %}"
+                  stroke="var(--color-gold, #c8941a)" stroke-width="1.5" aria-hidden="true">
                   <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
                 </svg>
               {%- endfor -%}
-              <span class="sph__rating-label">{{ rating_val }} | {{ rating_count }}+ Reviews</span>
+              <span class="sph__rating-label">{{ rating_val }} | {{ rating_count }}+ {{ 'sections.sph.reviews' | t | default: 'Reviews' }}</span>
             </div>
           {%- endif -%}
         {%- endif -%}
       </div>
+
+      {%- comment -%}── SPH-05: CTA above options when cta_position == 'above' ─────────────{%- endcomment -%}
+      {%- capture cta_block -%}
+      <div class="sph__cta-wrap">
+        {%- if section.settings.show_qty_selector -%}
+          <div class="sph__qty-wrap">
+            <p class="sph__opt-label">{{ 'sections.sph.quantity' | t | default: 'Quantity' }}</p>
+            <div class="sph__qty" data-qty-stepper>
+              <button class="sph__qty-btn" data-qty-minus aria-label="Decrease">&#8722;</button>
+              <input class="sph__qty-val" type="number" value="1" min="1" max="99" readonly aria-label="{{ 'sections.sph.quantity' | t | default: 'Quantity' }}">
+              <button class="sph__qty-btn" data-qty-plus aria-label="Increase">&#43;</button>
+            </div>
+          </div>
+        {%- endif -%}
+
+        <div class="sph__btns">
+          {%- if sp != blank and fv.available -%}
+            {%- if show_cart_button -%}
+              <button
+                class="btn sph__btn-atc sph__btn-atc--pulse"
+                data-add-to-cart
+                data-variant-id="{{ fv.id }}"
+                data-qty="1"
+                aria-label="{{ 'sections.sph.add_to_cart' | t | default: 'Add to Cart' }} {{ sp.title | escape }}">
+                <span class="atc-btn-text">{{ atc_label | escape }}</span>
+              </button>
+            {%- endif -%}
+            {%- if show_buy_now -%}
+              <a
+                href="{{ routes.cart_url }}/{{ fv.id }}:1{{ fast_checkout_suffix }}"
+                class="btn sph__btn-buy"
+                data-buy-now
+                data-checkout-destination="{{ fast_checkout_destination }}"
+                data-variant-id="{{ fv.id }}">
+                {{ buy_label | escape }}
+              </a>
+            {%- endif -%}
+            {%- if settings.conversion_microcopy != blank -%}
+              <p class="sph__cta-microcopy">{{ settings.conversion_microcopy | escape }}</p>
+            {%- endif -%}
+          {%- else -%}
+            <button class="btn sph__btn-atc" disabled aria-disabled="true">
+              {{- section.settings.sold_out_label | default: settings.conversion_sold_out_label | default: 'Sold Out' | escape -}}
+            </button>
+          {%- endif -%}
+        </div>
+
+        {%- comment -%}SPH-12: ATC live-status region (updated by JS after cart response){%- endcomment -%}
+        <p class="visually-hidden" data-atc-status role="status" aria-live="polite" aria-atomic="true"></p>
+
+        {%- if show_payment_icons_desktop or show_payment_icons_mobile -%}
+          <div class="sph__payment-icons{% unless show_payment_icons_desktop %} sph__payment-icons--hide-desktop{% endunless %}{% unless show_payment_icons_mobile %} sph__payment-icons--hide-mobile{% endunless %}">
+            {%- for type in shop.enabled_payment_types -%}
+              {{ type | payment_type_svg_tag: class: 'sph__payment-icon' }}
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      </div>
+      {%- endcapture -%}
+
+      {%- comment -%}SPH-05: render CTA above options if requested{%- endcomment -%}
+      {%- if cta_position == 'above' -%}
+        {{ cta_block }}
+      {%- endif -%}
 
       {%- comment -%}── Variant options ───────────────────────────────────────{%- endcomment -%}
       <div class="sph__options-row">
@@ -416,66 +487,14 @@
         {%- endif -%}
       </div>
 
-      {%- comment -%}── CTA buttons ───────────────────────────────────────────{%- endcomment -%}
-      <div class="sph__cta-wrap">
-        {%- if section.settings.show_qty_selector -%}
-          <div class="sph__qty-wrap">
-            <p class="sph__opt-label">
-              {%- if request.locale.iso_code == 'de' -%}Menge{%- else -%}Quantity{%- endif -%}
-            </p>
-            <div class="sph__qty" data-qty-stepper>
-              <button class="sph__qty-btn" data-qty-minus aria-label="Decrease">&#8722;</button>
-              <input class="sph__qty-val" type="number" value="1" min="1" max="99" readonly aria-label="Quantity">
-              <button class="sph__qty-btn" data-qty-plus aria-label="Increase">&#43;</button>
-            </div>
-          </div>
-        {%- endif -%}
+      {%- comment -%}SPH-05: render CTA below options (default){%- endcomment -%}
+      {%- if cta_position != 'above' -%}
+        {{ cta_block }}
+      {%- endif -%}
 
-        <div class="sph__btns">
-          {%- if sp != blank and fv.available -%}
-            {%- if show_cart_button -%}
-              <button
-                class="btn sph__btn-atc sph__btn-atc--pulse"
-                data-add-to-cart
-                data-variant-id="{{ fv.id }}"
-                data-qty="1"
-                aria-label="Add {{ sp.title | escape }} to cart"
-                aria-live="polite">
-                <span class="atc-btn-text">{{ atc_label | escape }}</span>
-              </button>
-            {%- endif -%}
-            {%- if show_buy_now -%}
-              <a
-                href="{{ routes.cart_url }}/{{ fv.id }}:1{{ fast_checkout_suffix }}"
-                class="btn sph__btn-buy"
-                data-buy-now
-                data-checkout-destination="{{ fast_checkout_destination }}"
-                data-variant-id="{{ fv.id }}">
-                {{ buy_label | escape }}
-              </a>
-            {%- endif -%}
-            {%- if settings.conversion_microcopy != blank -%}
-              <p class="sph__cta-microcopy">{{ settings.conversion_microcopy | escape }}</p>
-            {%- endif -%}
-          {%- else -%}
-            <button class="btn sph__btn-atc" disabled aria-disabled="true">
-              {{- section.settings.sold_out_label | default: settings.conversion_sold_out_label | default: 'Sold Out' | escape -}}
-            </button>
-          {%- endif -%}
-        </div>
-
-        {%- if show_payment_icons_desktop or show_payment_icons_mobile -%}
-          <div class="sph__payment-icons{% unless show_payment_icons_desktop %} sph__payment-icons--hide-desktop{% endunless %}{% unless show_payment_icons_mobile %} sph__payment-icons--hide-mobile{% endunless %}">
-            {%- for type in shop.enabled_payment_types -%}
-              {{ type | payment_type_svg_tag: class: 'sph__payment-icon' }}
-            {%- endfor -%}
-          </div>
-        {%- endif -%}
-      </div>
-
-      {%- comment -%}Trust strip — all 3 labels from settings (trust_2 restored){%- endcomment -%}
+      {%- comment -%}Trust strip{%- endcomment -%}
       {%- if show_trust_desktop or show_trust_mobile -%}
-        <div class="sph__trust{% unless show_trust_desktop %} sph__trust--hide-desktop{% endunless %}{% unless show_trust_mobile %} sph__trust--hide-mobile{% endunless %}" aria-label="Guarantees">
+        <div class="sph__trust{% unless show_trust_desktop %} sph__trust--hide-desktop{% endunless %}{% unless show_trust_mobile %} sph__trust--hide-mobile{% endunless %}" aria-label="{{ 'sections.sph.guarantees' | t | default: 'Our Guarantees' }}">
           <span>&#10003; {{ trust_1 | escape }}</span>
           <span class="sph__trust-sep">|</span>
           <span>&#10003; {{ trust_2 | escape }}</span>
@@ -571,97 +590,49 @@
 </section>
 {%- endif -%}
 
+{%- endif -%}
+
 <style>
-/* ── Scarcity overlay — was inline style, now a class ————————— */
 .sph__scarcity-overlay {
-  position: absolute;
-  bottom: 12px;
-  left: 12px;
-  z-index: 25;
-  background: rgba(232, 38, 13, 0.95);
-  color: #fff;
-  padding: 6px 12px;
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  pointer-events: none;
+  position: absolute; bottom: 12px; left: 12px; z-index: 25;
+  background: rgba(232, 38, 13, 0.95); color: #fff;
+  padding: 6px 12px; border-radius: 4px;
+  font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .04em;
+  display: flex; align-items: center; gap: 6px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15); pointer-events: none;
 }
 .sph__scarcity-dot {
-  width: 6px;
-  height: 6px;
-  background: #fff;
-  border-radius: 50%;
-  display: inline-block;
-  flex-shrink: 0;
+  width: 6px; height: 6px; background: #fff; border-radius: 50%;
+  display: inline-block; flex-shrink: 0;
   animation: scarcityDotPulse 1.5s infinite;
 }
 @keyframes scarcityDotPulse {
   0%, 100% { transform: scale(1); opacity: 1; }
   50%       { transform: scale(1.4); opacity: 0.5; }
 }
-/* ── CTA wrap ————————————————————————————————————— */
-.sph__cta-wrap {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin-top: 20px;
-  width: 100%;
-}
-.sph__qty-wrap {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  align-items: flex-start;
-}
-/* ── Hero layout —————————————————————————————————— */
+.sph__cta-wrap { display: flex; flex-direction: column; gap: 16px; margin-top: 20px; width: 100%; }
+.sph__qty-wrap { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
 .sph { background: var(--color-bg); padding-block: clamp(24px, 4vw, 48px) clamp(32px, 5vw, 64px); }
-.sph--style-editorial {
-  background: linear-gradient(135deg, color-mix(in oklab, var(--color-surface) 86%, transparent), var(--color-bg));
-}
+.sph--style-editorial { background: linear-gradient(135deg, color-mix(in oklab, var(--color-surface) 86%, transparent), var(--color-bg)); }
 .sph--style-bold .sph__title, .sph--style-bold .sph__price { letter-spacing: 0; }
 .sph--style-bold .sph__info { gap: 22px; }
-.sph--style-minimal .sph__sub,
-.sph--style-minimal .sph__trust,
-.sph--style-minimal .sph__payment-icons { color: color-mix(in oklab, var(--color-text-muted) 80%, transparent); }
+.sph--style-minimal .sph__sub, .sph--style-minimal .sph__trust, .sph--style-minimal .sph__payment-icons { color: color-mix(in oklab, var(--color-text-muted) 80%, transparent); }
 .sph--media-shape-square .sph__media-main  { border-radius: 0; }
 .sph--media-shape-soft .sph__media-main    { border-radius: var(--radius-lg, 12px); }
 .sph--media-shape-rounded .sph__media-main { border-radius: var(--radius-xl, 16px); }
 .sph--media-shape-arch .sph__media-main    { border-radius: 999px 999px var(--radius-lg, 12px) var(--radius-lg, 12px); }
-.sph__inner {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: clamp(32px, 4vw, 80px);
-  align-items: start;
-}
+.sph__inner { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(32px, 4vw, 80px); align-items: start; }
 @media (min-width: 769px) {
   .sph__inner--media-right .sph__media { order: 2; }
   .sph__inner--media-right .sph__info  { order: 1; }
-  .sph__inner--media-top,
-  .sph__inner--media-bottom { grid-template-columns: 1fr; }
-  .sph__inner--media-top .sph__media,
-  .sph__inner--media-top .sph__info,
-  .sph__inner--media-bottom .sph__media,
-  .sph__inner--media-bottom .sph__info { max-width: 768px; margin: 0 auto; width: 100%; }
-  .sph__inner--media-top .sph__media    { order: 1; }
-  .sph__inner--media-top .sph__info     { order: 2; }
-  .sph__inner--media-bottom .sph__media { order: 2; }
-  .sph__inner--media-bottom .sph__info  { order: 1; }
-  .sph--desktop-info-card .sph__info {
-    background: color-mix(in oklab, var(--color-bg, #fff) 94%, var(--color-surface, #f7f7f7));
-    border: 1px solid var(--color-border, #e5e5e5);
-    border-radius: var(--radius-lg, 12px);
-    padding: clamp(24px, 3vw, 40px);
-    box-shadow: 0 18px 48px rgba(0,0,0,0.06);
-  }
+  .sph__inner--media-top, .sph__inner--media-bottom { grid-template-columns: 1fr; }
+  .sph__inner--media-top .sph__media, .sph__inner--media-top .sph__info,
+  .sph__inner--media-bottom .sph__media, .sph__inner--media-bottom .sph__info { max-width: 768px; margin: 0 auto; width: 100%; }
+  .sph__inner--media-top .sph__media    { order: 1; } .sph__inner--media-top .sph__info     { order: 2; }
+  .sph__inner--media-bottom .sph__media { order: 2; } .sph__inner--media-bottom .sph__info  { order: 1; }
+  .sph--desktop-info-card .sph__info { background: color-mix(in oklab, var(--color-bg, #fff) 94%, var(--color-surface, #f7f7f7)); border: 1px solid var(--color-border, #e5e5e5); border-radius: var(--radius-lg, 12px); padding: clamp(24px, 3vw, 40px); box-shadow: 0 18px 48px rgba(0,0,0,0.06); }
   .sph--desktop-cta-stack .sph__btns { flex-direction: column; }
-  .sph--desktop-cta-stack .sph__btn-atc,
-  .sph--desktop-cta-stack .sph__btn-buy { width: 100%; }
+  .sph--desktop-cta-stack .sph__btn-atc, .sph--desktop-cta-stack .sph__btn-buy { width: 100%; }
   .sph__payment-icons--hide-desktop, .sph__trust--hide-desktop { display: none !important; }
 }
 @media (max-width: 768px) {
@@ -671,13 +642,7 @@
   .sph__thumbs { flex-wrap: nowrap; overflow-x: auto; justify-content: flex-start; padding-bottom: 6px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
   .sph__thumbs::-webkit-scrollbar { display: none; }
   .sph__media-main img { cursor: pointer; }
-  .sph--mobile-info-card .sph__info {
-    background: color-mix(in oklab, var(--color-bg, #fff) 96%, var(--color-surface, #f7f7f7));
-    border: 1px solid var(--color-border, #e5e5e5);
-    border-radius: var(--radius-lg, 12px);
-    padding: 18px;
-    box-shadow: 0 12px 36px rgba(0,0,0,0.06);
-  }
+  .sph--mobile-info-card .sph__info { background: color-mix(in oklab, var(--color-bg, #fff) 96%, var(--color-surface, #f7f7f7)); border: 1px solid var(--color-border, #e5e5e5); border-radius: var(--radius-lg, 12px); padding: 18px; box-shadow: 0 12px 36px rgba(0,0,0,0.06); }
   .sph--mobile-info-compact .sph__info  { gap: 14px; }
   .sph--mobile-info-compact .sph__title { font-size: clamp(1.8rem, 9vw, 2.55rem); line-height: 1.02; }
   .sph--mobile-info-compact .sph__sub   { font-size: 0.94rem; line-height: 1.55; }
@@ -688,46 +653,18 @@
   .sph--mobile-cta-stack .sph__btn-atc, .sph--mobile-cta-stack .sph__btn-buy { width: 100%; }
   .sph__payment-icons--hide-mobile, .sph__trust--hide-mobile { display: none !important; }
 }
-
-/* Gallery Nav */
-.sph__media-nav {
-  position: absolute; top: 50%; transform: translateY(-50%);
-  width: 40px; height: 40px; border-radius: 50%;
-  background: rgba(255,255,255,0.85); border: 1px solid rgba(0,0,0,0.1);
-  color: #111; display: flex; align-items: center; justify-content: center;
-  cursor: pointer; z-index: 15; transition: all 0.2s ease;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
+.sph__media-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.85); border: 1px solid rgba(0,0,0,0.1); color: #111; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 15; transition: all 0.2s ease; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 .sph__media-nav:hover { background: #fff; transform: translateY(-50%) scale(1.05); }
 .sph__media-nav:active { transform: translateY(-50%) scale(0.95); }
-.sph__media-nav--prev { left: 12px; }
-.sph__media-nav--next { right: 12px; }
+.sph__media-nav--prev { left: 12px; } .sph__media-nav--next { right: 12px; }
 .sph__media-nav::after { content:''; position: absolute; top:-4px; left:-4px; right:-4px; bottom:-4px; }
-
-/* Sticky media */
 .sph__media { position: sticky; top: 88px; }
-.sph__media-main {
-  position: relative; border-radius: var(--radius-lg, 12px);
-  overflow: hidden; aspect-ratio: 1; background: var(--color-surface);
-}
-.sph__media-actions {
-  position: absolute; top: 14px; right: 14px; z-index: 18;
-  display: flex; gap: 8px;
-}
-.sph__media-actions .wl-btn, .sph__compare-btn {
-  width: 42px; height: 42px; border-radius: var(--radius-full, 9999px);
-  background: color-mix(in oklab, var(--color-bg,#fff) 90%, transparent);
-  border: 1px solid color-mix(in oklab, var(--color-border,#e5e5e5) 85%, transparent);
-  color: var(--color-text,#111); box-shadow: 0 8px 22px rgba(0,0,0,0.12); backdrop-filter: blur(10px);
-}
+.sph__media-main { position: relative; border-radius: var(--radius-lg, 12px); overflow: hidden; aspect-ratio: 1; background: var(--color-surface); }
+.sph__media-actions { position: absolute; top: 14px; right: 14px; z-index: 18; display: flex; gap: 8px; }
+.sph__media-actions .wl-btn, .sph__compare-btn { width: 42px; height: 42px; border-radius: var(--radius-full, 9999px); background: color-mix(in oklab, var(--color-bg,#fff) 90%, transparent); border: 1px solid color-mix(in oklab, var(--color-border,#e5e5e5) 85%, transparent); color: var(--color-text,#111); box-shadow: 0 8px 22px rgba(0,0,0,0.12); backdrop-filter: blur(10px); }
 .sph__compare-btn { display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: transform .18s ease, background .18s ease, color .18s ease; }
-.sph__media-actions .wl-btn:hover, .sph__compare-btn:hover, .sph__compare-btn.is-saved {
-  transform: translateY(-1px); background: var(--color-primary,#111); color: var(--color-primary-text,#fff);
-}
-.sph__badges {
-  position: absolute; top: 16px; left: 16px; display: flex; flex-direction: column;
-  gap: 4px; pointer-events: none; z-index: 10;
-}
+.sph__media-actions .wl-btn:hover, .sph__compare-btn:hover, .sph__compare-btn.is-saved { transform: translateY(-1px); background: var(--color-primary,#111); color: var(--color-primary-text,#fff); }
+.sph__badges { position: absolute; top: 16px; left: 16px; display: flex; flex-direction: column; gap: 4px; pointer-events: none; z-index: 10; }
 .sph__badges .badge { padding: 4px 8px; font-size: 11px; font-weight: 700; border-radius: var(--radius-sm,4px); text-transform: uppercase; letter-spacing: .04em; display: inline-flex; align-items: center; justify-content: center; width: fit-content; }
 .sph__badges .badge--sale       { background: var(--color-sale,#e8260d); color: var(--color-text-inverse,#fff); }
 .sph__badges .badge--new        { background: var(--color-primary,#111); color: var(--color-primary-text,#fff); }
@@ -740,14 +677,10 @@
 .sph__thumb { width:60px; height:60px; border-radius:var(--radius-sm,4px); overflow:hidden; border:2px solid transparent; transition:border-color .18s ease; flex-shrink:0; cursor:pointer; }
 .sph__thumb img { width:100%; height:100%; object-fit:cover; }
 .sph__thumb.is-active, .sph__thumb:hover { border-color: var(--color-text,#111); }
-
-/* Info col */
 .sph__info { display:flex; flex-direction:column; gap:18px; padding-top:4px; }
 .sph__eyebrow { font-size:var(--text-xs,.75rem); font-weight:700; letter-spacing:.1em; color:var(--color-text-muted,#666); }
 .sph__title { font-family:var(--font-display,Georgia,serif); font-size:clamp(1.8rem,3.5vw,3rem); font-weight:800; line-height:1.1; letter-spacing:-.01em; color:var(--color-text,#111); }
 .sph__sub   { font-size:var(--text-base,1rem); color:var(--color-text-muted,#666); line-height:1.6; max-width:46ch; }
-
-/* Price + stars */
 .sph__price-row { display:flex; align-items:center; flex-wrap:wrap; gap:10px; }
 .sph__price     { font-size:clamp(1.5rem,2.5vw,2rem); font-weight:800; color:var(--color-text,#111); font-variant-numeric:tabular-nums; }
 .sph__price.is-sale { color:var(--color-sale,#e8260d); }
@@ -757,49 +690,19 @@
 .sph__badge--bestseller { background:var(--color-gold,#c8941a); color:#fff; }
 .sph__stars { display:flex; align-items:center; gap:3px; }
 .sph__rating-label { font-size:var(--text-xs,.75rem); color:var(--color-text-muted,#666); margin-left:4px; }
-
-/* Weekly badge */
-.sph__weekly-badge {
-  display:inline-flex; align-items:center; gap:7px; margin-top:12px;
-  padding:6px 14px; background:var(--color-deco-light,#e6f4ed); color:var(--color-deco,#1d6b44);
-  font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
-  border-radius:9999px; border:1px solid color-mix(in oklab, var(--color-deco,#1d6b44) 25%, transparent);
-}
-.sph__weekly-badge-dot {
-  width:6px; height:6px; border-radius:50%; background:var(--color-deco,#1d6b44);
-  box-shadow:0 0 0 3px color-mix(in oklab, var(--color-deco,#1d6b44) 25%, transparent);
-  animation:sph-badge-pulse 2s ease-in-out infinite;
-}
-@keyframes sph-badge-pulse {
-  0%,100% { box-shadow:0 0 0 3px color-mix(in oklab, var(--color-deco,#1d6b44) 25%, transparent); }
-  50%     { box-shadow:0 0 0 6px color-mix(in oklab, var(--color-deco,#1d6b44) 8%, transparent); }
-}
-
-/* Buttons */
+.sph__weekly-badge { display:inline-flex; align-items:center; gap:7px; margin-top:12px; padding:6px 14px; background:var(--color-deco-light,#e6f4ed); color:var(--color-deco,#1d6b44); font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; border-radius:9999px; border:1px solid color-mix(in oklab, var(--color-deco,#1d6b44) 25%, transparent); }
+.sph__weekly-badge-dot { width:6px; height:6px; border-radius:50%; background:var(--color-deco,#1d6b44); box-shadow:0 0 0 3px color-mix(in oklab, var(--color-deco,#1d6b44) 25%, transparent); animation:sph-badge-pulse 2s ease-in-out infinite; }
+@keyframes sph-badge-pulse { 0%,100% { box-shadow:0 0 0 3px color-mix(in oklab, var(--color-deco,#1d6b44) 25%, transparent); } 50% { box-shadow:0 0 0 6px color-mix(in oklab, var(--color-deco,#1d6b44) 8%, transparent); } }
 .sph__btns { display:flex; gap:12px; flex-wrap:wrap; }
 .sph__cta-microcopy { width:100%; margin:-2px 0 0; color:var(--color-text-muted,#666); font-size:var(--text-xs,12px); font-weight:700; line-height:1.45; }
-.sph__btn-atc {
-  flex:1; min-width:150px; padding:16px 24px; min-height:54px;
-  background:var(--color-primary); color:var(--color-text-inverse,#fff);
-  font-size:var(--text-sm,.875rem); font-weight:800; letter-spacing:.05em; text-transform:uppercase;
-  border-radius:var(--btn-radius,6px); border:none; cursor:pointer;
-  transition:transform .18s ease, box-shadow .18s ease, background .18s ease;
-}
+.sph__btn-atc { flex:1; min-width:150px; padding:16px 24px; min-height:54px; background:var(--color-primary); color:var(--color-text-inverse,#fff); font-size:var(--text-sm,.875rem); font-weight:800; letter-spacing:.05em; text-transform:uppercase; border-radius:var(--btn-radius,6px); border:none; cursor:pointer; transition:transform .18s ease, box-shadow .18s ease, background .18s ease; }
 .sph__btn-atc:hover { background:var(--color-primary-hover); transform:translateY(-2px); box-shadow:0 6px 20px color-mix(in oklab, var(--color-primary) 35%, transparent); }
 .sph__btn-atc:disabled { background:var(--color-surface-2,#eee); color:var(--color-text-muted,#999); cursor:not-allowed; transform:none; box-shadow:none; }
 .sph__btn-atc--pulse { position:relative; }
 .sph__btn-atc--pulse::after { content:''; position:absolute; inset:-4px; border-radius:inherit; border:2px solid var(--color-primary); opacity:0; animation:atc-pulse-ring 3s ease-out 1.5s infinite; }
 @keyframes atc-pulse-ring { 0% { transform:scale(1); opacity:.7; } 60%,100% { transform:scale(1.06); opacity:0; } }
-.sph__btn-buy {
-  flex:1; min-width:150px; padding:16px 24px; min-height:54px;
-  background:transparent; color:var(--color-primary); border:2px solid var(--color-primary);
-  font-size:var(--text-sm,.875rem); font-weight:800; letter-spacing:.05em; text-transform:uppercase;
-  border-radius:var(--btn-radius,6px); text-align:center; display:inline-flex; align-items:center; justify-content:center;
-  cursor:pointer; text-decoration:none; transition:transform .18s ease, background .18s ease, color .18s ease, box-shadow .18s ease;
-}
+.sph__btn-buy { flex:1; min-width:150px; padding:16px 24px; min-height:54px; background:transparent; color:var(--color-primary); border:2px solid var(--color-primary); font-size:var(--text-sm,.875rem); font-weight:800; letter-spacing:.05em; text-transform:uppercase; border-radius:var(--btn-radius,6px); text-align:center; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; text-decoration:none; transition:transform .18s ease, background .18s ease, color .18s ease, box-shadow .18s ease; }
 .sph__btn-buy:hover { background:var(--color-primary); color:var(--color-text-inverse,#fff); transform:translateY(-2px); box-shadow:0 6px 20px rgba(0,0,0,0.2); }
-
-/* Options */
 .sph__options-row { display:flex; flex-direction:column; gap:16px; margin-bottom:20px; align-items:stretch; }
 .sph__opt-label { font-size:var(--text-xs,.75rem); font-weight:600; color:var(--color-text-muted,#666); margin-bottom:6px; text-transform:uppercase; letter-spacing:.06em; }
 .sph__qty { display:flex; align-items:center; border:1.5px solid var(--color-border,#e5e5e5); border-radius:var(--radius-md,8px); overflow:hidden; height:44px; }
@@ -816,16 +719,10 @@
 .sph__pill { min-height:44px; display:inline-flex; align-items:center; justify-content:center; padding:8px 16px; border:1.5px solid var(--color-border,#e5e5e5); border-radius:var(--radius-md,8px); font-size:var(--text-sm,13px); font-weight:600; color:var(--color-text,#111); cursor:pointer; background:transparent; transition:border-color .15s, background .15s, color .15s; }
 .sph__pill:hover { border-color:var(--color-text,#111); }
 .sph__pill.is-active { background:var(--color-text,#111); color:var(--color-bg,#fff); border-color:var(--color-text,#111); }
-
-/* Payment icons */
 .sph__payment-icons { display:flex; align-items:center; flex-wrap:wrap; gap:var(--space-2,8px); margin-top:12px; }
 .sph__payment-icon  { height:22px; width:auto; border-radius:3px; }
-
-/* Trust strip */
 .sph__trust { display:flex; align-items:center; flex-wrap:wrap; gap:8px 4px; font-size:var(--text-xs,.75rem); font-weight:700; letter-spacing:.04em; color:var(--color-text,#111); padding-top:4px; }
 .sph__trust-sep { color:var(--color-border,#ccc); font-weight:300; }
-
-/* Description */
 .sph__description-accordion { margin-top:4px; }
 .sph-description__item { border-top:1px solid var(--color-border,#e5e5e5); }
 .sph-description__q { display:flex; justify-content:space-between; align-items:center; gap:12px; padding:16px 0; cursor:pointer; list-style:none; font-size:var(--text-sm,.875rem); font-weight:700; color:var(--color-text,#111); }
@@ -834,7 +731,6 @@
 details[open] .sph-description__chevron { transform:rotate(180deg); }
 .sph-description__a { padding-bottom:18px; font-size:var(--text-sm,.875rem); color:var(--color-text-muted,#666); line-height:1.7; }
 .sph-description__plain { font-size:var(--text-sm,.875rem); color:var(--color-text-muted,#666); line-height:1.7; }
-
 @media (max-width: 560px) {
   .sph__info { padding-top:0; }
   .sph__price-row { align-items:baseline; }
@@ -845,8 +741,6 @@ details[open] .sph-description__chevron { transform:rotate(180deg); }
   .sph__trust-sep { display:none; }
   .sph__trust { gap:8px 10px; padding-top:2px; line-height:1.5; }
 }
-
-/* Features strip */
 .sph-features { background:var(--color-surface,#f9f9f9); border-top:1px solid var(--color-border,#e5e5e5); border-bottom:1px solid var(--color-border,#e5e5e5); padding-block:clamp(32px,4vw,56px); }
 .sph-features__grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:clamp(16px,2.5vw,32px); text-align:center; }
 @media (max-width:560px) { .sph-features__grid { grid-template-columns:1fr; } }
@@ -854,16 +748,10 @@ details[open] .sph-description__chevron { transform:rotate(180deg); }
 .sph-features__icon  { color:var(--color-text,#111); }
 .sph-features__title { font-size:var(--text-sm,.875rem); font-weight:800; letter-spacing:.08em; color:var(--color-text,#111); }
 .sph-features__sub   { font-size:var(--text-xs,.75rem); color:var(--color-text-muted,#666); }
-
-/* Reviews + FAQ */
 .sph-bottom__grid { display:grid; grid-template-columns:1fr 1fr; gap:clamp(32px,4vw,80px); align-items:start; }
 .sph-bottom__grid--full  { grid-template-columns:1fr; }
-@media (max-width:768px) {
-  .sph-bottom__grid, .sph-bottom__grid--split { grid-template-columns:1fr; gap:clamp(24px,4vw,48px); }
-}
+@media (max-width:768px) { .sph-bottom__grid, .sph-bottom__grid--split { grid-template-columns:1fr; gap:clamp(24px,4vw,48px); } }
 .sph-section-title { font-size:clamp(1.25rem,2vw,1.75rem); font-weight:800; margin-bottom:clamp(20px,2.5vw,32px); color:var(--color-text,#111); }
-
-/* Review cards */
 .sph-review-cards { display:flex; flex-direction:column; gap:16px; }
 .sph-review-card { display:flex; flex-direction:column; gap:10px; padding:18px 20px; background:var(--color-surface,#f9f9f9); border:1px solid var(--color-border,#e5e5e5); border-radius:var(--radius-lg,12px); }
 .sph-review-card__head { display:flex; align-items:center; gap:12px; }
@@ -874,8 +762,6 @@ details[open] .sph-description__chevron { transform:rotate(180deg); }
 .sph-review-card__imgs  { display:flex; gap:8px; }
 .sph-review-card__imgs img { width:60px; height:60px; object-fit:cover; border-radius:var(--radius-sm,4px); }
 .sph-review-card__body { font-size:var(--text-sm,.875rem); color:var(--color-text-muted,#666); line-height:1.6; }
-
-/* FAQ */
 .sph-faq__list { display:flex; flex-direction:column; }
 .sph-faq__item { border-bottom:1px solid var(--color-border,#e5e5e5); }
 .sph-faq__item:first-child { border-top:1px solid var(--color-border,#e5e5e5); }
@@ -894,38 +780,32 @@ details[open] .sph-faq__chevron { transform:rotate(180deg); }
     { "type": "header", "content": "Visibility" },
     { "type": "select", "id": "visibility", "label": "Show section in", "options": [{"value":"follow_global","label":"Follow global mode"},{"value":"single_only","label":"Single-product only"},{"value":"multi_only","label":"Multi-product only"},{"value":"always","label":"Always"}], "default": "follow_global" },
     { "type": "checkbox", "id": "enabled", "label": "Enable section", "default": true },
-
     { "type": "header", "content": "Product" },
     { "type": "product", "id": "product", "label": "Product" },
     { "type": "text", "id": "heading", "label": "Custom heading (overrides product title)" },
     { "type": "text", "id": "subheading", "label": "Custom subheading (overrides product description)" },
     { "type": "text", "id": "eyebrow", "label": "Eyebrow text" },
     { "type": "checkbox", "id": "show_eyebrow", "label": "Show eyebrow", "default": true },
-
     { "type": "header", "content": "Media" },
     { "type": "image_picker", "id": "fallback_image", "label": "Fallback image" },
     { "type": "checkbox", "id": "show_hover_image", "label": "Show hover image", "default": true },
     { "type": "select", "id": "media_position", "label": "Media position", "options": [{"value":"left","label":"Left"},{"value":"right","label":"Right"},{"value":"top","label":"Top"},{"value":"bottom","label":"Bottom"}], "default": "left" },
     { "type": "select", "id": "media_shape", "label": "Media shape", "options": [{"value":"square","label":"Square"},{"value":"soft","label":"Soft corners"},{"value":"rounded","label":"Rounded"},{"value":"arch","label":"Arch"}], "default": "soft" },
     { "type": "select", "id": "mobile_media_visibility", "label": "Mobile image", "options": [{"value":"show","label":"Show"},{"value":"hide","label":"Hide"}], "default": "show" },
-
     { "type": "header", "content": "Visual style" },
     { "type": "select", "id": "visual_style", "label": "Style", "options": [{"value":"classic","label":"Classic"},{"value":"editorial","label":"Editorial"},{"value":"bold","label":"Bold"},{"value":"minimal","label":"Minimal"}], "default": "classic" },
     { "type": "color", "id": "bg_color_override", "label": "Background colour override" },
     { "type": "color", "id": "text_color_override", "label": "Text colour override" },
     { "type": "select", "id": "desktop_info_style", "label": "Desktop info panel", "options": [{"value":"standard","label":"Standard"},{"value":"card","label":"Card"}], "default": "standard" },
     { "type": "select", "id": "mobile_info_style", "label": "Mobile info style", "options": [{"value":"standard","label":"Standard"},{"value":"compact","label":"Compact"},{"value":"card","label":"Card"}], "default": "compact" },
-
     { "type": "header", "content": "Pricing" },
     { "type": "checkbox", "id": "show_sale_badge", "label": "Show sale badge", "default": true },
     { "type": "text", "id": "demo_price", "label": "Demo price (shown when no product is set)", "default": "$0.00" },
-
     { "type": "header", "content": "Ratings" },
     { "type": "checkbox", "id": "show_rating", "label": "Show rating", "default": true },
     { "type": "checkbox", "id": "show_demo_rating", "label": "Show demo rating when no reviews exist", "default": true },
-    { "type": "number", "id": "demo_rating_value", "label": "Demo rating value", "default": 48 },
+    { "type": "number", "id": "demo_rating_value", "label": "Demo rating (x10 — enter 48 for 4.8)", "default": 48 },
     { "type": "number", "id": "demo_rating_count", "label": "Demo review count", "default": 1150 },
-
     { "type": "header", "content": "Buttons" },
     { "type": "text", "id": "atc_label", "label": "Add to cart label" },
     { "type": "text", "id": "buy_label", "label": "Buy now label" },
@@ -935,7 +815,6 @@ details[open] .sph-faq__chevron { transform:rotate(180deg); }
     { "type": "select", "id": "cta_position", "label": "Buttons position", "options": [{"value":"below","label":"Below options"},{"value":"above","label":"Above options"}], "default": "below" },
     { "type": "select", "id": "desktop_cta_layout", "label": "Desktop CTA layout", "options": [{"value":"row","label":"Row"},{"value":"stack","label":"Stack"}], "default": "row" },
     { "type": "select", "id": "mobile_cta_layout", "label": "Mobile CTA layout", "options": [{"value":"row","label":"Row"},{"value":"stack","label":"Stack"}], "default": "row" },
-
     { "type": "header", "content": "Trust strip" },
     { "type": "checkbox", "id": "show_trust_strip", "label": "Show trust strip", "default": true },
     { "type": "checkbox", "id": "show_trust_strip_desktop", "label": "Show on desktop", "default": true },
@@ -943,31 +822,25 @@ details[open] .sph-faq__chevron { transform:rotate(180deg); }
     { "type": "text", "id": "trust_1", "label": "Trust item 1", "placeholder": "Free Shipping" },
     { "type": "text", "id": "trust_2", "label": "Trust item 2", "placeholder": "Secure Payment" },
     { "type": "text", "id": "trust_3", "label": "Trust item 3", "placeholder": "14-Day Guarantee" },
-
     { "type": "header", "content": "Payment icons" },
     { "type": "checkbox", "id": "show_payment_icons", "label": "Show payment icons", "default": true },
     { "type": "checkbox", "id": "show_payment_icons_desktop", "label": "Show on desktop", "default": true },
     { "type": "checkbox", "id": "show_payment_icons_mobile", "label": "Show on mobile", "default": true },
-
     { "type": "header", "content": "Wishlist & Compare" },
     { "type": "checkbox", "id": "show_wishlist_button", "label": "Show wishlist button", "default": false },
     { "type": "checkbox", "id": "show_compare_button", "label": "Show compare button (multi-product mode only)", "default": false },
-
     { "type": "header", "content": "Scarcity" },
     { "type": "text", "id": "scarcity_text", "label": "Scarcity overlay text", "info": "Overrides global scarcity text. Leave blank to use global setting or hide." },
-
     { "type": "header", "content": "Sale strip" },
     { "type": "checkbox", "id": "show_sale_strip", "label": "Show sale strip", "default": false },
     { "type": "select", "id": "sale_stripe_design", "label": "Sale strip design", "options": [{"value":"standard","label":"Standard"},{"value":"bold","label":"Bold"}], "default": "standard" },
     { "type": "select", "id": "sale_stripe_orientation", "label": "Sale strip position", "options": [{"value":"top","label":"Top"},{"value":"bottom","label":"Bottom"}], "default": "top" },
-
     { "type": "header", "content": "Description" },
     { "type": "select", "id": "description_style", "label": "Description style", "options": [{"value":"none","label":"Hidden"},{"value":"plain","label":"Plain"},{"value":"accordion","label":"Accordion"}], "default": "accordion" },
     { "type": "text", "id": "description_label", "label": "Accordion label", "default": "Description" },
     { "type": "checkbox", "id": "description_open_desktop", "label": "Open by default on desktop", "default": false },
     { "type": "checkbox", "id": "description_open_mobile", "label": "Open by default on mobile", "default": false },
     { "type": "textarea", "id": "description_fallback", "label": "Fallback description (shown when product has none)" },
-
     { "type": "header", "content": "Features" },
     { "type": "checkbox", "id": "show_features", "label": "Show features strip", "default": true },
     { "type": "text", "id": "feat_1_title", "label": "Feature 1 title" },
@@ -979,7 +852,6 @@ details[open] .sph-faq__chevron { transform:rotate(180deg); }
     { "type": "text", "id": "feat_3_title", "label": "Feature 3 title" },
     { "type": "text", "id": "feat_3_sub",   "label": "Feature 3 subtitle" },
     { "type": "select", "id": "feat_3_icon", "label": "Feature 3 icon", "options": [{"value":"water","label":"Water"},{"value":"leaf","label":"Leaf"},{"value":"bag","label":"Bag"},{"value":"shield","label":"Shield"},{"value":"truck","label":"Truck"},{"value":"star","label":"Star"},{"value":"heart","label":"Heart"},{"value":"speed","label":"Speed"},{"value":"code","label":"Code"}], "default": "truck" },
-
     { "type": "header", "content": "Reviews" },
     { "type": "checkbox", "id": "show_reviews", "label": "Show reviews", "default": true },
     { "type": "text", "id": "reviews_title", "label": "Reviews section title", "default": "Reviews" },
@@ -987,12 +859,10 @@ details[open] .sph-faq__chevron { transform:rotate(180deg); }
     { "type": "number", "id": "visible_reviews_count", "label": "Visible reviews", "default": 3 },
     { "type": "checkbox", "id": "enable_review_slider_cycling", "label": "Auto-cycle reviews", "default": false },
     { "type": "number", "id": "review_slider_interval", "label": "Cycle interval (seconds)", "default": 4 },
-
     { "type": "header", "content": "FAQ" },
     { "type": "checkbox", "id": "show_faq", "label": "Show FAQ", "default": true },
     { "type": "text", "id": "faq_title", "label": "FAQ section title", "default": "FAQ" },
     { "type": "select", "id": "bottom_alignment", "label": "Reviews/FAQ alignment", "options": [{"value":"left","label":"Left"},{"value":"center","label":"Center"}], "default": "left" },
-
     { "type": "header", "content": "Spacing" },
     { "type": "range", "id": "padding_top", "label": "Padding top", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 48 },
     { "type": "range", "id": "padding_bottom", "label": "Padding bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 64 },

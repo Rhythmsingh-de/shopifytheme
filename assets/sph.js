@@ -1,9 +1,10 @@
 /**
  * sph.js — Single Product Home interactive behaviours
- * Handles: review slider, compare toggle (localStorage), DetailsAccordion
+ * SPH-06: loaded once via layout/theme.liquid, NOT inside the section
+ * Handles: review slider (SPH-10 CSS classes), gallery (SPH-11), compare toggle, DetailsAccordion
  */
 
-/* 1. Review Slider */
+/* ─── 1. Review Slider — SPH-10: CSS class toggles instead of inline style mutation ─── */
 function initReviewSlider(root) {
   (root || document).querySelectorAll('.sph-review-cards').forEach(function (container) {
     if (container.dataset.sliderIntervalId) {
@@ -17,19 +18,16 @@ function initReviewSlider(root) {
     const visibleCount = parseInt(container.dataset.visible, 10) || 3;
     if (!cycling || container.querySelectorAll('.sph-review-card').length <= visibleCount) return;
     const id = setInterval(function () {
-      const first    = container.querySelector('.sph-review-card');
-      const nextCard = container.children[visibleCount];
+      const allCards = container.querySelectorAll('.sph-review-card');
+      const first    = allCards[0];
+      const nextCard = allCards[visibleCount];
       if (!first) return;
-      if (nextCard) {
-        nextCard.style.cssText = 'display:flex;opacity:0;transition:opacity .6s ease';
-        nextCard.offsetHeight;
-        nextCard.style.opacity = '1';
-      }
-      first.style.transition = 'opacity .6s ease,transform .6s ease,max-height .6s ease,margin .6s ease,padding .6s ease,border-width .6s ease';
-      Object.assign(first.style, { opacity:'0', transform:'translateY(-20px)', maxHeight:'0', paddingTop:'0', paddingBottom:'0', marginTop:'0', marginBottom:'0', borderWidth:'0', overflow:'hidden' });
+      /* SPH-10: enter via CSS class, not inline style */
+      if (nextCard) nextCard.classList.add('is-entering');
+      first.classList.add('is-leaving');
       setTimeout(function () {
-        ['transition','opacity','transform','maxHeight','paddingTop','paddingBottom','marginTop','marginBottom','borderWidth','overflow'].forEach(p => first.style[p] = '');
-        if (nextCard) ['transition','opacity','display'].forEach(p => nextCard.style[p] = '');
+        first.classList.remove('is-leaving');
+        if (nextCard) nextCard.classList.remove('is-entering');
         container.appendChild(first);
       }, 600);
     }, intervalMs);
@@ -37,7 +35,33 @@ function initReviewSlider(root) {
   });
 }
 
-/* 2. Compare Toggle */
+/* ─── 2. Image Gallery — SPH-11: scoped initGallery per section ─── */
+function initGallery(root) {
+  (root || document).querySelectorAll('[data-sph-gallery]').forEach(function (gallery) {
+    if (gallery.dataset.galleryReady === 'true') return;
+    gallery.dataset.galleryReady = 'true';
+    const thumbs = gallery.querySelectorAll('[data-gallery-thumb]');
+    const mainImg = gallery.querySelector('[data-gallery-main]');
+    if (!thumbs.length || !mainImg) return;
+    thumbs.forEach(function (thumb) {
+      thumb.addEventListener('click', function () {
+        const src    = thumb.dataset.gallerySrc || thumb.querySelector('img')?.src;
+        const srcset = thumb.dataset.gallerySrcset || thumb.querySelector('img')?.srcset || '';
+        const alt    = thumb.dataset.galleryAlt    || thumb.querySelector('img')?.alt    || '';
+        if (!src) return;
+        mainImg.setAttribute('src', src);
+        if (srcset) mainImg.setAttribute('srcset', srcset);
+        mainImg.setAttribute('alt', alt);
+        thumbs.forEach(t => t.classList.remove('is-active'));
+        thumb.classList.add('is-active');
+      });
+    });
+    /* Mark first thumb active */
+    if (thumbs[0]) thumbs[0].classList.add('is-active');
+  });
+}
+
+/* ─── 3. Compare Toggle ─── */
 (function () {
   const KEY = 'theme_compare_products';
   const getList  = () => { try { return JSON.parse(localStorage.getItem(KEY)) || []; } catch { return []; } };
@@ -66,7 +90,7 @@ function initReviewSlider(root) {
   document.addEventListener('shopify:section:load', e => initCompare(e.target));
 })();
 
-/* 3. DetailsAccordion custom element */
+/* ─── 4. DetailsAccordion custom element ─── */
 class DetailsAccordion extends HTMLElement {
   connectedCallback() {
     if (this.dataset.accordionReady === 'true') return;
@@ -116,7 +140,14 @@ class DetailsAccordion extends HTMLElement {
 }
 if (!customElements.get('details-accordion')) customElements.define('details-accordion', DetailsAccordion);
 
-/* Boot */
-function sphBoot(root) { initReviewSlider(root); }
-document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', () => sphBoot(document)) : sphBoot(document);
-document.addEventListener('shopify:section:load', e => { if (e.target.querySelector('.sph-review-cards,[data-sph-nav]')) sphBoot(e.target); });
+/* ─── Boot ─── */
+function sphBoot(root) {
+  initReviewSlider(root);
+  initGallery(root);
+}
+document.readyState === 'loading'
+  ? document.addEventListener('DOMContentLoaded', () => sphBoot(document))
+  : sphBoot(document);
+document.addEventListener('shopify:section:load', e => {
+  if (e.target.querySelector('.sph-review-cards,[data-sph-nav],[data-sph-gallery]')) sphBoot(e.target);
+});
