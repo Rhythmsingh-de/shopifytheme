@@ -8,6 +8,7 @@
     endif
   endfor
   assign language_form_id = 'LocalizationForm-' | append: section.id | append: '-' | append: language_style
+  assign currency_form_id = 'CurrencyForm-' | append: section.id | append: '-' | append: language_style
 -%}
 
 {%- if visible_language_count > 1 -%}
@@ -47,3 +48,63 @@
     })();
   </script>
 {%- endif -%}
+
+{%- if localization.available_currencies.size > 1 -%}
+  <localization-form class="currency-switcher currency-switcher--{{ language_style }}">
+    {%- form 'localization', id: currency_form_id, class: 'currency-switcher__form' -%}
+      <span class="visually-hidden">{{ 'general.localization.currency_label' | t | default: 'Currency' }}</span>
+      <div class="currency-switcher__wrapper">
+        <label for="{{ currency_form_id }}-select" class="visually-hidden">{{ 'general.localization.currency_label' | t | default: 'Currency' }}</label>
+        <select
+          id="{{ currency_form_id }}-select"
+          name="currency_code"
+          class="currency-switcher__select"
+          aria-label="{{ 'general.localization.currency_label' | t | default: 'Currency' }}"
+          onchange="this.closest('form').submit()">
+          {%- for currency in localization.available_currencies -%}
+            <option
+              value="{{ currency.iso_code }}"
+              {% if currency.iso_code == localization.currency.iso_code %}selected{% endif %}>
+              {{ currency.iso_code }} {{ currency.symbol }}
+            </option>
+          {%- endfor -%}
+        </select>
+        <svg class="currency-switcher__chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+    {%- endform -%}
+  </localization-form>
+{%- endif -%}
+
+<style>
+.currency-switcher { display: inline-flex; }
+.currency-switcher__wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+.currency-switcher__select {
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md, 6px);
+  padding: 4px 28px 4px 10px;
+  font-size: var(--text-xs);
+  font-family: inherit;
+  font-weight: 600;
+  color: var(--color-text);
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.currency-switcher__select:hover,
+.currency-switcher__select:focus-visible {
+  border-color: var(--color-primary);
+}
+.currency-switcher__chevron {
+  position: absolute;
+  right: 8px;
+  pointer-events: none;
+  color: var(--color-text-muted);
+}
+</style>
