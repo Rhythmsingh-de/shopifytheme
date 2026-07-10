@@ -1,0 +1,36 @@
+{%- comment -%}
+  Render a single SPH icon by name.
+  Usage: {%- render 'sph-icon', icon: 'truck', size: 40 -%}
+  Params:
+    icon  — string: water|leaf|bag|shield|truck|star|heart|compare|article|speed|seo|code
+    size  — integer (default 40)
+{%- endcomment -%}
+{%- assign _size = size | default: 40 -%}
+{%- case icon -%}
+  {%- when 'heart' -%}
+    <svg width="{{ _size }}" height="{{ _size }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 1 0-7.8 7.8L12 21.2l8.8-8.8a5.5 5.5 0 0 0 0-7.8z"/></svg>
+  {%- when 'compare' -%}
+    <svg width="{{ _size }}" height="{{ _size }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h3"/><path d="M16 3h3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-3"/><path d="M12 4v16"/><path d="m10 8-2 2 2 2"/><path d="m14 16 2-2-2-2"/></svg>
+  {%- when 'article' -%}
+    <svg width="{{ _size }}" height="{{ _size }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M8 7h8M8 11h8M8 15h5"/></svg>
+  {%- when 'speed' -%}
+    <svg width="{{ _size }}" height="{{ _size }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 14a8 8 0 1 1 16 0"/><path d="M12 14l4-4"/><path d="M3 20h18"/></svg>
+  {%- when 'seo' -%}
+    <svg width="{{ _size }}" height="{{ _size }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/><path d="M8 11h6M11 8v6"/></svg>
+  {%- when 'code' -%}
+    <svg width="{{ _size }}" height="{{ _size }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m8 9-4 3 4 3"/><path d="m16 9 4 3-4 3"/><path d="m14 4-4 16"/></svg>
+  {%- when 'water' -%}
+    <svg width="{{ _size }}" height="{{ _size }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 2C6 9 4 13 4 16a8 8 0 0 0 16 0c0-3-2-7-8-14z"/></svg>
+  {%- when 'leaf' -%}
+    <svg width="{{ _size }}" height="{{ _size }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M17 8C8 10 5.9 16.17 3.82 19.31M15 8a6 6 0 0 0-6 6"/><path d="M3.82 19.31a10.32 10.32 0 0 0 9.4-8.19"/></svg>
+  {%- when 'bag' -%}
+    <svg width="{{ _size }}" height="{{ _size }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+  {%- when 'shield' -%}
+    <svg width="{{ _size }}" height="{{ _size }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+  {%- when 'truck' -%}
+    <svg width="{{ _size }}" height="{{ _size }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M1 3h15v13H1zM16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+  {%- when 'star' -%}
+    <svg width="{{ _size }}" height="{{ _size }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+  {%- else -%}
+    <svg width="{{ _size }}" height="{{ _size }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 8 12 12 14 14"/></svg>
+{%- endcase -%}
