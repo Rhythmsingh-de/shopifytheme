@@ -2,6 +2,7 @@
  * sph.js — Single Product Home interactive behaviours
  * SPH-06: loaded once via layout/theme.liquid, NOT inside the section
  * Handles: review slider (SPH-10 CSS classes), gallery (SPH-11), compare toggle, DetailsAccordion
+ * DL-1: fires view_item dataLayer event when SPH section initialises on the homepage
  */
 
 /* ─── 1. Review Slider — SPH-10: CSS class toggles instead of inline style mutation ─── */
@@ -22,7 +23,6 @@ function initReviewSlider(root) {
       const first    = allCards[0];
       const nextCard = allCards[visibleCount];
       if (!first) return;
-      /* SPH-10: enter via CSS class, not inline style */
       if (nextCard) nextCard.classList.add('is-entering');
       first.classList.add('is-leaving');
       setTimeout(function () {
@@ -56,12 +56,48 @@ function initGallery(root) {
         thumb.classList.add('is-active');
       });
     });
-    /* Mark first thumb active */
     if (thumbs[0]) thumbs[0].classList.add('is-active');
   });
 }
 
-/* ─── 3. Compare Toggle ─── */
+/* ─── 3. DL-1: fire view_item for each SPH section on the page ───
+ * Reads data attributes written by the section Liquid:
+ *   data-product-id, data-product-title, data-product-vendor,
+ *   data-product-type, data-variant-id, data-price
+ * Fires only when BLC.pushDataLayerEvent is available (datalayer.js loaded)
+ * and only if the section carries real product data (product-id present).
+ */
+function fireSphViewItem(sectionRoot) {
+  var section = sectionRoot || document.querySelector('[data-sph-section]');
+  if (!section) return;
+  var pid       = section.dataset.productId;
+  var title     = section.dataset.productTitle || '';
+  var vendor    = section.dataset.productVendor || '';
+  var type      = section.dataset.productType  || '';
+  var variantId = section.dataset.variantId    || '';
+  var price     = parseFloat(section.dataset.price || '0') || 0;
+  if (!pid) return; /* no product bound — SPH in no-product fallback mode */
+  if (typeof window.BLC === 'undefined' || typeof window.BLC.pushDataLayerEvent !== 'function') return;
+  window.BLC.pushDataLayerEvent({ ecommerce: null });
+  window.BLC.pushDataLayerEvent({
+    event: 'view_item',
+    page_type: 'homepage_sph',
+    ecommerce: {
+      currency: (window.Shopify && window.Shopify.currency) ? window.Shopify.currency.active : 'USD',
+      value: price,
+      items: [{
+        item_id:       variantId || String(pid),
+        item_name:     title,
+        item_brand:    vendor,
+        item_category: type,
+        price:         price,
+        quantity:      1
+      }]
+    }
+  });
+}
+
+/* ─── 4. Compare Toggle ─── */
 (function () {
   const KEY = 'theme_compare_products';
   const getList  = () => { try { return JSON.parse(localStorage.getItem(KEY)) || []; } catch { return []; } };
@@ -90,7 +126,7 @@ function initGallery(root) {
   document.addEventListener('shopify:section:load', e => initCompare(e.target));
 })();
 
-/* ─── 4. DetailsAccordion custom element ─── */
+/* ─── 5. DetailsAccordion custom element ─── */
 class DetailsAccordion extends HTMLElement {
   connectedCallback() {
     if (this.dataset.accordionReady === 'true') return;
@@ -144,10 +180,16 @@ if (!customElements.get('details-accordion')) customElements.define('details-acc
 function sphBoot(root) {
   initReviewSlider(root);
   initGallery(root);
+  /* DL-1: fire view_item for each SPH section root found */
+  var sphSections = (root || document).querySelectorAll('[data-sph-section]');
+  sphSections.forEach(function (section) { fireSphViewItem(section); });
+  /* Also handle the case where root itself is the section */
+  if (root && root.dataset && root.dataset.sphSection !== undefined) fireSphViewItem(root);
 }
+
 document.readyState === 'loading'
   ? document.addEventListener('DOMContentLoaded', () => sphBoot(document))
   : sphBoot(document);
 document.addEventListener('shopify:section:load', e => {
-  if (e.target.querySelector('.sph-review-cards,[data-sph-nav],[data-sph-gallery]')) sphBoot(e.target);
+  if (e.target.querySelector('.sph-review-cards,[data-sph-nav],[data-sph-gallery],[data-sph-section]')) sphBoot(e.target);
 });
